@@ -1,30 +1,29 @@
 language: python
+python: 2.7
 
 matrix:
   include:
     - sudo: false
       dist: trusty
       env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml
-      python: 2.7
     - sudo: false
       dist: trusty
       env: INSTALL=yes TESTFILE=./wftests/ci/pylint.sh PYLINT=yes
-      python: 2.7
     - sudo: false
       dist: trusty
-      env: INSTALL=yes TESTFILES=yes
-      python: 2.7
+      env: INSTALL=yes TESTFILES_1=yes
+    - sudo: false
+      dist: trusty
+      env: INSTALL=yes TESTFILES_2=yes
     - sudo: required
       dist: trusty
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes
-      python: 2.7
       addons:
         firefox: "46.0"
         chrome: stable
     - sudo: false
       dist: trusty
       env: INSTALL=no TESTFILE=./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml COPILOT=yes
-      python: 2.7
 
 install:
   - if [[ ${COPILOT} = "yes" ]]; then
@@ -51,8 +50,10 @@ script:
       python ./warrior/Warrior ./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml ;
     elif [[ ${PYLINT} = "yes" ]]; then
       $TESTFILE ;
-    elif [[ ${TESTFILES} = "yes" ]]; then
-      python ./warrior/Warrior ./wftests/warrior_tests/projects/pj_*.xml ;
+    elif [[ ${TESTFILES_1} = "yes" ]]; then
+      python ./warrior/Warrior ./wftests/warrior_tests/projects/pj_cond_var.xml ./wftests/warrior_tests/projects/pj_framework_tests.xml ./wftests/warrior_tests/projects/pj_glob.xml ./wftests/warrior_tests/projects/pj_rest.xml ./wftests/warrior_tests/projects/pj_retry.xml ./wftests/warrior_tests/projects/pj_runmode_retry_at_suite_level_at_project_file.xml ;
+    elif [[ ${TESTFILES_2} = "yes" ]]; then
+      python ./warrior/Warrior ./wftests/warrior_tests/projects/pj_iterative_execution.xml ./wftests/warrior_tests/projects/pj_parallel_execution.xml ./wftests/warrior_tests/projects/pj_parallel_execution_2.xml ;
     elif [[ ${SELENIUM} = "yes" ]]; then
       python ./warrior/Warrior $TESTFILE ;
       pip install selenium==3.8 ;
