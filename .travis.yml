@@ -12,10 +12,6 @@ matrix:
       python: 2.7
     - sudo: false
       dist: trusty
-      env: INSTALL=no TESTFILE=./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml COPILOT=yes
-      python: 2.7
-    - sudo: false
-      dist: trusty
       env: INSTALL=yes TESTFILES=yes
       python: 2.7
     - sudo: required
@@ -25,12 +21,16 @@ matrix:
       addons:
         firefox: "46.0"
         chrome: stable
+    - sudo: false
+      dist: trusty
+      env: INSTALL=no TESTFILE=./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml COPILOT=yes
+      python: 2.7
 
 install:
   - if [[ ${COPILOT} = "yes" ]]; then
       python setup.py install ;
     fi
-  - if [[ ${INSTALL} = "yes" ]]; then
+  - if [[ ${INSTALL} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
       pip install pexpect==4.2 ;
       pip install requests==2.9.1 ;
       pip install selenium==2.53.0 ;
@@ -38,7 +38,7 @@ install:
       pip install paramiko==1.16.0 ;
       pip install pysnmp==4.3.2 ;
     fi
-  - if [[ ${SELENIUM} = "yes" ]]; then
+  - if [[ ${SELENIUM} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
       pip install pyvirtualdisplay==0.2.1 ;
       wget https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip;
       unzip chromedriver_linux64.zip;
@@ -49,7 +49,7 @@ install:
 script:
   - if [[ ${PYLINT} = "yes" ]]; then
       $TESTFILE ;
-    elif [[ ${TRAVIS_PULL_REQUEST_BRANCH} = "" ]]; then
+    elif [[ -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
       python ./warrior/Warrior ./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml ;
     elif [[ ${TESTFILES} = "yes" ]]; then
       python ./warrior/Warrior ./wftests/warrior_tests/projects/pj_*.xml ;
@@ -62,4 +62,6 @@ script:
     fi
 
 after_success:
-  - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
+  - if [[ ${COPILOT} = "yes" ]] && [[ -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
+      bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
+    fi
