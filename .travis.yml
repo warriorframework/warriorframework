@@ -8,6 +8,7 @@ matrix:
       python: 2.7
       addons:
         firefox: "46.0"
+        chrome: stable
         apt:
           packages:
             - xvfb
@@ -17,19 +18,14 @@ install:
       python setup.py install ;
     fi
   - if [[ ${INSTALL} = "yes" ]]; then
-      pip install pexpect==4.2 ;
       pip install requests==2.9.1 ;
-      pip install selenium==2.53.0 ;
-      pip install lxml==3.3.3 ;
-      pip install paramiko==1.16.0 ;
-      pip install pysnmp==4.3.2 ;
     fi
   - if [[ ${SELENIUM} = "yes" ]]; then
       pip install pyvirtualdisplay==0.2.1 ;
       wget https://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip;
       unzip chromedriver_linux64.zip;
       chmod +x chromedriver;
-      echo ${PATH} ;
+      ls -l
       mv chromedriver ~/bin/chromedriver;
     fi
   - if [[ ${SELENIUM3} = "yes" ]]; then
