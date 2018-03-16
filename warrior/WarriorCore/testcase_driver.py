@@ -491,8 +491,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         filename = os.path.basename(testcase_filepath)
         html_filepath = os.path.join(data_repository['wt_resultsdir'],
                                      Utils.file_Utils.getNameOnly(filename)) + '.html'
-        print_info("Warrior execution results will be updated "
-                   "simultaneously in {0}".format(html_filepath))
+        print_info("HTML result file: {0}".format(html_filepath))
     step_list = get_steps_list(testcase_filepath)
 
     tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,

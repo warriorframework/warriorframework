@@ -366,8 +366,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         filename = os.path.basename(testsuite_filepath)
         html_filepath = os.path.join(suite_repository['suite_execution_dir'],
                                      Utils.file_Utils.getNameOnly(filename))+'.html'
-        print_info("Warrior execution results will be updated "
-                   "simultaneously in {0}".format(html_filepath))
+        print_info("HTML result file: {0}".format(html_filepath))
     if not from_project:
         data_repository["war_parallel"] = False
 

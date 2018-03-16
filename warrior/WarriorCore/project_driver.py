@@ -207,8 +207,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         filename = os.path.basename(project_filepath)
         html_filepath = os.path.join(project_repository['project_execution_dir'],
                                      Utils.file_Utils.getNameOnly(filename))+'.html'
-        print_info("Warrior execution results will be updated "
-                   "simultaneously in {0}".format(html_filepath))
+        print_info("HTML result file: {0}".format(html_filepath))
 
     # project_resultfile = project_repository['project_resultfile']
 
