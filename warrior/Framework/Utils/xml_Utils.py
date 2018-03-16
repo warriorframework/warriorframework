@@ -1020,31 +1020,3 @@ def list_path_responses_datafile(datafile, system_name):
         "./*[@name='"+system_name+"']/expected_api_response/*")
     responses_list = [x.text for x in resp_element_list]
     return path_list, responses_list
-
-def del_tag_from_element(ele, tag):
-    """
-        Delete a subelement with specific tag from an xml element object
-        return the deleted subelement if pass
-        return False if subelement not found
-    """
-    if ele.find(tag) is not None:
-        ele.remove(ele.find(tag))
-        return ele
-    else:
-        print_warning("cannot found {0} in element".format(str(tag)))
-    return False
-
-def safe_subelement(parent, tagname, text="", **kwargs):
-    """
-        create or overwrite a child element under the parent
-    """
-    if parent.find(tagname) is not None:
-        # Overwrite the child
-        ele = parent.find(tagname)
-        ele.text = text
-        ele.attrib = kwargs
-    else:
-        ele = ElementTree.SubElement(parent, tagname)
-        ele.text = text
-        ele.attrib = kwargs
-    return ele
