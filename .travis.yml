@@ -9,9 +9,6 @@ matrix:
       addons:
         firefox: "46.0"
         chrome: stable
-        apt:
-          packages:
-            - xvfb
 
 install:
   - if [[ ${COPILOT} = "yes" ]]; then
@@ -22,10 +19,9 @@ install:
     fi
   - if [[ ${SELENIUM} = "yes" ]]; then
       pip install pyvirtualdisplay==0.2.1 ;
-      wget https://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip;
+      wget https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip;
       unzip chromedriver_linux64.zip;
       chmod +x chromedriver;
-      ls -l ;
       mv chromedriver ~/bin/chromedriver;
     fi
   - if [[ ${SELENIUM3} = "yes" ]]; then
