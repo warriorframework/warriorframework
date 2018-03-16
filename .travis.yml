@@ -63,5 +63,5 @@ script:
 
 after_success:
   - if [[ ${COPILOT} = "yes" ]] && [[ -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
-      bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
+      bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload);
     fi
