@@ -25,6 +25,7 @@ install:
       mkdir bin;
       mv chromedriver bin/chromedriver;
       export PATH=$PATH:./bin;
+      ls -l;
     fi
   - if [[ ${SELENIUM3} = "yes" ]]; then
       pip install selenium==3.8 ;
