@@ -2,7 +2,7 @@ language: python
 
 matrix:
   include:
-    - sudo: false
+    - sudo: required
       dist: trusty
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes SELENIUM3=yes
       python: 2.7
