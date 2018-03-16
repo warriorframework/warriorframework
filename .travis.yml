@@ -25,7 +25,7 @@ install:
       wget https://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip;
       unzip chromedriver_linux64.zip;
       chmod +x chromedriver;
-      ls -l
+      ls -l ;
       mv chromedriver ~/bin/chromedriver;
     fi
   - if [[ ${SELENIUM3} = "yes" ]]; then
