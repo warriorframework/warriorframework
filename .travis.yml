@@ -4,31 +4,6 @@ matrix:
   include:
     - sudo: false
       dist: trusty
-      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml
-      python: 2.7
-    - sudo: false
-      dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/ci/pylint.sh PYLINT=yes
-      python: 2.7
-    - sudo: false
-      dist: trusty
-      env: INSTALL=no TESTFILE=./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml COPILOT=yes
-      python: 2.7
-    - sudo: false
-      dist: trusty
-      env: INSTALL=yes TESTFILES=yes
-      python: 2.7
-    - sudo: false
-      dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes
-      python: 2.7
-      addons:
-        firefox: "46.0"
-        apt:
-          packages:
-            - xvfb
-    - sudo: false
-      dist: trusty
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes SELENIUM3=yes
       python: 2.7
       addons:
@@ -54,7 +29,8 @@ install:
       wget https://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip;
       unzip chromedriver_linux64.zip;
       chmod +x chromedriver;
-      mv chromedriver ~/.local/bin/;
+      echo ${PATH}
+      mv chromedriver ~/bin/chromedriver;
     fi
   - if [[ ${SELENIUM3} = "yes" ]]; then
       pip install selenium==3.8 ;
