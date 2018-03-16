@@ -22,10 +22,8 @@ install:
       wget https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip;
       unzip chromedriver_linux64.zip;
       chmod +x chromedriver;
-      mkdir bin;
-      mv chromedriver bin/chromedriver;
-      export PATH=$PATH:./bin;
-      ls -l;
+      mv chromedriver ~/bin/chromedriver;
+      echo ${PATH};
     fi
   - if [[ ${SELENIUM3} = "yes" ]]; then
       pip install selenium==3.8 ;
