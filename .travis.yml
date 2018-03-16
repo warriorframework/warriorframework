@@ -47,10 +47,10 @@ install:
     fi
 
 script:
-  - if [[ ${PYLINT} = "yes" ]]; then
-      $TESTFILE ;
-    elif [[ -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
+  - if [[ -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
       python ./warrior/Warrior ./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml ;
+    elif [[ ${PYLINT} = "yes" ]]; then
+      $TESTFILE ;
     elif [[ ${TESTFILES} = "yes" ]]; then
       python ./warrior/Warrior ./wftests/warrior_tests/projects/pj_*.xml ;
     elif [[ ${SELENIUM} = "yes" ]]; then
