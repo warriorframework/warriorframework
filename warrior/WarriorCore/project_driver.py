@@ -261,7 +261,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     hms = Utils.datetime_utils.get_hms_for_seconds(project_duration)
     print_info("Project duration= {0}".format(hms))
 
-    project_status = report_project_result(project_status, project_repository)
+    report_project_result(project_status, project_repository)
     pj_junit_object.update_attr("status", str(project_status), "pj", project_start_time)
     pj_junit_object.update_attr("time", str(project_duration), "pj", project_start_time)
 
