@@ -1,0 +1,141 @@
+<?xml version="1.0" ?>
+<Testcase>
+    <Details>
+        <Name>all_onerror_types_test</Name>
+        <Title>This testcase tests all On Error Types in execute_and_resume mode</Title>
+        <InputDataFile>No_Data</InputDataFile>
+        <Datatype>Custom</Datatype>
+        <default_onError action="next"/>
+        <Date>2018-03-08</Date>
+        <Time>15:35</Time>
+        <Engineer>Sanika Kulkarni</Engineer>
+        <ExpectedResults>PASS</ExpectedResults>
+        <Category>Framework Testing</Category>
+        <State>Released</State>
+    </Details>
+    <Requirements/>
+    <Steps>
+        <step Driver="ci_regression_driver" Keyword="instantiate_list_key_in_data_repository" TS="1">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Create Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="2">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="2"/>
+                <argument name="status" value="False"/>
+            </Arguments>
+            <onError action="execute_and_resume" value="3, 4, 5, 6, 7"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>noimpact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="3">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="3"/>
+                <argument name="status" value="False"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>noimpact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="4">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="4"/>
+                <argument name="status" value="False"/>
+            </Arguments>
+            <onError action="execute_and_resume" value="8"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>noimpact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="5">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="5"/>
+                <argument name="status" value="False"/>
+            </Arguments>
+            <onError action="goto" value="8"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>noimpact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="6">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="6"/>
+                <argument name="status" value="False"/>
+            </Arguments>
+            <onError action="abort"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>noimpact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="7">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="7"/>
+                <argument name="status" value="False"/>
+            </Arguments>
+            <onError action="abort_as_error"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>noimpact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="8">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="8"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="verify_list_key_value_in_data_repo" TS="9">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="expected_value" value="2, 3, 4, 5, 6, 7, 3, 4, 8, 5, 8"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Verify Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
+    </Steps>
+</Testcase>
