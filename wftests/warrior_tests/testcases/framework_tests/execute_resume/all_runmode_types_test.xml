@@ -187,10 +187,64 @@
             <runmode type="Standard" value=""/>
             <Iteration_type type="Standard"/>
         </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="14">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="14"/>
+                <argument name="status" value="False"/>
+            </Arguments>
+            <onError action="execute_and_resume" value="18"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>noimpact</impact>
+            <runmode type="RUP" value="1"/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="15">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="15"/>
+                <argument name="status" value="False"/>
+            </Arguments>
+            <onError action="abort" value="22"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>noimpact</impact>
+            <runmode type="RUF" value="2"/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="16">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="16"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="17">
+            <Arguments>
+                <argument name="key" value="framework_testing_key_1"/>
+                <argument name="value" value="17"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Update Key</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <runmode type="Standard" value=""/>
+            <Iteration_type type="Standard"/>
+        </step>
         <step Driver="ci_regression_driver" Keyword="verify_list_key_value_in_data_repo" TS="14">
             <Arguments>
                 <argument name="key" value="framework_testing_key_1"/>
-                <argument name="expected_value" value="2, 3, 4, 5, 5, 6, 7, 7, 7, 8, 9, 9, 9, 9, 3, 4, 5, 5, 6, 7, 7, 7, 8, 9, 9, 9, 9, 10, 11, 12, 12, 13"/>
+                <argument name="expected_value" value="2, 3, 4, 5, 5, 6, 7, 7, 7, 8, 9, 9, 9, 9, 3, 4, 5, 5, 6, 7, 7, 7, 8, 9, 9, 9, 9, 10, 11, 12, 12, 13, 14, 12, 15, 12, 16"/>
             </Arguments>
             <onError action="next"/>
             <Description>Verify Key</Description>
