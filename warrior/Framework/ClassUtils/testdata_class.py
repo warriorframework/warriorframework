@@ -263,7 +263,10 @@ class TestData(object):
         :return:
             list of value indicating if the cmd has list substitution or not
         """
-        expanded_cmd = []
+        if details_dict["repeat_list"][cmd_index] is not None:
+            print_warning("repeat tag is not supported for the command with list "
+                          "substitution - {}".format(details_dict["command_list"][cmd_index]))
+            details_dict["repeat_list"][cmd_index] = None
         cmd_result = string_Utils.get_list_from_varconfigfile(details_dict["command_list"][cmd_index],
                                                               varconfigfile, start_pat, end_pat)
         expanded_cmd = self.string_sub(details_dict["command_list"][cmd_index], cmd_result,
