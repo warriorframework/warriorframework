@@ -361,6 +361,12 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile)
 
+    # Prints the path of result summary file at the beginning of execution
+    if data_repository['war_file_type'] == "Suite":
+        filename = os.path.basename(testsuite_filepath)
+        html_filepath = os.path.join(suite_repository['suite_execution_dir'],
+                                     Utils.file_Utils.getNameOnly(filename))+'.html'
+        print_info("HTML result file: {0}".format(html_filepath))
     if not from_project:
         data_repository["war_parallel"] = False
 
