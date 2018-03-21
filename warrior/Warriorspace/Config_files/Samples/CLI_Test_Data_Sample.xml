@@ -753,18 +753,6 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 
 			This Iteration can be done in two ways - per_cmd or per_td_block, refer section II.a - iter_type for more information.
 
-			For more examples of testcase/datafile/testdata file/variable config file using iterations refer to
-			per_cmd:
-				testcase = warrior_main/tests/cli_func_tests/Testcases/iter_range/tc_iteration.xml
-				datafile = warrior_main/tests/cli_func_tests/Data/data_iterations.xml
-				testdatafile = warrior_main/tests/cli_func_tests/Config_files/td_iterations.xml
-				varaiable config file = warrior_main/tests/cli_func_tests/Config_files/vc_iterations.xml
-
-			per_td_block:
-				testcase = warrior_main/tests/cli_func_tests/Testcases/iter_range/tc_iteration_per_td_block.xml
-				datafile = warrior_main/tests/cli_func_tests/Data/data_iterations_per_td_block.xml
-				testdatafile = warrior_main/tests/cli_func_tests/Config_files/td_iterations_per_td_block.xml
-				varaiable config file = warrior_main/tests/cli_func_tests/Config_files/vc_iterations_per_td_block.xml
 	-->
 
 	<!--
@@ -1085,13 +1073,6 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
             cmd#4 = prov port P2 oc3sr1  ; verification search = string1
 
        Verification tag value(s) will be verified against all the commands generated.
-
-       For more examples, refer below files:
-           testcase = warrior_main/tests/cli_func_tests/Testcases/iter_range/tc_iteration.xml
-           datafile = warrior_main/tests/cli_func_tests/Data/data_iterations.xml
-           testdatafile = warrior_main/tests/cli_func_tests/Config_files/td_iterations.xml
-           varaiable config file = warrior_main/tests/cli_func_tests/Config_files/vc_iterations.xml
-
 
 	==============================================
 	V : Repository variable substitution support:
