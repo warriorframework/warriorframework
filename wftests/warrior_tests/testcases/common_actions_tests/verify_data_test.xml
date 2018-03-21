@@ -3,9 +3,9 @@
         <Details>
                 <Name>verify_data_test</Name>
                 <Title>verify_data</Title>
-                <Engineer>suganya</Engineer>
-                <Date>2017-10-30</Date>
-                <Time>13:13</Time>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2018-03-07</Date>
+                <Time>12:08</Time>
                 <State/>
                 <InputDataFile>No_Data</InputDataFile>
                 <Datatype/>
@@ -23,16 +23,16 @@
                                 <argument name="datavar" value="demovar.demochild.demograndchild"/>
                                 <argument name="datavalue" value="1"/>
                         </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Operator="eq"/>
+                        </Execute>
                         <onError action="next"/>
                         <Description/>
                         <iteration_type type=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
-                        </Execute>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
-                        <Iteration_type type="Standard"/>
+                        <Iteration_type type="standard"/>
                 </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="2" draft="no">
                         <Arguments>
@@ -41,75 +41,63 @@
                                 <argument name="type" value="int"/>
                                 <argument name="object_key" value="demovar.demochild.demograndchild"/>
                         </Arguments>
+                        <Execute ExecType="Yes"/>
                         <onError action="next"/>
                         <Description/>
                         <iteration_type type=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
-                        </Execute>
                         <context>negative</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
-                        <Iteration_type type="Standard"/>
                 </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="3" draft="no">
                         <Arguments>
                                 <argument name="expected" value="1"/>
                                 <argument name="object_key" value="demovar.demochild.demograndchild"/>
                         </Arguments>
+                        <Execute ExecType="Yes"/>
                         <onError action="next"/>
                         <Description/>
                         <iteration_type type=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
-                        </Execute>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
-                        <Iteration_type type="Standard"/>
                 </step>
                 <step Driver="common_driver" Keyword="store_in_repo" TS="4" draft="no">
                         <Arguments>
                                 <argument name="datavar" value="demovar"/>
                                 <argument name="datavalue" value="demovalue"/>
                         </Arguments>
+                        <Execute ExecType="Yes"/>
                         <onError action="next"/>
                         <Description/>
                         <iteration_type type=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
-                        </Execute>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
-                        <Iteration_type type="Standard"/>
                 </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="5" draft="no">
                         <Arguments>
                                 <argument name="expected" value="demovalue"/>
-                                <argument name="object_key" value="demovar"/>
                                 <argument name="comparison" value="eq"/>
+                                <argument name="object_key" value="demovar"/>
                         </Arguments>
+                        <Execute ExecType="Yes"/>
                         <onError action="next"/>
                         <Description/>
                         <iteration_type type=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
-                        </Execute>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
-                        <Iteration_type type="Standard"/>
                 </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="6" draft="no">
                         <Arguments>
                                 <argument name="expected" value="1"/>
                                 <argument name="object_key" value="demovar"/>
                         </Arguments>
+                        <Execute ExecType="Yes"/>
                         <onError action="next"/>
                         <Description/>
                         <iteration_type type=""/>
-                        <Execute ExecType="Yes"/>
                         <context>negative</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
@@ -119,32 +107,26 @@
                                 <argument name="datavar" value="demovar.demochild"/>
                                 <argument name="datavalue" value="demovalue"/>
                         </Arguments>
+                        <Execute ExecType="Yes"/>
                         <onError action="next"/>
                         <Description/>
                         <iteration_type type=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
-                        </Execute>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
-                        <Iteration_type type="Standard"/>
                 </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="8" draft="no">
                         <Arguments>
                                 <argument name="expected" value="demovalue"/>
                                 <argument name="object_key" value="demovar.demochild"/>
                         </Arguments>
+                        <Execute ExecType="Yes"/>
                         <onError action="next"/>
                         <Description/>
                         <iteration_type type=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
-                        </Execute>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
-                        <Iteration_type type="Standard"/>
                 </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="9" draft="no">
                         <Arguments>
@@ -152,16 +134,93 @@
                                 <argument name="type" value="int"/>
                                 <argument name="object_key" value="demovar.demochild"/>
                         </Arguments>
+                        <Execute ExecType="Yes"/>
                         <onError action="next"/>
                         <Description/>
                         <iteration_type type=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
-                        </Execute>
                         <context>negative</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
-                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="store_in_repo" TS="10" draft="no">
+                        <Arguments>
+                                <argument name="filepath" value="../../../../warrior/Warriorspace/Config_files/Samples/Set_REPO_Variable_Sample.json"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Using filepath(json file) option to store multiple REPO values(default json tag)</Description>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="11" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="10"/>
+                                <argument name="type" value="int"/>
+                                <argument name="object_key" value="var1"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Comparing integer value with another repo integer value(stored using json file)</Description>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="12" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="20"/>
+                                <argument name="type" value="int"/>
+                                <argument name="object_key" value="var2.var3"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Comparing integer value with a repo string value(stored using json file), It will fail</Description>
+                        <iteration_type type="Standard"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="13" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="30"/>
+                                <argument name="object_key" value="var4.var5"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Comparing a string value with repo string value(stored using json file)</Description>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="store_in_repo" TS="14" draft="no">
+                        <Arguments>
+                                <argument name="filepath" value="../../../../warrior/Warriorspace/Config_files/Samples/Set_REPO_Variable_Sample.json"/>
+                                <argument name="jsonkey" value="user_defined_tag"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Using filepath(json file) option to store multiple REPO values(use-defined json tag)</Description>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="15" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="40"/>
+                                <argument name="object_key" value="var6"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
                 </step>
         </Steps>
 </Testcase>
