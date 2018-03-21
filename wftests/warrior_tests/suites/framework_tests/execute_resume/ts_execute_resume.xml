@@ -160,5 +160,29 @@
             </Execute>
             <impact>impact</impact>
         </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/execute_resume_go_up.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/execute_resume_go_up_down.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
     </Testcases>
 </TestSuite>
