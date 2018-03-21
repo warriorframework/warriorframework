@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_sequential_tcs</Name>
+                <Title>simple suite with sequential tc execution</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>02/28/2018</Date>
+                <Time>15:30:57</Time>
+                <type Max_Attempts="" Number_Attempts="" exectype="sequential_testcases"/>
+                <State/>
+                <default_onError action="next" value=""/>
+                <Resultsdir/>
+                <InputDataFile/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/exec_summary/tc_custom.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>parallel_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/exec_summary/tc_custom.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/exec_summary/tc_iterative.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>parallel_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/exec_summary/tc_iterative.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>
