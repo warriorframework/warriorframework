@@ -105,7 +105,7 @@ class LineResult:
 
 
 class WarriorHtmlResults:
-    """Class that generates html results using hte junit result file """
+    """Class that generates html results using the junit result file """
     lineObjs = []
     lineCount = 0
     recount = 0
@@ -179,7 +179,7 @@ class WarriorHtmlResults:
 	    user = "Unknown_user"
         return '<div class="user">' + user + '</div>'
 
-    def generate_html(self, junitObj, givenPath):
+    def generate_html(self, junitObj, givenPath, print_summary=False):
         """ build the html givenPath: added this feature in case of later down the line
         calling from outside junit file ( no actual use as of now )
         """
@@ -199,8 +199,10 @@ class WarriorHtmlResults:
         elem_file.write(html)
         elem_file.close()
         self.lineObjs = []
-        print_info("++++ Results Summary ++++")
-        print_info("Open the Results summary file given below in a browser to "
-                   "view results summary for this execution")
-        print_info("Results sumary file: {0}".format(self.get_path()))
-        print_info("+++++++++++++++++++++++++")
+        # Prints result summary at the end of execution
+        if print_summary is True:
+            print_info("++++ Results Summary ++++")
+            print_info("Open the Results summary file given below in a browser to "
+                       "view results summary for this execution")
+            print_info("Results summary file: {0}".format(self.get_path()))
+            print_info("+++++++++++++++++++++++++")
