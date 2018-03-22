@@ -263,7 +263,10 @@ class TestData(object):
         :return:
             list of value indicating if the cmd has list substitution or not
         """
-        expanded_cmd = []
+        if details_dict["repeat_list"][cmd_index] is not None:
+            print_warning("repeat tag is not supported for the command with list "
+                          "substitution - {}".format(details_dict["command_list"][cmd_index]))
+            details_dict["repeat_list"][cmd_index] = None
         cmd_result = string_Utils.get_list_from_varconfigfile(details_dict["command_list"][cmd_index],
                                                               varconfigfile, start_pat, end_pat)
         expanded_cmd = self.string_sub(details_dict["command_list"][cmd_index], cmd_result,
@@ -562,8 +565,6 @@ class TestDataIterations(object):
         cmd_loc_list = [0]
         cmd_size = 1
         for i, cmd in enumerate(cmd_list):
-            cmd_list_subs = []
-            is_iter = False
             vc_file = vc_file_list[i]
             iteration_status = self.validate_iteration_patterns(cmd, details_dict, i)
             cmd_size = 1 if cmd_size < 1 else cmd_size
@@ -587,18 +588,10 @@ class TestDataIterations(object):
                 # move on to the next command
                 # This also means that the command parameters do not have any
                 # iteration patterns because the validation was already done.
-                if isinstance(cmd, str) and '+' not in cmd:
-                    # check if list exists in cmd
-                    td_obj = TestData()
-                    cmd_list_subs = td_obj.\
-                        list_substitution_precheck(vc_file_list[i],
-                                                   details_dict, '${', '}')
-                    if cmd_list_subs[0][i] != False:
-                        is_iter = True
-                if cmd_iter_pattern != "" or is_iter is True:
-                    # if cmd_iterpattern is not "" or if the command has a
-                    # list value, call the expand cmd_params method to resolve
-                    # the iteration patterns in the command and get a updated
+                if cmd_iter_pattern != "":
+                    # if cmd_iterpattern is not ""
+                    # call the expand cmd_params method to resolve the
+                    # iteration patterns in the command and get a updated
                     # details_dict get a updated details dict
 
                     if repeat_list[i] is not None:
@@ -678,74 +671,58 @@ class TestDataIterations(object):
         excl_list = ["command_list"]
         # First expand the iteration pattern in the actual command
         cmd_list = details_dict["command_list"]
-        vc_file_list = details_dict["vc_file_list"]
         cmd = cmd_list[index]
         # Change the repeat_list value in this index as None since td 'repeat'
         # tag is not supported for the commands with iteration pattern
         details_dict["repeat_list"][index] = None
         error = False
-        if cmd_iter_pattern != "":
-            # If details_dict["command_list"][index] has a '+', then
-            # cmd_iter_pattern will not be ""
-            resolved_cmd_list, status = self._expand_iter_pattern\
-                (cmd, cmd_iter_pattern, vc_file)
-            if status and len(resolved_cmd_list) > 0:
-                # if resolving the iteration patterns in the command
-                # was successful then replace the command in the original
-                # command list with the new commands in the resolved_cmd_list
-                cmd_list[index:index+1] = resolved_cmd_list
+        resolved_cmd_list, status = self._expand_iter_pattern\
+        (cmd, cmd_iter_pattern, vc_file)
+        if status and len(resolved_cmd_list) > 0:
+            # if resolving the iteration patterns in the command
+            # was successful then replace the command in the original
+            # command list with the new commands in the resolved_cmd_list
+            cmd_list[index:index+1] = resolved_cmd_list
 
-                # remember the length of the resolved cmd list say n
-                # for other command parameters if the iter pattern is provided
-                # resolve the iteration pattern provided, else repeat the parameter
-                # in its list by n times, so that each command that was resolved
-                # has the corresponding parameter repeated.
-                ref_length = len(resolved_cmd_list)
-                for param, _ in CMD_PARAMS.items():
-                    if param not in excl_list:
-                        param_list = details_dict[param]
-                        param_value = param_list[index]
-                        iter_pattern = self.get_iteration_pattern(param_value)\
-                            if isinstance(param_value, str) else ""
+            # remember the length of the resolved cmd list say n
+            # for other command parameters if the iter pattern is provided
+            # resolve the iteration pattern provided, else repeat the parameter
+            # in its list by n times, so that each command that was resolved
+            # has the corresponding parameter repeated.
+            ref_length = len(resolved_cmd_list)
+            for param, _ in CMD_PARAMS.items():
+                if param not in excl_list:
+                    param_list = details_dict[param]
+                    param_value = param_list[index]
+                    iter_pattern = self.get_iteration_pattern(param_value)\
+                    if isinstance(param_value, str) else ""
 
-                        if iter_pattern is not "":
-                            res_list, status = self._expand_iter_pattern\
-                                (param_value, iter_pattern, vc_file)
-                            if status and len(res_list) > 0:
-                                param_list[index:index+1] = res_list
-                            else:
-                                error = True
-                        else:
-                            res_list = []
-                            for _ in range(0, ref_length):
-                                if isinstance(param_value, list):
-                                    new_list = []
-                                    for element in param_value:
-                                        new_list.append(element)
-                                    res_list.append(new_list)
-                                else:
-                                    res_list.append(param_value)
+                    if iter_pattern is not "":
+                        res_list, status = self._expand_iter_pattern\
+                        (param_value, iter_pattern, vc_file)
+                        if status and len(res_list) > 0:
                             param_list[index:index+1] = res_list
-            else:
-                error = True
-            if error:
-                # if there were any problems in resolving the iteration patterns
-                # or if none of the nodes in the iterpattern are available in the
-                # varconfig file, i.e. resolved_cmd_list=[]mark command as False,
-                # do not care to resolve other cmd parameters. return details dict
-                cmd_list[index] = False
+                        else:
+                            error = True
+                    else:
+                        res_list = []
+                        for _ in range(0, ref_length):
+                            if isinstance(param_value, list):
+                                new_list = []
+                                for element in param_value:
+                                    new_list.append(element)
+                                res_list.append(new_list)
+                            else:
+                                res_list.append(param_value)
+                        param_list[index:index+1] = res_list
         else:
-            # if details_dict["command_list"][index] has a list value in it, then
-            # else block is executed
-            t_obj = TestData()
-            t_obj.list_substitution_precheck(vc_file_list[index],
-                                             details_dict, '${', '}')
-            cmd_value = t_obj.cmd_sub(details_dict, index, vc_file_list[index],
-                                      '${', '}')
-            if cmd_value[0] is not False:
-                t_obj.align_cmd(details_dict, index, cmd_value)
-                for param in CMD_PARAMS.keys():
-                    del details_dict[param][index]
+            error = True
+        if error:
+            # if there were any problems in resolving the iteration patterns
+            # or if none of the nodes in the iterpattern are availabel in the
+            # varconfig file, i.e. resolved_cmd_list=[]mark command as False,
+            # do not care to resolve other cmd parameters. return details dict
+            cmd_list[index] = False
         return details_dict
 
     def expand_vfy_params(self, details_dict, index, vc_file,
