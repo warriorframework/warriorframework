@@ -4,9 +4,9 @@
                 <Name>common_action_suite</Name>
                 <Title>common_action_suite</Title>
                 <Engineer>Warrior_user</Engineer>
-                <Date>08/21/2017</Date>
-                <Time>23:25:53</Time>
-                <type Max_Attempts="" Number_Attempts="2" exectype="RUN_MULTIPLE"/>
+                <Date>11/17/2017</Date>
+                <Time>16:37:44</Time>
+                <type Max_Attempts="" Number_Attempts="2" exectype="Run_Multiple"/>
                 <State/>
                 <default_onError action="next" value=""/>
                 <Resultsdir/>
@@ -40,12 +40,29 @@
                         </Execute>
                         <runmode type="RUP" value="3"/>
                 </Testcase>
-          		<Testcase>
-                <path>../../testcases/common_actions_tests/verify_data_test.xml</path>
-                <context>positive</context>
-                <runtype>sequential_keywords</runtype>
-                <onError action="next"/>
-                <impact>impact</impact>
-		         </Testcase>
+                <Testcase>
+                        <path>../../testcases/common_actions_tests/verify_data_test.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="Standard" value=""/>
+                </Testcase>
+                <Testcase>
+                        <path>../../testcases/common_actions_tests/tc_verify_arith_exp.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
         </Testcases>
 </TestSuite>

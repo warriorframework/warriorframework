@@ -18,7 +18,7 @@ git add .
 
 git branch
 # Displaying what .py files have changed
-filelist=$(git --no-pager diff "${TRAVIS_BRANCH}" --name-only --diff-filter=d | grep ".py$\|Warrior$")
+filelist=$(git --no-pager diff "${TRAVIS_BRANCH}" --name-only --diff-filter=d | grep ".py$\|warrior$")
 if [[ "$filelist" ]]; then
     echo "$filelist" > filelist.txt
     python ../warriorframework/wftests/ci/pylint_checker.py filelist.txt .pylintrc "${TRAVIS_BRANCH}" "${TRAVIS_PULL_REQUEST_BRANCH}"

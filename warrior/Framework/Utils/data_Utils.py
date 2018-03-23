@@ -10,10 +10,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
+from __future__ import division
 import os
 import re
+import ast
+import copy
+import operator as op
 from collections import OrderedDict
-from ast import literal_eval
+
 from Framework.Utils import xml_Utils, string_Utils, testcase_Utils, config_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import (print_info, print_warning, print_error,
@@ -128,9 +133,9 @@ def get_cred_value_from_elem(element, tag, startdir=''):
     chelem = element.find(tag)
     if chelem is None:
         return xml_Utils.get_text_from_direct_child(element, tag)
-    if 'type' in chelem.attrib:
+    if 'wtype' in chelem.attrib:
         value = get_actual_cred_value(chelem.tag, chelem.text,
-                                      chelem.attrib['type'], startdir)
+                                      chelem.attrib['wtype'], startdir)
     else:
         value = chelem.text
     return value
@@ -141,12 +146,15 @@ def get_actual_cred_value(tag, value, etype, startdir=''):
     desired type and if file type get absolute path relative
     to the startdir
     """
-    adt = ArgumentDatatype(tag, value)
-    adt.datatype = adt.get_type_func(etype)
-    if adt.datatype is file:
-        val = file_Utils.getAbsPath(value, startdir)
-    else:
-        val = adt.convert_string_to_datatype()
+    try:
+        adt = ArgumentDatatype(tag, value)
+        adt.datatype = adt.get_type_func(etype)
+        if adt.datatype is file:
+            val = file_Utils.getAbsPath(value, startdir)
+        else:
+            val = adt.convert_string_to_datatype()
+    except KeyError:
+        val = value
     return val
 
 
@@ -192,9 +200,9 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
         if len(myInfo) == 0:
             for child in element:
                 val = child.text
-                if 'type' in child.attrib:
+                if 'wtype' in child.attrib:
                     val = get_actual_cred_value(child.tag, child.text,
-                                                child.attrib['type'], startdir)
+                                                child.attrib['wtype'], startdir)
                 output_dict[child.tag] = val
 
             attrib_dict = element.attrib
@@ -214,10 +222,10 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
                         cred_value = {}
                         for child in child_list:
                             cred_value[child.tag] = child.text
-                            if 'type' in child.attrib:
+                            if 'wtype' in child.attrib:
                                 cred_value[child.tag] = get_actual_cred_value(
                                                         child.tag, child.text,
-                                                        child.attrib['type'], startdir)
+                                                        child.attrib['wtype'], startdir)
                     else:
                         cred_value = get_cred_value_from_elem(element, x, startdir)
                 output_dict[x] = cred_value
@@ -323,10 +331,14 @@ def update_datarepository(input_dict):
 
 
 def get_object_from_datarepository(object_key, verbose=True):
-    """Gets the value for the object with the provided name from datarepositoy """
+    """ Gets the value for the object with the provided name from data repository.
+    object_key contains .(dot) will be treated as nested key """
     try:
         data_repository = config_Utils.data_repository
-        obj = data_repository[object_key]
+        keys = object_key.split('.')
+        obj = data_repository[keys[0]]
+        for key in keys[1:]:
+            obj = obj[key]
     except KeyError:
         obj = False
         if verbose:
@@ -409,13 +421,6 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
 
             td_iter_obj = TestDataIterations()
             details_dict, cmd_loc_list = td_iter_obj.resolve_iteration_patterns(details_dict)
-            iter_type = testdata.get('iter_type', None)
-            # Type-2 iteration - per_td_block
-            if iter_type == "per_td_block":
-                details_dict, cmd_loc_list = td_iter_obj.repeat_per_td_block(
-                                                details_dict, cmd_loc_list)
-                details_dict = td_iter_obj.arrange_per_td_block(details_dict,
-                                                                cmd_loc_list)
 
             # List substitution happens after iteration because
             # list sub cannot recognize the + sign in iteration
@@ -424,6 +429,25 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
                                                                 start_pat, end_pat)
             td_obj.list_substitution(details_dict, varconfigfile, cmd_list_substituted,
                                      verify_text_substituted, start_pat, end_pat)
+
+            # Update 'cmd_loc_list' based on list substitution, this is
+            # required for per_td_block iteration
+            ref_cmd_loc_list = copy.deepcopy(cmd_loc_list)
+            for i in range(len(cmd_loc_list)-1):
+                for j in range(ref_cmd_loc_list[i], ref_cmd_loc_list[i+1]):
+                    if cmd_list_substituted[j]:
+                        pos = i+1
+                        for _ in range(len(cmd_loc_list[i+1:])):
+                            cmd_loc_list[pos] = cmd_loc_list[pos] + cmd_list_substituted[j] - 1
+                            pos += 1
+
+            iter_type = testdata.get('iter_type', None)
+            # Type-2 iteration - per_td_block
+            if iter_type == "per_td_block":
+                details_dict, cmd_loc_list = td_iter_obj.repeat_per_td_block(
+                                                details_dict, cmd_loc_list)
+                details_dict = td_iter_obj.arrange_per_td_block(details_dict,
+                                                                cmd_loc_list)
 
             details_dict = td_obj.varsub_varconfig_substitutions(
                             details_dict, vc_file=varconfigfile, var_sub=None,
@@ -1008,13 +1032,10 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         'le': lambda x, y: x <= y
     }
     result, err_msg, exp = validate()
-    keys = key.split('.')
-    value = get_object_from_datarepository(keys[0])
+    value = get_object_from_datarepository(key)
     key_err_msg = "In the given key '{0}', '{1}' is not present in data repository"
     if value:
         try:
-            for k in keys[1:]:
-                value = value[k]
             if result == "ERROR" or result == "EXCEPTION":
                 print_error(err_msg)
             elif not comp_funcs[comparison](value, exp):
@@ -1030,9 +1051,6 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
                 print_info("The key, value pair '{0}:{1}' present in the  "
                            "data_repository satisfies the expected type & condition "
                            "'{2}:{3}'".format(key, value, data_type, comparison))
-        except KeyError:
-            print_error(key_err_msg.format(key, k))
-            result = "FALSE"
         except Exception as e:
             err_msg += "Got unknown exception {}\n".format(e)
             result = "EXCEPTION"
@@ -1042,6 +1060,108 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         print_error(key_err_msg.format(key, key.split('.')[0]))
 
     return result, value
+
+
+def verify_arith_exp(expression, expected, comparison='eq'):
+    """ Verify the output of the arithmetic expression matches the expected(float comparison)
+        Note : Binary floating-point arithmetic holds many surprises.
+        Please refer to link, https://docs.python.org/2/tutorial/floatingpoint.html
+        This Keyword inherits errors in Python float operations.
+        :Arguments:
+            1. expression: Arithmetic expression to be compared with expected.
+                This can have env & data_repo values embedded in it.
+                    Ex. expression: "10+${ENV.x}-${REPO.y}*10"
+                Expression will be evaluated based on python operator precedence
+                Supported operators: +, -, *, /, %, **, ^
+            2. expected: Value to be compared with the expression output
+                This can be a env or data_repo or any numeral value.
+            3. comparison: Type of comparison(eq/ne/gt/ge/lt/le)
+                eq - check if both are same(equal)
+                ne - check if both are not same(not equal)
+                gt - check if expression output is greater than expected
+                ge - check if expression output is greater than or equal to expected
+                lt - check if expression output is lesser than expected
+                le - check if expression output is lesser than or equal to expected
+        :Returns:
+            1. status(boolean)
+    """
+    status = True
+
+    # Customize power(exponentiation) fun to not to support the values greater
+    # than 1000 to avoid high CPU/Memory usage
+    def power(a, b):
+        """ Customized operator-power(op.pow) function """
+        if any(abs(n) > 1000 for n in [a, b]):
+            raise Exception("ValueError: Power operation is not supported on "
+                            "values higher than 1000: '{0}, {1}'".format(a, b))
+        return op.pow(a, b)
+
+    # supported operators
+    operators = {ast.Add: op.add, ast.Sub: op.sub, ast.Mult: op.mul,
+                 ast.Div: op.truediv, ast.Mod: op.mod, ast.Pow: power,
+                 ast.BitXor: op.xor}
+
+    def eval_exp(parsed_exp):
+        """ Evaluate arithmetic operations in an expression recursively """
+        # number
+        if isinstance(parsed_exp, ast.Num):
+            return parsed_exp.n
+        # binary operator
+        elif isinstance(parsed_exp, ast.BinOp):
+            return operators[type(parsed_exp.op)](eval_exp(parsed_exp.left),
+                                                  eval_exp(parsed_exp.right))
+        # Unary operator
+        elif isinstance(parsed_exp, ast.UnaryOp):
+            return operators[type(parsed_exp.op)](eval_exp(parsed_exp.operand))
+        else:
+            raise Exception("TypeError: Illegal expression")
+
+    # Substitute env values in the expression & expected
+    expression = sub_from_env_var(expression)
+    expected = sub_from_env_var(expected)
+    # Substitute data_repo values in the expression & expected
+    expression = sub_from_data_repo(expression)
+    expected = sub_from_data_repo(expected)
+
+    try:
+        expression_ouput = eval_exp(ast.parse(expression, mode='eval').body)
+        expected = float(expected)
+    except SyntaxError:
+        print_error("Unable to evaluate the expression '{}' provided.\n"
+                    "Possible reasons: \n1. Invalid arithmetic expression\n"
+                    "2. Given env/data_repo values are not available".format(expression))
+
+        status = "ERROR"
+    except ValueError:
+        print_error("Unable to convert expected value '{}' to float".format((expected)))
+        status = "ERROR"
+    except Exception as exception:
+        print_exception(exception)
+        status = "ERROR"
+
+    comp_funcs = {
+        'eq': lambda x, y: x == y,
+        'ne': lambda x, y: x != y,
+        'gt': lambda x, y: x > y,
+        'ge': lambda x, y: x >= y,
+        'lt': lambda x, y: x < y,
+        'le': lambda x, y: x <= y
+    }
+
+    if comparison not in comp_funcs:
+        print_error("Valid comparisons are {}".format('/'.join(comp_funcs.keys())))
+        status = "ERROR"
+
+    if status is True:
+        comp_result = comp_funcs[comparison](expression_ouput, expected)
+        if comp_result is True:
+            print_info("Expression output satisfies the given condition: "
+                       "'{0} {1} {2}'".format(expression_ouput, comparison, expected))
+        else:
+            status = False
+            print_info("Expression output does not satisfy the given condition: "
+                       "'{0} {1} {2}'".format(expression_ouput, comparison, expected))
+    return status
 
 
 def verify_resp_inorder(match_list, context_list, command, response,
@@ -1505,11 +1625,8 @@ def get_var_by_string_prefix(string):
     if string.startswith("ENV."):
         return os.environ[string.split('.', 1)[1]]
     if string.startswith("REPO."):
-        keys = string.split('.')
-        val = get_object_from_datarepository(keys[1])
-        for key in keys[2:]:
-            val = val[key]
-        return val
+        keys = string.split('.', 1)
+        return get_object_from_datarepository(keys[1])
 
 
 def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
@@ -1554,7 +1671,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                             raw_value[k] = str(raw_value[k]).replace(
                                     start_pattern+string+end_pattern,
                                     get_var_by_string_prefix(string))
-                            raw_value[k] = literal_eval(raw_value[k])
+                            raw_value[k] = ast.literal_eval(raw_value[k])
                         else:
                             print_error("Unsupported format - " +
                                         error_msg2.format(string, value))
@@ -1569,7 +1686,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                             search_obj = re.search(search_str,
                                                    str(raw_value[k]))
                             if search_obj:
-                                raw_value[k] = literal_eval(
+                                raw_value[k] = ast.literal_eval(
                                     str(raw_value[k]).replace(
                                         search_obj.group(), 'None'))
                     except SyntaxError:
@@ -1579,7 +1696,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                         print_info("<<{}>>".format(raw_value[k]))
                         try:
                             raw_value[k] = tuc_obj.rem_nonprintable_ctrl_chars(raw_value[k])
-                            raw_value[k] = literal_eval(raw_value[k])
+                            raw_value[k] = ast.literal_eval(raw_value[k])
                         except Exception as exc:
                             print_error("Error - " + error_msg2.format(
                                         string, value, raw_value[k], exc))
@@ -1615,16 +1732,9 @@ def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
 def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
     """substitute variable inside start and end pattern
     """
-    def get_data(var):
-        """get nested value from data repository by going through dot separated var
-        """
-        repokeys = var.split('.')
-        val = get_object_from_datarepository(repokeys[0])
-        for key in repokeys[1:]:
-            val = val[key]
-        return val
+
     prefixes = {'ENV': ('environment', lambda var: os.environ[var]),
-                'REPO': ('data repository', get_data)}
+                'REPO': ('data repository', get_object_from_datarepository)}
     error_msg = ("Could not find any {0} variable {1!r} corresponding to {2!r}"
                  " provided in input data/testdata file.\nWill default to None"
                  )

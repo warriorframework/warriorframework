@@ -59,19 +59,25 @@ def get_results_from_queue(queue):
     return result_list
 
 
-def update_ts_junit_resultfile(ts_junit_obj, tc_junit_list):
+def update_ts_junit_resultfile(ts_junit_obj, tc_junit_list, ts_timestamp):
     """loop through tc_junit object and attach testcase result to testsuite
     Arguments:
     1. ts_junit_obj = target testsuite
     2. tc_junit_list = list of testcase junit objects
     """
-    for tc_junit_obj in tc_junit_list:
-        for tc in tc_junit_obj.root.iter('testcase'):
-            # append testcase result to testsuite
-            ts_junit_obj.root.find('testsuite').append(tc)
-            # update the count in testsuite attribute
-            ts_junit_obj.attrib = update_attribute(ts_junit_obj.root.find('testsuite').attrib,
-                                                   tc.attrib)
+
+    for master_ts in ts_junit_obj.root.iter('testsuite'):
+        # make sure we are modifying the correct testsuite
+        if master_ts.get('timestamp') == ts_timestamp:
+            for tc_junit_obj in tc_junit_list:
+                for ts_part in tc_junit_obj.root.iter('testsuite'):
+                    # make sure we are obtaining only the wanted testcases
+                    if ts_part.get('timestamp') == ts_timestamp:
+                        # add testcase element to testsuite, update count
+                        for tc in ts_part.iter('testcase'):
+                            master_ts.append(tc)
+                            master_ts.attrib = update_attribute(master_ts.attrib, ts_part.attrib)
+
     return ts_junit_obj
 
 
@@ -118,7 +124,7 @@ def update_tc_junit_resultfile(tc_junit_obj, kw_junit_list, tc_timestamp):
             for kw_junit_obj in kw_junit_list:
                 for tc_part in kw_junit_obj.root.iter('testcase'):
                     # make sure we are obtaining only the wanted keywords
-                    if (tc_part.get('timestamp') == tc_timestamp):
+                    if tc_part.get('timestamp') == tc_timestamp:
                         # add keyword element to testcase, add property result
                         # to properties, update count
                         for result in tc_part.find('properties').iter('property'):
