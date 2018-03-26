@@ -1154,6 +1154,9 @@ div#launchpad.page.hidden {
 div#launchpad.page.hidden .page-content {
 	top: 0;
 	height: 100%;
+	width: calc(100% - 16px);
+	box-shadow: none;
+	direction: rtl;
 }
 
 div#launchpad.page.hidden .tab {
@@ -1181,6 +1184,7 @@ div#launchpad.page.hidden .tabs {
 	text-align: left;
 	padding-top: 13px;
 	width: 90%;
+	direction: ltr;
 }
 
 .fileSystem>.file:hover,
@@ -1335,7 +1339,7 @@ div#launchpad.page.hidden .tabs {
 	top: 40px;
 }
 
-.settings {
+.settings, .tab-container{
 	width: 100%;
 	height: 100%;
 	display: block;
@@ -3112,4 +3116,69 @@ input[type="checkbox"]+label {
 	border-width: 5px;
 	margin-left: -30px;
 
+}
+
+.side-bar-toggle {
+    position: absolute;
+    top: 0;
+    right: 0px;
+    width: 20px;
+    /* background: white; */
+    text-align: center;
+    height: 30px;
+    line-height: 27px;
+    /* border: solid 1px #c1c1c1; */
+    /* border-top-left-radius: 3px; */
+    /* border-bottom-left-radius: 3px; */
+    height: 100%;
+    border-left: 1px solid #b9b8b8;
+    display: none;
+    font-size: 25px;
+}
+
+div#launchpad.hidden .side-bar-toggle{
+	display: block;
+}
+
+div#launchpad.hidden.side-bar-hidden {
+    width: 40px;
+}
+div#launchpad.hidden .side-bar-toggle:before {
+    top: calc(50% - 80px);
+    height: 30px;
+    font-size: 24px;
+    line-height: 30px;
+    right: 0;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+}
+div#launchpad.hidden.side-bar-hidden .tabs {
+    display: none;
+}
+div#launchpad.hidden.side-bar-hidden .page-content {
+    display: none;
+}
+div#launchpad.hidden.side-bar-hidden .side-bar-toggle {
+    width: 100%;
+    background: transparent;
+    border: none;
+    height: 100%;
+    top: 0;
+}
+
+div#launchpad.hidden.side-bar-hidden .side-bar-toggle:before {
+    position: absolute;
+    top: calc(50% - 80px);
+    height: 30px;
+    font-size: 24px;
+    line-height: 30px;
+    right: 0;
+    text-align: center;
+    width: 40px;
+    content: "\f105";
+}
+
+div#launchpad.hidden.side-bar-hidden ~ .page .page-content {
+    width: calc(100% - 40px);
 }
