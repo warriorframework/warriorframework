@@ -32,7 +32,7 @@ def print_main(message, print_type, color_message=None, *kwargs):
         print_string = print_type + " " + str(color_message)
     elif color_message is None:
         print_string = print_type + " " + str(message)
-    if len(kwargs) > 0:
+    if kwargs:
         print_string = (print_type + " " + str(message) + str(kwargs))
     # print print_string
     sys.stdout.write(print_string + '\n')
@@ -52,13 +52,13 @@ class RedirectPrint(object):
         self.stdout = sys.stdout
         self.console_full_log = None
         self.console_add = None
+        self.katana_obj = None
 
     def katana_console_log(self, katana_obj):
         """
             set the console log object to be the katana communcation object
         """
-        self.console_full_log = katana_obj["console_full_log"]
-        self.console_add = katana_obj["console_add"]
+        self.katana_obj = katana_obj
 
     def get_file(self, console_logfile):
         """If the console logfile is not None redirect sys.stdout to
@@ -78,10 +78,10 @@ class RedirectPrint(object):
         data = ansi_escape.sub('', data)
         self.file.write(data)
         self.file.flush()
-        if self.console_full_log is not None:
-            self.console_full_log += data
-        if self.console_add is not None:
-            self.console_add += data
+        if self.katana_obj is not None and "console_full_log" in self.katana_obj\
+        and "console_add" in self.katana_obj:
+            self.katana_obj["console_full_log"] += data
+            self.katana_obj["console_add"] += data
 
     def isatty(self):
         """Check if sys.stdout is a tty """
