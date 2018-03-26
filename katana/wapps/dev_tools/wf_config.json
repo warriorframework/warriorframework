@@ -1,0 +1,12 @@
+{
+  "icon": "wrench",
+  "color": "blue",
+  "developer": "Warrior Framework",
+  "description": "Build and Edit Warrior Apps with a few clicks",
+  "app" : {"name" : "Dev Tools", "url" : "/katana/dev_tools/", "include": "wapps.dev_tools.urls"},
+  "warrior-compatibility": "",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
+}

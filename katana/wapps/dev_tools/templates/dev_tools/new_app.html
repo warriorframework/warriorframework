@@ -1,0 +1,29 @@
+<body>
+  <div class="tool-bar">
+    <div class="title">Build App</div>
+    <div class="button close" katana-click="katana.closeSubApp">Close</div>
+    <div class="button save" katana-click="dev_tools.createApp">Build App</div>
+  </div>
+  <div class="flex-rows to-save">
+    <div class="field-block">
+      <div class="field"><label>App Name</label><input key="name" type="text" value="" placeholder="name"></div>
+      <div class="field"><label>App Discription</label><input key="details" type="text" value="" placeholder="discription"></div>
+      <div class="field"><label>App Icon</label><input key="icon" type="text" value="" placeholder="font awesome icon"></div>
+      <div class="field"><label>App Icon Color</label>
+        <select key="color" placeholder="icon color">
+          <option class="red" value="red">red</option>
+          <option class="skyblue" value="skyblue">skyblue</option>
+          <option class="lightblue" value="lightblue">lightblue</option>
+          <option class="blue" value="blue">blue</option>
+          <option class="lightgrey" value="lightgrey">lightgrey</option>
+          <option class="grey" value="grey">grey</option>
+          <option class="tan" value="tan">tan</option>
+          <option class="orange" value="orange">orange</option>
+          <option class="green" value="green">green</option>
+        </select>
+      </div>
+      <div class="field"><label>App Developer Name</label><input key="developer" type="text" value="" placeholder="developer name"></div>
+    </div>
+  </div>
+  <div class="csrf-container">{% csrf_token %} </div>
+</body>

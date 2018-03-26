@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'wapps.wdf_edit',
     'wapps.assembler',
     'wapps.cli_data',
+    'wapps.dev_tools',
 ]
 
 MIDDLEWARE = [

@@ -1335,7 +1335,7 @@ div#launchpad.page.hidden .tabs {
 	top: 40px;
 }
 
-.settings {
+.settings, .tab-container {
 	width: 100%;
 	height: 100%;
 	display: block;
@@ -3112,4 +3112,63 @@ input[type="checkbox"]+label {
 	border-width: 5px;
 	margin-left: -30px;
 
+}
+
+
+.side-bar-container {
+    display: block;
+    width: 100%;
+    position: relative;
+    height: 100%;
+}
+
+.side-bar-container .side-bar {
+    display: block;
+    width: 250px;
+    position: absolute;
+    height: 100%;
+    top: 0;
+		overflow: auto;
+    background: #454547;
+		-webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19) inset;
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19) inset;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19) inset;
+}
+
+.side-bar-container .side-bar.left {
+    left: 0;
+}
+
+.side-bar-container .page-content {
+    position: absolute;
+    top: 0;
+    width: calc(100% - 250px);
+    background: #9e9e9e;
+    height: 100%;
+}
+.side-bar-container .top-nav {
+    height: 35px;
+    top: 0px;
+    left: 0;
+    position: absolute;
+    background: #c3c3c3;
+    width: 100%;
+}
+.side-bar-container .content {
+    width: 100%;
+    height: calc(100% - 35px);
+    position: absolute;
+    top: 35px;
+    left: 0;
+}
+.side-bar-container .side-bar.left + .page-content {
+    right: 0;
+}
+
+.side-bar-container .side-bar.right {
+    right: 0;
+}
+
+.side-bar-container .side-bar.right + .page-content {
+    left: 0;
 }

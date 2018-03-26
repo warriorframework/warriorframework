@@ -1,0 +1,12 @@
+<body>
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% static 'dev_tools/css/main.css' %}">
+  <link rel="stylesheet" href="{% static 'dev_tools/css/codemirror.css' %}">
+      <div class="csrf-container">{% csrf_token %} </div>
+      <div class="dev_tools tab-container">
+        <div class="tab blue" katana-click="katana.templateAPI.subAppLoad" url="/katana/dev_tools/new_app"><i class="fa fa-plus"></i><span>New App</span></div>
+        <div class="tab red" katana-click="katana.templateAPI.subAppLoad" url="/katana/dev_tools/edit_app"><i class="fa fa-edit"></i><span>Edit App</span></div>
+        <!--<div class="tab green" katana-click="katana.templateAPI.subAppLoad" url="/katana/dev_tools/package_app"><i class="fa fa-flag-checkered"></i><span>Package App</span></div>-->
+      </div>
+      <div class="limited-styles-true"></div>
+</body>

@@ -1,0 +1,45 @@
+<body>
+  <div class="tool-bar">
+    <div class="title">Edit App</div>
+    <div class="button close" katana-click="katana.closeSubApp">Close</div>
+    <div class="button save" katana-click="dev_tools.saveAppFiles">save</div>
+  </div>
+  <div class="dev_tools" auto-init="dev_tools.initEditMode">
+    <div class="side-bar-container">
+      <div class="side-bar left">
+        <ul>
+          <li>
+            <span katana-click="katana.toggleActive"><i class="fa fa-chevron-down"></i></span>
+            <ul>
+              <li katana-click="dev_tools.openFile">main.js</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="page-content">
+        <div class="top-nav"></div>
+        <div class="content"></div>
+      </div>
+    </div>
+    <script type="text/template" id="tool-bar">
+      <div class="tool-bar">
+        <i class="fa fa-connectdevelop" katana-click="dev_tools.addActive" title="Add Method">
+          <div class="method-builder hidden">
+            <i class="fa fa-times red" katana-click="dev_tools.cancelFunc" title="Cancel"></i>
+            <i class="fa fa-check lightblue" katana-click="dev_tools.createFunc" title="Create Method"></i>
+            <div class="field">
+              <input type="text" placeholder="Method Name">
+            </div>
+            <div class="field">
+              <input type="checkbox">
+              <label>Has HTML Template</label>
+            </div>
+          </div>
+        </i>
+        <i class="fa fa-save save" katana-click="dev_tools.saveFile" title="Save File"></i>
+      </div>
+    </script>
+  </div>
+
+  <div class="csrf-container">{% csrf_token %} </div>
+</body>

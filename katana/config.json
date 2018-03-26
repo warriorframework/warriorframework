@@ -1,10 +1,10 @@
 {
     "engineer": "", 
-    "pythonsrcdir": "", 
-    "xmldir": "", 
-    "testsuitedir": "", 
-    "projdir": "", 
-    "idfdir": "", 
-    "testdata": "", 
+    "pythonsrcdir": "/home/keen/Desktop/1758/warriorframework/warrior", 
+    "xmldir": "/home/keen/Desktop/1758/warriorframework/warrior/Warriorspace/Testcases", 
+    "testsuitedir": "/home/keen/Desktop/1758/warriorframework/warrior/Warriorspace/Suites", 
+    "projdir": "/home/keen/Desktop/1758/warriorframework/warrior/Warriorspace/Projects", 
+    "idfdir": "/home/keen/Desktop/1758/warriorframework/warrior/Warriorspace/Data", 
+    "testdata": "/home/keen/Desktop/1758/warriorframework/warrior/Warriorspace/Config_files", 
     "pythonpath": ""
 }

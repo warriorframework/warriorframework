@@ -1,0 +1,227 @@
+.dev_tools .side-bar > ul > li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.dev_tools .side-bar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.dev_tools .side-bar > ul > li > span {
+    color: white;
+    background: #3d3d3d;
+    width: 100%;
+    display: block;
+    height: 35px;
+    line-height: 35px;
+    position: relative;
+    padding: 0 10px;
+    font-variant: small-caps;
+    text-transform: capitalize;
+}
+
+.dev_tools .side-bar > ul > li > span > i {
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    right: 0;
+    top: 8px;
+}
+
+.dev_tools .side-bar > ul > li li {
+    color: white;
+    padding: 0 10px;
+    height: 30px;
+    line-height: 30px;
+    border-bottom: solid 1px #545454;
+    font-weight: 600;
+}
+.dev_tools .side-bar .active .fa-chevron-down:before {
+    content: "\f077";
+}
+.dev_tools .side-bar ul ul {
+    display: none;
+}
+
+.dev_tools .side-bar ul .active + ul {
+    display: block;
+}
+.dev_tools .content textarea {
+    height: 100%;
+    width: 100%;
+    display: block;
+}
+.dev_tools ::-webkit-scrollbar {
+  width: 10px;
+}
+.dev_tools ::-webkit-scrollbar-thumb{
+    background: #999999;
+    border: solid #373737 2px;
+    border-radius: 8px;
+}
+.dev_tools .ace_editor * {
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", "Droid Sans Mono", "Consolas", monospace !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+.dev_tools .ace-twilight .ace_indent-guide {
+    background: none;
+    border-right: solid 1px #454545;
+}
+.dev_tools .ace-twilight, .dev_tools .ace-twilight .ace_gutter {
+    background: #373737;
+    color: #fafafa;
+}
+.dev_tools .ace-twilight .ace_print-margin {
+    background: #454545;
+}
+
+
+
+
+
+.dev_tools .top-nav .title {
+    color: white;
+    font-weight: 600;
+		font-variant: small-caps;
+		background: transparent;
+    line-height: 35px;
+    padding: 0 9px;
+}
+
+.dev_tools .page-content .top-nav {
+    background: #a5a5a5;
+    display: flex;
+    /* -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3); */
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+}
+
+.dev_tools .top-nav .cmd-tab {
+    flex-grow: 1;
+    flex-basis: 0;
+    max-width: 150px;
+    line-height: 30px;
+    background: #373737;
+    height: 30px;
+    margin-left: 5px;
+    margin-top: 5px;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+		font-variant: small-caps;
+    /* -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3); */
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.3);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    position: relative;
+}
+.dev_tools .top-nav .cmd-tab.active {
+    background: #454545;
+}
+
+.dev_tools .cmd-tab {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    overflow: hidden;
+}
+.dev_tools .cmd {
+    background-color: #242424 !important;
+}
+.dev_tools .top-nav > i {
+    position: absolute;
+    top: 0;
+    right: 0;
+    line-height: 35px;
+    color: white;
+    padding: 0 10px;
+}
+.dev_tools .top-nav .cmd-tab > i {
+    position: absolute;
+		right: 8px;
+    top: 7px;
+}
+
+.dev_tools .content > .cmd-tab {
+    display: none;
+}
+.dev_tools .content > .cmd-tab.active {
+    display: block;
+}
+.dev_tools .tab-content {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.dev_tools .tool-bar + .tab-content {
+    height: calc(100% - 30px);
+    top: 30px;
+}
+
+.dev_tools .cmd-tab .tool-bar {
+    height: 30px;
+    background: #454545;
+}
+
+
+.dev_tools .cmd-tab .tool-bar > i {
+    width: 38px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.dev_tools .cmd-tab .tool-bar > i:hover {
+    background: #373737;
+}
+
+.dev_tools .active > .method-builder {
+    display: block;
+}
+.dev_tools .method-builder > i:hover {
+    background: #373737;
+}
+.dev_tools .method-builder {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 200px;
+    text-align: right;
+    background: #454545;
+    color: white;
+    padding: 0 5px;
+}
+
+.dev_tools .method-builder > i {
+    width: 41px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+}
+.dev_tools .method-builder label {
+    margin-top: -3px;
+}
+.dev_tools .method-builder input[type="text"] {
+    background: transparent;
+    border: none;
+    text-align: right;
+    color: white;
+    border-bottom: solid 1px grey;
+}
