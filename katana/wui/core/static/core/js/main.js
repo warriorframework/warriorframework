@@ -419,7 +419,7 @@ var katana = {
       }
     }
   },
-  
+
   openAlert: function(data, callBack_on_accept, callBack_on_dismiss) {
     /*
 	    data = {
@@ -803,6 +803,14 @@ var katana = {
     }
   },
 
+  aboutUs: function(){
+    var str = "here";
+    var release = str.link("https://github.com/warriorframework/warriorframework/releases");
+    var meet = str.link("https://github.com/warriorframework/warriorframework/blob/master/AUTHORS#L1");
+    var  aboutUs = "<u> History</u><br><br>Warrior Framework started out as side project in 2015 and rapidly gained popularity within Fujitsu to become topmost provider of automation services in the company.<br><br>The potential of Warrior Framework did not go unnoticed and it was made publicly available under the Apache 2.0 License in mid 2017.<br><br>Today, Warrior Framework has successfully transformed into an Open Source Automation Platform wherein the user community can contribute back to the Platform by creating their Apps <br><br> <u> Releases </u><br><br> All the latest Warrer Release can be found " + release + "<br><br> <u> Meet the Team</u><br><br> Information about the team that build Warrior Framework can be found " + meet;
+    katana.popupController.open(aboutUs,"About Warrior", function(){console.log("success")});
+  },
+
   openProfile: function() {
     var $elem = this;
     $elem.closest('.active').removeClass('active');
@@ -957,6 +965,8 @@ var katana = {
         });
       });
     },
+
+
 
     subAppLoad: function(url, limitedStyles, callBack, options) {
       var $elem = this;

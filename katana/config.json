@@ -1,10 +1,10 @@
 {
     "engineer": "", 
-    "pythonsrcdir": "", 
-    "xmldir": "", 
-    "testsuitedir": "", 
-    "projdir": "", 
-    "idfdir": "", 
-    "testdata": "", 
+    "pythonsrcdir": "/home/hamdi/warriorframework/warrior", 
+    "xmldir": "/home/hamdi/warriorframework/warrior/Warriorspace/Testcases", 
+    "testsuitedir": "/home/hamdi/warriorframework/warrior/Warriorspace/Suites", 
+    "projdir": "/home/hamdi/warriorframework/warrior/Warriorspace/Projects", 
+    "idfdir": "/home/hamdi/warriorframework/warrior/Warriorspace/Data", 
+    "testdata": "/home/hamdi/warriorframework/warrior/Warriorspace/Config_files", 
     "pythonpath": ""
 }
