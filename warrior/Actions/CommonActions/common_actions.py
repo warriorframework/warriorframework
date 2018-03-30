@@ -316,7 +316,7 @@ class CommonActions(object):
 
         return status
 
-    def verify_arith_exp(self, expression, expected, comparison='eq'):
+    def verify_arith_exp(self, expression, expected, comparison='eq', repo_key='exp_op'):
         """ Verify the output of the arithmetic expression matches the expected(float comparison)
             Note : Binary floating-point arithmetic holds many surprises.
             Please refer to link, https://docs.python.org/2/tutorial/floatingpoint.html
@@ -335,11 +335,26 @@ class CommonActions(object):
                     ge - check if expression output is greater than or equal to expected
                     lt - check if expression output is lesser than expected
                     le - check if expression output is lesser than or equal to expected
+                4. repo_key: Name of the key to be used to save the expression_output
+                   in the warrior data repository
+                    Ex. If repo_key is 'exp_op' & expression_output is 10.0
+                        It will be stored in data_repo in the below format
+                        data_repo = {
+                                        ...
+                                        verify_arith_exp: {'exp_op': 10.0},
+                                        ...
+                                    }
             :Returns:
                 1. status(boolean)
+                2. ouputdict(dict): Dictionary with the expression_ouput & it
+                   will also be available in warrior global data repository.
+                   Expression output can be retrieved from data_repo using
+                   key: 'verify_arith_exp.<repo_key>'
         """
         wDesc = "Verify if the output of the arithmetic expression matches the expected"
         Utils.testcase_Utils.pNote(wDesc)
-        status = Utils.data_Utils.verify_arith_exp(expression, expected,
-                                                   comparison)
-        return status
+        ouputdict = {'verify_arith_exp': {}}
+        status, expression_ouput = Utils.data_Utils.verify_arith_exp(expression, expected,
+                                                                     comparison)
+        ouputdict['verify_arith_exp'][repo_key] = expression_ouput
+        return status, ouputdict

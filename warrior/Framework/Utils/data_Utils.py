@@ -1084,8 +1084,10 @@ def verify_arith_exp(expression, expected, comparison='eq'):
                 le - check if expression output is lesser than or equal to expected
         :Returns:
             1. status(boolean)
+            2. expression_ouput - Result of the arithmetic expression
     """
     status = True
+    expression_ouput = None
 
     # Customize power(exponentiation) fun to not to support the values greater
     # than 1000 to avoid high CPU/Memory usage
@@ -1161,7 +1163,7 @@ def verify_arith_exp(expression, expected, comparison='eq'):
             status = False
             print_info("Expression output does not satisfy the given condition: "
                        "'{0} {1} {2}'".format(expression_ouput, comparison, expected))
-    return status
+    return status, expression_ouput
 
 
 def verify_resp_inorder(match_list, context_list, command, response,
