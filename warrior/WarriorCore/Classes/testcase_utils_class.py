@@ -195,7 +195,7 @@ class TestcaseUtils(object):
         """Create Note at the provided level"""
         write_locn = self.get_write_locn(str(level).upper())
         print_util_types = ["-D-", "", "-I-", "-E-", "-W-",
-                            "\033[1;31m-E-\033[0m"]
+                            "\033[1;31m-E-\033[0m", "\x1b[1;33m-W-\x1b[0m"]
         p_type = {'INFO': print_info,
                   'DEBUG': print_debug,
                   'WARN': print_warning,
