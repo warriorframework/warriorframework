@@ -167,7 +167,7 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
                 (3) every_failure
     """
     resultconverted = {"True": "Pass", "False": "Fail", "ERROR": "Error",
-                       "EXCEPTION": "Exception"}.get(str(result))
+                       "EXCEPTION": "Exception", "RAN": "Ran"}.get(str(result))
     subject = str(resultconverted)+": "+file_Utils.getFileName(abs_filepath)
     body = construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir)
     report_attachment = results_dir + os.sep + \

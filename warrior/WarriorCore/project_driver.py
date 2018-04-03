@@ -304,7 +304,7 @@ def report_project_result(project_status, project_repository):
     """
 
     project_status = {'TRUE': 'PASS', 'FALSE': 'FAIL',
-                      'ERROR': 'ERROR', 'EXCEPTION': 'ERROR'}.\
+                      'ERROR': 'ERROR', 'EXCEPTION': 'ERROR', 'RAN': 'RAN'}.\
         get(str(project_status).upper())
 
     print_info("Project:{0}  STATUS:{1}".format(project_repository['project_name'],

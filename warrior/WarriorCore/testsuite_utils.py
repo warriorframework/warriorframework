@@ -243,12 +243,13 @@ def report_testsuite_result(suite_repository, suite_status) :
     1. suite_repository    = (dict) dictionary caontaining all the data related to the testsuite
     2. suite_status        = (bool) status of the testsuite executed
     """
-    suite_resultfile = suite_repository['junit_resultfile'] 
-    print_info( "\n ****** TestSuite Result ******")
-    suite_status = {'TRUE': 'PASS', 'FALSE': 'FAIL', 'EXCEPTION': 'ERROR', 'ERROR': 'ERROR'}.get(str(suite_status).upper())
+    suite_resultfile = suite_repository['junit_resultfile']
+    print_info("\n ****** TestSuite Result ******")
+    suite_status = {'TRUE': 'PASS', 'FALSE': 'FAIL', 'EXCEPTION': 'ERROR', 'ERROR': 'ERROR',
+                                             'RAN': 'RAN'}.get(str(suite_status).upper())
     print_info("Testsuite:{0}  STATUS:{1}".format(suite_repository['suite_name'], suite_status))
-    #pSuite_report_suite_result(suite_resultfile)
-    print_info( "\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    # pSuite_report_suite_result(suite_resultfile)
+    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     return suite_status
 
 
