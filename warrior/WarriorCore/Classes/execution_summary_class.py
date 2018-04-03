@@ -27,6 +27,7 @@ class ExecutionSummary():
     def project_summary(self, junit_file):
         """To get the project name, project status and it's location"""
         tree = xml_Utils.get_tree_from_file(self.junit_file)
+        project_list = []
         for names in tree.iter('testsuites'):
             proj_detail = names.attrib
             proj_name = proj_detail.get('name')
@@ -38,12 +39,13 @@ class ExecutionSummary():
                 if project_details.get('name') == 'location':
                     proj_loc.append(project_details.get('value'))
                     proj_location = proj_loc[0]
-            print_info("{0:10}{1:50}{2:10}{3:30}".format(file_type, proj_name, project_status,
-                                                         proj_location))
+            project_list.append([file_type, proj_name, project_status, proj_location])
+        return project_list
 
     def suite_summary(self, junit_file):
         """ To get the name, status and location of both test suite and test case"""
         tree = xml_Utils.get_tree_from_file(self.junit_file)
+        suite_tc_list = []
         for values in tree.iter('testsuite'):
             suite_detail = values.attrib
             suite_name = suite_detail.get('name')
@@ -51,8 +53,7 @@ class ExecutionSummary():
             suite_location = suite_detail.get('suite_location')
             suite_result_dir = suite_detail.get('resultsdir')
             if suite_location is not None:
-                print_info("{0:10}{1:50}{2:10}{3:30}".format("Suites", suite_name, suite_status,
-                                                             suite_location))
+                suite_tc_list.append(["Suites", suite_name, suite_status, suite_location])
             for value in tree.iter('testcase'):
                 testcase_details = value.attrib
                 testcase_status = testcase_details.get('status')
@@ -63,9 +64,10 @@ class ExecutionSummary():
                     case_result_dir = os.path.dirname(case_result_dir_with_tc_name)
                     # suite junit element will not have resultsdir attrib for case execution
                     if suite_result_dir is None or suite_result_dir == case_result_dir:
-                        print_info("{0:10}{1:50}{2:10}{3:30}".format("Testcase", testcase_name,
-                                                                     testcase_status,
-                                                                     testcase_location))
+                        suite_tc_list.append(["Testcase", testcase_name, testcase_status,
+                                              testcase_location])
+        # suite_tc_list appends suites and test cases as per execution order
+        return suite_tc_list
 
     def get_file_type(self, junit_file):
         """To get the file type which is given for execution"""
@@ -83,11 +85,21 @@ class ExecutionSummary():
         """To print the consolidated test cases result in console at the end of Test Case/Test
            Suite/Project Execution"""
         file_type = self.get_file_type(junit_file)
+        # Formatting execution summary as project_summary and suite_summary returns the list values
         print_info("+++++++++++++++++++++++++++++++++++++++++++++++++ Execution Summary +++++++++++++++++++++++++++++++++++++++++++++++++")
         print_info("{0:10}{1:50}{2:10}{3:50}".format('Type', 'Name', 'Status', 'Path'))
         if file_type == "Project":
-            self.project_summary(junit_file)
-            self.suite_summary(junit_file)
+            project_exec = self.project_summary(junit_file)
+            for proj in project_exec:
+                print_info(("{0:10}{1:50}{2:10}{3:30}"
+                            .format(proj[0], proj[1], proj[2], proj[3])))
+            suite_tc_exec = self.suite_summary(junit_file)
+            for suite_tc in suite_tc_exec:
+                print_info(("{0:10}{1:50}{2:10}{3:30}"
+                            .format(suite_tc[0], suite_tc[1], suite_tc[2], suite_tc[3])))
         elif file_type == "Suites":
-            self.suite_summary(junit_file)
+            suite_tc_exec = self.suite_summary(junit_file)
+            for suite_tc in suite_tc_exec:
+                print_info(("{0:10}{1:50}{2:10}{3:30}"
+                            .format(suite_tc[0], suite_tc[1], suite_tc[2], suite_tc[3])))
         print_info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")

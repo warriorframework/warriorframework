@@ -113,26 +113,44 @@ class CommonActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
-    def store_in_repo(self, datavar, datavalue, type='str'):
-        """For storing datavalue in datavar datarepository
+    def store_in_repo(self, datavar=None, datavalue=None, type='str',
+                      filepath=None, jsonkey="repo_variables"):
+        """Stores datavalue in datavar of datarepository
         :Argument:
-            datavar = var in data repository in which to store
-                      this could be dot separated to store in nested fashion
-                      i.e., if var is k1.k2.k3 then the data value would be
-                      stored as a value in datarepository[k1][k2][k3]
-            datavalue = the value to be stored
-            type = type of datavalue (string/int/float)
+            1. datavar = Key to be used to store datavalue in data_repository,
+                         this could be dot separated to store in nested fashion
+                            i.e., if var is k1.k2.k3 then the data value would be
+                            stored as a value in datarepository[k1][k2][k3]
+            2. datavalue = Value to be stored
+            3. type = Type of datavalue(string/int/float)
+            4. filepath = Json file where datarepository variables are defined.
+                          It is to store multiple key,value pairs in datarepository.
+            5. jsonkey = The key where all the REPO variables & values are
+                         defined in the filepath
+
+            Sample JSON file:
+                 {
+                     "repo_variables": {
+                         "var1": {"type": "int", "value": "10"},
+                         "var2.var3": {"value": "10"},
+                         "var4.var5": "1"
+                         },
+                     "user_defined_tag":{
+                         "var6" : {"type": "int", "value": "40"}
+                         }
+                 }
+            All three formats in the above sample block are allowed. If 'type'
+            is not provided, value will be converted as string by default.
         """
         def get_dict_to_update(var, val):
             """
-
-            The function creates a dictionary with Variable and value. If Variable has "." seperated
-            keys then the value is updated at appropriate level of the nested dictionary.
-            :param var: Dictionary Key or Key seperated with "." for nested dict keys.
+            The function creates a dictionary with Variable and value.
+            If Variable has "." separated keys then the value is updated at
+            appropriate level of the nested dictionary.
+            :param var: Dictionary Key or Key separated with "." for nested dict keys.
             :param val: Value for the Key.
 
             :return: Dictionary
-
             """
             dic = {}
             if '.' in var:
@@ -141,17 +159,59 @@ class CommonActions(object):
             else:
                 dic[var] = val
             return dic
-        if type == 'int':
-            value = int(datavalue)
-        elif type == 'float':
-            value = float(datavalue)
-        else:
-            value = datavalue
-        dict_to_update = get_dict_to_update(datavar, value)
-        update_datarepository(dict_to_update)
-        print_info("Value: {0} is stored in a Key:{1} of Warrior "
-                   "data_repository ".format(datavalue, datavar))
-        return True
+
+        status = False
+        pass_msg = "Value: {0} is stored in a Key: {1} of Warrior data_repository"
+
+        if datavar is not None and datavalue is not None:
+            if type == 'int':
+                datavalue = int(datavalue)
+            elif type == 'float':
+                datavalue = float(datavalue)
+            dict_to_update = get_dict_to_update(datavar, datavalue)
+            update_datarepository(dict_to_update)
+            print_info(pass_msg.format(datavalue, datavar))
+            status = True
+
+        if filepath is not None:
+            testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
+            try:
+                filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
+                with open(filepath, "r") as json_handle:
+                    json_doc = json.load(json_handle)
+                    if jsonkey in json_doc:
+                        repo_dict = json_doc[jsonkey]
+                        for var_key, var_value in repo_dict.items():
+                            if isinstance(var_value, dict):
+                                if var_value.get('type') == 'int':
+                                    value = int(var_value['value'])
+                                elif var_value.get('type') == 'float':
+                                    value = float(var_value['value'])
+                                else:
+                                    value = str(var_value['value'])
+                            else:
+                                value = str(var_value)
+                            dict_to_update = get_dict_to_update(var_key, value)
+                            update_datarepository(dict_to_update)
+                            print_info(pass_msg.format(value, var_key))
+                    else:
+                        print_error('The {0} file is missing the key '
+                                    '\"repo_variables\", please refer to '
+                                    'the Samples in Config_files'.format(filepath))
+                status = True
+            except ValueError:
+                print_error('The file {0} is not a valid json '
+                            'file'.format(filepath))
+            except IOError:
+                print_error('The file {0} does not exist'.format(filepath))
+            except Exception as error:
+                print_error('Encountered {0} error'.format(error))
+
+        if (type is None or datavalue is None) and filepath is None:
+            print_error('Either Provide values to arguments \"datavar\" & '
+                        '\"datavalue\" or to argument \"filepath\"')
+
+        return status
 
     def verify_data(self, expected, object_key, type='str', comparison='eq'):
         """Verify value in 'object_key' in the data repository matches
@@ -256,4 +316,32 @@ class CommonActions(object):
                 print_error('Encountered {0} error'.format(error))
                 status = False
 
+        return status
+
+    def verify_arith_exp(self, expression, expected, comparison='eq'):
+        """ Verify the output of the arithmetic expression matches the expected(float comparison)
+            Note : Binary floating-point arithmetic holds many surprises.
+            Please refer to link, https://docs.python.org/2/tutorial/floatingpoint.html
+            This Keyword inherits errors in Python float operations.
+            :Arguments:
+                1. expression: Arithmetic expression to be compared with expected.
+                    This can have env & data_repo values embedded in it.
+                        Ex. expression: "10+${ENV.x}-${REPO.y}*10"
+                    Expression will be evaluated based on python operator precedence
+                2. expected: Value to be compared with the expression output
+                    This can be a env or data_repo or any numeral value.
+                3. comparison: Type of comparison(eq/ne/gt/ge/lt/le)
+                    eq - check if both are same(equal)
+                    ne - check if both are not same(not equal)
+                    gt - check if expression output is greater than expected
+                    ge - check if expression output is greater than or equal to expected
+                    lt - check if expression output is lesser than expected
+                    le - check if expression output is lesser than or equal to expected
+            :Returns:
+                1. status(boolean)
+        """
+        wDesc = "Verify if the output of the arithmetic expression matches the expected"
+        Utils.testcase_Utils.pNote(wDesc)
+        status = Utils.data_Utils.verify_arith_exp(expression, expected,
+                                                   comparison)
         return status

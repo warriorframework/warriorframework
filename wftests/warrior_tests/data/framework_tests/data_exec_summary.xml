@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<systems>
+        <description/>
+        <system default="yes" name="sys1"/>
+        <system name="sys2"/>
+</systems>

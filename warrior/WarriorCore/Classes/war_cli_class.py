@@ -397,6 +397,10 @@ class WarriorCliClass(object):
                             "or other CLI related operation."
                             "User can verify input value from console output/result file")
 
+        parser.add_argument('-headless', action='store_true', default=False,
+                            help="If headless mode is enabled, all selenium tests will run in xfvb "\
+                            "which will not need a GUI")
+
         namespace = parser.parse_args(arglist)
         #see if the below line is requried
         if namespace.mock:
@@ -460,9 +464,13 @@ class CreateTestSuite(object):
                                           datetime.datetime.now().strftime("%m/%d/%Y")))
         detail.append(self.create_element("Time", {},
                                           datetime.datetime.now().strftime("%H:%M:%S")))
-        if tc_type == "Run_Until_Fail" or tc_type == "Run_Multiple":
+        if tc_type == "Run_Until_Fail":
             detail.append(self.create_element("type",
                                               {"Max_Attempts":str(val),
+                                               "exectype":tc_type}, ""))
+        elif tc_type == "Run_Multiple":
+            detail.append(self.create_element("type",
+                                              {"Number_Attempts":str(val),
                                                "exectype":tc_type}, ""))
         else:
             detail.append(self.create_element("type",

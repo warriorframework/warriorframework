@@ -1,5 +1,5 @@
 Release: Ninja
-Version: warrior-3.6.0
+Version: warrior-3.8.0
 
 ===================
 1: Release details
@@ -19,7 +19,7 @@ This is release Ninja of Warrior Test Automation Framework
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version warrior-3.6.0 of Warrior Framework.
+You are on Release Ninja, Version warrior-3.8.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
 
 
@@ -31,19 +31,26 @@ Procedure to get a specific version is available in section-3 of this document.
 -------------
 New Features:
 -------------
-
-[WAR-864] - As a user, I want an intelligent tool which can sequence multiple keywords to form a new keyword
-[WAR-912] - KATANA: Need support for multiple conditional statements and greater/smaller comparison
-[WAR-1303] - Selenium: The functional tests for selenium need to be updated with correct data
-[WAR-1542] - Support command specific responses for warmock
-[WAR-1575] - As a user, I need a support to send emails to multiple receivers
-[WAR-1576] - Both in CLI and HTML Results Page tester (who executed the test case) details should be available
+[WAR-1478] - Arithmetic operation support for response patterns stored through resp_ref and also in verify tags
+[WAR-1674] - Unable to check api_response with regex pattern using verify_response keyword
+[WAR-1679] - In store_in_repo keyword user was allowed to update only variable at a time, it should allow to update n number of variable
+[WAR-1685] - Need Result HTML link during the start of execution
+[WAR-1717] - Need snapshot of Result Summary within the mail
+[WAR-1730] - Set of commands must be executed when there is a failure
+[WAR-1760] - verify_snmp_action keyword in SnmpActions/Common_snmp_actions need enhancement
 
 ---------
 Bugfixes:
 ---------
+[WAR-1683] - NETCONF get function is not working with xpath
+[WAR-1687] - Failed to execute multiple test cases executed in CMD line by specifying input data file. with below error
+[WAR-1694] - Project with parallel suite(s) creates duplicate entries in execution summary
+[WAR-1711] - data_Utils functions looks for "type" in data file and doesn't handle not found situation peacefully
+[WAR-1725] - verify is not working properly in iterative parallel
+[WAR-1732] - RMT when sent via command line does not work as expected and crashes Warrior execution
+[WAR-1733] - While running Test scripts in latest Warrior(3.7.0) getting "AttributeError: 'NoneType' object has no attribute 'clear_notification_buffer'" error
+[WAR-1734] - faults error prints when executing a Test SUITE "executiontype= iterative parallel"
 
-[WAR-1402] - Response reference is not saved properly while executing on a different system which is given in the td file.
 
 =================================================
 3. Procedure to get a specific version of Warrior

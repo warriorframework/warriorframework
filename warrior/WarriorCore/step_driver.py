@@ -97,7 +97,8 @@ def get_step_console_log(filename, logsdir, console_name):
     return console_logfile
 
 
-def execute_step(step, step_num, data_repository, system_name, kw_parallel, queue):
+def execute_step(step, step_num, data_repository, system_name, kw_parallel, queue,
+                 skip_invoked=True):
     """ Executes a step from the testcase xml file
         - Parses a step from the testcase xml file
         - Get the values of Driver, Keyword, impactsTcResult
@@ -190,8 +191,8 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     onerror = step_onError_action.upper()
     if step_goto_value is not False and step_goto_value is not None:
         onerror = onerror + " step " + step_goto_value
-    if keyword_status is False and step_onError_action and\
-            step_onError_action.upper() == 'ABORT_AS_ERROR':
+    if keyword_status is False and step_onError_action and \
+            step_onError_action.upper() == 'ABORT_AS_ERROR' and skip_invoked:
         print_info("Keyword status will be marked as ERROR as onError action is set to"
                    "'abort_as_error'")
         keyword_status = "ERROR"
@@ -282,12 +283,12 @@ def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
     tc_junit_object.update_count("keywords", "1", "tc", tc_timestamp)
 
 
-
-def main(step, step_num, data_repository, system_name, kw_parallel=False, queue=None):
+def main(step, step_num, data_repository, system_name, kw_parallel=False, queue=None,
+         skip_invoked=True):
     """Get a step, executes it and returns the result """
     try:
-        step_status = execute_step(step, step_num,
-                                   data_repository, system_name, kw_parallel, queue)
+        step_status = execute_step(step, step_num, data_repository, system_name, kw_parallel,
+                                   queue, skip_invoked=skip_invoked)
     except Exception:
         step_status = False, [], data_repository['wt_step_impact'], False
         print_error('unexpected error: {0}'.format(traceback.format_exc()))

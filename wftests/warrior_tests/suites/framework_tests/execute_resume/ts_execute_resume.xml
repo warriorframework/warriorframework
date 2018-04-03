@@ -1,0 +1,188 @@
+<?xml version="1.0" ?>
+<TestSuite>
+    <Details>
+        <Name>ts_execute_resume</Name>
+        <Title>Testing Execute Resume Functionality in Testcase</Title>
+        <Engineer>Sanika Kulkarni</Engineer>
+        <Date>02/26/2018</Date>
+        <Time>11:10:28</Time>
+        <type exectype="sequential_testcases"/>
+        <State/>
+        <default_onError action="next"/>
+        <Resultsdir/>
+        <InputDataFile/>
+    </Details>
+    <Requirements>
+        <Requirement/>
+    </Requirements>
+    <Testcases>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/one_execute_resume.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/one_invoked_execute_resume.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/multiple_execute_resumes.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/multiple_invoked_execute_resumes.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/nested_execute_resumes.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/nested_invoked_execute_resumes.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/mixed_execute_resumes.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/all_execute_types_test.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/all_onerror_types_test.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/all_runmode_types_test.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/all_retry_types_test.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/mixed_runmode_retry_test.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/execute_resume_go_up.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/execute_resume_go_up_down.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>impact</impact>
+        </Testcase>
+    </Testcases>
+</TestSuite>
