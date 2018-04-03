@@ -15,6 +15,7 @@ from __future__ import division
 import os
 import re
 import ast
+import copy
 import operator as op
 from collections import OrderedDict
 
@@ -420,13 +421,6 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
 
             td_iter_obj = TestDataIterations()
             details_dict, cmd_loc_list = td_iter_obj.resolve_iteration_patterns(details_dict)
-            iter_type = testdata.get('iter_type', None)
-            # Type-2 iteration - per_td_block
-            if iter_type == "per_td_block":
-                details_dict, cmd_loc_list = td_iter_obj.repeat_per_td_block(
-                                                details_dict, cmd_loc_list)
-                details_dict = td_iter_obj.arrange_per_td_block(details_dict,
-                                                                cmd_loc_list)
 
             # List substitution happens after iteration because
             # list sub cannot recognize the + sign in iteration
@@ -435,6 +429,25 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
                                                                 start_pat, end_pat)
             td_obj.list_substitution(details_dict, varconfigfile, cmd_list_substituted,
                                      verify_text_substituted, start_pat, end_pat)
+
+            # Update 'cmd_loc_list' based on list substitution, this is
+            # required for per_td_block iteration
+            ref_cmd_loc_list = copy.deepcopy(cmd_loc_list)
+            for i in range(len(cmd_loc_list)-1):
+                for j in range(ref_cmd_loc_list[i], ref_cmd_loc_list[i+1]):
+                    if cmd_list_substituted[j]:
+                        pos = i+1
+                        for _ in range(len(cmd_loc_list[i+1:])):
+                            cmd_loc_list[pos] = cmd_loc_list[pos] + cmd_list_substituted[j] - 1
+                            pos += 1
+
+            iter_type = testdata.get('iter_type', None)
+            # Type-2 iteration - per_td_block
+            if iter_type == "per_td_block":
+                details_dict, cmd_loc_list = td_iter_obj.repeat_per_td_block(
+                                                details_dict, cmd_loc_list)
+                details_dict = td_iter_obj.arrange_per_td_block(details_dict,
+                                                                cmd_loc_list)
 
             details_dict = td_obj.varsub_varconfig_substitutions(
                             details_dict, vc_file=varconfigfile, var_sub=None,

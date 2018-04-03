@@ -632,9 +632,11 @@ class CommonSnmpActions(object):
             NA        
         :Arguments:
             1. system_name(string) = Name of the system from the input datafile
-            2. mib_string(string) = MIB string
-            e.g.'SNMPv2-SMI::enterprises.3861.3.2.100.1.2.0'
-            3. result(string) = SNMP Output string
+            2. mib_string(string) = MIB string, in regex format
+            e.g. if searching for 'SNMPv2-SMI::enterprises.3861.3.2.100.1.2.0' ('' not included)
+            the mib_string can be SNMPv2-SMI::enterprises\.3861\.3\.2\.100\.1\.2\.0
+            or if the number will be different, the mib_string can be SNMPv2-SMI::enterprises[\.\d+]+
+            3. result(string) = SNMP Output string, in regex format
             e.g. '1Finity-T100'
         :Returns:
             1. status(bool)
@@ -681,13 +683,13 @@ class CommonSnmpActions(object):
                     testcase_Utils.pNote("No SNMP Result Present!", 'error')
         for element in result_list:
             if mib_string:
-                if mib_string in element[0] and snmp_result in element[-1]:
+                if re.search(mib_string, element[0]) and re.search(snmp_result, element[-1]):
                     status = True
                     testcase_Utils.pNote('%s and %s found in SNMP Output' %(
                         mib_string, snmp_result))
                     break
             else:
-                if snmp_result in element[-1]:
+                if re.search(snmp_result, element[-1]):
                     status = True
                     testcase_Utils.pNote('%s Found! in SNMP Output' %(
                         snmp_result))

@@ -68,7 +68,7 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
-		<step Driver="rest_driver" Keyword="verify_response" TS="4">
+		<step Driver="rest_driver" Keyword="verify_response" TS="5">
 			<Arguments>
 				<argument name="system_name" value="http_bin_2"/>
 				<argument name="expected_api_response" value="Date of publication"/>
@@ -82,7 +82,7 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
-		<step Driver="rest_driver" Keyword="perform_http_get" TS="5">
+		<step Driver="rest_driver" Keyword="perform_http_get" TS="6">
 			<Arguments>
 				<argument name="system_name" value="http_bin_3"/>
 				<argument name="url" value="http://httpbin.org/robots.txt"/>
@@ -94,7 +94,7 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
-		<step Driver="rest_driver" Keyword="verify_response" TS="6">
+		<step Driver="rest_driver" Keyword="verify_response" TS="7">
 			<Arguments>
 				<argument name="system_name" value="http_bin_3"/>
 				<argument name="expected_api_response" value=""/>
@@ -106,6 +106,97 @@
 			<Description>This step verifies the API response with the expected API response</Description>
 			<Execute ExecType="Yes"/>
 			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_get" TS="8">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/response-headers?key1=5&amp;key2=[1.2"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the GET capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="9">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="[4-7]"/>
+				<argument name="expected_response_type" value="json"/>
+				<argument name="comparison_mode" value="jsonpath=key1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response(Regex search - Pass)</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="10">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="[6-10]"/>
+				<argument name="expected_response_type" value="json"/>
+				<argument name="comparison_mode" value="jsonpath=key1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response(Regex search - Fail)</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="11">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="[1.2"/>
+				<argument name="expected_response_type" value="json"/>
+				<argument name="comparison_mode" value="jsonpath=key2"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response(Equality check with special chars - Pass)</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="12">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="[1."/>
+				<argument name="expected_response_type" value="json"/>
+				<argument name="comparison_mode" value="jsonpath=key2"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response(Equality check with special chars - Fail)</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="13">
+			<Arguments>
+				<argument name="system_name" value="http_bin_2"/>
+				<argument name="expected_api_response" value="Date.+of pub.*on"/>
+				<argument name="expected_response_type" value="xml"/>
+				<argument name="request_id" value="123"/>
+				<argument name="comparison_mode" value="xpath=/*/@date"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response(Regex search - Pass)</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="14">
+			<Arguments>
+				<argument name="system_name" value="http_bin_2"/>
+				<argument name="expected_api_response" value="Date.+of pub.?on"/>
+				<argument name="expected_response_type" value="xml"/>
+				<argument name="request_id" value="123"/>
+				<argument name="comparison_mode" value="xpath=/*/@date"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response(Regex search - Fail)</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
 			<impact>impact</impact>
 		</step>
 	</Steps>
