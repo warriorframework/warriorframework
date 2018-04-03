@@ -391,7 +391,7 @@ class WarriorCli(object):
                         pNote(save_msg2.format(pattern))
                     resp_key_list.append(dict(zip(keys, temp_resp_key_list)))
             else:
-                temp_resp_dict = {resp_ref: ""}
+                temp_resp_dict = {resp_ref: response}
                 resp_key_list.append(temp_resp_dict)
         else:
             temp_resp_dict = {resp_ref: ""}
