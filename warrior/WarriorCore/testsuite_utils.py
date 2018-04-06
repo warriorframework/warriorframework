@@ -11,33 +11,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import xml.etree.ElementTree as ET
-from Framework.Utils import file_Utils, xml_Utils, config_Utils
 import datetime
-from Framework.Utils.print_Utils import print_debug, print_info, print_error, print_warning
+import xml.etree.ElementTree as ET
+from Framework.Utils import xml_Utils, config_Utils
+from Framework.Utils.print_Utils import print_info, print_error, print_warning
 
-root = None
-currentPointer = None
-currentTestSuitePointer = None
-currentPropertiesPointer = None
-currentTestCasePointer = None
+ROOT = None
+CURRENT_POINTER = None
+CURRENT_TESTSUITE_POINTER = None
+CURRENT_PROPERTIES_POINTER = None
+CURRENT_TESTCASE_POINTER = None
 
-gTestSuite = {}
-gTestSuiteLoop = 0
+G_TESTSUITE = {}
+G_TESTSUITE_LOOP = 0
 
-gProperties = {}
-gPropertiesLoop = 0
+G_PROPERTIES = {}
+G_PROPERTIES_LOOP = 0
 
-gProperty = {}
-gPropertyLoop = 0
+G_PROPERTY = {}
+G_PROPERTY_LOOP = 0
 
-gTestCase = {}
-gTestCaseLoop = 0
+G_TESTCASE = {}
+G_TESTCASE_LOOP = 0
 
 
 def printOutput():
     """ Prints the dump of the xml object to the file specified.
-    This function can be used for debugging purpose and its called at the end of 
+    This function can be used for debugging purpose and its called at the end of
     the functional calls.
 
     Arguments:
@@ -46,97 +46,97 @@ def printOutput():
     Returns:
         None
     """
-    global root
+    global ROOT
 
     resultfile = config_Utils.junit_resultfile
-    tree = ET.ElementTree(root)
+    tree = ET.ElementTree(ROOT)
     # tree.write(resultfile)
 
 
 def pSuite_root(resultfile):
     """ Get the root element and assign it to current pointer"""
-    global root
-    global currentPointer
+    global ROOT
+    global CURRENT_POINTER
 
-    root = ET.Element("testsuites")
-    currentPointer = root
+    ROOT = ET.Element("testsuites")
+    CURRENT_POINTER = ROOT
     printOutput()
 
 
 def pSuite_testsuite(resultfile, name, errors, skipped, tests, failures, time, timestamp):
     """ set the attributes of test suite """
-    global root
-    global currentPointer
-    global currentTestSuitePointer
-    global currentPropertiesPointer
-    global gTestSuite
-    global gTestSuiteLoop
-    global gProperties
-    global gPropertiesLoop
+    global ROOT
+    global CURRENT_POINTER
+    global CURRENT_TESTSUITE_POINTER
+    global CURRENT_PROPERTIES_POINTER
+    global G_TESTSUITE
+    global G_TESTSUITE_LOOP
+    global G_PROPERTIES
+    global G_PROPERTIES_LOOP
 
-    gTestSuiteLoop = gTestSuiteLoop+1
-    gTestSuite[gTestSuiteLoop] = ET.SubElement(currentPointer, "testsuite")
+    G_TESTSUITE_LOOP = G_TESTSUITE_LOOP+1
+    G_TESTSUITE[G_TESTSUITE_LOOP] = ET.SubElement(CURRENT_POINTER, "testsuite")
 
-    gTestSuite[gTestSuiteLoop].set('name', name)
-    gTestSuite[gTestSuiteLoop].set('errors', errors)
-    gTestSuite[gTestSuiteLoop].set('skipped', skipped)
-    gTestSuite[gTestSuiteLoop].set('tests', tests)
-    gTestSuite[gTestSuiteLoop].set('failures', failures)
-    gTestSuite[gTestSuiteLoop].set('time', time)
+    G_TESTSUITE[G_TESTSUITE_LOOP].set('name', name)
+    G_TESTSUITE[G_TESTSUITE_LOOP].set('errors', errors)
+    G_TESTSUITE[G_TESTSUITE_LOOP].set('skipped', skipped)
+    G_TESTSUITE[G_TESTSUITE_LOOP].set('tests', tests)
+    G_TESTSUITE[G_TESTSUITE_LOOP].set('failures', failures)
+    G_TESTSUITE[G_TESTSUITE_LOOP].set('time', time)
     # print "setting time to", time
-    gTestSuite[gTestSuiteLoop].set('timestamp', timestamp)
-    currentTestSuitePointer = gTestSuite[gTestSuiteLoop]
+    G_TESTSUITE[G_TESTSUITE_LOOP].set('timestamp', timestamp)
+    CURRENT_TESTSUITE_POINTER = G_TESTSUITE[G_TESTSUITE_LOOP]
 
-    gPropertiesLoop = gPropertiesLoop+1
-    gProperties[gPropertiesLoop] = ET.SubElement(currentTestSuitePointer, "properties")
-    gProperties[gPropertiesLoop].text = ""
-    currentPropertiesPointer = gProperties[gPropertiesLoop]
+    G_PROPERTIES_LOOP = G_PROPERTIES_LOOP+1
+    G_PROPERTIES[G_PROPERTIES_LOOP] = ET.SubElement(CURRENT_TESTSUITE_POINTER, "properties")
+    G_PROPERTIES[G_PROPERTIES_LOOP].text = ""
+    CURRENT_PROPERTIES_POINTER = G_PROPERTIES[G_PROPERTIES_LOOP]
     printOutput()
 
 
 def pSuite_property(resultfile, name, value):
     """ set the properties of test suite """
-    global currentPropertiesPointer
-    global gProperties
-    global gPropertiesLoop
+    global CURRENT_PROPERTIES_POINTER
+    global G_PROPERTIES
+    global G_PROPERTIES_LOOP
 
-    global gProperty
-    global gPropertyLoop
+    global G_PROPERTY
+    global G_PROPERTY_LOOP
 
-    gPropertyLoop = gPropertyLoop+1
-    gProperty[gPropertyLoop] = ET.SubElement(currentPropertiesPointer,"property")
-    gProperty[gPropertyLoop].set('name', name)
-    gProperty[gPropertyLoop].set('value', value)
+    G_PROPERTY_LOOP = G_PROPERTY_LOOP+1
+    G_PROPERTY[G_PROPERTY_LOOP] = ET.SubElement(CURRENT_PROPERTIES_POINTER, "property")
+    G_PROPERTY[G_PROPERTY_LOOP].set('name', name)
+    G_PROPERTY[G_PROPERTY_LOOP].set('value', value)
     printOutput()
 
 
 def pSuite_testcase(resultfile, classname, name, time):
     """ set the attributes of test case """
-    global currentTestSuitePointer
-    global currentTestCasePointer
+    global CURRENT_TESTSUITE_POINTER
+    global CURRENT_TESTCASE_POINTER
 
-    global gTestSuite
-    global gTestSuiteLoop
+    global G_TESTSUITE
+    global G_TESTSUITE_LOOP
 
-    global gTestCase
-    global gTestCaseLoop
+    global G_TESTCASE
+    global G_TESTCASE_LOOP
 
-    gTestCase[gTestCaseLoop] = ET.SubElement(currentTestSuitePointer, "testcase")
-    gTestCase[gTestCaseLoop].set('classname', classname)
-    gTestCase[gTestCaseLoop].set('name', name)
-    gTestCase[gTestCaseLoop].set('time', time)
-    currentTestCasePointer = gTestCase[gTestCaseLoop]
+    G_TESTCASE[G_TESTCASE_LOOP] = ET.SubElement(CURRENT_TESTSUITE_POINTER, "testcase")
+    G_TESTCASE[G_TESTCASE_LOOP].set('classname', classname)
+    G_TESTCASE[G_TESTCASE_LOOP].set('name', name)
+    G_TESTCASE[G_TESTCASE_LOOP].set('time', time)
+    CURRENT_TESTCASE_POINTER = G_TESTCASE[G_TESTCASE_LOOP]
     printOutput()
 
 
 def pSuite_testcase_failure(resultfile, msg='test failure', time='0', testCaseText=''):
     """  Computes failed case status with message and update on case duration in
          test suite """
-    global currentTestCasePointer
-    global gTestCase
-    global gTestCaseLoop
+    global CURRENT_TESTCASE_POINTER
+    global G_TESTCASE
+    global G_TESTCASE_LOOP
 
-    testCaseStatus = ET.SubElement(currentTestCasePointer, "failure")
+    testCaseStatus = ET.SubElement(CURRENT_TESTCASE_POINTER, "failure")
     testCaseStatus.set('message', msg)
     testCaseStatus.text = testCaseText
     update_tc_duration(time)
@@ -144,11 +144,11 @@ def pSuite_testcase_failure(resultfile, msg='test failure', time='0', testCaseTe
 
 def pSuite_testcase_skip(resultfile):
     """ Computes skipped case status in test suite """
-    global currentTestCasePointer
-    global gTestCase
-    global gTestCaseLoop
+    global CURRENT_TESTCASE_POINTER
+    global G_TESTCASE
+    global G_TESTCASE_LOOP
 
-    testCaseStatus = ET.SubElement(currentTestCasePointer, "skipped")
+    testCaseStatus = ET.SubElement(CURRENT_TESTCASE_POINTER, "skipped")
     printOutput()
 
     # resultfile.write('<skipped/>\n')
@@ -158,11 +158,11 @@ def pSuite_testcase_skip(resultfile):
 def pSuite_testcase_error(resultfile, msg='test error', time='0', testCaseText=''):
     """ Computes error case status with message and update on case duration in
         suite """
-    global currentTestCasePointer
-    global gTestCase
-    global gTestCaseLoop
+    global CURRENT_TESTCASE_POINTER
+    global G_TESTCASE
+    global G_TESTCASE_LOOP
 
-    testCaseStatus = ET.SubElement(currentTestCasePointer, "error")
+    testCaseStatus = ET.SubElement(CURRENT_TESTCASE_POINTER, "error")
     testCaseStatus.set('message', msg)
     testCaseStatus.text = testCaseText
     update_tc_duration(time)
@@ -170,58 +170,58 @@ def pSuite_testcase_error(resultfile, msg='test error', time='0', testCaseText='
 
 def update_tc_duration(time):
     """ Updates the case duration"""
-    global root
-    global currentTestCasePointer
+    global ROOT
+    global CURRENT_TESTCASE_POINTER
 
-    global gTestSuite
-    global gTestSuiteLoop
-    currentTestCasePointer.set('time', time)
+    global G_TESTSUITE
+    global G_TESTSUITE_LOOP
+    CURRENT_TESTCASE_POINTER.set('time', time)
     printOutput()
 
 
 def update_suite_duration(time):
     """ Updates the suite duration """
-    global root
-    global currentTestSuitePointer
+    global ROOT
+    global CURRENT_TESTSUITE_POINTER
 
-    global gTestSuite
-    global gTestSuiteLoop
+    global G_TESTSUITE
+    global G_TESTSUITE_LOOP
 
-    currentTestSuitePointer.set('time',time)
+    CURRENT_TESTSUITE_POINTER.set('time', time)
     printOutput()
 
 
 def pSuite_update_suite_attributes(resultfile, errors, skipped, tests, failures, time='0'):
     """ Updates the suite attributes """
-    global root
-    global currentTestSuitePointer
+    global ROOT
+    global CURRENT_TESTSUITE_POINTER
 
-    global gTestSuite
-    global gTestSuiteLoop
+    global G_TESTSUITE
+    global G_TESTSUITE_LOOP
 
-    currentTestSuitePointer.set('errors', errors)
-    currentTestSuitePointer.set('skipped', skipped)
-    currentTestSuitePointer.set('tests', tests)
-    currentTestSuitePointer.set('failures', failures)
-    currentTestSuitePointer.set('time', time)
+    CURRENT_TESTSUITE_POINTER.set('errors', errors)
+    CURRENT_TESTSUITE_POINTER.set('skipped', skipped)
+    CURRENT_TESTSUITE_POINTER.set('tests', tests)
+    CURRENT_TESTSUITE_POINTER.set('failures', failures)
+    CURRENT_TESTSUITE_POINTER.set('time', time)
     printOutput()
 
 
 def pSuite_update_suite_tests(tests):
-    """ """
-    global root
-    global currentTestSuitePointer
+    """ Updates the suite tests"""
+    global ROOT
+    global CURRENT_TESTSUITE_POINTER
 
-    global gTestSuite
-    global gTestSuiteLoop
+    global G_TESTSUITE
+    global G_TESTSUITE_LOOP
 
-    currentTestSuitePointer.set('tests', tests)
+    CURRENT_TESTSUITE_POINTER.set('tests', tests)
     printOutput()
 
 
 def pSuite_report_suite_result(resultfile):
     """Reports the suite result to the suite result xml file """
-    tree = ET.ElementTree(root)
+    tree = ET.ElementTree(ROOT)
     tree.write(resultfile)
 
 
@@ -236,7 +236,7 @@ def pSuite_report_suite_requirements(resultfile, requirement_id):
 
 
 def compute_testsuite_status(suite_status, tc_status, tc_impact):
-    """Computes the status of the testsuite based on the impact value for the testcase 
+    """Computes the status of the testsuite based on the impact value for the testcase
 
     Arguments:
     1. tc_status = (bool) status of the executed testcase
@@ -259,10 +259,10 @@ def report_testsuite_result(suite_repository, suite_status):
     1. suite_repository    = (dict) dictionary caontaining all the data related to the testsuite
     2. suite_status        = (bool) status of the testsuite executed
     """
-    suite_resultfile = suite_repository['junit_resultfile']
+    # suite_resultfile = suite_repository['junit_resultfile']
     print_info("\n ****** TestSuite Result ******")
     suite_status = {'TRUE': 'PASS', 'FALSE': 'FAIL', 'EXCEPTION': 'ERROR', 'ERROR': 'ERROR',
-                                             'RAN': 'RAN'}.get(str(suite_status).upper())
+                    'RAN': 'RAN'}.get(str(suite_status).upper())
     print_info("Testsuite:{0}  STATUS:{1}".format(suite_repository['suite_name'], suite_status))
     # pSuite_report_suite_result(suite_resultfile)
     print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
@@ -307,7 +307,8 @@ def get_runtype_from_xmlfile(element):
         runtype = runtype.strip()
         supported_values = ['sequential_keywords', 'parallel_keywords']
         if runtype.lower() not in supported_values:
-            print_warning("unsupported value '{0}' provided for runtype, supported values are '{1}', case-insensitive".format(runtype, supported_values))
+            print_warning("unsupported value '{0}' provided for runtype, supported values are '{1}', case-insensitive"
+                          .format(runtype, supported_values))
             print_info("Hence using default value for runtype which is 'sequential_keywords'")
             runtype = 'sequential_keywords'
     return runtype
