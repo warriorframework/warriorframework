@@ -39,7 +39,7 @@ def wait_for_timeout(wait_time, unit="SECONDS"):
             seconds = wait_time
         elif unit.upper() in ["MINUTE", "MINUTES", "MIN", "MINS"]:
             seconds = 60 * wait_time
-        elif unit.upper() in ["HOUR" ,"HOURS"]:
+        elif unit.upper() in ["HOUR", "HOURS"]:
             seconds = 60 * 60 * wait_time
         elif unit.upper() in ["DAY", "DAYS"]:
             seconds = 24 * 60 * 60 * wait_time
@@ -83,14 +83,15 @@ def get_time_delta(start_time, end_time=None):
                         eg: 2015-04-27 09:48:21
 
         Returns:
-              1. Time delta = Returns time difference between the present system time and between the time
-                  stamp which comes as argument in the format of seconds.
+              1. Time delta = Returns time difference between the present system time and between
+                 the time stamp which comes as argument in the format of seconds.
                      eg: 212342.0
     """
     if end_time is None:
         end_time = datetime.datetime.now().replace(microsecond=0)
     time_delta = end_time - start_time
     return time_delta.total_seconds()
+
 
 def get_hms_for_seconds(seconds):
     """ prints number of seconds in hours:minutes:seconds format"""
