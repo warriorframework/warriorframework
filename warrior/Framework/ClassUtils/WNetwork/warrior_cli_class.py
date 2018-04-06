@@ -17,7 +17,7 @@ import sys
 import time
 import subprocess
 import getpass
-import xml
+import xml.etree.ElementTree as ET
 import Tools
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
@@ -347,7 +347,7 @@ class WarriorCli(object):
                 patterns = []
                 # error out if any of the key element can not be retrieved
                 for key, resp_key in itertools.izip_longest(keys, resp_keys):
-                    if isinstance(resp_key, xml.etree.ElementTree.Element):
+                    if isinstance(resp_key, ET.Element):
                         patterns.append(resp_key.get("resp_pattern_req"))
                     elif isinstance(resp_key, basestring):
                         print_error("There is no pattern element for key '{}' corresponding"
@@ -613,10 +613,9 @@ class WarriorCli(object):
                                               cmd_timeout=cmd_timeout)
 
         if sleeptime > 0:
-            msg = "Sleep time of '{0} seconds' requested post command execution {1}"
-            Utils.datetime_utils.wait_for_timeout(sleeptime, msg)
             pNote("Sleep time of '{0} seconds' requested post command "
                   "execution".format(sleeptime))
+            Utils.datetime_utils.wait_for_timeout(sleeptime)
 
         try:
             remote_resp_dict = self.get_response_dict(
@@ -1557,8 +1556,9 @@ class PexpectConnect(object):
                         status = "ERROR"
                         seconds = 60
                         pNote(tmsg3, "debug")
-                        msg = "Will wait {0} more seconds to get end prompt " + end_prompt +" {1}"
-                        Utils.datetime_utils.wait_for_timeout(seconds, msg)
+                        print_info(("Will wait {0} more seconds to get end prompt " + end_prompt)
+                                   .format(seconds))
+                        Utils.datetime_utils.wait_for_timeout(seconds)
                         pNote(tmsg2, "debug")
                         tdelta = Utils.datetime_utils.get_time_delta(tstamp)
                         if int(tdelta) >= 60:

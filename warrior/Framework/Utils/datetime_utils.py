@@ -14,14 +14,16 @@ limitations under the License.
 
 import datetime
 import time
-from Framework.Utils.print_Utils import print_info, print_error, print_warning, print_debug
+from Framework.Utils.print_Utils import print_info, print_error, print_warning
 
-def wait_for_timeout(wait_time, msg, unit="SECONDS"):
+
+def wait_for_timeout(wait_time, unit="SECONDS"):
     """
-    Warrior, Wait till the time is a generic wait. The Wait is informed to the user as a count down.
+    Warrior, Wait till the time is a generic wait. The Wait is informed to the user as a countdown.
 
-    :param wait_time: Time for Warrior wait.
-    :param unit: The unit of Time supported are
+    :Arguments:
+        1.wait_time: Time for Warrior wait.
+        2.unit: The unit of Time supported are
                   1. Second (default)
                   2. Minute
                   3. Hour
@@ -29,7 +31,7 @@ def wait_for_timeout(wait_time, msg, unit="SECONDS"):
                   5. Month (30 days is assumed for one Month)
                   6. Year (365 days is assumed for one Year)
     :return:
-    Status = Bool
+        Status = Bool
     """
     try:
         wait_time = float(wait_time)
@@ -44,13 +46,12 @@ def wait_for_timeout(wait_time, msg, unit="SECONDS"):
         elif unit.upper() in ["MONTH", "MONTHS"]:
             seconds = 30 * 24 * 60 * 60 * wait_time
         elif unit.upper() in ["YEAR", "YEARS"]:
-            seconds = 365* 24* 60 * 60 * wait_time
+            seconds = 365 * 24 * 60 * 60 * wait_time
         else:
             print_warning('The supported unit of seconds is Seconds/Minutes/Hours/Months/Years'
                           'The default unit of Seconds would be used')
-        timer = int(seconds)
-        for sec in range(timer, 0, -1):
-            print_info(msg .format(sec, '\033[1A\r'))
+        for sec in range(int(seconds), 0, -1):
+            print_info("Remaining time available is {0} seconds {1}".format(sec, '\033[1A\r'))
             time.sleep(1)
         return True
     except TypeError:
