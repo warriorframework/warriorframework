@@ -451,8 +451,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content
                <system_name>_<request_id>_api_response_content_<request_number>
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http post"
         pSubStep(wdesc)
         pNote(system_name)
@@ -847,8 +852,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content_<request_number>
 
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'params': params,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http get to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -1269,8 +1279,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content
                <system_name>_<request_id>_api_response_content_<request_number>
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http put to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -1692,8 +1707,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content
                <system_name>_<request_id>_api_response_content_<request_number>
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http patch to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -2114,8 +2134,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content
                <system_name>_<request_id>_api_response_content_<request_number>
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http delete to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -2536,8 +2561,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content
                <system_name>_<request_id>_api_response_content_<request_number>
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http options to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -2960,8 +2990,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content_<request_number>
 
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http head to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -3101,8 +3136,12 @@ class RestActions(object):
                     then returns True else False.
 
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name,
+                     'expected_api_response': expected_api_response,
+                     'expected_response_type': expected_response_type,
+                     'comparison_mode': comparison_mode,
+                     'request_id': request_id,
+                     'generate_output_diff_file': generate_output_diff_file}
         wdesc = "Verify API response with the expected API response"
         pNote(wdesc)
         output_file = self.logsdir+"/difference_output.log"
