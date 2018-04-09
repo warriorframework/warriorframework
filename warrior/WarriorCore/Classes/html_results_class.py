@@ -12,10 +12,11 @@ limitations under the License.
 """
 
 import os
-
+import zipfile
 import json
 import getpass
 import Tools
+from xml.etree import ElementTree as ET
 from Framework.Utils import xml_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
@@ -163,6 +164,14 @@ class WarriorHtmlResults:
         index = template_html.rfind('</table>')
         return template_html[:index] + dynamic_html + template_html[index:] + self.get_war_version() + self.get_user()
 
+    def zip_html_result(self, htmlfile):
+        """ Compressing and zipping the html result file """
+        html_zipfile = htmlfile.split(".html")[0] + ".zip"
+        z = zipfile.ZipFile(html_zipfile, 'w', zipfile.ZIP_DEFLATED)
+        z.write(htmlfile)
+        z.close()
+        return html_zipfile
+
     def get_war_version(self):
         """ find the warrior version """
         path = self.get_path().split('warriorframework')[0] + 'warriorframework/version.txt'
@@ -199,10 +208,23 @@ class WarriorHtmlResults:
         elem_file.write(html)
         elem_file.close()
         self.lineObjs = []
+        #get the value of compression in w_settings.xml
+        resultPath = self.get_path()
+        warrior_tools_dir = Tools.__path__[0]+os.sep+'w_settings.xml'
+        element = ET.parse(warrior_tools_dir)
+        setting_elem = element.find("Setting[@name='mail_to']")
+        if setting_elem is not None:
+            co = setting_elem.get("compress")
+            print "Enable compression: ", co
+            if "Yes" in co:
+                print "Compressing the result html file: "
+                zipfile = self.zip_html_result(resultPath)
+                resultPath = zipfile
+
         # Prints result summary at the end of execution
         if print_summary is True:
             print_info("++++ Results Summary ++++")
             print_info("Open the Results summary file given below in a browser to "
                        "view results summary for this execution")
-            print_info("Results summary file: {0}".format(self.get_path()))
+            print_info("Results summary file: {0}".format(resultPath))
             print_info("+++++++++++++++++++++++++")

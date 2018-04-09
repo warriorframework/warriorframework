@@ -171,8 +171,17 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
     subject = str(resultconverted)+": "+file_Utils.getFileName(abs_filepath)
     body = construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir)
     report_attachment = results_dir + os.sep + \
-        file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath)) + ".html"
-
+               file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath)) 
+    warrior_tools_dir = Tools.__path__[0]+os.sep+'w_settings.xml'
+    element = ET.parse(warrior_tools_dir)
+    setting_elem = element.find("Setting[@name='mail_to']")
+    if setting_elem is not None:
+        co = setting_elem.get("compress")
+        if "Yes" in co:
+            report_attachment += ".zip"
+        else:
+            report_attachment += ".html"
+    print "##### report to be pritnted : ", report_attachment
     # Temporary fix - HTML file can not be attached since it will be generated
     # only after the completion of the warrior execution. Creating html result
     # file at runtime will solve this.

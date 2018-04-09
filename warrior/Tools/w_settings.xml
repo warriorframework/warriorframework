@@ -7,7 +7,7 @@
     <Setting name="job_url">
         <url></url>
     </Setting>
-    <Setting name="mail_to" mail_on="">
+    <Setting name="mail_to" mail_on="" compress="No">
     <!-- 'mail_on' attribute is to specify 'when to send an email'. Supported values are 'per_execution, first_failure & every_failure'.
             1. per_execution(default) - to send an email after the end of case/suite/project execution
             2. first_failure - to send an email as soon as the first failure occurs during suite/project execution
