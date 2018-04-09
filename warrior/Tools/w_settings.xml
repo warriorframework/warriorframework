@@ -13,7 +13,12 @@
             2. first_failure - to send an email as soon as the first failure occurs during suite/project execution
             3. every_failure - to send an email whenever a case fails during suite/project execution
          When 'mail_on attribute' is not given or left empty, default value will be used for sending email.
-         It also accepts comma separated values, example mail_on="per_execution, first_failure" -->
+         It also accepts comma separated values, example mail_on="per_execution, first_failure"
+         
+         'compress' attribute is to specify whether the result file should be emailed in a compressed format.
+          Supported Values:
+           1. No(default): to send the result file as is,i.e, in .html format
+           2. Yes: To compress the result file and email in .zip format -->
         <smtp_host></smtp_host> <!-- Name of the host running your SMTP server(IP address or DNS name) -->
         <sender></sender> <!-- Sender email id -->
         <receiver></receiver> <!-- Receiver(s) email id, use comma to separate multiple receivers -->

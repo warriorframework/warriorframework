@@ -165,6 +165,8 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
                 (1) per_execution(default)
                 (2) first_failure
                 (3) every_failure
+        7. compress - specifies if the result has to be compressed and emailed.
+           Supported options: Yes/No(default)
     """
     resultconverted = {"True": "Pass", "False": "Fail", "ERROR": "Error",
                        "EXCEPTION": "Exception"}.get(str(result))
@@ -176,12 +178,11 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
     element = ET.parse(warrior_tools_dir)
     setting_elem = element.find("Setting[@name='mail_to']")
     if setting_elem is not None:
-        co = setting_elem.get("compress")
-        if "Yes" in co:
+        compress = setting_elem.get("compress")
+        if "Yes" in compress:
             report_attachment += ".zip"
         else:
             report_attachment += ".html"
-    print "##### report to be pritnted : ", report_attachment
     # Temporary fix - HTML file can not be attached since it will be generated
     # only after the completion of the warrior execution. Creating html result
     # file at runtime will solve this.

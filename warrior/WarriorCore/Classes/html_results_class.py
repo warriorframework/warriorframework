@@ -167,9 +167,9 @@ class WarriorHtmlResults:
     def zip_html_result(self, htmlfile):
         """ Compressing and zipping the html result file """
         html_zipfile = htmlfile.split(".html")[0] + ".zip"
-        z = zipfile.ZipFile(html_zipfile, 'w', zipfile.ZIP_DEFLATED)
-        z.write(htmlfile)
-        z.close()
+        zippedfile = zipfile.ZipFile(html_zipfile, 'w', zipfile.ZIP_DEFLATED)
+        zippedfile.write(htmlfile)
+        zippedfile.close()
         return html_zipfile
 
     def get_war_version(self):
@@ -208,16 +208,15 @@ class WarriorHtmlResults:
         elem_file.write(html)
         elem_file.close()
         self.lineObjs = []
-        #get the value of compression in w_settings.xml
+        # Check whether the result file has to be compressed 
         resultPath = self.get_path()
         warrior_tools_dir = Tools.__path__[0]+os.sep+'w_settings.xml'
         element = ET.parse(warrior_tools_dir)
         setting_elem = element.find("Setting[@name='mail_to']")
         if setting_elem is not None:
-            co = setting_elem.get("compress")
-            print "Enable compression: ", co
-            if "Yes" in co:
-                print "Compressing the result html file: "
+            compress = setting_elem.get("compress")
+            print_info("Enable compression: ", compress)
+            if "Yes" in compress:
                 zipfile = self.zip_html_result(resultPath)
                 resultPath = zipfile
 
