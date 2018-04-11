@@ -777,12 +777,11 @@ def git_checkout_label(label, base_path="", current_dir=""):
     try:
         # checking out label
         subprocess.check_call(["git", "checkout", label])
-        # getting current label in current_label
-        current_label = subprocess.check_output(["git", "symbolic-ref",
-                                                 '--short', 'HEAD']).strip()
+        # getting current commit id (%H) and label (%d)
+        current_label = subprocess.check_output(["git", "show", '--format="%H%d"', "--no-patch"])
     except:
         check = False
-    if current_label != label:
+    if label not in current_label:
         check = False
     if current_dir != "":
         os.chdir(current_dir)

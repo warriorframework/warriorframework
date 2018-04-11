@@ -41,12 +41,29 @@
                         </Execute>
                         <runmode type="RUP" value="3"/>
                 </Testcase>
-          		<Testcase>
-                <path>../../testcases/common_actions_tests/verify_data_test.xml</path>
-                <context>positive</context>
-                <runtype>sequential_keywords</runtype>
-                <onError action="next"/>
-                <impact>impact</impact>
-		         </Testcase>
+                <Testcase>
+                        <path>../../testcases/common_actions_tests/verify_data_test.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="Standard" value=""/>
+                </Testcase>
+                <Testcase>
+                        <path>../../testcases/common_actions_tests/tc_verify_arith_exp.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
         </Testcases>
 </TestSuite>

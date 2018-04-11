@@ -16,6 +16,8 @@ import time
 import traceback
 import shutil
 
+import copy
+import glob
 import sequential_testcase_driver
 import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
@@ -136,6 +138,7 @@ def report_suite_requirements(suite_repository, testsuite_filepath):
         for req_id in req_id_list:
             ts_junit_object.add_requirement(req_id, suite_repository["wt_ts_timestamp"])
 
+            
 def report_testsuite_result(suite_repository, suite_status):
     """Reports the result of the testsuite executed
     Arguments:
@@ -266,6 +269,12 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     suite_global = root.find('Details')
     runmode, value = common_execution_utils.get_runmode_from_xmlfile(suite_global)
 
+    # Prints the path of result summary file at the beginning of execution
+    if data_repository['war_file_type'] == "Suite":
+        filename = os.path.basename(testsuite_filepath)
+        html_filepath = os.path.join(suite_repository['suite_execution_dir'],
+                                     Utils.file_Utils.getNameOnly(filename))+'.html'
+        print_info("HTML result file: {0}".format(html_filepath))
     if not from_project:
         data_repository["war_parallel"] = False
 

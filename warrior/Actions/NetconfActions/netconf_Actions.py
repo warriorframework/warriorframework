@@ -26,6 +26,7 @@ class NetconfActions(object):
     related to actions performed on basic netconf interface """
 
     def __init__(self):
+        """ Constructor for NetconfActions class """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -150,13 +151,13 @@ class NetconfActions(object):
             8. allow_agent = enables querying SSH agent, if not provided the \
                default value is to allow.
             9. look_for_keys = enables looking in the usual locations for ssh keys,\
-	       if value is not provided the default value is to look for keys.
+               if value is not provided the default value is to look for keys.
            10. unknown_host_cb = This would be used when the server host key is not \
-	       recognized.
+               recognized.
            11. key_filename = where the private key can be found.
            12. ssh_config = Enables parsing of OpenSSH configuration file.
            13. device_params = netconf client device name, by default the name \
-	       "default" is used.
+               "default" is used.
 
         :Arguments:
             1. system_name(string) = Name of the system from the input datafile.
@@ -167,14 +168,11 @@ class NetconfActions(object):
             2. session_id (dict element)= key, value
 
 
-        """
-
-        """
         :DESCRIPTION:
-	     This Keyword is used to connect to the netconf interface of the system.
-             The keyword upon executing saves the System_name and Session_id,\
-             which can be used by all subsequent keywords in the test
-	     to interact with the system through netconf interface.
+            This Keyword is used to connect to the netconf interface of the system.
+            The keyword upon executing saves the System_name and Session_id,
+            which can be used by all subsequent keywords in the test
+            to interact with the system through netconf interface.
         """
         wdesc = "Connect to the netconf port of the system and creates a session"
         pSubStep(wdesc)
@@ -188,18 +186,22 @@ class NetconfActions(object):
         pNote(system_name)
         pNote(Utils.file_Utils.getDateTime())
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
-        output_dict[session_id] = self.netconf_object
         status = self.netconf_object.open(session_credentials)
 
         time.sleep(1)
         if status:
-            output_dict["netconf_session_id"] = self.netconf_object.session_id
-            pNote("netconf session-id = %s" % self.netconf_object.session_id)
             temp = self.netconf_object.session_id
             if temp is None:
                 status = False
+            else:
+                output_dict["netconf_session_id"] = self.netconf_object.session_id
+                pNote("netconf session-id = %s" % self.netconf_object.session_id)
+                output_dict[session_id] = self.netconf_object
         report_substep_status(status)
-        return status, output_dict
+        if output_dict:
+            return status, output_dict
+        else:
+            return status
 
     def close_netconf(self, system_name, session_name=None):
         """

@@ -15,6 +15,7 @@ import sys
 import os
 import shutil
 import traceback
+import glob
 
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_error, print_warning
@@ -90,6 +91,7 @@ def get_project_details(project_filepath, res_startdir, logs_startdir, data_repo
 
     return project_repository
 
+
 def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs_startdir,
                     data_repository):
     """
@@ -114,8 +116,16 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     project_repository = get_project_details(project_filepath, res_startdir, logs_startdir,
                                              data_repository)
     project_repository['project_title'] = project_title
+
     testsuite_list = common_execution_utils.get_step_list(project_filepath,
                                                           "Testsuites", "Testsuite")
+    # Prints the path of result summary file at the beginning of execution
+    if data_repository['war_file_type'] == "Project":
+        filename = os.path.basename(project_filepath)
+        html_filepath = os.path.join(project_repository['project_execution_dir'],
+                                     Utils.file_Utils.getNameOnly(filename))+'.html'
+        print_info("HTML result file: {0}".format(html_filepath))
+
     # project_resultfile = project_repository['project_resultfile']
 
     project_name = project_repository['project_name']

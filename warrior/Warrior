@@ -79,7 +79,7 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     else:
         print_info("jiraid not provided, will not update jira issue")
 
-def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrite, jiraid, dbsystem):
+def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrite, jiraid, dbsystem, headless):
     """Parses the input parameters (i.e. sys.argv)
         If the input parameter is an xml file:
             - check if file exists, if exists
@@ -105,6 +105,7 @@ def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrit
         status = True
         db_obj = database_utils_class.create_database_connection(dbsystem=dbsystem)
         for parameter in parameter_list:
+            default_repo = {}
             result = False
             # check if the input parameter is an xml file
             if Utils.file_Utils.get_extension_from_path(parameter) == '.xml':
@@ -114,14 +115,14 @@ def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrit
                 print_info('Absolute path: {0}'.format(abs_filepath))
                 if Utils.file_Utils.fileExists(abs_filepath):
                     if len(overwrite.items()) > 0:
-                        default_repo = overwrite
-                    else:
-                        default_repo = {}
+                        default_repo.update(overwrite)
 
                     if db_obj is not False and db_obj.status is True:
                         default_repo.update({'db_obj': db_obj})
                     else:
                         default_repo.update({'db_obj': False})
+
+                    default_repo["wt_enable_headless"] = True if headless else False
 
                     if Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
                         default_repo['war_file_type'] = "Case"
@@ -165,17 +166,18 @@ def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrit
             db_obj.close_connection()
     return status
 
+
 if __name__ == '__main__':
 
     FILEPATH, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ, \
-    OVERWRITE, JIRAID, DBSYSTEM = warrior_cli_driver.main(sys.argv[1:])
+    OVERWRITE, JIRAID, DBSYSTEM, HEADLESS = warrior_cli_driver.main(sys.argv[1:])
     if version:
         framework_detail.warrior_framework_details()
         sys.exit(0)
     if not CSE_EXEC and len(FILEPATH) == 0:
         print_error("Provide atleast one xml file to execute")
     status = main(FILEPATH, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
-                  JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM)
+                  JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM, HEADLESS)
     status = {"true": True, "pass": True, "ran": "RAN"}.get(str(status).lower())
     if status is True or status == "RAN":
         print_info("DONE 0")

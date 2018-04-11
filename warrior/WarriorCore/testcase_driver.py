@@ -442,6 +442,12 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     data_repository['wt_junit_object'] = tc_junit_object
     print_testcase_details_to_console(testcase_filepath, data_repository)
+    # Prints the path of result summary file at the beginning of execution
+    if data_repository['war_file_type'] == "Case":
+        filename = os.path.basename(testcase_filepath)
+        html_filepath = os.path.join(data_repository['wt_resultsdir'],
+                                     Utils.file_Utils.getNameOnly(filename)) + '.html'
+        print_info("HTML result file: {0}".format(html_filepath))
     step_list = common_execution_utils.get_step_list(testcase_filepath, "Steps", "step")
     tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,
                                                        'Details', 'State')
@@ -657,7 +663,7 @@ def check_robot_wrapper_case(testcase_filepath):
     return isRobotWrapperCase
 
 
-def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',
+def main(testcase_filepath, data_repository={}, tc_context='POSITIVE',
          runtype='SEQUENTIAL_KEYWORDS', tc_parallel=False, auto_defects=False, suite=None,
          tc_onError_action=None, iter_ts_sys=None, queue=None, jiraproj=None):
 
