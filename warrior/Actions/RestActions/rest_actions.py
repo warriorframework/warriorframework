@@ -238,21 +238,21 @@ class RestActions(object):
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type;(custom_header_1=value1;
-                                                                 custom_header_2:value2)),
+                                                                  custom_header_2:value2)),
                                      (path_to_file2;content_type;(custom_header_1=value1)),
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3))"/>
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type),
                                      path_to_file2,
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2),
+                                                                  custom_header_2=value2),
                                      (path_to_file4;content_type),
                                      (path_to_file5;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3)),
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
                                      path_to_file6, path_to_file_7"/>
 
             9. user: Represents the username that would be required for authentication.
@@ -647,21 +647,21 @@ class RestActions(object):
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type;(custom_header_1=value1;
-                                                                 custom_header_2:value2)),
+                                                                  custom_header_2:value2)),
                                      (path_to_file2;content_type;(custom_header_1=value1)),
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3))"/>
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type),
                                      path_to_file2,
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2),
+                                                                  custom_header_2=value2),
                                      (path_to_file4;content_type),
                                      (path_to_file5;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3)),
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
                                      path_to_file6, path_to_file_7"/>
 
             9. user: Represents the username that would be required for authentication.
@@ -1075,21 +1075,21 @@ class RestActions(object):
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type;(custom_header_1=value1;
-                                                                 custom_header_2:value2)),
+                                                                  custom_header_2:value2)),
                                      (path_to_file2;content_type;(custom_header_1=value1)),
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3))"/>
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type),
                                      path_to_file2,
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2),
+                                                                  custom_header_2=value2),
                                      (path_to_file4;content_type),
                                      (path_to_file5;content_type;(custom_header_1=value1;
-                                                                   custom_header_2=value2;
-                                                                   custom_header_3=value3)),
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
                                      path_to_file6, path_to_file_7"/>
 
             10. user: Represents the username that would be required for authentication.
@@ -1291,7 +1291,6 @@ class RestActions(object):
         pNote(system_name)
         output_dict = {}
         result = True
-        output_response = None
 
         for element in arguments:
             if element in ["json", "data", "variable_config"] \
@@ -1503,21 +1502,21 @@ class RestActions(object):
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type;(custom_header_1=value1;
-                                                                 custom_header_2:value2)),
+                                                                  custom_header_2:value2)),
                                      (path_to_file2;content_type;(custom_header_1=value1)),
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3))"/>
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type),
                                      path_to_file2,
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2),
+                                                                  custom_header_2=value2),
                                      (path_to_file4;content_type),
                                      (path_to_file5;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3)),
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
                                      path_to_file6, path_to_file_7"/>
 
             10. user: Represents the username that would be required for authentication.
@@ -1906,7 +1905,7 @@ class RestActions(object):
                 Characters Accepted: All Characters
 
                 eg: <argument name="files" value="file_group_name=path_to_file1,
-                                                 path_to_file2, path_to_file4, path_to_file5"/>
+                                                    path_to_file2, path_to_file4, path_to_file5"/>
 
                 Pattern: tuple pattern
                 Multiple Values: As specified in Glossary
@@ -1930,21 +1929,21 @@ class RestActions(object):
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type;(custom_header_1=value1;
-                                                                 custom_header_2:value2)),
+                                                                  custom_header_2:value2)),
                                      (path_to_file2;content_type;(custom_header_1=value1)),
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3))"/>
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type),
                                      path_to_file2,
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2),
+                                                                  custom_header_2=value2),
                                      (path_to_file4;content_type),
                                      (path_to_file5;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3)),
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
                                      path_to_file6, path_to_file_7"/>
 
             10. user: Represents the username that would be required for authentication.
@@ -2357,21 +2356,21 @@ class RestActions(object):
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type;(custom_header_1=value1;
-                                                                 custom_header_2:value2)),
+                                                                  custom_header_2:value2)),
                                      (path_to_file2;content_type;(custom_header_1=value1)),
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3))"/>
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type),
                                      path_to_file2,
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2),
+                                                                  custom_header_2=value2),
                                      (path_to_file4;content_type),
                                      (path_to_file5;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3)),
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
                                      path_to_file6, path_to_file_7"/>
 
             10. user: Represents the username that would be required for authentication.
@@ -2785,21 +2784,21 @@ class RestActions(object):
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type;(custom_header_1=value1;
-                                                                 custom_header_2:value2)),
+                                                                  custom_header_2:value2)),
                                      (path_to_file2;content_type;(custom_header_1=value1)),
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3))"/>
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
                 eg: <argument name="files"
                               value="(path_to_file1;content_type),
                                      path_to_file2,
                                      (path_to_file3;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2),
+                                                                  custom_header_2=value2),
                                      (path_to_file4;content_type),
                                      (path_to_file5;content_type;(custom_header_1=value1;
-                                                                 custom_header_2=value2;
-                                                                 custom_header_3=value3)),
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
                                      path_to_file6, path_to_file_7"/>
 
             10. user: Represents the username that would be required for authentication.
