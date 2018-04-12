@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2017, Fujitsu Network Communications, Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9,7 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 # Utility to send email using smtp
 # Import smtplib for the actual sending function
 import zipfile
@@ -55,20 +55,24 @@ def set_params_send_email(addsubject, data_repository, report_attachment, mail_o
 
     params = get_email_params(report_attachment,mail_on)
     subject = str(params[3])+addsubject
+    # Temporary fix - HTML file can not be attached since it will be generated
+    # only after the completion of the warrior execution. Creating html result
+    # file at runtime will solve this.
+    # KH. 2017-07-27
     if mail_on in ["per_execution", "first_failure", "every_failure"]:
         files = {str(params[4])}
     else:
         files = {}
-    
+        
     send_email(params[0], params[1], params[2], subject, body, files)
 
 def convert_to_zip(htmlfile):
-        """ Compressing and zipping the html result file """
-        html_zipfile = htmlfile.split(".html")[0] + ".zip"
-        zippedfile = zipfile.ZipFile(html_zipfile, 'w', zipfile.ZIP_DEFLATED)
-        zippedfile.write(htmlfile)
-        zippedfile.close()
-        return html_zipfile
+    """ Compressing and zipping the html result file """
+    html_zipfile = htmlfile.split(".html")[0] + ".zip"
+    zippedfile = zipfile.ZipFile(html_zipfile, 'w', zipfile.ZIP_DEFLATED)
+    zippedfile.write(htmlfile)
+    zippedfile.close()
+    return html_zipfile
 
 def get_email_params(report_attachment,mail_on='per_execution'):
     """ Get the parameters from the w_settings.xml file.
@@ -122,10 +126,6 @@ def get_email_params(report_attachment,mail_on='per_execution'):
             print_info ("Compressing the result: {0}".format(report_attachment))
             zipfile = convert_to_zip(report_attachment)
             report_attachment = zipfile
-    # Temporary fix - HTML file can not be attached since it will be generated
-    # only after the completion of the warrior execution. Creating html result
-    # file at runtime will solve this.
-    # KH. 2017-07-27
     return smtp_host, sender, receivers, subject, report_attachment
 
 def construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir):

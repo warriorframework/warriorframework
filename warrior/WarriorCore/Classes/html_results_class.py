@@ -32,8 +32,8 @@ class LineResult:
     def __init__(self):
         """Constructor for class LineResult"""
 
-        self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
-                     'dynamic']
+        self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 'onerror', 
+                     'msc', 'static', 'dynamic']
 
     def get_info(self, line):
         """gets info for line"""
