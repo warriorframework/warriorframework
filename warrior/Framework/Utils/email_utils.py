@@ -12,7 +12,6 @@ limitations under the License.
 """
 # Utility to send email using smtp
 # Import smtplib for the actual sending function
-import zipfile
 import smtplib
 import os
 from os.path import basename
@@ -22,7 +21,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from xml.etree import ElementTree as ET
 import Tools
-from Framework.Utils.print_Utils import print_debug,print_info
+from Framework.Utils.print_Utils import print_debug, print_info
 from Framework.Utils import file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.execution_summary_class import ExecutionSummary
@@ -63,7 +62,6 @@ def set_params_send_email(addsubject, data_repository, result_path, mail_on):
         files = {str(params[4])}
     else:
         files = {}
-        
     send_email(params[0], params[1], params[2], subject, body, files)
 
 def convert_to_zip(htmlfile):
@@ -83,7 +81,6 @@ def get_email_params(result_path, mail_on='per_execution'):
                 (1) per_execution(default)
                 (2) first_failure
                 (3) every_failure
-        2. 
     :Returns:
         1. smtp_host - smtp host name
         2. sender - sender email ID
