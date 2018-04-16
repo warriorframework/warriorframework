@@ -28,7 +28,7 @@ from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.execution_summary_class import ExecutionSummary
 
 
-def set_params_send_email(addsubject, data_repository, report_attachment, mail_on):
+def set_params_send_email(addsubject, data_repository, result_path, mail_on):
     """ From data_repository array constructs body of email
         using testcase/testsuite name, logs directory, results directory
         fetches smtp host, sender, receiver from w_settings.xml
@@ -39,7 +39,7 @@ def set_params_send_email(addsubject, data_repository, report_attachment, mail_o
             1. testcase/testsuite name
             2. logs directory
             3. results directory
-        3. files - list of file attachments
+        3. result_path - path of file to be attached
         4. mail_on(optional) - it is to specify when to send an email
            Supported options below:
                 (1) per_execution(default)
@@ -53,7 +53,7 @@ def set_params_send_email(addsubject, data_repository, report_attachment, mail_o
     else:
         body = data_repository
 
-    params = get_email_params(report_attachment,mail_on)
+    params = get_email_params(result_path, mail_on)
     subject = str(params[3])+addsubject
     # Temporary fix - HTML file can not be attached since it will be generated
     # only after the completion of the warrior execution. Creating html result
@@ -74,14 +74,16 @@ def convert_to_zip(htmlfile):
     zippedfile.close()
     return html_zipfile
 
-def get_email_params(report_attachment,mail_on='per_execution'):
+def get_email_params(result_path, mail_on='per_execution'):
     """ Get the parameters from the w_settings.xml file.
     :Arguments:
-        1. mail_on(optional) - it is to specify when to send an email.
+        1.result_path - It specifies the path where html result is generated.
+        2.mail_on(optional) - it is to specify when to send an email.
            Supported options below:
                 (1) per_execution(default)
                 (2) first_failure
                 (3) every_failure
+        2. 
     :Returns:
         1. smtp_host - smtp host name
         2. sender - sender email ID
@@ -123,10 +125,10 @@ def get_email_params(report_attachment,mail_on='per_execution'):
                 subject = ""
         compress = setting_elem.get("compress")
         if compress == "Yes":
-            print_info ("Compressing the result: {0}".format(report_attachment))
-            zipfile = convert_to_zip(report_attachment)
-            report_attachment = zipfile
-    return smtp_host, sender, receivers, subject, report_attachment
+            print_info("Compressing the result: {0}".format(result_path))
+            zipfile = convert_to_zip(result_path)
+            result_path = zipfile
+    return smtp_host, sender, receivers, subject, result_path
 
 def construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir):
     """ construct e-mail body with Project, Logs/Results directory & Execution summary

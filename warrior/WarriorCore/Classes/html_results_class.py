@@ -32,8 +32,8 @@ class LineResult:
     def __init__(self):
         """Constructor for class LineResult"""
 
-        self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 'onerror', 
-                     'msc', 'static', 'dynamic']
+        self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 
+                     'onerror', 'msc', 'static', 'dynamic']
 
     def get_info(self, line):
         """gets info for line"""
@@ -52,11 +52,12 @@ class LineResult:
         """sets attributes"""
         if 'Keyword' not in variant and 'step' not in variant:
             stepcount = ''
-        result_file = line.get("resultfile") if line.get("resultfile") else line.get("resultsdir") if line.get(
-            "resultsdir") else ''
+        result_file = line.get("resultfile") if line.get("resultfile") else line.get(
+                      "resultsdir") if line.get("resultsdir") else ''
         status_name = line.get("status") if line.get("status") else ''
         self.data = {'nameAttr': variant + 'Record',
-                     'type': variant.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
+                     'type': variant.replace('Test', '').replace(
+                         'Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
                      'info': self.get_info(line),
                      'description': line.get("description"),
@@ -67,9 +68,9 @@ class LineResult:
                      'onerror': line.get("onerror"),
                      'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + result_file
                             + '"><i class="fa fa-line-chart"> </i></a></span>' + (
-                                '' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
-                                    line.get("logsdir") if line.get(
-                                        "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + (
+                            '' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' 
+                            + (line.get("logsdir") if line.get("logsdir") else '') 
+                            + '"><i class="fa fa-book"> </i></a></span>') + (
                             '<span style="padding-left:10px; padding-right: 10px;"><a href="' + line.get("defects")
                             + '"><i class="fa fa-bug"> </i></a></span>' if line.get("defects") else ''),
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
@@ -174,10 +175,10 @@ class WarriorHtmlResults:
 
     def get_user(self):
         """ find the user who executed the testcase """
-	try:
-	    user = getpass.getuser()
-	except Exception:
-	    user = "Unknown_user"
+        try: 
+	          user = getpass.getuser()
+	      except Exception:
+	          user = "Unknown_user"
         return '<div class="user">' + user + '</div>'
 
     def generate_html(self, junitObj, givenPath, print_summary=False):
