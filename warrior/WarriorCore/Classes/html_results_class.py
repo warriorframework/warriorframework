@@ -31,7 +31,6 @@ class LineResult:
 
     def __init__(self):
         """Constructor for class LineResult"""
-
         self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 
                      'onerror', 'msc', 'static', 'dynamic']
 
@@ -164,7 +163,6 @@ class WarriorHtmlResults:
         index = template_html.rfind('</table>')
         return template_html[:index] + dynamic_html + template_html[index:] + self.get_war_version() + self.get_user()
 
-
     def get_war_version(self):
         """ find the warrior version """
         path = self.get_path().split('warriorframework')[0] + 'warriorframework/version.txt'
@@ -175,11 +173,11 @@ class WarriorHtmlResults:
 
     def get_user(self):
         """ find the user who executed the testcase """
-        try: 
-	          user = getpass.getuser()
-	      except Exception:
-	          user = "Unknown_user"
-        return '<div class="user">' + user + '</div>'
+        try:
+            user = getpass.getuser()
+        except Exception:
+            user = "Unknown_user"
+        return '<div class="user">' + user + '</div>'    
 
     def generate_html(self, junitObj, givenPath, print_summary=False):
         """ build the html givenPath: added this feature in case of later down the line
