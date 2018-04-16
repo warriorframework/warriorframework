@@ -15,11 +15,8 @@ import os
 import json
 import getpass
 import Tools
-from xml.etree import ElementTree as ET
 from Framework.Utils import xml_Utils, file_Utils
-from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
-from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
 
 __author__ = 'Keenan Jabri'
 
@@ -65,13 +62,15 @@ class LineResult:
                      'status': '<span class=' + status_name + '>' + status_name + '</span>',
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
-                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + result_file
-                            + '"><i class="fa fa-line-chart"> </i></a></span>' + (
-                            '' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' 
-                            + (line.get("logsdir") if line.get("logsdir") else '') 
-                            + '"><i class="fa fa-book"> </i></a></span>') + (
-                            '<span style="padding-left:10px; padding-right: 10px;"><a href="' + line.get("defects")
-                            + '"><i class="fa fa-bug"> </i></a></span>' if line.get("defects") else ''),
+                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="'
+                            + result_file + '"><i class="fa fa-line-chart"> </i></a></span>' + (
+                                '' if variant == 'Keyword' else
+                                '<span style="padding-left:10px; padding-right: 10px;"><a href="'
+                                + (line.get("logsdir") if line.get("logsdir") else '')
+                                + '"><i class="fa fa-book"> </i></a></span>')
+                            + ('<span style="padding-left:10px; padding-right: 10px;"><a href="'
+                               + line.get("defects") + '"><i class="fa fa-bug"> </i></a></span>'
+                               if line.get("defects") else ''),
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
                      }
 
@@ -87,7 +86,8 @@ class LineResult:
                 for elem in self.keys:
                     if elem == 'dynamic':
                         for dynamicElem in self.data['dynamic']:
-                            top_level_next += '<td>' + (dynamicElem if dynamicElem else '0') + '</td>'
+                            top_level_next += '<td>' + (dynamicElem if dynamicElem else '0') + \
+                                              '</td>'
                     elif elem == 'static':
                         for staticElem in self.data['static']:
                             top_level += '<td>' + (staticElem if staticElem else '') + '</td>'
@@ -101,7 +101,8 @@ class LineResult:
                         top_level += '<td rowspan="2"><div>' + (
                             self.data[elem] if self.data[elem] else '') + '</div></td>'
 
-            self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' + top_level_next
+            self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' \
+                        + top_level_next
 
 
 class WarriorHtmlResults:

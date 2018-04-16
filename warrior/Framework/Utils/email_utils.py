@@ -13,6 +13,7 @@ limitations under the License.
 # Utility to send email using smtp
 # Import smtplib for the actual sending function
 import smtplib
+import zipfile
 import os
 from os.path import basename
 from email import encoders
@@ -64,6 +65,7 @@ def set_params_send_email(addsubject, data_repository, result_path, mail_on):
         files = {}
     send_email(params[0], params[1], params[2], subject, body, files)
 
+
 def convert_to_zip(htmlfile):
     """ Compressing and zipping the html result file """
     html_zipfile = htmlfile.split(".html")[0] + ".zip"
@@ -71,6 +73,7 @@ def convert_to_zip(htmlfile):
     zippedfile.write(htmlfile)
     zippedfile.close()
     return html_zipfile
+
 
 def get_email_params(result_path, mail_on='per_execution'):
     """ Get the parameters from the w_settings.xml file.
@@ -126,6 +129,7 @@ def get_email_params(result_path, mail_on='per_execution'):
             zipfile = convert_to_zip(result_path)
             result_path = zipfile
     return smtp_host, sender, receivers, subject, result_path
+
 
 def construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir):
     """ construct e-mail body with Project, Logs/Results directory & Execution summary
@@ -183,8 +187,6 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
                 (1) per_execution(default)
                 (2) first_failure
                 (3) every_failure
-
-
     """
     resultconverted = {"True": "Pass", "False": "Fail", "ERROR": "Error",
                        "EXCEPTION": "Exception"}.get(str(result))
@@ -192,7 +194,6 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
     body = construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir)
     report_attachment = results_dir + os.sep + \
                file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath)) + ".html"
-
     set_params_send_email(subject, body, report_attachment, mail_on)
 
 
