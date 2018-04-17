@@ -17,7 +17,7 @@ import zipfile
 import os
 from os.path import basename
 from email import encoders
-from email.MIMEBase import MIMEBase
+from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from xml.etree import ElementTree as ET
@@ -52,7 +52,6 @@ def set_params_send_email(addsubject, data_repository, result_path, mail_on):
             body += body_elem+"\n"
     else:
         body = data_repository
-
     params = get_email_params(result_path, mail_on)
     subject = str(params[3])+addsubject
     # Temporary fix - HTML file can not be attached since it will be generated
@@ -96,7 +95,6 @@ def get_email_params(result_path, mail_on='per_execution'):
     subject = ""
     warrior_tools_dir = Tools.__path__[0]+os.sep+'w_settings.xml'
     element = ET.parse(warrior_tools_dir)
-
     setting_elem = element.find("Setting[@name='mail_to']")
     if setting_elem is not None:
         mail_on_attrib = setting_elem.get("mail_on")
@@ -108,7 +106,6 @@ def get_email_params(result_path, mail_on='per_execution'):
            (mail_on == "per_execution" and mail_on_list != []):
             if mail_on not in mail_on_list:
                 return smtp_host, sender, receivers, subject
-
         smtp_host_elem = setting_elem.find("smtp_host")
         if smtp_host_elem is not None:
             smtp_host = smtp_host_elem.text
@@ -193,7 +190,8 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
     subject = str(resultconverted)+": "+file_Utils.getFileName(abs_filepath)
     body = construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir)
     report_attachment = results_dir + os.sep + \
-               file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath)) + ".html"
+               file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath))
+    report_attachment += ".html"
     set_params_send_email(subject, body, report_attachment, mail_on)
 
 
@@ -213,17 +211,14 @@ def send_email(smtp_host, sender, receivers, subject, body, files):
     if not receivers:
         print_debug("No receiver defined in w_settings, no email sent")
         return
-
     message = MIMEMultipart()
     message['From'] = sender
     message['To'] = receivers
     receivers_list = [receiver.strip() for receiver in receivers.split(',')]
     message['Subject'] = subject
-
     # HTML is used for better formatting of mail body
     part = MIMEText(body, 'html')
     message.attach(part)
-
     for attach_file in files or []:
         with open(attach_file, "rb") as fil:
             part = MIMEBase('application', 'octet-stream')
@@ -232,11 +227,10 @@ def send_email(smtp_host, sender, receivers, subject, body, files):
             part.add_header('Content-Disposition', "attachment;filename= %s"
                             % basename(attach_file))
             message.attach(part)
-
     try:
         smtp_obj = smtplib.SMTP(smtp_host)
         smtp_obj.sendmail(sender, receivers_list, message.as_string())
-        pNote('Execution results emailed to receiver(s): {}'.format(receivers))
+        pNote('Execution results emailed to receiver(s): {0}'.format(receivers))
         smtp_obj.close()
 
     except BaseException:
