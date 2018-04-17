@@ -111,7 +111,11 @@ def get_email_params(mail_on='per_execution'):
             subject = subject_elem.text
             if subject is None:
                 subject = ""
-        compress = setting_elem.get("compress")
+        # To support backward compatibility
+        if 'compress' in setting_elem.keys():
+            compress = setting_elem.get("compress")
+        else:
+            compress = "No"
 
     return smtp_host, sender, receivers, subject, compress
 
