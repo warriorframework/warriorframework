@@ -12,11 +12,14 @@ limitations under the License.
 """
 
 import os
+
 import json
 import getpass
 import Tools
 from Framework.Utils import xml_Utils, file_Utils
+from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
+from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
 
 __author__ = 'Keenan Jabri'
 
@@ -28,8 +31,9 @@ class LineResult:
 
     def __init__(self):
         """Constructor for class LineResult"""
-        self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 
-                     'onerror', 'msc', 'static', 'dynamic']
+
+        self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
+                     'dynamic']
 
     def get_info(self, line):
         """gets info for line"""
@@ -48,12 +52,11 @@ class LineResult:
         """sets attributes"""
         if 'Keyword' not in variant and 'step' not in variant:
             stepcount = ''
-        result_file = line.get("resultfile") if line.get("resultfile") else line.get(
-                      "resultsdir") if line.get("resultsdir") else ''
+        result_file = line.get("resultfile") if line.get("resultfile") else line.get("resultsdir") if line.get(
+            "resultsdir") else ''
         status_name = line.get("status") if line.get("status") else ''
         self.data = {'nameAttr': variant + 'Record',
-                     'type': variant.replace('Test', '').replace(
-                         'Keyword', 'step ') + str(stepcount),
+                     'type': variant.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
                      'info': self.get_info(line),
                      'description': line.get("description"),
@@ -62,15 +65,13 @@ class LineResult:
                      'status': '<span class=' + status_name + '>' + status_name + '</span>',
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
-                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="'
-                            + result_file + '"><i class="fa fa-line-chart"> </i></a></span>' + (
-                                '' if variant == 'Keyword' else
-                                '<span style="padding-left:10px; padding-right: 10px;"><a href="'
-                                + (line.get("logsdir") if line.get("logsdir") else '')
-                                + '"><i class="fa fa-book"> </i></a></span>')
-                            + ('<span style="padding-left:10px; padding-right: 10px;"><a href="'
-                               + line.get("defects") + '"><i class="fa fa-bug"> </i></a></span>'
-                               if line.get("defects") else ''),
+                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + result_file
+                            + '"><i class="fa fa-line-chart"> </i></a></span>' + (
+                                '' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
+                                    line.get("logsdir") if line.get(
+                                        "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + (
+                            '<span style="padding-left:10px; padding-right: 10px;"><a href="' + line.get("defects")
+                            + '"><i class="fa fa-bug"> </i></a></span>' if line.get("defects") else ''),
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
                      }
 
@@ -86,8 +87,7 @@ class LineResult:
                 for elem in self.keys:
                     if elem == 'dynamic':
                         for dynamicElem in self.data['dynamic']:
-                            top_level_next += '<td>' + (dynamicElem if dynamicElem else '0') + \
-                                              '</td>'
+                            top_level_next += '<td>' + (dynamicElem if dynamicElem else '0') + '</td>'
                     elif elem == 'static':
                         for staticElem in self.data['static']:
                             top_level += '<td>' + (staticElem if staticElem else '') + '</td>'
@@ -101,8 +101,7 @@ class LineResult:
                         top_level += '<td rowspan="2"><div>' + (
                             self.data[elem] if self.data[elem] else '') + '</div></td>'
 
-            self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' \
-                        + top_level_next
+            self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' + top_level_next
 
 
 class WarriorHtmlResults:
@@ -174,11 +173,11 @@ class WarriorHtmlResults:
 
     def get_user(self):
         """ find the user who executed the testcase """
-        try:
-            user = getpass.getuser()
-        except Exception:
-            user = "Unknown_user"
-        return '<div class="user">' + user + '</div>'    
+	try:
+	    user = getpass.getuser()
+	except Exception:
+	    user = "Unknown_user"
+        return '<div class="user">' + user + '</div>'
 
     def generate_html(self, junitObj, givenPath, print_summary=False):
         """ build the html givenPath: added this feature in case of later down the line

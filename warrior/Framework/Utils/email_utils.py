@@ -28,7 +28,7 @@ from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.execution_summary_class import ExecutionSummary
 
 
-def set_params_send_email(addsubject, data_repository, result_path, mail_on):
+def set_params_send_email(addsubject, data_repository, files, mail_on):
     """ From data_repository array constructs body of email
         using testcase/testsuite name, logs directory, results directory
         fetches smtp host, sender, receiver from w_settings.xml
@@ -39,7 +39,7 @@ def set_params_send_email(addsubject, data_repository, result_path, mail_on):
             1. testcase/testsuite name
             2. logs directory
             3. results directory
-        3. result_path - path of file to be attached
+        3. files - list of file attachments
         4. mail_on(optional) - it is to specify when to send an email
            Supported options below:
                 (1) per_execution(default)
@@ -52,17 +52,9 @@ def set_params_send_email(addsubject, data_repository, result_path, mail_on):
             body += body_elem+"\n"
     else:
         body = data_repository
-    params = get_email_params(result_path, mail_on)
+    params = get_email_params(mail_on, files)
     subject = str(params[3])+addsubject
-    # Temporary fix - HTML file can not be attached since it will be generated
-    # only after the completion of the warrior execution. Creating html result
-    # file at runtime will solve this.
-    # KH. 2017-07-27
-    if mail_on in ["per_execution", "first_failure", "every_failure"]:
-        files = {str(params[4])}
-    else:
-        files = {}
-    send_email(params[0], params[1], params[2], subject, body, files)
+    send_email(params[0], params[1], params[2], subject, body, params[4])
 
 
 def convert_to_zip(htmlfile):
@@ -74,10 +66,11 @@ def convert_to_zip(htmlfile):
     return html_zipfile
 
 
-def get_email_params(result_path, mail_on='per_execution'):
+def get_email_params(mail_on='per_execution', files={}):
     """ Get the parameters from the w_settings.xml file.
+        If the Compress is set to yes, result file is zipped.
     :Arguments:
-        1.result_path - It specifies the path where html result is generated.
+        1.files - It specifies the html result filepath.
         2.mail_on(optional) - it is to specify when to send an email.
            Supported options below:
                 (1) per_execution(default)
@@ -88,6 +81,7 @@ def get_email_params(result_path, mail_on='per_execution'):
         2. sender - sender email ID
         3. receivers - receiver email ID(s)
         4. subject - email subject line
+        5. files - Returns the html/zipped result filepath
     """
     smtp_host = ""
     sender = ""
@@ -122,10 +116,10 @@ def get_email_params(result_path, mail_on='per_execution'):
                 subject = ""
         compress = setting_elem.get("compress")
         if compress == "Yes":
-            print_info("Compressing the result: {0}".format(result_path))
-            zipfile = convert_to_zip(result_path)
-            result_path = zipfile
-    return smtp_host, sender, receivers, subject, result_path
+            result_file = list(files)[0]
+            zipfile = convert_to_zip(result_file)
+            files = zipfile
+    return smtp_host, sender, receivers, subject, files
 
 
 def construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir):
@@ -190,10 +184,12 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
     subject = str(resultconverted)+": "+file_Utils.getFileName(abs_filepath)
     body = construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir)
     report_attachment = results_dir + os.sep + \
-               file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath))
-    report_attachment += ".html"
-    set_params_send_email(subject, body, report_attachment, mail_on)
-
+        file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath)) + ".html"
+    if mail_on in ["per_execution", "first_failure", "every_failure"]:
+        files = {report_attachment}
+    else:
+        files = {}
+    set_params_send_email(subject, body, files, mail_on)
 
 def send_email(smtp_host, sender, receivers, subject, body, files):
     """ sends email from smtp server using input arguments:
