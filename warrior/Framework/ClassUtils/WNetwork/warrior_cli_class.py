@@ -866,6 +866,7 @@ class WarriorCli(object):
 
         sendDimensions = False
         if dimensions is not None:
+            # 'dimensions' argument is supported in pexpect version 4.0 and above
             if LooseVersion(pexpect_obj.__version__) >= LooseVersion('4.0'):
                 sendDimensions = True
             else:
@@ -1295,6 +1296,7 @@ class PexpectConnect(object):
         self.escape = credentials.get('escape', False)
         self.dimensions = credentials.get('dimensions', None)
         if self.dimensions:
+            # convert dimension value from string to tuple
             try:
                 self.dimensions = ast.literal_eval(credentials["dimensions"])
             except Exception:
@@ -1347,6 +1349,7 @@ class PexpectConnect(object):
         print_debug("connectSSH: cmd = %s" % command)
         child = WarriorCli.pexpect_spawn_with_env(self.pexpect, command,
                                                   self.timeout,
+                                                  escape=self.escape,
                                                   env={"TERM": "dumb"},
                                                   dimensions=self.dimensions)
 
@@ -1409,6 +1412,7 @@ class PexpectConnect(object):
                     subprocess.call(cmd, shell=True)
                     child = WarriorCli.pexpect_spawn_with_env(self.pexpect, command,
                                                               self.timeout,
+                                                              escape=self.escape,
                                                               env={"TERM": "dumb"},
                                                               dimensions=self.dimensions)
                     print_debug("ReconnectSSH: cmd = %s" % command)
@@ -1438,6 +1442,7 @@ class PexpectConnect(object):
         child = WarriorCli.pexpect_spawn_with_env(self.pexpect, command,
                                                   self.timeout,
                                                   env={"TERM": "dumb"},
+                                                  escape=self.escape,
                                                   dimensions=self.dimensions)
 
         try:
