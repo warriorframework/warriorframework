@@ -1330,6 +1330,6 @@ def convert_to_zip(file_path, compression_type=zipfile.ZIP_DEFLATED):
     """
     zipped_file = os.path.splitext(file_path)[0] + ".zip"
     zip_object = zipfile.ZipFile(zipped_file, 'w', compression_type)
-    zip_object.write(zipped_file, os.path.basename(file_path))
+    zip_object.write(file_path, os.path.basename(file_path))
     zip_object.close()
     return zipped_file
