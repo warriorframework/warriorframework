@@ -508,22 +508,29 @@ class TestcaseUtils(object):
     @staticmethod
     def compute_status_using_impact(input_status_list, input_impact_list, status=True):
         """Computes the status from the list of input status and input impact """
-        status = True
+        value = True
+        result = []
         for i in range(0, len(input_status_list)):
             input_status = input_status_list[i]
             input_impact = input_impact_list[i]
             if str(input_impact).upper() == 'IMPACT' and input_status != None:
                 if str(input_status).upper() == 'ERROR' or str(input_status).upper() == 'EXCEPTION':
-                    #input_status_list[i] = False
-                    status = 'ERROR'
-                    break
+                    value = 'ERROR'
                 elif str(input_status).upper() == 'RAN':
-                    status = 'RAN'
-                elif input_status == False:
-                    status = False 
-                    break
+                    value = 'RAN'
+                elif input_status is False:
+                    value = False
                 elif input_status is True:
-                    status = True 
+                    value = True
+            result.append(value)
+        if 'ERROR' in result:
+            status = 'ERROR'
+        elif 'ERROR' not in result and False in result:
+            status = False
+        elif 'RAN' in result:
+            status = 'RAN'
+        else:
+            status = True
         return status
 
     @staticmethod
