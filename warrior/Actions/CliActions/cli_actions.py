@@ -36,7 +36,7 @@ class CliActions(object):
 
     @mockready
     def connect(self, system_name, session_name=None, prompt=".*(%|#|\$)",
-                ip_type="ip", via_host=None):
+                ip_type="ip", via_host=None, tuple_dimensions=None):
         """
         This is a generic connect that can connect to ssh/telnet based
         on the conn_type provided by the user in the input datafile.
@@ -73,7 +73,7 @@ class CliActions(object):
                 timeout, in case of server require a keystroke to show any prompt.
                 Default is the enter key
             11.dimensions = size of the pseudo-terminal specified as a
-                two-entry tuple (rows, columns)
+                two-entry tuple (rows, columns), eg. (24, 80).
 
 
         :Arguments:
@@ -97,6 +97,8 @@ class CliActions(object):
             5. via_host = Name of the system in the data file to be used as an
                 intermediate system for establishing nested connections,
                 currently it is applicable only for SSH connections.
+            6. tuple_dimensions(tuple) = size of the pseudo-terminal specified as a
+                two-entry tuple(rows, columns), eg. (24, 80).
 
         :Returns:
             1. status(bool)= True / False.
@@ -133,10 +135,12 @@ class CliActions(object):
             if conn_type is not False:
                 if conn_type == "ssh":
                     result, output_dict = self.connect_ssh(call_system_name, session_name, prompt,
-                                                           ip_type, via_host=via_host)
+                                                           ip_type, via_host=via_host,
+                                                           tuple_dimensions=tuple_dimensions)
                 elif conn_type == "telnet":
                     result, output_dict = self.connect_telnet(call_system_name, session_name,
-                                                              ip_type)
+                                                              ip_type,
+                                                              tuple_dimensions=tuple_dimensions)
                 else:
                     pNote("<conn_type>={0} provided for '{1}' is  not "
                           "supported".format(conn_type, call_system_name), "error")
