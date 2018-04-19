@@ -525,7 +525,7 @@ class TestcaseUtils(object):
             result.append(value)
         if 'ERROR' in result:
             status = 'ERROR'
-        elif 'ERROR' not in result and False in result:
+        elif False in result:
             status = False
         elif 'RAN' in result:
             status = 'RAN'
