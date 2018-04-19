@@ -858,7 +858,6 @@ class WarriorCli(object):
     @staticmethod
     def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False,
                                env=None, dimensions=None):
-
         """ spawn a pexpect object with environment & dimensions variables """
 
         if not(str(escape).lower() == "yes" or str(escape).lower() == "true"):
@@ -872,7 +871,8 @@ class WarriorCli(object):
             else:
                 print_warning("Setting pseudo-terminal dimensions is not supported in "
                               "pexpect versions less than 4.0(installed pexpect "
-                              "version: {})".format(pexpect_obj.__version__))
+                              "version: {}), 'dimensions' value will be default "
+                              "to None".format(pexpect_obj.__version__))
 
         if sendDimensions is True:
             child = pexpect_obj.spawn(command, timeout=int(timeout), env=env,
@@ -1305,8 +1305,8 @@ class PexpectConnect(object):
                 print_warning(err_msg.format(self.dimensions))
             else:
                 if not isinstance(self.dimensions, tuple):
-                    self.dimensions = None
                     print_warning(err_msg.format(self.dimensions))
+                    self.dimensions = None
 
     def __import_pexpect(self):
         """Import the pexpect module """
