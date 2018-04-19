@@ -1295,15 +1295,18 @@ class PexpectConnect(object):
         self.custom_keystroke = credentials.get('custom_keystroke', '')
         self.escape = credentials.get('escape', False)
         self.dimensions = credentials.get('dimensions', None)
-        if self.dimensions:
-            # convert dimension value from string to tuple
+        # convert dimension value from string to tuple
+        if self.dimensions and isinstance(self.dimensions, str):
+            err_msg = ("Invalid value '{}' given for dimensions argument, it "
+                       "only accepts tuple value(It will be default to None).")
             try:
-                self.dimensions = ast.literal_eval(credentials["dimensions"])
+                self.dimensions = ast.literal_eval(self.dimensions)
             except Exception:
-                print_warning("Invalid value '{}' given for dimensions "
-                              "argument, it only accepts tuple value(It will "
-                              "be default to None).".format(self.dimensions))
-                self.dimensions = None
+                print_warning(err_msg.format(self.dimensions))
+            else:
+                if not isinstance(self.dimensions, tuple):
+                    self.dimensions = None
+                    print_warning(err_msg.format(self.dimensions))
 
     def __import_pexpect(self):
         """Import the pexpect module """
