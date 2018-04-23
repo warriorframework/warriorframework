@@ -98,7 +98,10 @@ def get_suite_details(testsuite_filepath, data_repository, from_project,
 
     efile_obj = execution_files_class.ExecFilesClass(testsuite_filepath, "ts",
                                                      res_startdir, logs_startdir)
-    # First priority for data files given through CLI##
+    # First priority is given for data files specified via CLI
+    # Default datafiles: Given in the test suite globally.
+    # If no datafiles are specified at CLI or global level, error is thrown.
+    # At Suite level execution, step-wise datafiles are not considered.
     if data_repository.has_key('ow_datafile'):
         data_file = data_repository['ow_datafile']
     else:
