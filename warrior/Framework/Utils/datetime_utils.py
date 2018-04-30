@@ -14,7 +14,7 @@ limitations under the License.
 
 import datetime
 import time
-from Framework.Utils.print_Utils import print_info, print_error, print_warning
+from Framework.Utils.print_Utils import print_without_logging, print_error, print_warning
 
 
 def wait_for_timeout(wait_time, unit="SECONDS"):
@@ -51,7 +51,8 @@ def wait_for_timeout(wait_time, unit="SECONDS"):
             print_warning('The supported unit of seconds is Seconds/Minutes/Hours/Months/Years'
                           'The default unit of Seconds would be used')
         for sec in range(int(seconds), 0, -1):
-            print_info("Remaining time available is {0} seconds {1}".format(sec, '\033[1A\r'))
+            print_without_logging("Remaining time available is {0} seconds {1}"
+                                  .format(sec, '\033[1A\r'))
             time.sleep(1)
         return True
     except TypeError:
