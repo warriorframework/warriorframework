@@ -16,6 +16,7 @@ import os
 import shutil
 import subprocess
 import sys
+import urllib
 from distutils import dir_util
 from source.utils import (check_installed_python_version, print_info, verify_python_version,
                           check_packages, print_warning, print_error, get_subfiles, create_dir,
@@ -658,6 +659,14 @@ def clone_drivers(base_path, current_dir, **kwargs):
                 continue
             url = get_attribute_value(repository, "url")
             name = get_repository_name(url)
+            username = get_attribute_value(repository, "username")
+            password = get_attribute_value(repository, "password")
+
+            if username and password:
+                url_list = url.split("//", 1)
+                username = urllib.quote_plus(username)
+                password = urllib.quote_plus(password)
+                url = url_list[0] + "//" + username + ":" + password + '@' + url_list[1]
 
             # url validation
             if url == "":
