@@ -471,10 +471,6 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     suite_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Testsuite execution completed".format(suite_end_time))
     suite_duration = Utils.datetime_utils.get_time_delta(suite_start_time)
-    if execution_type.upper() == "ITERATIVE_SEQUENTIAL":
-        data_repository["suite_duration_seq"]=suite_duration
-    elif execution_type.upper() == "ITERATIVE_PARALLEL":
-        data_repository["suite_duration_par"]=suite_duration
     hms = Utils.datetime_utils.get_hms_for_seconds(suite_duration)
     print_info("Testsuite duration= {0}".format(hms))
     testsuite_utils.update_suite_duration(str(suite_duration))
