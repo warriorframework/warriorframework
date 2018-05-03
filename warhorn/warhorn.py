@@ -660,15 +660,26 @@ def clone_drivers(base_path, current_dir, **kwargs):
             url = get_attribute_value(repository, "url")
             name = get_repository_name(url)
 
-            username = get_attribute_value(repository, "username")
-            password = get_attribute_value(repository, "password")
             url_parts = url.split("://", 1)
-            # modify http/https url to include username and password in it
-            # format: https://username:password@path/to/repo
-            if all([username, password, url_parts[0].upper() in ["HTTP", "HTTPS"]]):
-                username = urllib.quote_plus(username)
-                password = urllib.quote_plus(password)
-                url = url_parts[0] + "://" + username + ":" + password + '@' + url_parts[1]
+            # username and password applicable for http & https
+            if len(url_parts) == 2 and url_parts[0].upper() in ["HTTP", "HTTPS"]:
+                url_type, url_path = url_parts[0], url_parts[1]
+                # get the username from the URL
+                if '@' in url_path:
+                    username, url_path = url_path.split('@', 1)
+                else:
+                    username = ""
+                # get the username from the warhorn_config file when it is not in the url
+                if username == "":
+                    username = get_attribute_value(repository, "username")
+                password = get_attribute_value(repository, "password")
+
+                # modify http/https URL to include username and password in it
+                # format: https://username:password@path/to/repo
+                if username != "" and password != "":
+                    username = urllib.quote_plus(username)
+                    password = urllib.quote_plus(password)
+                    url = url_type + "://" + username + ":" + password + '@' + url_path
 
             # url validation
             if url == "":
