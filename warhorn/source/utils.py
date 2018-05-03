@@ -21,6 +21,7 @@ import imp
 import subprocess
 import datetime
 import sys
+import urllib
 from war_print_class import print_main
 """
 Utility functions for warhorn.py
@@ -786,3 +787,39 @@ def git_checkout_label(label, base_path="", current_dir=""):
     if current_dir != "":
         os.chdir(current_dir)
     return check, current_label
+
+
+def embed_user_cred_in_url(url, username, password):
+    """
+    Embed the username and password in the git url.
+    It is applicable only for http or https url types.
+    Input url format: https://path/to/repo (or) https://username@path/to/repo
+    Output url format: https://username:password@path/to/repo
+    If the username is already given in the url, that will be used.
+
+    :Arguments:
+        1. url(string) - url to be used for cloning
+        2. username(string) - git username
+        3. password(string) - git password
+    :Returns:
+        1. url(string) - url with username and password
+    """
+    url_parts = url.split("://", 1)
+    # check if the url type is http or https
+    if len(url_parts) == 2 and url_parts[0].upper() in ["HTTP", "HTTPS"]:
+        url_type, url_path = url_parts[0], url_parts[1]
+        # get the username from the URL
+        if '@' in url_path:
+            url_username, url_path = url_path.split('@', 1)
+        else:
+            url_username = ""
+
+        if url_username != "":
+            username = url_username
+        # modify url to include username and password in it
+        # format: http[s]://username:password@path/to/repo
+        if username != "" and password != "":
+            username = urllib.quote_plus(username)
+            password = urllib.quote_plus(password)
+            url = url_type + "://" + username + ":" + password + '@' + url_path
+    return url
