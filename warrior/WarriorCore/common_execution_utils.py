@@ -63,7 +63,7 @@ def get_step_list(filepath, step_tag, sub_step_tag):
         step_list = steps_exist.findall(sub_step_tag)
         # iterate all steps to get the runmode and retry details
         for index, step in enumerate(step_list):
-            runmode, value = get_runmode_from_xmlfile(step)
+            runmode, value, _= get_runmode_from_xmlfile(step)
             retry_type, _, _, retry_value, _ = get_retry_from_xmlfile(step)
             if runmode is not None and value > 0:
                 go_next = len(step_list_with_rmt_retry) + value + 1

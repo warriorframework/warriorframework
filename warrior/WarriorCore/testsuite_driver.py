@@ -267,7 +267,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     #find runmode type(RMT/RUP/RUF) and its value at suite global level
     root = Utils.xml_Utils.getRoot(testsuite_filepath)
     suite_global = root.find('Details')
-    runmode, value = common_execution_utils.get_runmode_from_xmlfile(suite_global)
+    runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(suite_global)
 
     # Prints the path of result summary file at the beginning of execution
     if data_repository['war_file_type'] == "Suite":

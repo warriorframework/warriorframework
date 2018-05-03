@@ -157,14 +157,14 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         retry_type, retry_cond, retry_cond_value, retry_value,\
             retry_interval = common_execution_utils.get_retry_from_xmlfile(testsuite)
         if runmode is not None:
-            if testsuite.find("runmode") is not None and\
+            if testsuite.find("runmode") == "RMT" and\
               testsuite.find("runmode").get("attempt") is not None:
                 print_info("runmode attempt: {0}".format(testsuite.find("runmode").get("attempt")))
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
             if not project_error_value and runmode == "RUF" and\
                     testsuite_status is False:
-                goto_testsuite = str(value)
+                goto_testsuite = str(value)                
             # if runmode is 'rup' & step_status is True, skip the repeated
             # execution of same TC step and move to next actual step
             elif runmode == "RUP" and testsuite_status is True:
