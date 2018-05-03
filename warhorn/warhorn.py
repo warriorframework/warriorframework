@@ -659,14 +659,16 @@ def clone_drivers(base_path, current_dir, **kwargs):
                 continue
             url = get_attribute_value(repository, "url")
             name = get_repository_name(url)
+
             username = get_attribute_value(repository, "username")
             password = get_attribute_value(repository, "password")
-
-            if username and password:
-                url_list = url.split("//", 1)
+            url_parts = url.split("://", 1)
+            # modify http/https url to include username and password in it
+            # format: https://username:password@path/to/repo
+            if all([username, password, url_parts[0].upper() in ["HTTP", "HTTPS"]]):
                 username = urllib.quote_plus(username)
                 password = urllib.quote_plus(password)
-                url = url_list[0] + "//" + username + ":" + password + '@' + url_list[1]
+                url = url_parts[0] + "://" + username + ":" + password + '@' + url_parts[1]
 
             # url validation
             if url == "":
