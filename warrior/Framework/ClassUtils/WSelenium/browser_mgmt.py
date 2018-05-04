@@ -53,7 +53,8 @@ class BrowserManagement(object):
         """Open a browser session"""
 
         profile_dir = kwargs.get('profile_dir', None)
-
+        if 'profile_dir' in kwargs:
+            kwargs.pop('profile_dir')
         if webdriver_remote_url:
             print_debug("Opening browser '{0}' through remote server at '{1}'"\
                         .format(browser_name, webdriver_remote_url))
