@@ -1560,8 +1560,8 @@ class PexpectConnect(object):
                         print_without_logging("Remaining wait time: {0}s {1}"
                                               .format(60-(int(tdelta)), '\033[1A\r'))
                         if int(tdelta) >= 60:
-                            # to erase the unwanted prints,resulted from cursor movement
-                            sys.stdout.write("\033[K\r")
+                            # clears the last line thats gets printed in terminal
+                            print_without_logging("\033[K\033[1A\r")
                             msg = "[{0}] Did not find end prompt '{1}' even " \
                                 "after 60 seconds post command time out". \
                                 format(Utils.datetime_utils.

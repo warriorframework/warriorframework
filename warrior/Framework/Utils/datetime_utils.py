@@ -54,8 +54,8 @@ def wait_for_timeout(wait_time, unit="SECONDS"):
             print_without_logging("Remaining time available is {0} seconds {1}"
                                   .format(sec, '\033[1A\r'))
             time.sleep(1)
-        # to erase the unwanted prints,resulted from cursor movement
-        sys.stdout.write("\033[K\r")
+        # clears the last line which gets printed as a result of above loop
+        print_without_logging("\033[K\033[1A\r")
         return True
     except TypeError:
         print_warning('Unable to parse wait_time value, Please use int/float as wait_time value.')
