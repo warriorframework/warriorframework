@@ -11,7 +11,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import sys
 import datetime
 import time
 from Framework.Utils.print_Utils import print_without_logging, print_error, print_warning
