@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-
+import sys
 import datetime
 import time
 from Framework.Utils.print_Utils import print_without_logging, print_error, print_warning
@@ -19,7 +19,7 @@ from Framework.Utils.print_Utils import print_without_logging, print_error, prin
 
 def wait_for_timeout(wait_time, unit="SECONDS"):
     """
-    Warrior, Wait till the time is a generic wait. The Wait is informed to the user as a countdown.
+    Warrior, Wait till the time is a generic wait. The Wait is informed to the user as a countdown
 
     :Arguments:
         1.wait_time: Time for Warrior wait.
@@ -54,6 +54,8 @@ def wait_for_timeout(wait_time, unit="SECONDS"):
             print_without_logging("Remaining time available is {0} seconds {1}"
                                   .format(sec, '\033[1A\r'))
             time.sleep(1)
+        # to erase the unwanted prints,resulted from cursor movement
+        sys.stdout.write("\033[K\r")
         return True
     except TypeError:
         print_warning('Unable to parse wait_time value, Please use int/float as wait_time value.')

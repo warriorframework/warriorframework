@@ -21,7 +21,7 @@ import xml.etree.ElementTree as ET
 import Tools
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
- print_warning, print_exception, print_error
+ print_warning, print_exception, print_error, print_without_logging
 from Framework.Utils.testcase_Utils import pNote
 from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
@@ -1550,18 +1550,18 @@ class PexpectConnect(object):
                         if not cmd_timedout:
                             self.target_host.timeout = 1
                             pNote(tmsg1, "debug")
+                            pNote(tmsg2, "debug")
+                            pNote(tmsg3, "debug")
                             tstamp = Utils.datetime_utils.\
                                 get_current_timestamp()
                         cmd_timedout = True
                         status = "ERROR"
-                        seconds = 60
-                        pNote(tmsg3, "debug")
-                        print_info(("Will wait {0} more seconds to get end prompt " + end_prompt)
-                                   .format(seconds))
-                        Utils.datetime_utils.wait_for_timeout(seconds)
-                        pNote(tmsg2, "debug")
                         tdelta = Utils.datetime_utils.get_time_delta(tstamp)
+                        print_without_logging("Remaining wait time: {0}s {1}"
+                                              .format(60-(int(tdelta)), '\033[1A\r'))
                         if int(tdelta) >= 60:
+                            # to erase the unwanted prints,resulted from cursor movement
+                            sys.stdout.write("\033[K\r")
                             msg = "[{0}] Did not find end prompt '{1}' even " \
                                 "after 60 seconds post command time out". \
                                 format(Utils.datetime_utils.
