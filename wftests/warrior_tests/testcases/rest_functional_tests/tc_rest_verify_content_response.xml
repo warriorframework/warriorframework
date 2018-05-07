@@ -199,7 +199,7 @@
 			<context>negative</context>
 			<impact>impact</impact>
 		</step>
-		<step Driver="rest_driver" Keyword="perform_http_get" TS="8">
+		<step Driver="rest_driver" Keyword="perform_http_get" TS="15">
 			<Arguments>
 				<argument name="system_name" value="http_bin_1"/>
 				<argument name="url" value="http://httpbin.org/response-headers?json1=string&amp;key2=value"/>
@@ -210,7 +210,7 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
-		<step Driver="rest_driver" Keyword="verify_response" TS="9">
+		<step Driver="rest_driver" Keyword="verify_response" TS="16">
 			<Arguments>
 				<argument name="system_name" value="http_bin_1"/>
 				<argument name="expected_api_response" value="string"/>
@@ -223,7 +223,7 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
-		<step Driver="rest_driver" Keyword="verify_response" TS="9">
+		<step Driver="rest_driver" Keyword="verify_response" TS="17">
 			<Arguments>
 				<argument name="system_name" value="http_bin_1"/>
 				<argument name="expected_api_response" value="val.*"/>
@@ -236,7 +236,7 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
-		<step Driver="rest_driver" Keyword="verify_response" TS="9">
+		<step Driver="rest_driver" Keyword="verify_response" TS="18">
 			<Arguments>
 				<argument name="system_name" value="http_bin_1"/>
 				<argument name="expected_api_response" value="value"/>
