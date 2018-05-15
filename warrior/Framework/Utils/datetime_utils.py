@@ -49,12 +49,12 @@ def wait_for_timeout(wait_time, unit="SECONDS"):
         else:
             print_warning('The supported unit of seconds is Seconds/Minutes/Hours/Months/Years'
                           'The default unit of Seconds would be used')
-        for sec in range(int(seconds), 0, -1):
+        for sec in range(int(seconds), -1, -1):
+            # the cursor value makes the wait time print like a count down
+            cursor = '\033[1A\r' if sec != 0 else ''
             print_without_logging("Remaining time available is {0} seconds {1}"
-                                  .format(sec, '\033[1A\r'))
+                                  .format(sec, cursor))
             time.sleep(1)
-        # clears the last line which gets printed as a result of above loop
-        print_without_logging("\033[K\033[1A\r")
         return True
     except TypeError:
         print_warning('Unable to parse wait_time value, Please use int/float as wait_time value.')
