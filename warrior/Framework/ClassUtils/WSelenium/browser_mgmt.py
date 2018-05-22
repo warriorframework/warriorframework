@@ -516,15 +516,16 @@ class BrowserManagement(object):
         """Create an instance of firefox browser"""
         binary = kwargs.get("binary", None)
         gecko_path = kwargs.get("gecko_path", None)
+        # gecko_log is the absolute path to save geckodriver log
+        gecko_log = kwargs.get("gecko_log", None)
         proxy_ip = kwargs.get("proxy_ip", None)
         proxy_port = kwargs.get("proxy_port", None)
         ff_profile = None
         # if firefox is being used with proxy, set the profile here
         if proxy_ip is not None and proxy_port is not None:
             ff_profile = self.set_firefox_proxy(profile_dir, proxy_ip, proxy_port)
-
         log_dir = get_object_from_datarepository("wt_logsdir") if \
-                  kwargs.get("log_path") in [None, False] else kwargs.get("log_path")
+                  gecko_log in [None, False] else gecko_log
         log_dir = os.path.join(log_dir, "gecko_"+kwargs.get("browser_name", "default")+".log")
 
         browser = None
