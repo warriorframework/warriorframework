@@ -13,8 +13,10 @@ limitations under the License.
 
 ###Module that contains common utilities required for execution ###
 import copy
+import glob
+import os
 
-from Framework.Utils.print_Utils import print_warning
+from Framework.Utils.print_Utils import print_warning, print_info
 import Framework.Utils as Utils
 
 def append_step_list(step_list, step, value, go_next, mode, tag):
@@ -46,7 +48,7 @@ def get_step_list(filepath, step_tag, sub_step_tag):
     1. Retrieve the runmode and it corresponding value.
     Based on runmode and value append the list.
     2. Retrieve the retry and it corresponding value.
-    Based on runmode and value append the list.
+    Based on retry and value append the list.
 
     :Arguments:
         1. filepath     = full path of the Testcase/suite/project xml file
@@ -59,27 +61,69 @@ def get_step_list(filepath, step_tag, sub_step_tag):
     steps_exist = root.find(step_tag)
     if steps_exist is None:
         print_warning("The file: '{0}' has no {1} to be executed".format(filepath, step_tag))
-    else:
-        step_list = steps_exist.findall(sub_step_tag)
-        # iterate all steps to get the runmode and retry details
-        for index, step in enumerate(step_list):
-            runmode, value, _= get_runmode_from_xmlfile(step)
-            retry_type, _, _, retry_value, _ = get_retry_from_xmlfile(step)
-            if runmode is not None and value > 0:
-                go_next = len(step_list_with_rmt_retry) + value + 1
-                step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
-                                                            value, go_next, mode="runmode",
-                                                            tag="value")
-            if retry_type is not None and value > 0:
-                go_next = len(step_list_with_rmt_retry) + retry_value + 1
-                if runmode is not None:
-                    get_runmode = step.find('runmode')
-                    step.remove(get_runmode)
-                step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
-                                                            retry_value, go_next, mode="retry",
-                                                            tag="count")
-            if retry_type is None and runmode is None:
-                step_list_with_rmt_retry.append(step)
+    step_list = steps_exist.findall(sub_step_tag)
+    if root.tag == 'Project' or root.tag == 'TestSuite':
+        step_list = []
+        orig_step_list = steps_exist.findall(sub_step_tag)
+        for orig_step in orig_step_list:
+            orig_step_path = orig_step.find('path').text
+            if '*' not in orig_step_path:
+                step_list.append(orig_step)
+            # When the file path has asterisk(*), get the Warrior XML testcase/testsuite
+            # files matching the given pattern
+            else:
+                orig_step_abspath = Utils.file_Utils.getAbsPath(
+                    orig_step_path, os.path.dirname(filepath))
+                print_info("Provided {0} path: '{1}' has asterisk(*) in "
+                           "it. All the Warrior XML files matching "
+                           "the given pattern will be executed.".format(sub_step_tag, orig_step_abspath))
+                # Get all the files matching the pattern and sort them by name
+                all_files = sorted(glob.glob(orig_step_abspath))
+                # Get XML files
+                xml_files = [fl for fl in all_files if fl.endswith('.xml')]
+                step_files = []
+                # Get Warrior testcase/testsuite XML files
+                for xml_file in xml_files:
+                    root = Utils.xml_Utils.getRoot(xml_file)
+                    if root.tag.upper() == sub_step_tag.upper():
+                        step_files.append(xml_file)
+                # Copy the XML object and set the filepath as path value for
+                # all the files matching the pattern
+                if step_files:
+                    for step_file in step_files:
+                        new_step = copy.deepcopy(orig_step)
+                        new_step.find('path').text = step_file
+                        step_list.append(new_step)
+                        print_info("{0}: '{1}' added to the execution "
+                                   "list ".format(sub_step_tag, step_file))
+                else:
+                    print_warning("Asterisk(*) pattern match failed for '{}' due "
+                                  "to at least one of the following reasons:\n"
+                                  "1. No files matched the given pattern\n"
+                                  "2. Invalid testcase path is given\n"
+                                  "3. No testcase XMLs are available\n"
+                                  "Given path will be used for the Warrior "
+                                  "execution.".format(orig_step_abspath))
+                    step_list.append(orig_step)
+    # iterate all steps to get the runmode and retry details
+    for index, step in enumerate(step_list):
+        runmode, value, _= get_runmode_from_xmlfile(step)
+        retry_type, _, _, retry_value, _ = get_retry_from_xmlfile(step)
+        if runmode is not None and value > 0:
+            go_next = len(step_list_with_rmt_retry) + value + 1
+            step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
+                                                        value, go_next, mode="runmode",
+                                                        tag="value")
+        if retry_type is not None and value > 0:
+            go_next = len(step_list_with_rmt_retry) + retry_value + 1
+            if runmode is not None:
+                get_runmode = step.find('runmode')
+                step.remove(get_runmode)
+            step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
+                                                        retry_value, go_next, mode="retry",
+                                                        tag="count")
+        if retry_type is None and runmode is None:
+            step_list_with_rmt_retry.append(step)
     return step_list_with_rmt_retry
 
 def get_runmode_from_xmlfile(element):

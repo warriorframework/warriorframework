@@ -13,7 +13,6 @@
 			<path>../suites/common_action_tests/common_action_suite.xml</path>
 			<onError action="next" value=""/>
 			<impact>impact</impact>
-			<runmode type="RMT" value="2"/>
 		</Testsuite>
 	</Testsuites>
 </Project>
