@@ -351,15 +351,6 @@ class CommonActions(object):
         """
         wDesc = "Verify if the output of the arithmetic expression matches the expected"
         Utils.testcase_Utils.pNote(wDesc)
-        data_repo = Utils.config_Utils.data_repository
-        if 'verify_arith_exp' in data_repo:
-            output_dict = data_repo['verify_arith_exp']
-        else:
-            output_dict = {}
-        status, expression_ouput = Utils.data_Utils.verify_arith_exp(expression, expected,
-                                                                     comparison)
-        output_dict[repo_key] = expression_ouput
-        print_info("Expression output: {0} is stored in a Key: {1} of Warrior "
-                   "data_repository".format(expression_ouput, 'verify_arith_exp.'+repo_key))
-        update_datarepository({'verify_arith_exp': output_dict})
+        status = Utils.data_Utils.verify_arith_exp(expression, expected,
+                                                   comparison, repo_key)
         return status
