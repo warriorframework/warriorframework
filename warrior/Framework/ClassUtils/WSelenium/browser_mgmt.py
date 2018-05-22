@@ -439,7 +439,7 @@ class BrowserManagement(object):
             Use firefox binary to find out firefox version
             before launching firefox in selenium
         """
-        if binary in [False, None, str(None)]:
+        if binary in [False, None]:
             binary = "firefox"
         version = False
         try:
@@ -552,7 +552,7 @@ class BrowserManagement(object):
                     # Gecko driver will only launch if FF version is 47 or above
                     optional_args["log_path"] = log_dir
 
-                ffbinary = FirefoxBinary(binary) if binary not in [None, str(None)] else None
+                ffbinary = FirefoxBinary(binary) if binary is not None else None
                 if gecko_path is not None:
                     optional_args["executable_path"] = gecko_path
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
