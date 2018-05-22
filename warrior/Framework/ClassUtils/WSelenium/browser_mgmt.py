@@ -552,7 +552,7 @@ class BrowserManagement(object):
                     # Gecko driver will only launch if FF version is 47 or above
                     optional_args["log_path"] = log_dir
 
-                ffbinary = FirefoxBinary(binary) if binary is not None else None
+                ffbinary = FirefoxBinary(binary) if binary not in [None, str(None)] else None
                 if gecko_path is not None:
                     optional_args["executable_path"] = gecko_path
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
