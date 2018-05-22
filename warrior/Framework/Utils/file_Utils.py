@@ -18,6 +18,7 @@ import os
 import sys
 import string
 import shutil
+import zipfile
 import string_Utils
 from print_Utils import print_info, print_error, print_warning, print_exception
 
@@ -1315,3 +1316,20 @@ def get_modified_files(src_dir, time_stamp, filetypes=""):
                     modified_files.append(full_path)
 
     return modified_files
+
+
+def convert_to_zip(file_path, compression_type=zipfile.ZIP_DEFLATED):
+    """
+    Compress the given file based on the compression_type using zipfile module.
+    Name of the zipped file will be same as the given file name
+    :Arguments:
+        1. file_path - File to be zipped
+        2. compression_type - ZIP_STORED(no compression) or ZIP_DEFLATED(requires zlib)
+    :Returns:
+        1. zipped_file - zipped file
+    """
+    zipped_file = os.path.splitext(file_path)[0] + ".zip"
+    zip_object = zipfile.ZipFile(zipped_file, 'w', compression_type)
+    zip_object.write(file_path, os.path.basename(file_path))
+    zip_object.close()
+    return zipped_file
