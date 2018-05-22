@@ -857,26 +857,26 @@ class WarriorCli(object):
 
     @staticmethod
     def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False,
-                               env=None, dimensions=None):
-        """ spawn a pexpect object with environment & dimensions variables """
+                               env=None, pty_dimensions=None):
+        """ spawn a pexpect object with environment & pty_dimensions variables """
 
         if not(str(escape).lower() == "yes" or str(escape).lower() == "true"):
             env = {}
 
-        sendDimensions = False
-        if dimensions is not None:
+        sendPtyDimensions = False
+        if pty_dimensions is not None:
             # 'dimensions' argument is supported in pexpect version 4.0 and above
             if LooseVersion(pexpect_obj.__version__) >= LooseVersion('4.0'):
-                sendDimensions = True
+                sendPtyDimensions = True
             else:
                 print_warning("Setting pseudo-terminal dimensions is not supported in "
                               "pexpect versions less than 4.0(installed pexpect "
                               "version: {}), 'dimensions' value will be default "
                               "to None".format(pexpect_obj.__version__))
 
-        if sendDimensions is True:
+        if sendPtyDimensions is True:
             child = pexpect_obj.spawn(command, timeout=int(timeout), env=env,
-                                      dimensions=dimensions)
+                                      dimensions=pty_dimensions)
         else:
             child = pexpect_obj.spawn(command, timeout=int(timeout), env=env)
 
@@ -1271,8 +1271,9 @@ class PexpectConnect(object):
                 10. escape(string) = true/false(to escape color codes by
                                      setting TERM as dump)
                 11. conn_type = session type(ssh/telnet)
-                12. dimensions(tuple) = size of the pseudo-terminal specified
-                                        as a two-entry tuple(rows, columns)
+                12. pty_dimensions(tuple) = size of the pseudo-terminal
+                                            specified as a two-entry
+                                            tuple(rows, columns)
          """
 
         self.pexpect = None
@@ -1294,19 +1295,20 @@ class PexpectConnect(object):
         self.conn_options = credentials.get('conn_options', '')
         self.custom_keystroke = credentials.get('custom_keystroke', '')
         self.escape = credentials.get('escape', False)
-        self.dimensions = credentials.get('dimensions', None)
-        # convert dimension value from string to tuple
-        if self.dimensions and isinstance(self.dimensions, str):
-            err_msg = ("Invalid value '{}' given for dimensions argument, it "
-                       "only accepts tuple value(It will be default to None).")
+        self.pty_dimensions = credentials.get('pty_dimensions', None)
+        # convert pty_dimensions value from string to tuple
+        if self.pty_dimensions and isinstance(self.pty_dimensions, str):
+            err_msg = ("Invalid value '{}' given for pty_dimensions "
+                       "argument, it only accepts tuple value"
+                       "(It will be default to None).")
             try:
-                self.dimensions = ast.literal_eval(self.dimensions)
+                self.pty_dimensions = ast.literal_eval(self.pty_dimensions)
             except Exception:
-                print_warning(err_msg.format(self.dimensions))
+                print_warning(err_msg.format(self.pty_dimensions))
             else:
-                if not isinstance(self.dimensions, tuple):
-                    print_warning(err_msg.format(self.dimensions))
-                    self.dimensions = None
+                if not isinstance(self.pty_dimensions, tuple):
+                    print_warning(err_msg.format(self.pty_dimensions))
+                    self.pty_dimensions = None
 
     def __import_pexpect(self):
         """Import the pexpect module """
@@ -1354,7 +1356,7 @@ class PexpectConnect(object):
                                                   self.timeout,
                                                   escape=self.escape,
                                                   env={"TERM": "dumb"},
-                                                  dimensions=self.dimensions)
+                                                  pty_dimensions=self.pty_dimensions)
 
         child.logfile = sys.stdout
 
@@ -1417,7 +1419,7 @@ class PexpectConnect(object):
                                                               self.timeout,
                                                               escape=self.escape,
                                                               env={"TERM": "dumb"},
-                                                              dimensions=self.dimensions)
+                                                              pty_dimensions=self.pty_dimensions)
                     print_debug("ReconnectSSH: cmd = %s" % command)
         except Exception as exception:
             print_exception(exception)
@@ -1446,7 +1448,7 @@ class PexpectConnect(object):
                                                   self.timeout,
                                                   env={"TERM": "dumb"},
                                                   escape=self.escape,
-                                                  dimensions=self.dimensions)
+                                                  pty_dimensions=self.pty_dimensions)
 
         try:
             child.logfile = open(self.logfile, "a")
