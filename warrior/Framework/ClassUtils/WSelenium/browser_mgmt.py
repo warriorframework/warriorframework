@@ -439,7 +439,7 @@ class BrowserManagement(object):
             Use firefox binary to find out firefox version
             before launching firefox in selenium
         """
-        if binary in [False, None]:
+        if binary in [False, None, str(None)]:
             binary = "firefox"
         version = False
         try:
