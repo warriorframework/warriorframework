@@ -25,7 +25,7 @@ matrix:
       dist: trusty
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes SELENIUM_3=yes
       addons:
-        firefox: "60.0.1"
+        firefox: "60.0"
         chrome: stable
     - sudo: false
       dist: trusty

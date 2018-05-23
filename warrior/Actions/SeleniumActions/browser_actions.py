@@ -47,7 +47,7 @@ class browser_actions(object):
         self.elementlocator_obj = elementlocator_actions()
 
     def browser_launch(self, system_name, browser_name="all", type="firefox",
-                       url=None, ip=None, remote=None, element_config_file=None, 
+                       url=None, ip=None, remote=None, element_config_file=None,
                        element_tag=None, headless_mode=None):
         """
         The Keyword would launch a browser and Navigate to the url, if provided by the user.
@@ -232,14 +232,14 @@ class browser_actions(object):
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             browser_optional_arg_keys = {"binary": None, "gecko_path": None, "proxy_ip": None, 
                                          "proxy_port": None, "gecko_log": None}
-            #Adding browser_optional_arg_keys to arguments to get corresponding values from datafile.
+            # Adding browser_optional_arg_keys to arguments to get corresponding values from datafile.
             arguments.update(browser_optional_arg_keys)
             browser_details = selenium_Utils.\
                               get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 # Call utils to launch correct type of browser
                 # Need to pass the binary, gecko_path, proxy_ip, proxy_port, gecko_log 
-                #  if specified in the datafile
+                # if specified in the datafile
                 browser_optional_args = {}
                 for arg in browser_optional_arg_keys:
                     if browser_details.get(arg) is not None:
