@@ -24,7 +24,7 @@ from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception,\
     print_warning
 from Framework.Utils.data_Utils import get_object_from_datarepository
-
+from Framework.Utils.file_Utils import fileExists
 
 try:
     from selenium import webdriver
@@ -540,6 +540,11 @@ class BrowserManagement(object):
                 # This is for internal testing needs...some https cert is not secure
                 # And firefox will need to know how to handle it
                 ff_capabilities['acceptInsecureCerts'] = True
+                
+                if not fileExists(str(binary)):
+                    print_warning("firefox binary '{}' does not exist, default "
+                                  "firefox will be used for execution.".format(binary))
+                    binary = None
 
                 # Force disable marionette, only needs in Selenium 3 with FF ver < 47
                 # Without these lines, selenium may encounter capability not found issue
