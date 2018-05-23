@@ -4,8 +4,8 @@
                 <Name>tc_verify_arith_exp</Name>
                 <Title>Test verify_arith_exp keyword</Title>
                 <Engineer>Warrior_user</Engineer>
-                <Date>2018-01-23</Date>
-                <Time>14:22</Time>
+                <Date>2018-04-02</Date>
+                <Time>13:58</Time>
                 <State/>
                 <InputDataFile>No_Data</InputDataFile>
                 <Datatype/>
@@ -55,21 +55,21 @@
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
-                        <Description>Verify simple arithmetic expression without env &amp; data_repo values</Description>
+                        <Description>Verify simple arithmetic expression without env &amp; data_repo values. Expression output will be stored in data_repo using default repo_key value.</Description>
                         <iteration_type type=""/>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_arith_exp" TS="4" draft="no">
+                <step Driver="common_driver" Keyword="verify_data" TS="4" draft="no">
                         <Arguments>
-                                <argument name="expected" value="${REPO.var2}"/>
-                                <argument name="comparison" value="eq"/>
-                                <argument name="expression" value="${ENV.var1}*2"/>
+                                <argument name="expected" value="30"/>
+                                <argument name="type" value="int"/>
+                                <argument name="object_key" value="verify_arith_exp.exp_op"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
-                        <Description>Verify simple arithmetic expression with env &amp; data_repo values</Description>
+                        <Description>Verify the expression output stored in default repo_key of data_repo</Description>
                         <iteration_type type=""/>
                         <context>positive</context>
                         <impact>impact</impact>
@@ -77,19 +77,63 @@
                 </step>
                 <step Driver="common_driver" Keyword="verify_arith_exp" TS="5" draft="no">
                         <Arguments>
-                                <argument name="expected" value="398.8333333333333"/>
+                                <argument name="expected" value="${REPO.var2}"/>
                                 <argument name="comparison" value="eq"/>
-                                <argument name="expression" value="${ENV.var1}/12+${REPO.var2}**2-(1^${ENV.var1})%3"/>
+                                <argument name="repo_key" value="user_key1"/>
+                                <argument name="expression" value="${ENV.var1}*2"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
-                        <Description>Verify complex arithmetic expression</Description>
+                        <Description>Verify simple arithmetic expression with env &amp; data_repo values. Expression output will be stored in data_repo using repo_key value.</Description>
                         <iteration_type type=""/>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_arith_exp" TS="6" draft="no">
+                <step Driver="common_driver" Keyword="verify_data" TS="6" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="20"/>
+                                <argument name="type" value="int"/>
+                                <argument name="object_key" value="verify_arith_exp.user_key1"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Verify the expression output stored in user_defined repo_key of data_repo</Description>
+                        <iteration_type type=""/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="7" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="398.8333333333333"/>
+                                <argument name="comparison" value="eq"/>
+                                <argument name="repo_key" value="user_key2"/>
+                                <argument name="expression" value="${ENV.var1}/12+${REPO.var2}**2-(1^${ENV.var1})%3"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Verify complex arithmetic expression.  Expression output will be stored in data_repo using repo_key value.</Description>
+                        <iteration_type type=""/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="8" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="398"/>
+                                <argument name="type" value="int"/>
+                                <argument name="object_key" value="verify_arith_exp.user_key2"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Verify the expression output stored in user_defined repo_key of data_repo(negative)</Description>
+                        <iteration_type type=""/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="9" draft="no">
                         <Arguments>
                                 <argument name="expected" value="${ENV.var1}"/>
                                 <argument name="comparison" value="ne"/>
@@ -103,7 +147,7 @@
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_arith_exp" TS="7" draft="no">
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="10" draft="no">
                         <Arguments>
                                 <argument name="expected" value="39"/>
                                 <argument name="comparison" value="gt"/>
@@ -117,7 +161,7 @@
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_arith_exp" TS="8" draft="no">
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="11" draft="no">
                         <Arguments>
                                 <argument name="expected" value="41"/>
                                 <argument name="comparison" value="ge"/>
@@ -131,7 +175,7 @@
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_arith_exp" TS="9" draft="no">
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="12" draft="no">
                         <Arguments>
                                 <argument name="expected" value="41"/>
                                 <argument name="comparison" value="lt"/>
@@ -145,7 +189,7 @@
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_arith_exp" TS="10" draft="no">
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="13" draft="no">
                         <Arguments>
                                 <argument name="expected" value="39"/>
                                 <argument name="comparison" value="le"/>
@@ -159,7 +203,7 @@
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_arith_exp" TS="11" draft="no">
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="14" draft="no">
                         <Arguments>
                                 <argument name="expected" value="39"/>
                                 <argument name="comparison" value="le"/>
@@ -173,20 +217,20 @@
                         <impact>noimpact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_data" TS="12" draft="no">
+                <step Driver="common_driver" Keyword="verify_data" TS="15" draft="no">
                         <Arguments>
                                 <argument name="expected" value="ERROR"/>
-                                <argument name="object_key" value="step_11_result"/>
+                                <argument name="object_key" value="step_14_result"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
-                        <Description>Verify Step 11 status as ERROR</Description>
-                        <iteration_type type="Standard"/>
+                        <Description>Verify Step 14 status as ERROR</Description>
+                        <iteration_type type=""/>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_arith_exp" TS="13" draft="no">
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="16" draft="no">
                         <Arguments>
                                 <argument name="expected" value="100"/>
                                 <argument name="comparison" value="ne"/>
@@ -195,25 +239,25 @@
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
                         <Description>Huge exponential operation, Expect ERROR status</Description>
-                        <iteration_type type="Standard"/>
+                        <iteration_type type=""/>
                         <context>positive</context>
                         <impact>noimpact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_data" TS="14" draft="no">
+                <step Driver="common_driver" Keyword="verify_data" TS="17" draft="no">
                         <Arguments>
                                 <argument name="expected" value="ERROR"/>
-                                <argument name="object_key" value="step_13_result"/>
+                                <argument name="object_key" value="step_16_result"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
-                        <Description>Verify Step 13 status as ERROR</Description>
-                        <iteration_type type="Standard"/>
+                        <Description>Verify Step 16 status as ERROR</Description>
+                        <iteration_type type=""/>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_arith_exp" TS="15" draft="no">
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="18" draft="no">
                         <Arguments>
                                 <argument name="expected" value="39"/>
                                 <argument name="comparison" value="le"/>
@@ -222,20 +266,20 @@
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
                         <Description>Non existing ENV variable, Expect ERROR status</Description>
-                        <iteration_type type="Standard"/>
+                        <iteration_type type=""/>
                         <context>positive</context>
                         <impact>noimpact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="common_driver" Keyword="verify_data" TS="16" draft="no">
+                <step Driver="common_driver" Keyword="verify_data" TS="19" draft="no">
                         <Arguments>
                                 <argument name="expected" value="ERROR"/>
-                                <argument name="object_key" value="step_15_result"/>
+                                <argument name="object_key" value="step_18_result"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
-                        <Description>Verify Step 15 status as ERROR</Description>
-                        <iteration_type type="Standard"/>
+                        <Description>Verify Step 18 status as ERROR</Description>
+                        <iteration_type type=""/>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
