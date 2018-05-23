@@ -61,7 +61,7 @@ def print_normal(message, *args):
 
 def print_without_logging(message, *args):
     """Prints without writing to log file"""
-    print_type = ""
+    print_type = "-N-"
     if len(args) > 0:
         for arg in args:
             message += arg + ", "
