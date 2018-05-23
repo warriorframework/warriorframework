@@ -136,7 +136,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
                                     data_repository['wt_ts_timestamp'])
         pj_junit_object.update_attr("onerror", onerror, "ts", data_repository['wt_ts_timestamp'])
 
-        string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR", "SKIP": "SKIP"}
+        string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR",
+                         "SKIP": "SKIP", "RAN": "RAN"}
 
         if str(testsuite_status).upper() in string_status.keys():
             data_repository['testsuite_{}_result'.format(suite_cntr)] = \

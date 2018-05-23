@@ -11,17 +11,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-"""This is the actions file, keywords are programmed here
-
-"""
 import os
 import Framework.Utils as Utils
-import Framework.Utils.rest_Utils
 from Framework.ClassUtils.rest_utils_class import WRest
 from Framework.Utils.testcase_Utils import pNote, pSubStep, \
     report_substep_status
-import json as JSON
-from Framework.Utils.print_Utils import print_exception
+
+"""This is the actions file, keywords are programmed here
+"""
 
 
 class RestActions(object):
@@ -158,7 +155,8 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069
+                    \\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             5. json: Represents the JSON data that goes into the body of the request
@@ -215,7 +213,8 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="file_group_name=path_to_file1, path_to_file2, path_to_file4, path_to_file5"/>
+                eg: <argument name="files" value="file_group_name=path_to_file1, path_to_file2,
+                                                                  path_to_file4, path_to_file5"/>
 
                 Pattern: tuple pattern
                 Multiple Values: As specified in Glossary
@@ -237,20 +236,24 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="(path_to_file1;content_type;(custom_header_1=value1; custom_header_2:value2)),
-                                                  (path_to_file2;content_type;(custom_header_1=value1)),
-                                                  (path_to_file3;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3))"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type;(custom_header_1=value1;
+                                                                  custom_header_2:value2)),
+                                     (path_to_file2;content_type;(custom_header_1=value1)),
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
-                eg: <argument name="files" value="(path_to_file1;content_type),
-                                                  path_to_file2,
-                                                  (path_to_file3;content_type;(custom_header_1=value1; custom_header_2=value2),
-                                                  (path_to_file4;content_type),
-                                                  (path_to_file5;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3)),
-                                                  path_to_file6, path_to_file_7"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type),
+                                     path_to_file2,
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2),
+                                     (path_to_file4;content_type),
+                                     (path_to_file5;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
+                                     path_to_file6, path_to_file_7"/>
 
             9. user: Represents the username that would be required for authentication.
 
@@ -345,7 +348,8 @@ class RestActions(object):
                 Both the inputs should be valid file paths.
                 Input 1 should be a file path to the certificate file
                 If the file specified in Input 1 contains the key, Input 2 is not necessary
-                If the key is stored in a different file, Input 2 should contain the path to that file.
+                If the key is stored in a different file, Input 2 should contain the path
+                to that file.
 
                 eg: path/to/certificate/file, path/to/key/file
                     path/to/certificate/file/which/contains/the/key
@@ -447,8 +451,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content
                <system_name>_<request_id>_api_response_content_<request_number>
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http post"
         pSubStep(wdesc)
         pNote(system_name)
@@ -465,7 +474,7 @@ class RestActions(object):
             get_user_specified_tag_values_in_tc(self.datafile, **arguments)
 
         if credentials["variable_config"] and  \
-                        credentials["variable_config"] is not None:
+           credentials["variable_config"] is not None:
             credentials["variable_config"] = Utils.rest_Utils.\
                 check_ext_get_abspath(credentials["variable_config"],
                                       os.path.dirname(self.datafile))
@@ -491,7 +500,9 @@ class RestActions(object):
                           .format(key, credentials[key]))
                 status, api_response = self.rest_object.post(**credentials)
                 result = result and status
-                output_dict.update(self.rest_object.update_output_dict(system_name, api_response, request_id, status, i+1))
+                output_dict.update(self.rest_object.
+                                   update_output_dict(system_name,
+                                                      api_response, request_id, status, i+1))
             else:
                 pNote("Request not sent.", "error")
                 status = False
@@ -611,7 +622,8 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="file_group_name=path_to_file1, path_to_file2, path_to_file4, path_to_file5"/>
+                eg: <argument name="files" value="file_group_name=path_to_file1,
+                                                    path_to_file2, path_to_file4, path_to_file5"/>
 
                 Pattern: tuple pattern
                 Multiple Values: As specified in Glossary
@@ -633,20 +645,24 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="(path_to_file1;content_type;(custom_header_1=value1; custom_header_2:value2)),
-                                                  (path_to_file2;content_type;(custom_header_1=value1)),
-                                                  (path_to_file3;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3))"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type;(custom_header_1=value1;
+                                                                  custom_header_2:value2)),
+                                     (path_to_file2;content_type;(custom_header_1=value1)),
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
-                eg: <argument name="files" value="(path_to_file1;content_type),
-                                                  path_to_file2,
-                                                  (path_to_file3;content_type;(custom_header_1=value1; custom_header_2=value2),
-                                                  (path_to_file4;content_type),
-                                                  (path_to_file5;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3)),
-                                                  path_to_file6, path_to_file_7"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type),
+                                     path_to_file2,
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2),
+                                     (path_to_file4;content_type),
+                                     (path_to_file5;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
+                                     path_to_file6, path_to_file_7"/>
 
             9. user: Represents the username that would be required for authentication.
 
@@ -741,7 +757,8 @@ class RestActions(object):
                 Both the inputs should be valid file paths.
                 Input 1 should be a file path to the certificate file
                 If the file specified in Input 1 contains the key, Input 2 is not necessary
-                If the key is stored in a different file, Input 2 should contain the path to that file.
+                If the key is stored in a different file, Input 2 should contain the path
+                to that file.
 
                 eg: path/to/certificate/file, path/to/key/file
                     path/to/certificate/file/which/contains/the/key
@@ -835,8 +852,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content_<request_number>
 
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'params': params,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http get to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -853,7 +875,7 @@ class RestActions(object):
             get_user_specified_tag_values_in_tc(self.datafile, **arguments)
 
         if credentials["variable_config"] and  \
-                        credentials["variable_config"] is not None:
+           credentials["variable_config"] is not None:
             credentials["variable_config"] = Utils.rest_Utils.\
                 check_ext_get_abspath(credentials["variable_config"],
                                       os.path.dirname(self.datafile))
@@ -879,7 +901,9 @@ class RestActions(object):
                           .format(key, credentials[key]))
                 status, api_response = self.rest_object.get(**credentials)
                 result = result and status
-                output_dict.update(self.rest_object.update_output_dict(system_name, api_response, request_id, status, i+1))
+                output_dict.update(self.rest_object.
+                                   update_output_dict(system_name,
+                                                      api_response, request_id, status, i+1))
             else:
                 pNote("Request not sent.", "error")
                 status = False
@@ -968,7 +992,8 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069
+                    \\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             6. json: Represents the JSON data that goes into the body of the request
@@ -1025,7 +1050,8 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="file_group_name=path_to_file1, path_to_file2, path_to_file4, path_to_file5"/>
+                eg: <argument name="files" value="file_group_name=path_to_file1,
+                                                    path_to_file2, path_to_file4, path_to_file5"/>
 
                 Pattern: tuple pattern
                 Multiple Values: As specified in Glossary
@@ -1047,20 +1073,24 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="(path_to_file1;content_type;(custom_header_1=value1; custom_header_2:value2)),
-                                                  (path_to_file2;content_type;(custom_header_1=value1)),
-                                                  (path_to_file3;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3))"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type;(custom_header_1=value1;
+                                                                  custom_header_2:value2)),
+                                     (path_to_file2;content_type;(custom_header_1=value1)),
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
-                eg: <argument name="files" value="(path_to_file1;content_type),
-                                                  path_to_file2,
-                                                  (path_to_file3;content_type;(custom_header_1=value1; custom_header_2=value2),
-                                                  (path_to_file4;content_type),
-                                                  (path_to_file5;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3)),
-                                                  path_to_file6, path_to_file_7"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type),
+                                     path_to_file2,
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2),
+                                     (path_to_file4;content_type),
+                                     (path_to_file5;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
+                                     path_to_file6, path_to_file_7"/>
 
             10. user: Represents the username that would be required for authentication.
 
@@ -1155,7 +1185,8 @@ class RestActions(object):
                 Both the inputs should be valid file paths.
                 Input 1 should be a file path to the certificate file
                 If the file specified in Input 1 contains the key, Input 2 is not necessary
-                If the key is stored in a different file, Input 2 should contain the path to that file.
+                If the key is stored in a different file, Input 2 should contain the path
+                to that file.
 
                 eg: path/to/certificate/file, path/to/key/file
                     path/to/certificate/file/which/contains/the/key
@@ -1248,14 +1279,18 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content
                <system_name>_<request_id>_api_response_content_<request_number>
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http put to the url"
         pSubStep(wdesc)
         pNote(system_name)
         output_dict = {}
         result = True
-        output_response = None
 
         for element in arguments:
             if element in ["json", "data", "variable_config"] \
@@ -1267,7 +1302,7 @@ class RestActions(object):
             get_user_specified_tag_values_in_tc(self.datafile, **arguments)
 
         if credentials["variable_config"] and  \
-                        credentials["variable_config"] is not None:
+           credentials["variable_config"] is not None:
             credentials["variable_config"] = Utils.rest_Utils.\
                 check_ext_get_abspath(credentials["variable_config"],
                                       os.path.dirname(self.datafile))
@@ -1293,7 +1328,9 @@ class RestActions(object):
                           .format(key, credentials[key]))
                 status, api_response = self.rest_object.put(**credentials)
                 result = result and status
-                output_dict.update(self.rest_object.update_output_dict(system_name, api_response, request_id, status, i+1))
+                output_dict.update(self.rest_object.
+                                   update_output_dict(system_name,
+                                                      api_response, request_id, status, i+1))
             else:
                 pNote("Request not sent.", "error")
                 status = False
@@ -1382,7 +1419,8 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069
+                    \\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             6. json: Represents the JSON data that goes into the body of the request
@@ -1439,7 +1477,8 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="file_group_name=path_to_file1, path_to_file2, path_to_file4, path_to_file5"/>
+                eg: <argument name="files" value="file_group_name=path_to_file1,
+                                                    path_to_file2, path_to_file4, path_to_file5"/>
 
                 Pattern: tuple pattern
                 Multiple Values: As specified in Glossary
@@ -1461,20 +1500,24 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="(path_to_file1;content_type;(custom_header_1=value1; custom_header_2:value2)),
-                                                  (path_to_file2;content_type;(custom_header_1=value1)),
-                                                  (path_to_file3;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3))"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type;(custom_header_1=value1;
+                                                                  custom_header_2:value2)),
+                                     (path_to_file2;content_type;(custom_header_1=value1)),
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
-                eg: <argument name="files" value="(path_to_file1;content_type),
-                                                  path_to_file2,
-                                                  (path_to_file3;content_type;(custom_header_1=value1; custom_header_2=value2),
-                                                  (path_to_file4;content_type),
-                                                  (path_to_file5;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3)),
-                                                  path_to_file6, path_to_file_7"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type),
+                                     path_to_file2,
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2),
+                                     (path_to_file4;content_type),
+                                     (path_to_file5;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
+                                     path_to_file6, path_to_file_7"/>
 
             10. user: Represents the username that would be required for authentication.
 
@@ -1569,7 +1612,8 @@ class RestActions(object):
                 Both the inputs should be valid file paths.
                 Input 1 should be a file path to the certificate file
                 If the file specified in Input 1 contains the key, Input 2 is not necessary
-                If the key is stored in a different file, Input 2 should contain the path to that file.
+                If the key is stored in a different file, Input 2 should contain the path
+                to that file.
 
                 eg: path/to/certificate/file, path/to/key/file
                     path/to/certificate/file/which/contains/the/key
@@ -1662,8 +1706,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content
                <system_name>_<request_id>_api_response_content_<request_number>
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http patch to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -1680,10 +1729,10 @@ class RestActions(object):
             get_user_specified_tag_values_in_tc(self.datafile, **arguments)
 
         if credentials["variable_config"] and  \
-                        credentials["variable_config"] is not None:
+           credentials["variable_config"] is not None:
             credentials["variable_config"] = Utils.rest_Utils.\
                 check_ext_get_abspath(credentials["variable_config"],
-                                           os.path.dirname(self.datafile))
+                                      os.path.dirname(self.datafile))
 
         for element in credentials:
             credentials = Utils.rest_Utils.\
@@ -1706,7 +1755,9 @@ class RestActions(object):
                           .format(key, credentials[key]))
                 status, api_response = self.rest_object.patch(**credentials)
                 result = result and status
-                output_dict.update(self.rest_object.update_output_dict(system_name, api_response, request_id, status, i+1))
+                output_dict.update(self.rest_object.
+                                   update_output_dict(system_name,
+                                                      api_response, request_id, status, i+1))
             else:
                 pNote("Request not sent.", "error")
                 status = False
@@ -1795,7 +1846,8 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069
+                    \\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             6. json: Represents the JSON data that goes into the body of the request
@@ -1852,7 +1904,8 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="file_group_name=path_to_file1, path_to_file2, path_to_file4, path_to_file5"/>
+                eg: <argument name="files" value="file_group_name=path_to_file1,
+                                                    path_to_file2, path_to_file4, path_to_file5"/>
 
                 Pattern: tuple pattern
                 Multiple Values: As specified in Glossary
@@ -1874,20 +1927,24 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="(path_to_file1;content_type;(custom_header_1=value1; custom_header_2:value2)),
-                                                  (path_to_file2;content_type;(custom_header_1=value1)),
-                                                  (path_to_file3;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3))"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type;(custom_header_1=value1;
+                                                                  custom_header_2:value2)),
+                                     (path_to_file2;content_type;(custom_header_1=value1)),
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
-                eg: <argument name="files" value="(path_to_file1;content_type),
-                                                  path_to_file2,
-                                                  (path_to_file3;content_type;(custom_header_1=value1; custom_header_2=value2),
-                                                  (path_to_file4;content_type),
-                                                  (path_to_file5;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3)),
-                                                  path_to_file6, path_to_file_7"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type),
+                                     path_to_file2,
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2),
+                                     (path_to_file4;content_type),
+                                     (path_to_file5;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
+                                     path_to_file6, path_to_file_7"/>
 
             10. user: Represents the username that would be required for authentication.
 
@@ -1982,7 +2039,8 @@ class RestActions(object):
                 Both the inputs should be valid file paths.
                 Input 1 should be a file path to the certificate file
                 If the file specified in Input 1 contains the key, Input 2 is not necessary
-                If the key is stored in a different file, Input 2 should contain the path to that file.
+                If the key is stored in a different file, Input 2 should contain the path
+                to that file.
 
                 eg: path/to/certificate/file, path/to/key/file
                     path/to/certificate/file/which/contains/the/key
@@ -2075,8 +2133,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content
                <system_name>_<request_id>_api_response_content_<request_number>
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http delete to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -2093,7 +2156,7 @@ class RestActions(object):
             get_user_specified_tag_values_in_tc(self.datafile, **arguments)
 
         if credentials["variable_config"] and  \
-                        credentials["variable_config"] is not None:
+           credentials["variable_config"] is not None:
             credentials["variable_config"] = Utils.rest_Utils.\
                 check_ext_get_abspath(credentials["variable_config"],
                                       os.path.dirname(self.datafile))
@@ -2119,7 +2182,9 @@ class RestActions(object):
                           .format(key, credentials[key]))
                 status, api_response = self.rest_object.delete(**credentials)
                 result = result and status
-                output_dict.update(self.rest_object.update_output_dict(system_name, api_response, request_id, status, i+1))
+                output_dict.update(self.rest_object.
+                                   update_output_dict(system_name,
+                                                      api_response, request_id, status, i+1))
             else:
                 pNote("Request not sent.", "error")
                 status = False
@@ -2208,7 +2273,8 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069
+                    \\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             6. json: Represents the JSON data that goes into the body of the request
@@ -2265,7 +2331,8 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="file_group_name=path_to_file1, path_to_file2, path_to_file4, path_to_file5"/>
+                eg: <argument name="files" value="file_group_name=path_to_file1,
+                                                    path_to_file2, path_to_file4, path_to_file5"/>
 
                 Pattern: tuple pattern
                 Multiple Values: As specified in Glossary
@@ -2287,20 +2354,24 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="(path_to_file1;content_type;(custom_header_1=value1; custom_header_2:value2)),
-                                                  (path_to_file2;content_type;(custom_header_1=value1)),
-                                                  (path_to_file3;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3))"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type;(custom_header_1=value1;
+                                                                  custom_header_2:value2)),
+                                     (path_to_file2;content_type;(custom_header_1=value1)),
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
-                eg: <argument name="files" value="(path_to_file1;content_type),
-                                                  path_to_file2,
-                                                  (path_to_file3;content_type;(custom_header_1=value1; custom_header_2=value2),
-                                                  (path_to_file4;content_type),
-                                                  (path_to_file5;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3)),
-                                                  path_to_file6, path_to_file_7"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type),
+                                     path_to_file2,
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2),
+                                     (path_to_file4;content_type),
+                                     (path_to_file5;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
+                                     path_to_file6, path_to_file_7"/>
 
             10. user: Represents the username that would be required for authentication.
 
@@ -2395,7 +2466,8 @@ class RestActions(object):
                 Both the inputs should be valid file paths.
                 Input 1 should be a file path to the certificate file
                 If the file specified in Input 1 contains the key, Input 2 is not necessary
-                If the key is stored in a different file, Input 2 should contain the path to that file.
+                If the key is stored in a different file, Input 2 should contain the path
+                to that file.
 
                 eg: path/to/certificate/file, path/to/key/file
                     path/to/certificate/file/which/contains/the/key
@@ -2488,8 +2560,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content
                <system_name>_<request_id>_api_response_content_<request_number>
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http options to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -2501,16 +2578,16 @@ class RestActions(object):
                     arguments[element] and arguments[element] is not None:
                 arguments[element] = Utils.rest_Utils.\
                     check_ext_get_abspath(arguments[element],
-                                               self.tc_path)
+                                          self.tc_path)
 
         credentials = Utils.data_Utils.\
             get_user_specified_tag_values_in_tc(self.datafile, **arguments)
 
         if credentials["variable_config"] and \
-                        credentials["variable_config"] is not None:
+           credentials["variable_config"] is not None:
             credentials["variable_config"] = Utils.rest_Utils.\
                 check_ext_get_abspath(credentials["variable_config"],
-                                           os.path.dirname(self.datafile))
+                                      os.path.dirname(self.datafile))
 
         for element in credentials:
             credentials = Utils.rest_Utils.\
@@ -2533,7 +2610,9 @@ class RestActions(object):
                           .format(key, credentials[key]))
                 status, api_response = self.rest_object.options(**credentials)
                 result = result and status
-                output_dict.update(self.rest_object.update_output_dict(system_name, api_response, request_id, status, i+1))
+                output_dict.update(self.rest_object.
+                                   update_output_dict(system_name,
+                                                      api_response, request_id, status, i+1))
             else:
                 pNote("Request not sent.", "error")
                 status = False
@@ -2622,7 +2701,8 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069
+                    \\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             6. json: Represents the JSON data that goes into the body of the request
@@ -2679,7 +2759,8 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="file_group_name=path_to_file1, path_to_file2, path_to_file4, path_to_file5"/>
+                eg: <argument name="files" value="file_group_name=path_to_file1,
+                                                    path_to_file2, path_to_file4, path_to_file5"/>
 
                 Pattern: tuple pattern
                 Multiple Values: As specified in Glossary
@@ -2701,20 +2782,24 @@ class RestActions(object):
                 Max Numbers of Values Accepted: No Restrictions
                 Characters Accepted: All Characters
 
-                eg: <argument name="files" value="(path_to_file1;content_type;(custom_header_1=value1; custom_header_2:value2)),
-                                                  (path_to_file2;content_type;(custom_header_1=value1)),
-                                                  (path_to_file3;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3))"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type;(custom_header_1=value1;
+                                                                  custom_header_2:value2)),
+                                     (path_to_file2;content_type;(custom_header_1=value1)),
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3))"/>
 
-                eg: <argument name="files" value="(path_to_file1;content_type),
-                                                  path_to_file2,
-                                                  (path_to_file3;content_type;(custom_header_1=value1; custom_header_2=value2),
-                                                  (path_to_file4;content_type),
-                                                  (path_to_file5;content_type;(custom_header_1=value1;
-                                                                               custom_header_2=value2;
-                                                                               custom_header_3=value3)),
-                                                  path_to_file6, path_to_file_7"/>
+                eg: <argument name="files"
+                              value="(path_to_file1;content_type),
+                                     path_to_file2,
+                                     (path_to_file3;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2),
+                                     (path_to_file4;content_type),
+                                     (path_to_file5;content_type;(custom_header_1=value1;
+                                                                  custom_header_2=value2;
+                                                                  custom_header_3=value3)),
+                                     path_to_file6, path_to_file_7"/>
 
             10. user: Represents the username that would be required for authentication.
 
@@ -2809,7 +2894,8 @@ class RestActions(object):
                 Both the inputs should be valid file paths.
                 Input 1 should be a file path to the certificate file
                 If the file specified in Input 1 contains the key, Input 2 is not necessary
-                If the key is stored in a different file, Input 2 should contain the path to that file.
+                If the key is stored in a different file, Input 2 should contain the path
+                to that file.
 
                 eg: path/to/certificate/file, path/to/key/file
                     path/to/certificate/file/which/contains/the/key
@@ -2903,8 +2989,13 @@ class RestActions(object):
                <system_name>_<request_id>_api_response_content_<request_number>
 
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name, 'variable_config': variable_config,
+                     'request_id': request_id, 'url': url, 'data': data,
+                     'expected_response': expected_response, 'headers': headers,
+                     'user': user, 'password': password, 'allow_redirects': allow_redirects,
+                     'timeout': timeout, 'json': json, 'cookies': cookies,
+                     'files': files, 'proxies': proxies, 'verify': verify,
+                     'stream': stream, 'cert': cert, 'var_sub': var_sub}
         wdesc = "Perform a http head to the url"
         pSubStep(wdesc)
         pNote(system_name)
@@ -2921,7 +3012,7 @@ class RestActions(object):
             get_user_specified_tag_values_in_tc(self.datafile, **arguments)
 
         if credentials["variable_config"] and  \
-                        credentials["variable_config"] is not None:
+           credentials["variable_config"] is not None:
             credentials["variable_config"] = Utils.rest_Utils.\
                 check_ext_get_abspath(credentials["variable_config"],
                                       os.path.dirname(self.datafile))
@@ -2947,7 +3038,9 @@ class RestActions(object):
                           .format(key, credentials[key]))
                 status, api_response = self.rest_object.head(**credentials)
                 result = result and status
-                output_dict.update(self.rest_object.update_output_dict(system_name, api_response, request_id, status, i+1))
+                output_dict.update(self.rest_object.
+                                   update_output_dict(system_name,
+                                                      api_response, request_id, status, i+1))
             else:
                 pNote("Request not sent.", "error")
                 status = False
@@ -2960,10 +3053,9 @@ class RestActions(object):
         report_substep_status(result)
         return result, output_dict
 
-    
     def verify_response(self, system_name, expected_api_response,
-                        expected_response_type, comparison_mode, 
-                        request_id = None, generate_output_diff_file="Yes"):
+                        expected_response_type, comparison_mode,
+                        request_id=None, generate_output_diff_file="Yes"):
         """
             Verifies the api response with the expected response
             and returns True or False
@@ -3013,11 +3105,11 @@ class RestActions(object):
                    This is the mode in which you wish to compare
                    The supported comparison modes are
                    file, string, regex=expression, jsonpath=path, xpath=path
-                   If you have given comparison_mode as file or string then 
+                   If you have given comparison_mode as file or string then
                    whole comparison will take place
                    If you wish to check content of expected response and
                    if it is only one value_check pass it in either data file
-                   or test case file 
+                   or test case file
                    If it is more than one value_check
                    then pass it in data file in comparison_mode and expected_api_response
                    tags under system
@@ -3043,46 +3135,51 @@ class RestActions(object):
                     then returns True else False.
 
         """
-        arguments = locals()
-        arguments.pop('self')
+        arguments = {'system_name': system_name,
+                     'expected_api_response': expected_api_response,
+                     'expected_response_type': expected_response_type,
+                     'comparison_mode': comparison_mode,
+                     'request_id': request_id,
+                     'generate_output_diff_file': generate_output_diff_file}
         wdesc = "Verify API response with the expected API response"
         pNote(wdesc)
         output_file = self.logsdir+"/difference_output.log"
         output_file = Utils.file_Utils.addTimeDate(output_file)
-        generate_output_diff_file = Utils.rest_Utils.resolve_value_of_verify(
-                                            generate_output_diff_file)
+        generate_output_diff_file = Utils.rest_Utils.\
+            resolve_value_of_verify(generate_output_diff_file)
 
         try:
             arguments["expected_api_response"] = Utils.rest_Utils.\
-            check_ext_get_abspath(arguments["expected_api_response"],
+                      check_ext_get_abspath(arguments["expected_api_response"],
                                             self.tc_path)
 
             credentials = Utils.data_Utils.\
                 get_user_specified_tag_values_in_tc(self.datafile, **arguments)
 
             credentials["expected_api_response"] = Utils.rest_Utils.\
-            check_ext_get_abspath(credentials["expected_api_response"],
-                                        os.path.dirname(self.datafile))
+                check_ext_get_abspath(credentials["expected_api_response"],
+                                      os.path.dirname(self.datafile))
 
             if request_id:
                 response = Utils.data_Utils.get_object_from_datarepository(
                     "{0}_{1}_api_response_object".format(system_name,
-                                                    credentials['request_id']))
+                                                         credentials['request_id']))
             else:
                 response = Utils.data_Utils.get_object_from_datarepository(
                     "{0}_api_response_object".format(system_name))
         except Exception as exception:
             pNote(exception, "error")
             return False
-        if any([x in credentials["comparison_mode"] for x in ["xpath=", "jsonpath=", "regex="]]) or \
-            credentials["comparison_mode"] == "":
-            status = self.rest_object.cmp_content_response(self.datafile, system_name, response, credentials['expected_api_response'],
+        if any([x in credentials["comparison_mode"] for x in ["xpath=", "jsonpath=", "regex="]]) \
+           or credentials["comparison_mode"] == "":
+            status = self.rest_object.cmp_content_response(self.datafile, system_name, response,
+                                                           credentials['expected_api_response'],
                                                            credentials['expected_response_type'],
                                                            credentials['comparison_mode'])
         else:
             status = self.rest_object.cmp_response(response,
-                     credentials['expected_api_response'],
-                     credentials['expected_response_type'],
-                     output_file,
-                     credentials['generate_output_diff_file'])
+                                                   credentials['expected_api_response'],
+                                                   credentials['expected_response_type'],
+                                                   output_file,
+                                                   credentials['generate_output_diff_file'])
         return status

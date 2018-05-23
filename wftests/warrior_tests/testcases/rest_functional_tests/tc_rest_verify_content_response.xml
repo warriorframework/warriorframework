@@ -199,5 +199,55 @@
 			<context>negative</context>
 			<impact>impact</impact>
 		</step>
+		<step Driver="rest_driver" Keyword="perform_http_get" TS="15">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/response-headers?json1=string&amp;key2=value"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the GET capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="16">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="string"/>
+				<argument name="expected_response_type" value="json"/>
+				<argument name="comparison_mode" value="jsonpath=json1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="17">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="val.*"/>
+				<argument name="expected_response_type" value="json"/>
+				<argument name="comparison_mode" value="jsonpath=key2"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response(Regex search - Pass)</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="18">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="value"/>
+				<argument name="expected_response_type" value="json"/>
+				<argument name="comparison_mode" value="jsonpath=json1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response(Fail scenario)</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
 	</Steps>
 </Testcase>
