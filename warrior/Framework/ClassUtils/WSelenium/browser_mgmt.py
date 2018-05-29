@@ -522,8 +522,12 @@ class BrowserManagement(object):
         proxy_port = kwargs.get("proxy_port", None)
         ff_profile = None
         # if firefox is being used with proxy, set the profile here
+        # if firefox_proxy details are not given, set profile_dir
+        # as the ff_profile.
         if proxy_ip is not None and proxy_port is not None:
             ff_profile = self.set_firefox_proxy(profile_dir, proxy_ip, proxy_port)
+        else:
+            ff_profile = profile_dir
         log_dir = get_object_from_datarepository("wt_logsdir") if \
                   gecko_log in [None, False] else gecko_log
         log_dir = os.path.join(log_dir, "gecko_"+kwargs.get("browser_name", "default")+".log")
