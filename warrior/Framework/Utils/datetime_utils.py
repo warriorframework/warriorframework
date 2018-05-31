@@ -29,8 +29,12 @@ def wait_for_timeout(wait_time, unit="SECONDS", notify_count=4):
                   4. Day
                   5. Month (30 days is assumed for one Month)
                   6. Year (365 days is assumed for one Year)
-        3.notify_count= the number of times the user needs to be notified
-                         on the wait time
+        3.notify_count: number of times, the user needs to be notified
+                        during wait time. Default value is 4.
+                        Ex: If the notify_count=4 and timeout=400
+                        the timeout is divided into 4 partitions
+                        each as 100 and notified to user as
+                        100(25%),200(50%),300(75%),400(100%)
     :return:
         Status = Bool
     """

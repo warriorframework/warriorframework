@@ -39,13 +39,17 @@ class CommonActions(object):
         self.filename = Utils.config_Utils.filename
         self.logfile = Utils.config_Utils.logfile
 
-    def wait_for_timeout(self, timeout, notify_count):
+    def wait_for_timeout(self, timeout, notify_count=4):
         """waits (sleeps) for the time provided
 
         :Arguments:
             1. timeout= time to wait in seconds
-            2. notify_count= the number of times the user needs to be notified
-                             on the wait time
+            2. notify_count= number of times, the user needs to be notified
+                             during wait time. Default value is 4.
+                             Ex: If the notify_count=4 and timeout=400
+                             the timeout is divided into 4 partitions
+                             each as 100 and notified to user as
+                             100(25%),200(50%),300(75%),400(100%)
         :Returns:
             1. status (bool)
         """
