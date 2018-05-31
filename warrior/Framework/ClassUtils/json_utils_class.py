@@ -253,7 +253,7 @@ class JsonUtils(object):
         status = True
         json_response = json.loads(response)
         for index, jsonpath in enumerate(list_of_jsonpath):
-            json_path = jsonpath.strip("jsonpath=")
+            json_path = jsonpath.strip().replace("jsonpath=", "")
             value = self.get_value_for_nested_key(json_response, json_path)
             # Equality_match: Check if the expected response is equal to API response
             match = True if value == list_of_expected_api_responses[index] else False

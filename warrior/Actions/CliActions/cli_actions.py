@@ -36,7 +36,7 @@ class CliActions(object):
 
     @mockready
     def connect(self, system_name, session_name=None, prompt=".*(%|#|\$)",
-                ip_type="ip", via_host=None):
+                ip_type="ip", via_host=None, tuple_pty_dimensions=None):
         """
         This is a generic connect that can connect to ssh/telnet based
         on the conn_type provided by the user in the input datafile.
@@ -72,6 +72,8 @@ class CliActions(object):
             10.custom_keystroke = a keystroke that will be sent after the initial
                 timeout, in case of server require a keystroke to show any prompt.
                 Default is the enter key
+            11.pty_dimensions = size of the pseudo-terminal specified as a
+                two-entry tuple (rows, columns), eg. (24, 80).
 
 
         :Arguments:
@@ -95,6 +97,8 @@ class CliActions(object):
             5. via_host = Name of the system in the data file to be used as an
                 intermediate system for establishing nested connections,
                 currently it is applicable only for SSH connections.
+            6. tuple_pty_dimensions(tuple) = size of the pseudo-terminal specified as a
+                two-entry tuple(rows, columns), eg. (24, 80).
 
         :Returns:
             1. status(bool)= True / False.
@@ -130,11 +134,14 @@ class CliActions(object):
 
             if conn_type is not False:
                 if conn_type == "ssh":
-                    result, output_dict = self.connect_ssh(call_system_name, session_name, prompt,
-                                                           ip_type, via_host=via_host)
+                    result, output_dict = \
+                     self.connect_ssh(call_system_name, session_name, prompt,
+                                      ip_type, via_host=via_host,
+                                      tuple_pty_dimensions=tuple_pty_dimensions)
                 elif conn_type == "telnet":
-                    result, output_dict = self.connect_telnet(call_system_name, session_name,
-                                                              ip_type)
+                    result, output_dict = \
+                     self.connect_telnet(call_system_name, session_name, ip_type,
+                                         tuple_pty_dimensions=tuple_pty_dimensions)
                 else:
                     pNote("<conn_type>={0} provided for '{1}' is  not "
                           "supported".format(conn_type, call_system_name), "error")
@@ -217,7 +224,8 @@ class CliActions(object):
 
     @mockready
     def connect_ssh(self, system_name, session_name=None, prompt=".*(%|#|\$)",
-                    ip_type="ip", int_timeout=60, via_host=None):
+                    ip_type="ip", int_timeout=60, via_host=None,
+                    tuple_pty_dimensions=None):
         """Connects to the ssh port of the the given system or subsystems
 
         :Datafile usage:
@@ -246,6 +254,8 @@ class CliActions(object):
             8. custom_keystroke = a keystroke that will be sent after the initial
                 timeout, in case of server require a keystroke to show any prompt.
                 Default is the enter key
+            9. pty_dimensions = size of the pseudo-terminal specified as a
+                two-entry tuple(rows, columns), eg. (24, 80).
 
         :Arguments:
             1. system_name (string) = This can be name of the\
@@ -269,6 +279,8 @@ class CliActions(object):
             6. via_host(string) = name of the system in the data file to be
                 used as an intermediate system for establishing nested ssh
                 connections.
+            7. tuple_pty_dimensions(tuple) = size of the pseudo-terminal specified as a
+                two-entry tuple(rows, columns), eg. (24, 80).
 
         :Returns:
             1. status(bool)= True / False.
@@ -299,7 +311,8 @@ class CliActions(object):
             credentials = get_credentials(self.datafile, call_system_name,
                                           [ip_type, 'ssh_port', 'username',
                                            'password', 'prompt', 'timeout',
-                                           'conn_options', 'custom_keystroke', 'escape'])
+                                           'conn_options', 'custom_keystroke',
+                                           'escape', 'pty_dimensions'])
             # parse more things here
             pNote("system={0}, session={1}".format(call_system_name, session_name))
             session_id = get_session_id(call_system_name, session_name)
@@ -314,6 +327,8 @@ class CliActions(object):
                     credentials["prompt"] = prompt
                 if not credentials["timeout"]:
                     credentials["timeout"] = int_timeout
+                if not credentials['pty_dimensions']:
+                    credentials["pty_dimensions"] = tuple_pty_dimensions
                 credentials["password"] = decrypt(credentials["password"])
 
                 if ip_type != "ip":
@@ -383,7 +398,8 @@ class CliActions(object):
         return status, output_dict
 
     @mockready
-    def connect_telnet(self, system_name, session_name=None, ip_type="ip", int_timeout=60):
+    def connect_telnet(self, system_name, session_name=None, ip_type="ip",
+                       int_timeout=60, tuple_pty_dimensions=None):
         """Connects to the telnet port of the the given system and/or subsystem and creates a
         pexpect session object for the system
 
@@ -417,6 +433,8 @@ class CliActions(object):
             8. custom_keystroke = a keystroke that will be sent after the initial\
                 timeout, in case of server require a keystroke to show any prompt.
                 Default is the enter key
+            9. pty_dimensions = size of the pseudo-terminal specified as a
+                two-entry tuple(rows, columns), eg. (24, 80).
 
         :Arguments:
             1. system_name (string) = This can be name of the\
@@ -434,8 +452,10 @@ class CliActions(object):
                     system_name="system_name[all]".
             2. session_name(string) = name of the session to the system
             3. ip_type(string) = type of the ip address(ip, ipv4, ipv6, dns, etc).
-            4. timeout(int) = use this to set timeout value for commands\
+            4. int_timeout(int) = use this to set timeout value for commands
                 issued in this session.
+            5. tuple_pty_dimensions(tuple) = size of the pseudo-terminal specified as a
+                two-entry tuple(rows, columns), eg. (24, 80).
 
         :Returns:
             1. status(bool)= True / False.
@@ -467,8 +487,9 @@ class CliActions(object):
                 call_system_name += "[{}]".format(subsystem_name)
             credentials = get_credentials(self.datafile, call_system_name,
                                           [ip_type, 'telnet_port', 'username',
-                                           'prompt', 'password', 'timeout', 'conn_options',
-                                           'custom_keystroke', 'escape'])
+                                           'prompt', 'password', 'timeout',
+                                           'conn_options', 'custom_keystroke',
+                                           'escape', 'pty_dimensions'])
             pNote("system={0}, session={1}".format(call_system_name, session_name))
             Utils.testcase_Utils.pNote(Utils.file_Utils.getDateTime())
             session_id = get_session_id(call_system_name, session_name)
@@ -482,6 +503,8 @@ class CliActions(object):
                                                                                     session_id))
                 if not credentials["timeout"]:
                     credentials["timeout"] = int_timeout
+                if not credentials['pty_dimensions']:
+                    credentials["pty_dimensions"] = tuple_pty_dimensions
                 credentials["password"] = decrypt(credentials["password"])
 
                 if ip_type != "ip":

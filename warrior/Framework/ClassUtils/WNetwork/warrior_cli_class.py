@@ -19,6 +19,8 @@ import subprocess
 import getpass
 import xml.etree.ElementTree as ET
 import Tools
+import ast
+from distutils.version import LooseVersion
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
  print_warning, print_exception, print_error, print_without_logging
@@ -391,7 +393,7 @@ class WarriorCli(object):
                         pNote(save_msg2.format(pattern))
                     resp_key_list.append(dict(zip(keys, temp_resp_key_list)))
             else:
-                temp_resp_dict = {resp_ref: ""}
+                temp_resp_dict = {resp_ref: response}
                 resp_key_list.append(temp_resp_dict)
         else:
             temp_resp_dict = {resp_ref: ""}
@@ -855,15 +857,29 @@ class WarriorCli(object):
 
     @staticmethod
     def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False,
-                               env=None):
+                               env=None, pty_dimensions=None):
+        """ spawn a pexpect object with environment & pty_dimensions variables """
 
-        """ spawn a pexpect object with environment variable """
-        if env is None:
+        if not(str(escape).lower() == "yes" or str(escape).lower() == "true"):
             env = {}
-        if str(escape).lower() == "yes" or str(escape).lower() == "true":
-            child = pexpect_obj.spawn(command, timeout=int(timeout), env=env)
+
+        sendPtyDimensions = False
+        if pty_dimensions is not None:
+            # 'dimensions' argument is supported in pexpect version 4.0 and above
+            if LooseVersion(pexpect_obj.__version__) >= LooseVersion('4.0'):
+                sendPtyDimensions = True
+            else:
+                print_warning("Setting pseudo-terminal dimensions is not supported in "
+                              "pexpect versions less than 4.0(installed pexpect "
+                              "version: {}), 'dimensions' value will be default "
+                              "to None".format(pexpect_obj.__version__))
+
+        if sendPtyDimensions is True:
+            child = pexpect_obj.spawn(command, timeout=int(timeout), env=env,
+                                      dimensions=pty_dimensions)
         else:
-            child = pexpect_obj.spawn(command, timeout=int(timeout))
+            child = pexpect_obj.spawn(command, timeout=int(timeout), env=env)
+
         return child
 
     @staticmethod
@@ -1255,6 +1271,9 @@ class PexpectConnect(object):
                 10. escape(string) = true/false(to escape color codes by
                                      setting TERM as dump)
                 11. conn_type = session type(ssh/telnet)
+                12. pty_dimensions(tuple) = size of the pseudo-terminal
+                                            specified as a two-entry
+                                            tuple(rows, columns)
          """
 
         self.pexpect = None
@@ -1276,6 +1295,20 @@ class PexpectConnect(object):
         self.conn_options = credentials.get('conn_options', '')
         self.custom_keystroke = credentials.get('custom_keystroke', '')
         self.escape = credentials.get('escape', False)
+        self.pty_dimensions = credentials.get('pty_dimensions', None)
+        # convert pty_dimensions value from string to tuple
+        if self.pty_dimensions and isinstance(self.pty_dimensions, str):
+            err_msg = ("Invalid value '{}' given for pty_dimensions "
+                       "argument, it only accepts tuple value"
+                       "(It will be default to None).")
+            try:
+                self.pty_dimensions = ast.literal_eval(self.pty_dimensions)
+            except Exception:
+                print_warning(err_msg.format(self.pty_dimensions))
+            else:
+                if not isinstance(self.pty_dimensions, tuple):
+                    print_warning(err_msg.format(self.pty_dimensions))
+                    self.pty_dimensions = None
 
     def __import_pexpect(self):
         """Import the pexpect module """
@@ -1321,7 +1354,9 @@ class PexpectConnect(object):
         print_debug("connectSSH: cmd = %s" % command)
         child = WarriorCli.pexpect_spawn_with_env(self.pexpect, command,
                                                   self.timeout,
-                                                  env={"TERM": "dumb"})
+                                                  escape=self.escape,
+                                                  env={"TERM": "dumb"},
+                                                  pty_dimensions=self.pty_dimensions)
 
         child.logfile = sys.stdout
 
@@ -1380,8 +1415,11 @@ class PexpectConnect(object):
                     print_debug("SSH Host Key is changed - Remove it from "
                                 "known_hosts file : cmd = %s" % cmd)
                     subprocess.call(cmd, shell=True)
-                    child = self.pexpect.spawn(command,
-                                               timeout=int(self.timeout))
+                    child = WarriorCli.pexpect_spawn_with_env(self.pexpect, command,
+                                                              self.timeout,
+                                                              escape=self.escape,
+                                                              env={"TERM": "dumb"},
+                                                              pty_dimensions=self.pty_dimensions)
                     print_debug("ReconnectSSH: cmd = %s" % command)
         except Exception as exception:
             print_exception(exception)
@@ -1408,7 +1446,9 @@ class PexpectConnect(object):
 
         child = WarriorCli.pexpect_spawn_with_env(self.pexpect, command,
                                                   self.timeout,
-                                                  env={"TERM": "dumb"})
+                                                  env={"TERM": "dumb"},
+                                                  escape=self.escape,
+                                                  pty_dimensions=self.pty_dimensions)
 
         try:
             child.logfile = open(self.logfile, "a")
