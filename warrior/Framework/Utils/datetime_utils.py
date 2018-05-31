@@ -16,7 +16,7 @@ import time
 from Framework.Utils.print_Utils import print_without_logging, print_error, print_warning
 
 
-def wait_for_timeout(wait_time, unit="SECONDS"):
+def wait_for_timeout(wait_time, unit="SECONDS", notify_count=4):
     """
     Warrior, Wait till the time is a generic wait. The Wait is informed to the user as a countdown
 
@@ -29,6 +29,8 @@ def wait_for_timeout(wait_time, unit="SECONDS"):
                   4. Day
                   5. Month (30 days is assumed for one Month)
                   6. Year (365 days is assumed for one Year)
+        3.notify_count= the number of times the user needs to be notified
+                         on the wait time
     :return:
         Status = Bool
     """
@@ -49,12 +51,17 @@ def wait_for_timeout(wait_time, unit="SECONDS"):
         else:
             print_warning('The supported unit of seconds is Seconds/Minutes/Hours/Months/Years'
                           'The default unit of Seconds would be used')
-        for sec in range(int(seconds), -1, -1):
-            # the cursor value makes the wait time print like a count down
-            cursor = '\033[1A\r' if sec > 0 else ''
-            print_without_logging("Remaining time available is {0} seconds {1}"
-                                  .format(sec, cursor))
-            time.sleep(1)
+        # To notify user on the wait time, based on the notify value provided,
+        # Default notify value is 4
+        notify_count = int(notify_count)
+        notify_sec = seconds/notify_count
+        print_without_logging("Wait time of {0}s will be notified every {1}s"
+                              .format(seconds, notify_sec))
+        for count in range(notify_count):
+            print_without_logging("Remaining wait time: {:.1f}s"
+                                  .format(seconds-(count*notify_sec)))
+            time.sleep(notify_sec)
+        print_without_logging("End of {0}s wait time".format(seconds))
         return True
     except TypeError:
         print_warning('Unable to parse wait_time value, Please use int/float as wait_time value.')

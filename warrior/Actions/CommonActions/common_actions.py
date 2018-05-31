@@ -39,12 +39,13 @@ class CommonActions(object):
         self.filename = Utils.config_Utils.filename
         self.logfile = Utils.config_Utils.logfile
 
-    def wait_for_timeout(self, timeout):
+    def wait_for_timeout(self, timeout, notify_count):
         """waits (sleeps) for the time provided
 
         :Arguments:
             1. timeout= time to wait in seconds
-
+            2. notify_count= the number of times the user needs to be notified
+                             on the wait time
         :Returns:
             1. status (bool)
         """
@@ -52,7 +53,7 @@ class CommonActions(object):
         WDesc = "Waits for the timeout provided"
         Utils.testcase_Utils.pSubStep(WDesc)
         print_info("Command timeout for {0} seconds".format(timeout))
-        status = datetime_utils.wait_for_timeout(timeout)
+        status = datetime_utils.wait_for_timeout(timeout, notify_count=notify_count)
         pNote('********Below Testing occured after Timeout *********')
         Utils.testcase_Utils.report_substep_status(status)
         return status

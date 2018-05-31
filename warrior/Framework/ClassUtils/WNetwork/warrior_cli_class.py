@@ -1557,10 +1557,6 @@ class PexpectConnect(object):
                         cmd_timedout = True
                         status = "ERROR"
                         tdelta = Utils.datetime_utils.get_time_delta(tstamp)
-                        # the cursor value makes the wait time print like a count down
-                        cursor = '\033[1A\r' if (60-(int(tdelta))) > 0 else ''
-                        print_without_logging("Remaining wait time: {0}s {1}"
-                                              .format(60-int(tdelta), cursor))
                         if int(tdelta) >= 60:
                             msg = "[{0}] Did not find end prompt '{1}' even " \
                                 "after 60 seconds post command time out". \
