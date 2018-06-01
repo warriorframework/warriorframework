@@ -1582,7 +1582,7 @@ class PexpectConnect(object):
                     elif result == 2:
                         tmsg1 = "[{0}] Command timed out with {1} seconds, command will be " \
                             "marked as error".format(end_time, timeout)
-                        tmsg2 = "Will wait 60 more seconds to get end " \
+                        tmsg2 = "As a best effort, warrior will wait 60 more seconds to get end " \
                             "prompt '{0}'".format(end_prompt)
                         tmsg3 = "Irrespective of whether end prompt is " \
                             "received or not command will be marked as error" \
