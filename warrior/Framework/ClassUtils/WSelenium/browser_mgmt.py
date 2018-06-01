@@ -442,7 +442,7 @@ class BrowserManagement(object):
             Use firefox binary to find out firefox version
             before launching firefox in selenium
         """
-        raw_version = ""
+        command = ""
         # If the platform is Linux,
         # If Binary - None: default binary is set as "firefox".
         # else the binary path passed through datafile is considered.
@@ -452,15 +452,15 @@ class BrowserManagement(object):
         if platform.system() in "Linux":
             if binary in [False, None]:
                 binary = "firefox"
-            raw_version = check_output([binary, "-v"]) 
+            command = [binary, "-v"]
         elif platform.system() in "Windows":
             if binary in [False, None]:
                 binary = self.ff_binary_object._default_windows_location()
             command = "%s -v | more" % (binary) 
-            raw_version = check_output(command)
         print_info("Platform: {0} Firefox binary path: {1}".format(platform.system(), binary))
         version = False
         try:
+            raw_version = check_output(command) 
             match = re.search(r"\d+\.\d+", raw_version)
             if match is not None:
                 version = LooseVersion(match.group(0))
