@@ -11,12 +11,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-""" selenium browser management library"""
 import os
 import re
 import traceback
 from time import sleep
 import urllib2
+import platform
 from subprocess import check_output, CalledProcessError
 from distutils.version import LooseVersion
 from Framework.Utils.datetime_utils import get_current_timestamp
@@ -25,7 +25,6 @@ from Framework.Utils.print_Utils import print_error, print_info, print_debug, pr
     print_warning
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from Framework.Utils.file_Utils import fileExists
-import platform
 
 try:
     from selenium import webdriver
@@ -40,6 +39,8 @@ try:
             7: Keys.NUMPAD7, 8: Keys.NUMPAD8, 9: Keys.NUMPAD9}
 except ImportError as exception:
     print_exception(exception)
+
+""" selenium browser management library"""
 
 class BrowserManagement(object):
     """Browser management class"""
@@ -441,12 +442,12 @@ class BrowserManagement(object):
             Use firefox binary to find out firefox version
             before launching firefox in selenium
         """
-        raw_version=""
-        # If the platform is Linux, 
+        raw_version = ""
+        # If the platform is Linux,
         # If Binary - None: default binary is set as "firefox".
         # else the binary path passed through datafile is considered.
-        # If the platform is Windows, 
-        # If Binary - None: default binary is set to Program Files path.           
+        # If the platform is Windows,
+        # If Binary - None: default binary is set to Program Files path.
         # else the binary path passed through datafile is considered.
         if platform.system() in "Linux":
             if binary in [False, None]:
@@ -454,10 +455,10 @@ class BrowserManagement(object):
             raw_version = check_output([binary, "-v"]) 
         elif platform.system() in "Windows":
             if binary in [False, None]:
-                binary=self.ff_binary_object._default_windows_location()
-            command = "%s -v | more" % (binary)    
-            raw_version = check_output(command)          
-        print_info("Platform: {0} Firefox binary path: {1}".format(platform.system(),binary))
+                binary = self.ff_binary_object._default_windows_location()
+            command = "%s -v | more" % (binary) 
+            raw_version = check_output(command)
+        print_info("Platform: {0} Firefox binary path: {1}".format(platform.system(), binary))
         version = False
         try:
             match = re.search(r"\d+\.\d+", raw_version)
