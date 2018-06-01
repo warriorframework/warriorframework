@@ -17,13 +17,13 @@ import sys
 import time
 import subprocess
 import getpass
-import xml
+import xml.etree.ElementTree as ET
 import Tools
 import ast
 from distutils.version import LooseVersion
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
- print_warning, print_exception, print_error
+ print_warning, print_exception, print_error, print_without_logging
 from Framework.Utils.testcase_Utils import pNote
 from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
@@ -349,7 +349,7 @@ class WarriorCli(object):
                 patterns = []
                 # error out if any of the key element can not be retrieved
                 for key, resp_key in itertools.izip_longest(keys, resp_keys):
-                    if isinstance(resp_key, xml.etree.ElementTree.Element):
+                    if isinstance(resp_key, ET.Element):
                         patterns.append(resp_key.get("resp_pattern_req"))
                     elif isinstance(resp_key, basestring):
                         print_error("There is no pattern element for key '{}' corresponding"
@@ -617,7 +617,7 @@ class WarriorCli(object):
         if sleeptime > 0:
             pNote("Sleep time of '{0} seconds' requested post command "
                   "execution".format(sleeptime))
-            time.sleep(sleeptime)
+            Utils.datetime_utils.wait_for_timeout(sleeptime)
 
         try:
             remote_resp_dict = self.get_response_dict(
@@ -1580,9 +1580,9 @@ class PexpectConnect(object):
                         status = "ERROR"
                         break
                     elif result == 2:
-                        tmsg1 = "[{0}] Command timed out, command will be " \
-                            "marked as error".format(end_time)
-                        tmsg2 = "Will wait 60 more seconds to get end " \
+                        tmsg1 = "[{0}] Command timed out with {1} seconds, command will be " \
+                            "marked as error".format(end_time, timeout)
+                        tmsg2 = "As a best effort, warrior will wait 60 more seconds to get end " \
                             "prompt '{0}'".format(end_prompt)
                         tmsg3 = "Irrespective of whether end prompt is " \
                             "received or not command will be marked as error" \
