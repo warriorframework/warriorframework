@@ -53,7 +53,7 @@ class gnmiactions(object):
         :param op_type: What type of operation user want to perform "scp/sftp" default "sftp"
         :return: True or False
         """
-        wdesc = "Get client side certificate from gNMI server"
+        wdesc = "Get client side certificate from gNMI server."
         testcase_Utils.pSubStep(wdesc)
         gnmi_execute = gNMI()
         status = False
