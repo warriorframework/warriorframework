@@ -240,7 +240,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
         tc_duration_list.append(tc_duration)
 
         string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR",
-                         "SKIP": "SKIP"}
+                         "SKIP": "SKIP", "RAN": "RAN"}
 
         if str(tc_status).upper() in string_status.keys():
             data_repository['testcase_%d_result' % tests] = string_status[

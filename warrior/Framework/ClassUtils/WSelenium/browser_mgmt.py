@@ -11,12 +11,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-""" selenium browser management library"""
 import os
 import re
 import traceback
 from time import sleep
 import urllib2
+import platform
 from subprocess import check_output, CalledProcessError
 from distutils.version import LooseVersion
 from Framework.Utils.datetime_utils import get_current_timestamp
@@ -24,7 +24,7 @@ from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception,\
     print_warning
 from Framework.Utils.data_Utils import get_object_from_datarepository
-
+from Framework.Utils.file_Utils import fileExists
 
 try:
     from selenium import webdriver
@@ -40,6 +40,8 @@ try:
 except ImportError as exception:
     print_exception(exception)
 
+""" selenium browser management library"""
+
 class BrowserManagement(object):
     """Browser management class"""
 
@@ -47,13 +49,15 @@ class BrowserManagement(object):
         """Browser management constructor """
         self.current_browser = None
         self.current_window = None
+        self.ff_binary_object = FirefoxBinary()
 
     def open_browser(self, browser_name='firefox', webdriver_remote_url=False,
                      desired_capabilities=None, **kwargs):
         """Open a browser session"""
 
         profile_dir = kwargs.get('profile_dir', None)
-
+        if 'profile_dir' in kwargs:
+            kwargs.pop('profile_dir')
         if webdriver_remote_url:
             print_debug("Opening browser '{0}' through remote server at '{1}'"\
                         .format(browser_name, webdriver_remote_url))
@@ -438,11 +442,25 @@ class BrowserManagement(object):
             Use firefox binary to find out firefox version
             before launching firefox in selenium
         """
-        if binary in [False, None]:
-            binary = "firefox"
+        command = ""
+        # If the platform is Linux,
+        # If Binary - None: default binary is set as "firefox".
+        # else the binary path passed through datafile is considered.
+        # If the platform is Windows,
+        # If Binary - None: default binary is set to Program Files path.
+        # else the binary path passed through datafile is considered.
+        if platform.system() in "Linux":
+            if binary in [False, None]:
+                binary = "firefox"
+            command = [binary, "-v"]
+        elif platform.system() in "Windows":
+            if binary in [False, None]:
+                binary = self.ff_binary_object._default_windows_location()
+            command = "%s -v | more" % (binary) 
+        print_info("Platform: {0} Firefox binary path: {1}".format(platform.system(), binary))
         version = False
         try:
-            raw_version = check_output([binary, "-v"])
+            raw_version = check_output(command) 
             match = re.search(r"\d+\.\d+", raw_version)
             if match is not None:
                 version = LooseVersion(match.group(0))
@@ -515,15 +533,20 @@ class BrowserManagement(object):
         """Create an instance of firefox browser"""
         binary = kwargs.get("binary", None)
         gecko_path = kwargs.get("gecko_path", None)
+        # gecko_log is the absolute path to save geckodriver log
+        gecko_log = kwargs.get("gecko_log", None)
         proxy_ip = kwargs.get("proxy_ip", None)
         proxy_port = kwargs.get("proxy_port", None)
         ff_profile = None
         # if firefox is being used with proxy, set the profile here
+        # if firefox_proxy details are not given, set profile_dir
+        # as the ff_profile.
         if proxy_ip is not None and proxy_port is not None:
             ff_profile = self.set_firefox_proxy(profile_dir, proxy_ip, proxy_port)
-
+        else:
+            ff_profile = profile_dir
         log_dir = get_object_from_datarepository("wt_logsdir") if \
-                  kwargs.get("log_path") in [None, False] else kwargs.get("log_path")
+                  gecko_log in [None, False] else gecko_log
         log_dir = os.path.join(log_dir, "gecko_"+kwargs.get("browser_name", "default")+".log")
 
         browser = None
@@ -538,6 +561,15 @@ class BrowserManagement(object):
                 # This is for internal testing needs...some https cert is not secure
                 # And firefox will need to know how to handle it
                 ff_capabilities['acceptInsecureCerts'] = True
+
+                if binary not in [False, None]:
+                    if not fileExists(binary):
+                        print_warning("Given firefox binary '{}' does not exist, default "
+                                      "firefox will be used for execution.".format(binary))
+                        binary = None
+                else:
+                    print_info("No value given for firefox binary, default "
+                               "firefox will be used for execution.")
 
                 # Force disable marionette, only needs in Selenium 3 with FF ver < 47
                 # Without these lines, selenium may encounter capability not found issue

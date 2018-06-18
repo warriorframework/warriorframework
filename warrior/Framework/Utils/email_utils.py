@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2017, Fujitsu Network Communications, Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9,20 +9,19 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 # Utility to send email using smtp
 # Import smtplib for the actual sending function
-
 import smtplib
 import os
 from os.path import basename
 from email import encoders
-from email.MIMEBase import MIMEBase
+from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from xml.etree import ElementTree as ET
 import Tools
-from Framework.Utils.print_Utils import print_debug
+from Framework.Utils.print_Utils import print_debug, print_info
 from Framework.Utils import file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.execution_summary_class import ExecutionSummary
@@ -52,8 +51,16 @@ def set_params_send_email(addsubject, data_repository, files, mail_on):
             body += body_elem+"\n"
     else:
         body = data_repository
-
     params = get_email_params(mail_on)
+    compress = params[4]
+    if compress.upper().startswith('Y'):
+        print_info("compress attribute in w_settings.xml is set to Yes. "
+                   "So, all the email attachments will be compressed.")
+        zip_files = []
+        for file_name in files:
+            zip_file = file_Utils.convert_to_zip(file_name)
+            zip_files.append(zip_file)
+        files = zip_files
     subject = str(params[3])+addsubject
     send_email(params[0], params[1], params[2], subject, body, files)
 
@@ -61,7 +68,7 @@ def set_params_send_email(addsubject, data_repository, files, mail_on):
 def get_email_params(mail_on='per_execution'):
     """ Get the parameters from the w_settings.xml file.
     :Arguments:
-        1. mail_on(optional) - it is to specify when to send an email.
+        1.mail_on(optional) - it is to specify when to send an email.
            Supported options below:
                 (1) per_execution(default)
                 (2) first_failure
@@ -71,6 +78,7 @@ def get_email_params(mail_on='per_execution'):
         2. sender - sender email ID
         3. receivers - receiver email ID(s)
         4. subject - email subject line
+        5. compress - compression(Yes/No)
     """
     smtp_host = ""
     sender = ""
@@ -78,7 +86,6 @@ def get_email_params(mail_on='per_execution'):
     subject = ""
     warrior_tools_dir = Tools.__path__[0]+os.sep+'w_settings.xml'
     element = ET.parse(warrior_tools_dir)
-
     setting_elem = element.find("Setting[@name='mail_to']")
     if setting_elem is not None:
         mail_on_attrib = setting_elem.get("mail_on")
@@ -90,7 +97,6 @@ def get_email_params(mail_on='per_execution'):
            (mail_on == "per_execution" and mail_on_list != []):
             if mail_on not in mail_on_list:
                 return smtp_host, sender, receivers, subject
-
         smtp_host_elem = setting_elem.find("smtp_host")
         if smtp_host_elem is not None:
             smtp_host = smtp_host_elem.text
@@ -105,8 +111,13 @@ def get_email_params(mail_on='per_execution'):
             subject = subject_elem.text
             if subject is None:
                 subject = ""
+        # To support backward compatibility
+        if 'compress' in setting_elem.keys():
+            compress = setting_elem.get("compress")
+        else:
+            compress = "No"
 
-    return smtp_host, sender, receivers, subject
+    return smtp_host, sender, receivers, subject, compress
 
 
 def construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir):
@@ -167,21 +178,15 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
                 (3) every_failure
     """
     resultconverted = {"True": "Pass", "False": "Fail", "ERROR": "Error",
-                       "EXCEPTION": "Exception"}.get(str(result))
+                       "EXCEPTION": "Exception", "RAN": "Ran"}.get(str(result))
     subject = str(resultconverted)+": "+file_Utils.getFileName(abs_filepath)
     body = construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir)
     report_attachment = results_dir + os.sep + \
         file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath)) + ".html"
-
-    # Temporary fix - HTML file can not be attached since it will be generated
-    # only after the completion of the warrior execution. Creating html result
-    # file at runtime will solve this.
-    # KH. 2017-07-27
     if mail_on in ["per_execution", "first_failure", "every_failure"]:
-        files = {report_attachment}
+        files = [report_attachment]
     else:
-        files = {}
-
+        files = []
     set_params_send_email(subject, body, files, mail_on)
 
 
@@ -201,17 +206,14 @@ def send_email(smtp_host, sender, receivers, subject, body, files):
     if not receivers:
         print_debug("No receiver defined in w_settings, no email sent")
         return
-
     message = MIMEMultipart()
     message['From'] = sender
     message['To'] = receivers
     receivers_list = [receiver.strip() for receiver in receivers.split(',')]
     message['Subject'] = subject
-
     # HTML is used for better formatting of mail body
     part = MIMEText(body, 'html')
     message.attach(part)
-
     for attach_file in files or []:
         with open(attach_file, "rb") as fil:
             part = MIMEBase('application', 'octet-stream')
@@ -220,11 +222,10 @@ def send_email(smtp_host, sender, receivers, subject, body, files):
             part.add_header('Content-Disposition', "attachment;filename= %s"
                             % basename(attach_file))
             message.attach(part)
-
     try:
         smtp_obj = smtplib.SMTP(smtp_host)
         smtp_obj.sendmail(sender, receivers_list, message.as_string())
-        pNote('Execution results emailed to receiver(s): {}'.format(receivers))
+        pNote('Execution results emailed to receiver(s): {0}'.format(receivers))
         smtp_obj.close()
 
     except BaseException:

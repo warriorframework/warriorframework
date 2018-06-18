@@ -44,7 +44,7 @@ def print_notype(message, *args):
             message += arg + ", "
     color_message = None
     if sys.stdout.isatty():
-        color_message = "\033[0;34m" + str(message) + "\033[0m "     
+        color_message = "\033[0;34m" + str(message) + "\033[0m "
     print_main(message, print_type, color_message)
     return message
 
@@ -56,6 +56,16 @@ def print_normal(message, *args):
         for arg in args:
             message += arg + ", "
     print_main(message, print_type)
+    return message
+
+
+def print_without_logging(message, *args):
+    """Prints without writing to log file"""
+    print_type = "-N-"
+    if len(args) > 0:
+        for arg in args:
+            message += arg + ", "
+    print_main(message, print_type, logging=False)
     return message
 
 
