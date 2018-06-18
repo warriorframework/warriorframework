@@ -1,5 +1,5 @@
 Release: Ninja
-Version: warrior-3.8.0
+Version: warrior-3.9.0
 
 ===================
 1: Release details
@@ -19,7 +19,7 @@ This is release Ninja of Warrior Test Automation Framework
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version warrior-3.8.0 of Warrior Framework.
+You are on Release Ninja, Version warrior-3.9.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
 
 
@@ -31,25 +31,23 @@ Procedure to get a specific version is available in section-3 of this document.
 -------------
 New Features:
 -------------
-[WAR-1478] - Arithmetic operation support for response patterns stored through resp_ref and also in verify tags
-[WAR-1674] - Unable to check api_response with regex pattern using verify_response keyword
-[WAR-1679] - In store_in_repo keyword user was allowed to update only variable at a time, it should allow to update n number of variable
-[WAR-1685] - Need Result HTML link during the start of execution
-[WAR-1717] - Need snapshot of Result Summary within the mail
-[WAR-1730] - Set of commands must be executed when there is a failure
-[WAR-1760] - verify_snmp_action keyword in SnmpActions/Common_snmp_actions need enhancement
+[WAR-1669] - User confused on the amount of time Warrior waits for a send command by test data
+[WAR-1675] - As a user, I need an option to set pseudo-terminal dimensions in connect keywords
+[WAR-1718] - HTML Result summary attachment is huge - Need to be Zipped and compressed format
+[WAR-1756] - Improve pylint score for rest_actions.py
+[WAR-1799] - Update pj_exec_summary to better test execution summary print
+[WAR-1809] - As a user, I need an option to store arithmetic expression result in the data_repo using verify_arith_exp kw
 
 ---------
 Bugfixes:
 ---------
-[WAR-1683] - NETCONF get function is not working with xpath
-[WAR-1687] - Failed to execute multiple test cases executed in CMD line by specifying input data file. with below error
-[WAR-1694] - Project with parallel suite(s) creates duplicate entries in execution summary
-[WAR-1711] - data_Utils functions looks for "type" in data file and doesn't handle not found situation peacefully
-[WAR-1725] - verify is not working properly in iterative parallel
-[WAR-1732] - RMT when sent via command line does not work as expected and crashes Warrior execution
-[WAR-1733] - While running Test scripts in latest Warrior(3.7.0) getting "AttributeError: 'NoneType' object has no attribute 'clear_notification_buffer'" error
-[WAR-1734] - faults error prints when executing a Test SUITE "executiontype= iterative parallel"
+[WAR-1358] - print_warning creates two print 1. -W- "Warning 2. -I- Information
+[WAR-1381] - Not getting executed for y number of systems specified in ID file (when ID is passed using CLI command)
+[WAR-1676] - Event Notification not validated for equipment events using waitfor_subscription
+[WAR-1716] - Project execution mail subject reflected as NONE eventhough the project is passed
+[WAR-1802] - The keyword 'send_commands_by_testdata_title_rownum' does not store the response into the data repository
+[WAR-1813] - Selenium: _make_browser() function got multiple values for keyword argument 'profile_dir'
+[WAR-1843] - verify_response keyword in rest failing even for correct jsonpath
 
 
 =================================================
