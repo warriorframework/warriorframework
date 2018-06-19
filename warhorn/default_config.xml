@@ -14,6 +14,7 @@
         <dependency name="selenium" install="yes" user="no"/>
         <dependency name="xlrd" install="no" user="no"/>
         <dependency name="cloudshell-automation-api" install="yes" user="no"/>
+        <dependency name="pycryptodome" install="yes" user="no"/>
     </warhorn>
 
     <!-- Fill this out with the details of the virtual environment
