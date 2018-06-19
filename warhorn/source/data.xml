@@ -53,11 +53,6 @@
                    </info>
                    <question>Do you want to install cloudshell-automation-api?</question>
                </value>
-                <value name="pycryptodome">
-                   <info>** pycryptodome is used for encrypt/decrypt related operations. The recommended version is 3.6.1. If you decide to install pycryptodome, warhorn would automatically install pycryptodome 3.6.1.
-                   </info>
-                   <question>Do you want to install pycryptodome?</question>
-               </value>
             </attribute>
         </child>
     </tag>
