@@ -21,7 +21,7 @@ from Framework.Utils.print_Utils import print_exception, print_error, print_info
 import Tools
 
 try:
-    MOD = 'Pycrypto'
+    MOD = 'Pycryptodome'
     from Crypto.Cipher import AES
     from Crypto import Random
 except ImportError, err:
@@ -30,7 +30,7 @@ except ImportError, err:
 
 from Framework.Utils.print_Utils import print_error
 
-
+"""Get Key from Secret key file"""
 def get_key(encoded_key):
     IV = None
     CIPHER = None
@@ -70,6 +70,7 @@ def decrypt(message, encoded_key=False):
     except BaseException:
         return message
 
+"""Set secret key in secret key file"""
 def set_secret_key(plain_text_key):
     encoded_key = False
     # Checks the length of the plain text secret key
