@@ -20,15 +20,14 @@ import sys
 import os
 import time
 import shutil
-import copy
+
 from WarriorCore.defects_driver import DefectsDriver
-from WarriorCore import custom_sequential_kw_driver, custom_parallel_kw_driver
 from WarriorCore import iterative_sequential_kw_driver, iterative_parallel_kw_driver,\
-common_execution_utils, framework_detail
+common_execution_utils, framework_detail, custom_sequential_kw_driver, custom_parallel_kw_driver
 from WarriorCore.Classes import execution_files_class, junit_class, hybrid_driver_class
 import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import convertLogic
-from Framework.Utils.print_Utils import print_notype, print_info, print_warning, print_error,\
+from Framework.Utils.print_Utils import print_info, print_warning, print_error,\
     print_debug, print_exception
 import Framework.Utils.email_utils as email
 
@@ -213,49 +212,6 @@ def junit_requirements(testcase_filepath, tc_junit_object, timestamp):
         for req_id in req_id_list:
             tc_junit_object.add_requirement(req_id, timestamp)
 
-
-def get_steps_list(testcase_filepath):
-    """Takes the location of any Testcase xml file as input
-    Returns a list of all the step elements present in the Testcase
-
-    :Arguments:
-        1. testcase_filepath    = full path of the Testcase xml file
-    """
-    step_list = []
-    root = Utils.xml_Utils.getRoot(testcase_filepath)
-    Steps = root.find('Steps')
-    if Steps is None:
-        print_warning("Case: '{}' has no Steps/Keywords "
-                      "to be executed".format(testcase_filepath))
-    else:
-        step_list = []
-        new_step_list = Steps.findall('step')
-        # execute step multiple times
-        for _, step in enumerate(new_step_list):
-            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(step)
-            retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(step)
-            if runmode is not None and value > 0:
-                go_next = len(step_list) + value + 1
-                for i in range(0, value):
-                    copy_step = copy.deepcopy(step)
-                    copy_step.find("runmode").set("value", go_next)
-                    copy_step.find("runmode").set("attempt", i+1)
-                    step_list.append(copy_step)
-            if retry_type is not None and retry_value > 0:
-                go_next = len(step_list) + retry_value + 1
-                if runmode is not None:
-                    get_runmode = step.find('runmode')
-                    step.remove(get_runmode)
-                for i in range(0, retry_value):
-                    copy_step = copy.deepcopy(step)
-                    copy_step.find("retry").set("count", go_next)
-                    copy_step.find("retry").set("attempt", i+1)
-                    step_list.append(copy_step)
-            if retry_type is None and runmode is None:
-                step_list.append(step)
-        return step_list
-
-
 def compute_testcase_status(step_status, tc_status):
     """Compute the status of the testcase based on the step_status and the impact value of the step
 
@@ -293,8 +249,8 @@ def report_testcase_result(tc_status, data_repository):
             get_step_value = value.attrib.values()
             step_num = ','.join(get_step_value)
             if fail_count == 1:
-                print_info("++++++++++++++++++++++++ Summary of Failed Keywords +++++++++++++++++++"
-                           "+++++")
+                print_info("++++++++++++++++++++++++ Summary of Failed Keywords "
+                           "++++++++++++++++++++++++")
                 print_info("{0:15} {1:45} {2:10}".format('StepNumber', 'KeywordName', 'Status'))
                 print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
                                                          str(kw_status)))
@@ -369,8 +325,8 @@ def get_system_list(datafile, node_req=False, iter_req=False):
 def print_testcase_details_to_console(testcase_filepath, data_repository):
     """Prints the testcase details to the console """
     framework_detail.warrior_framework_details()
-    print_info("\n===============================  TC-DETAILS  ===================================="
-               "==============")
+    print_info("\n===============================  TC-DETAILS  "
+               "===================================")
     print_info("Title: %s" % data_repository['wt_title'])
     print_info("Results directory: %s" % data_repository['wt_resultsdir'])
     print_info("Logs directory: %s" % data_repository['wt_logsdir'])
@@ -378,8 +334,8 @@ def print_testcase_details_to_console(testcase_filepath, data_repository):
     print_info("Datafile: %s" % data_repository['wt_datafile'])
     print_info("Expected Results: %s" % data_repository['wt_expResults'])
     report_testcase_requirements(testcase_filepath)
-    print_info("==================================================================================="
-               "=============")
+    print_info("==============================================="
+               "===================================")
     time.sleep(2)
 
 
@@ -492,8 +448,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         html_filepath = os.path.join(data_repository['wt_resultsdir'],
                                      Utils.file_Utils.getNameOnly(filename)) + '.html'
         print_info("HTML result file: {0}".format(html_filepath))
-    step_list = get_steps_list(testcase_filepath)
-
+    step_list = common_execution_utils.get_step_list(testcase_filepath, "Steps", "step")
     tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,
                                                        'Details', 'State')
     if tc_state is not False and tc_state is not None and \
@@ -574,7 +529,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                         "negative".format(tc_status))
             tc_status = not tc_status
 
-    if tc_status == False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
+    if tc_status is False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info("Testcase status will be marked as ERROR as onError "
                    "action is set to 'abort_as_error'")
         tc_status = "ERROR"

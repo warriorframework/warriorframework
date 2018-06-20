@@ -15,6 +15,7 @@ import os
 import time
 import traceback
 import shutil
+
 import copy
 import glob
 import sequential_testcase_driver
@@ -144,107 +145,7 @@ def report_suite_requirements(suite_repository, testsuite_filepath):
         for req_id in req_id_list:
             ts_junit_object.add_requirement(req_id, suite_repository["wt_ts_timestamp"])
 
-
-def get_testcase_list(testsuite_filepath):
-    """Takes the location of any Testsuite xml file as input
-    Returns a list of all the Tescase elements present in the Testsuite
-
-    Arguments:
-    1. testsuite_filepath    = full path of the Testsuite xml file
-    """
-
-    testcase_list = []
-    root = Utils.xml_Utils.getRoot(testsuite_filepath)
-    testcases = root.find('Testcases')
-    if testcases is None:
-        print_info('Testsuite is empty: tag <Testcases> not found in the input Testsuite xml file ')
-    else:
-        new_testcase_list = []
-        orig_testcase_list = testcases.findall('Testcase')
-        for orig_tc in orig_testcase_list:
-            orig_tc_path = orig_tc.find('path').text
-            if '*' not in orig_tc_path:
-                new_testcase_list.append(orig_tc)
-            # When the file path has asterisk(*), get the Warrior XML testcase
-            # files matching the given pattern
-            else:
-                orig_tc_abspath = Utils.file_Utils.getAbsPath(
-                    orig_tc_path, os.path.dirname(testsuite_filepath))
-                print_info("Provided testcase path: '{}' has asterisk(*) in "
-                           "it. All the Warrior testcase XML files matching "
-                           "the given pattern will be executed.".format(orig_tc_abspath))
-                # Get all the files matching the pattern and sort them by name
-                all_files = sorted(glob.glob(orig_tc_abspath))
-                # Get XML files
-                xml_files = [fl for fl in all_files if fl.endswith('.xml')]
-                tc_files = []
-                # Get Warrior testcase XML files
-                for xml_file in xml_files:
-                    root = Utils.xml_Utils.getRoot(xml_file)
-                    if root.tag.upper() == "TESTCASE":
-                        tc_files.append(xml_file)
-                # Copy the XML object and set the filepath as path value for
-                # all the files matching the pattern
-                if tc_files:
-                    for tc_file in tc_files:
-                        new_tc = copy.deepcopy(orig_tc)
-                        new_tc.find('path').text = tc_file
-                        new_testcase_list.append(new_tc)
-                        print_info("Testcase: '{}' added to the execution "
-                                   "list ".format(tc_file))
-                else:
-                    print_warning("Asterisk(*) pattern match failed for '{}' due "
-                                  "to at least one of the following reasons:\n"
-                                  "1. No files matched the given pattern\n"
-                                  "2. Invalid testcase path is given\n"
-                                  "3. No testcase XMLs are available\n"
-                                  "Given path will be used for the Warrior "
-                                  "execution.".format(orig_tc_abspath))
-                    new_testcase_list.append(orig_tc)
-
-        # execute tc multiple times
-        for tc in new_testcase_list:
-            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(tc)
-            retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
-            if runmode is not None and value > 0:
-                # more than one step in step list, insert new step
-                if len(new_testcase_list) > 0:
-                    go_next = len(testcase_list) + value + 1
-                    for i in range(0, value):
-                        copy_tc = copy.deepcopy(tc)
-                        copy_tc.find("runmode").set("value", go_next)
-                        copy_tc.find("runmode").set("attempt", i+1)
-                        testcase_list.append(copy_tc)
-                # only one step in step list, append new step
-                else:
-                    for i in range(0, value):
-                        copy_tc = copy.deepcopy(tc)
-                        copy_tc.find("runmode").set("attempt", i+1)
-                        testcase_list.append(tc)
-            if retry_type is not None and retry_value > 0:
-                if len(new_testcase_list) > 1:
-                    go_next = len(testcase_list) + retry_value + 1
-                    if runmode is not None:
-                        get_runmode = tc.find('runmode')
-                        tc.remove(get_runmode)
-                    for i in range(0, retry_value):
-                        copy_tc = copy.deepcopy(tc)
-                        copy_tc.find("retry").set("count", go_next)
-                        copy_tc.find("retry").set("attempt", i+1)
-                        testcase_list.append(copy_tc)
-                else:
-                    if runmode is not None:
-                        get_runmode = tc.find('runmode')
-                        tc.remove(get_runmode)
-                    for i in range(0, retry_value):
-                        copy_tc = copy.deepcopy(tc)
-                        copy_tc.find("retry").set("attempt", i+1)
-                        testcase_list.append(copy_tc)
-            if retry_type is None and runmode is None:
-                testcase_list.append(tc)
-        return testcase_list
-
-
+            
 def report_testsuite_result(suite_repository, suite_status):
     """Reports the result of the testsuite executed
     Arguments:
@@ -258,14 +159,16 @@ def report_testsuite_result(suite_repository, suite_status):
                     'ERROR': 'FAIL'}.get(str(suite_status).upper())
     print_info("Testsuite:{0}  STATUS:{1}".format(suite_repository['suite_name'], suite_status))
     testsuite_utils.pSuite_report_suite_result(suite_resultfile)
-    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$"
+               "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     return suite_status
 
 
-def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile):
+def print_suite_details_to_console(suite_repository, testsuite_filepath):
     """Prints the testsuite details to console """
 
-    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$"
+               "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
     print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
@@ -297,7 +200,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     initialize_suite_fields(data_repository)
     suite_repository = get_suite_details(testsuite_filepath, data_repository,
                                          from_project, res_startdir, logs_startdir)
-    testcase_list = get_testcase_list(testsuite_filepath)
+    testcase_list = common_execution_utils.get_step_list(testsuite_filepath,
+                                                         "Testcases", "Testcase")
     execution_type = suite_repository['suite_exectype'].upper()
     no_of_tests = str(len(testcase_list))
 
@@ -366,7 +270,11 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                         data_repository["jobid"])
         # del data_repository["jobid"]
 
-    print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile)
+    print_suite_details_to_console(suite_repository, testsuite_filepath)
+    #find runmode type(RMT/RUP/RUF) and its value at suite global level
+    root = Utils.xml_Utils.getRoot(testsuite_filepath)
+    suite_global = root.find('Details')
+    runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(suite_global)
 
     # Prints the path of result summary file at the beginning of execution
     if data_repository['war_file_type'] == "Suite":
@@ -387,12 +295,59 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                                           auto_defects=auto_defects)
 
     elif execution_type.upper() == 'SEQUENTIAL_TESTCASES':
-        print_info("Executing testccases sequentially")
-        test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
-                                                            data_repository, from_project,
-                                                            auto_defects=auto_defects)
+        if runmode is None:
+            print_info("Executing testccases sequentially")
+            test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
+                                                                data_repository, from_project,
+                                                                auto_defects=auto_defects)
+        elif runmode.upper() == 'RMT':
 
-    elif execution_type.upper() == 'RUN_UNTIL_FAIL':
+            print_info("Execution type: {0}, Max Attempts: {1}".format(execution_type, value))
+
+            i = 0
+            while i < int(value):
+                i += 1
+                print_debug("\n\n<======= ATTEMPT: {0} ======>".format(i))
+                # We aren't actually summing each test result here...
+                test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
+                                                                    data_repository,
+                                                                    from_project,
+                                                                    auto_defects=auto_defects)
+
+
+        elif runmode.upper() == 'RUP':
+            print_info("Execution type: {0}, Attempts: {1}".format(execution_type, value))
+            i = 0
+            while i < int(value):
+                i += 1
+                print_debug("\n\n<======= ATTEMPT: {0} ======>".format(i))
+                test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
+                                                                    data_repository, from_project,
+                                                                    auto_defects=auto_defects)
+                test_count = i * len(testcase_list)
+                testsuite_utils.pSuite_update_suite_tests(str(test_count))
+                if str(test_suite_status).upper() == "TRUE":
+                    break
+
+        elif runmode.upper() == 'RUF':
+
+            print_info("Execution type: {0}, Attempts: {1}".format(execution_type, value))
+            i = 0
+            while i < int(value):
+                i += 1
+                print_debug("\n\n<======= ATTEMPT: {0} ======>".format(i))
+                test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
+                                                                    data_repository, from_project,
+                                                                    auto_defects=auto_defects)
+                test_count = i * len(testcase_list)
+                testsuite_utils.pSuite_update_suite_tests(str(test_count))
+                if str(test_suite_status).upper() == "FALSE" or \
+                                str(test_suite_status).upper() == "ERROR":
+                    break
+
+    #The below ELIF is to preserve backward compatibility. The new logic is available/
+    #with execution_type == 'SEQUENTIAL_TESTCASES'
+    elif execution_type.upper() == 'RUN_UNTIL_FAIL' and runmode is None:
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                        'Details',
                                                                        'type', 'Max_Attempts')
@@ -409,8 +364,9 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
             if str(test_suite_status).upper() == "FALSE" or\
                str(test_suite_status).upper() == "ERROR":
                 break
-
-    elif execution_type.upper() == 'RUN_UNTIL_PASS':
+    #The below ELIF is to preserve backward compatibility. The new logic is available/
+    #with execution_type == 'SEQUENTIAL_TESTCASES'
+    elif execution_type.upper() == 'RUN_UNTIL_PASS' and runmode is None:
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                        'Details',
                                                                        'type', 'Max_Attempts')
@@ -426,11 +382,11 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
             testsuite_utils.pSuite_update_suite_tests(str(test_count))
             if str(test_suite_status).upper() == "TRUE":
                 break
-
-    elif execution_type.upper() == 'RUN_MULTIPLE':
-        execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
-                                                                        'Details', 'type',
-                                                                        'Number_Attempts')
+    #The below ELIF is to preserve backward compatibility. The new logic is available/
+    #with execution_type == 'SEQUENTIAL_TESTCASES'
+    elif execution_type.upper() == 'RUN_MULTIPLE' and runmode is None:
+        execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details'
+                                                                       , 'type', 'Number_Attempts')
         print_info("Execution type: {0}, Max Attempts: {1}".format(execution_type, execution_value))
 
         i = 0
@@ -474,7 +430,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     hms = Utils.datetime_utils.get_hms_for_seconds(suite_duration)
     print_info("Testsuite duration= {0}".format(hms))
     testsuite_utils.update_suite_duration(str(suite_duration))
-    if test_suite_status == False and ts_onError_action and\
+    if test_suite_status is False and ts_onError_action and\
         ts_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info("Testsuite status will be marked as ERROR as onError action is set"
                    "to 'abort_as_error'")
