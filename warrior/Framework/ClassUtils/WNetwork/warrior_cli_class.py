@@ -860,26 +860,23 @@ class WarriorCli(object):
                                env=None, pty_dimensions=None):
         """ spawn a pexpect object with environment & pty_dimensions variables """
 
-        if not(str(escape).lower() == "yes" or str(escape).lower() == "true"):
+        if env is None:
             env = {}
 
-        sendPtyDimensions = False
+        kwargs = {'timeout': int(timeout)}
+
+        if str(escape).lower() == "yes" or str(escape).lower() == "true":
+            kwargs['env'] = env
+
         if pty_dimensions is not None:
-            # 'dimensions' argument is supported in pexpect version 4.0 and above
-            if LooseVersion(pexpect_obj.__version__) >= LooseVersion('4.0'):
-                sendPtyDimensions = True
-            else:
+            if LooseVersion(pexpect_obj.__version__) < LooseVersion('4.0'):
                 print_warning("Setting pseudo-terminal dimensions is not supported in "
                               "pexpect versions less than 4.0(installed pexpect "
-                              "version: {}), 'dimensions' value will be default "
-                              "to None".format(pexpect_obj.__version__))
+                              "version: {})".format(pexpect_obj.__version__))
+            else:
+                kwargs['dimensions'] = pty_dimensions
 
-        if sendPtyDimensions is True:
-            child = pexpect_obj.spawn(command, timeout=int(timeout), env=env,
-                                      dimensions=pty_dimensions)
-        else:
-            child = pexpect_obj.spawn(command, timeout=int(timeout), env=env)
-
+        child = pexpect_obj.spawn(command, **kwargs)
         return child
 
     @staticmethod
