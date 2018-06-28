@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <credentials>	
     <system name="search_element">
+        <headless_mode>Yes</headless_mode>
         <ip>167.254.209.9</ip>
     	<remote>no</remote>
         <browser>
@@ -11,6 +12,7 @@
         </browser>
     </system>
     <system name="search_element_2">
+        <headless_mode>Yes</headless_mode>
         <browser>
             <tag1>log</tag1>
             <browser_name>browser_2</browser_name>
@@ -21,6 +23,7 @@
         </browser>
     </system>
     <system name="search_element_3">
+        <headless_mode>Yes</headless_mode>
         <browsers>
             <browser>
                 <browser_name>browser_3</browser_name>
@@ -30,6 +33,7 @@
         </browsers>
     </system>
     <system name="search_element_4">
+        <headless_mode>Yes</headless_mode>
         <browser>
             <tag1>log</tag1>
             <browser_name>browser_2</browser_name>
