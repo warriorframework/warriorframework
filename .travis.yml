@@ -17,7 +17,8 @@ matrix:
       env: INSTALL=yes TESTFILES_2=yes
     - sudo: required
       dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes
+      #env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_func_tests/generic_tests/tc_mouse_hover.xml SELENIUM=yes SELENIUM_3=yes GECKODRIVER=yes
       addons:
         firefox: "46.0"
         chrome: stable
@@ -55,8 +56,8 @@ install:
       pip install selenium==3.8 ;
     fi
   - if [[ ${GECKODRIVER} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
-      wget https://github.com/mozilla/geckodriver/releases/download/v0.20/geckodriver-v0.20-linux64.tar.gz;
-      tar -xvzf geckodriver-v0.20-linux64.tar.gz;
+      wget https://github.com/mozilla/geckodriver/releases/download/v0.20.0/geckodriver-v0.20.0-linux64.tar.gz;
+      tar -xvzf geckodriver-v0.20.0-linux64.tar.gz;
       chmod +x geckodriver;
       mv geckodriver ~/bin/geckodriver;
     fi
