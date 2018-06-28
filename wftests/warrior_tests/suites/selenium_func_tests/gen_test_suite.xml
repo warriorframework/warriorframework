@@ -6,7 +6,7 @@
 		<Engineer>Sanika Kulkarni</Engineer>
 		<Date>06/21/2016</Date>
 		<Time>16:07:26</Time>
-		<type exectype="iterative_parallel"/>
+		<type exectype="sequential_testcases"/>
 		<default_onError action="next"/>
 		<Resultsdir/>
 	</Details>
