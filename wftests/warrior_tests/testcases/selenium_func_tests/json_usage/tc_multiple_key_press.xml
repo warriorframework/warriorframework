@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<Testcase>
+    <Details>
+        <Name>tc_multiple_key_press</Name>
+        <Title>Test case to perform Search</Title>
+        <ExpectedResults>PASS</ExpectedResults>
+        <Category>search</Category>
+        <Engineer>Sanika Kulkarni</Engineer>
+        <Date/>
+        <Time/>
+        <default_onError action = 'next'  />
+        <InputDataFile>../../../data/selenium_func_tests/data_multiple_key_press.xml</InputDataFile>
+        <Datatype>Custom</Datatype>
+        <Logsdir/>
+        <Resultsdir/>
+    </Details>
+   <Requirements>
+            <Requirement>requirement-001</Requirement>
+            <Requirement>requirement-002</Requirement>
+   </Requirements>
+    <Steps>
+        <step TS= '1' Driver='selenium_driver' Keyword='browser_launch' > <!-- Will launch or open a new browser in window -->
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+                <argument name="url" value="https://www.stackoverflow.com/"/>
+            </Arguments>
+        </step>
+        <step TS= '2' Driver='selenium_driver' Keyword='browser_maximize' >
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+            </Arguments>
+        </step>
+        <step TS= '4' Driver='selenium_driver' Keyword='perform_keypress' >
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+                <argument name="element_tag" value="single_key"/>
+                <argument name="keys" value="f5"/>
+            </Arguments>
+        </step>
+        <step TS= '4' Driver='selenium_driver' Keyword='perform_keypress' >
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+                <argument name="element_tag" value="mult_key_sim_no"/>
+                <argument name="keys" value="end, home, f5"/>
+            </Arguments>
+        </step>
+        <step TS= '3' Driver='selenium_driver' Keyword='perform_keypress' >
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+                <argument name="element_tag" value="mult_key_sim_yes"/>
+                <argument name="keys" value="alt, f4"/>
+            </Arguments>
+        </step>
+        <step Driver="selenium_driver" Keyword="browser_close" TS="13" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Close the Browser opened in Step-1</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+         </step>
+    </Steps>
+</Testcase>

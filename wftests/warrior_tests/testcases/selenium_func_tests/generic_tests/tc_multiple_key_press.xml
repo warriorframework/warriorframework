@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<Testcase>
+    <Details>
+        <Name>tc_multiple_key_press</Name>
+        <Title>Test case to perform Search</Title>
+        <ExpectedResults>PASS</ExpectedResults>
+        <Category>search</Category>
+        <Engineer>Sanika Kulkarni</Engineer>
+        <Date/>
+        <Time/>
+        <default_onError action = 'next'  />
+        <InputDataFile>../../../data/selenium_func_tests/data_multiple_key_press.xml</InputDataFile>
+        <Datatype>Custom</Datatype>
+        <Logsdir/>
+        <Resultsdir/>
+    </Details>
+   <Requirements>
+            <Requirement>requirement-001</Requirement>
+            <Requirement>requirement-002</Requirement>
+   </Requirements>
+    <Steps>
+        <step TS= '1' Driver='selenium_driver' Keyword='browser_launch' > <!-- Will launch or open a new browser in window -->
+            <Arguments>
+                <argument name="system_name" value="search_element"/>
+                <argument name="url" value="https://www.stackoverflow.com/"/>
+            </Arguments>
+        </step>
+        <step TS= '2' Driver='selenium_driver' Keyword='browser_maximize' >
+            <Arguments>
+                <argument name="system_name" value="search_element"/>
+            </Arguments>
+        </step>
+        <step TS= '3' Driver='selenium_driver' Keyword='perform_keypress' >
+            <Arguments>
+                <argument name="system_name" value="search_element"/>
+                <argument name="keys" value="f5"/>
+                <argument name="simultaneous" value="no"/>
+            </Arguments>
+        </step>
+        <step TS= '4' Driver='selenium_driver' Keyword='perform_keypress' >
+            <Arguments>
+                <argument name="system_name" value="search_element"/>
+                <argument name="keys" value="space, space, f5"/>
+                <argument name="simultaneous" value="no"/>
+            </Arguments>
+        </step>
+        <step TS= '5' Driver='selenium_driver' Keyword='perform_keypress' >
+            <Arguments>
+                <argument name="system_name" value="search_element"/>
+                <argument name="keys" value="alt, f4"/>
+            </Arguments>
+        </step>
+        <step TS= '6' Driver='selenium_driver' Keyword='browser_close' >
+            <Arguments>
+                <argument name="system_name" value="search_element"/>
+            </Arguments>
+        </step>
+    </Steps>
+</Testcase>

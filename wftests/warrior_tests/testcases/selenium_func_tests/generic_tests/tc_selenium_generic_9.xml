@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_selenium_generic_9</Name>
+		<Title>Test case to check whether the url in warrior data file is getting values from environment</Title>
+		<ExpectedResults>PASS</ExpectedResults>
+		<Category>search</Category>
+		<Engineer>Ragh</Engineer>
+		<Date/>
+		<Time/>
+		<default_onError action = 'next'  />
+		<InputDataFile>../../../data/selenium_func_tests/data_env.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<Logsdir/>
+		<Resultsdir/>
+	</Details>
+	<Requirements>
+		<Requirement>requirement-001</Requirement>
+		<Requirement>requirement-002</Requirement>
+	</Requirements>
+	<Steps>
+		<step Driver="common_driver" Keyword="set_env_var" TS="1">
+			<Arguments>
+				<argument name="var_value" value="www.stackoverflow.com"/>
+				<argument name="var_key" value="url"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>set_env_var</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step TS= '2' Driver='selenium_driver' Keyword='browser_launch' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+				<argument name="type" value = "firefox"/>
+			</Arguments>
+		</step>
+		<step TS= '3' Driver='selenium_driver' Keyword='browser_close' >
+		    <Arguments>
+		    	<argument name="system_name" value="search_element"/>
+			</Arguments>
+		</step>
+	</Steps>
+</Testcase>

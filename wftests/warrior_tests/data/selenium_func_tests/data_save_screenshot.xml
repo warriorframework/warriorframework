@@ -1,0 +1,10 @@
+<credentials>    
+    <system name="search_element_1">
+        <ip>167.254.209.9</ip>
+        <remote>no</remote>
+        <browser>
+            <browser_name>browser_3</browser_name>
+            <type>firefox</type>
+        </browser>
+    </system>
+</credentials>

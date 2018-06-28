@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="search_element">
+        <ip>167.254.209.9</ip>
+    	<remote>no</remote>
+        <browser>
+            <browser_name>browser_1</browser_name>
+            <url>http://${ENV.url}/</url>
+        </browser>
+    </system>
+</credentials>

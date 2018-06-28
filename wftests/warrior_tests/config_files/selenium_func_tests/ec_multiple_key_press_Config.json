@@ -1,0 +1,5 @@
+{
+  "single_key": [{"simultaneous": "no"}],
+  "mult_key_sim_no": [{"simultaneous": "no"}],
+  "mult_key_sim_yes": [{"simultaneous": "yes"}]
+}
