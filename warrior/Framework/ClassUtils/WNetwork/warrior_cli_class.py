@@ -1600,6 +1600,7 @@ class PexpectConnect(object):
                                 format(Utils.datetime_utils.
                                        get_current_timestamp(),
                                        end_prompt)
+                            excep_msg = "EXCEPTION !! Command Timed Out"
                             break
                         else:
                             continue
@@ -1607,7 +1608,13 @@ class PexpectConnect(object):
                 print_exception(exception)
             else:
                 response = self.target_host.before
-                response = str(response) + str(self.target_host.after)
+                # prints an error message, if the end prompt is not received
+                # even after 60 seconds wait time
+                if self.target_host.after == self.pexpect.TIMEOUT:
+                    response = str(response)
+                    pNote(excep_msg, 'error')
+                else:
+                    response = str(response) + str(self.target_host.after)
                 pNote("Response:\n{0}\n".format(response))
                 pNote(msg, "debug")
                 if status is True:
