@@ -58,7 +58,7 @@
                 <step TS= '7' Driver='selenium_driver' Keyword='browser_launch' >
                         <Arguments>
                                 <argument name="system_name" value="search_element_5"/>
-                                <argument name="url" value="http://rtx-swtl-jira.fnc.net.local/login.jsp"/>
+                                <argument name="url" value="http://github.com/login"/>
                         </Arguments>
                 </step>
                 <step TS= '8' Driver='selenium_driver' Keyword='verify_text_in_window_pane' >
@@ -70,7 +70,7 @@
                 <step TS= '9' Driver='selenium_driver' Keyword='verify_text_in_window_pane' >
                         <Arguments>
                                 <argument name="system_name" value="search_element_5"/>
-                                <argument name="verification_text" value="Log In"/>
+                                <argument name="verification_text" value="Sign in"/>
                         </Arguments>
                 </step>
                 <step TS= '10' Driver='selenium_driver' Keyword='browser_launch' >
