@@ -54,8 +54,8 @@ install:
       pip install selenium==3.8 ;
     fi
   - if [[ ${GECKODRIVER} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
-      wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz;
-      tar -xvzf geckodriver-v0.21.0-linux64.tar.gz;
+      wget https://github.com/mozilla/geckodriver/releases/download/v0.20.0/geckodriver-v0.20.0-linux64.tar.gz;
+      tar -xvzf geckodriver-v0.20.0-linux64.tar.gz;
       chmod +x geckodriver;
       mv geckodriver ~/bin/geckodriver;
     fi
