@@ -1,0 +1,449 @@
+/* execution app related styles starts*/
+
+.execution.exec-container {
+	display: flex;
+	flex-flow: column wrap;
+	/*border: 1px solid silver;*/
+	overflow: auto;
+	height: 100%;
+}
+
+.execution.layout-panel {
+	min-width: 30%;
+	width: calc(60% - 4px);
+	height: 100%;
+	background: #fff;
+	color: black;
+	overflow: hidden;
+	/* border: 1px solid #dedede; */
+	border-top: none;
+	margin: 0;
+}
+
+.execution.selections-panel {
+	display: flex;
+	flex-direction: column;
+	width: calc(40% - -4px);
+	height: calc(100% - 4px);
+	background: #fff;
+	color: black;
+	overflow: hidden;
+	border-left: solid 1px #ebf2fa;
+	margin: 0;
+}
+
+.execution.cmd-options-panel {
+	width: calc(40% - 4px);
+	height: calc(0% - 4px);
+	background: #fff;
+	color: black;
+	overflow: hidden;
+	border: 1px solid #dedede;
+	margin: 2px;
+}
+
+.execution.panels-heading {
+	height: 40px;
+	width: 100%;
+	/* border-bottom: 1px solid #dedede; */
+	position: relative;
+	background-color: #4ea4e0;
+	/*#73a5c4;*/
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.execution.panels-heading-icon {
+	display: flex;
+	flex-direction: column;
+	font-size: 18px;
+	margin: 0;
+	color: white;
+	/*#5a5a5a;*/
+	padding: 0px 4px;
+	width: 32px;
+	height: 32px;
+	text-align: center;
+	vertical-align: middle;
+	justify-content: center;
+}
+
+.execution.panels-heading-icon:hover {
+	color: black !important;
+}
+
+.execution.panels-heading label {
+	margin-right: auto;
+	padding-left: 10px;
+}
+
+.execution.panels-body {
+	/*display: block;*/
+	overflow: auto;
+	height: calc(100% - 70px);
+	margin-top: 15px;
+	/*margin-bottom: 5px;*/
+}
+
+.execution.selections-panels-body {
+	/*display: block;*/
+	overflow: auto;
+	height: calc(100% - 70px);
+	margin-top: 15px;
+	/*margin-bottom: 5px;*/
+}
+
+.execution.selection-items {
+	height: 90%;
+	margin: 0 !important;
+	padding: 0px 10px;
+}
+
+.execution.selection-group-item {
+	display: inline-block;
+	height: 40px;
+	line-height: 40px;
+	position: relative;
+	margin: 3px 0px;
+	background-color: rgba(235, 242, 250, 1);
+	border: none;
+	border-radius: 1px;
+	-webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.20);
+	-moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.20);
+	box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.20);
+	color: #464646;
+	width: 100%;
+}
+
+.execution.selections-handle {
+	width: 40px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	line-height: 40px;
+	padding: 0;
+	margin: 0;
+	float: none !important;
+	text-align: center;
+	cursor: -webkit-grabbing;
+}
+
+#execution_items label {
+	width: calc(100% - 80px);
+	height: 40px;
+	position: absolute;
+	top: 0;
+	left: 40px;
+	line-height: 40px;
+	padding: 0;
+	margin: 0;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	vertical-align: bottom
+}
+
+#execution_items i {
+	width: 40px;
+	height: 100%;
+	position: absolute;
+	top: 0px !important;
+	right: 0 !important;
+	line-height: 40px;
+	padding: 0;
+	margin: 0;
+	float: none !important;
+	text-align: center;
+	display: block;
+	cursor: pointer;
+	color: #5a5a5a;
+	font-style: normal;
+}
+
+#execution_items i:hover {
+	color: #c00 !important;
+}
+
+.execution.results-tab {
+	height: 40px;
+	width: 100%;
+	color: #6b6b6b;
+	background: rgb(78, 164, 224);
+	/*rgb(115, 165, 196);*/
+	/*padding-bottom: 4%;*/
+	padding: 0;
+}
+
+.execution.results-tab button {
+	background-color: inherit;
+	float: left;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	padding: 18px 16px;
+	transition: 0.3s;
+	font-size: 17px;
+	/*font-family: Lato;*/
+	height: 100%;
+	line-height: 10px;
+	color: white;
+}
+
+.execution.results-tab button:hover {
+	background-color: #ddd;
+}
+
+.execution.results-tab button.active {
+	background-color: white;
+	color: black;
+}
+
+
+/* Style the tab content */
+
+.execution.tab-content {
+	display: none;
+	padding: 2px 2px;
+	-webkit-animation: fadeEffect 1s;
+	animation: fadeEffect 1s;
+	font-family: Corbel;
+}
+
+.execution.dialog_button_bar {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	text-align: right;
+	height: 40px;
+	border-top: 1px solid #dedede;
+}
+
+/* Execution cmd options dialog styles start*/
+
+.execution.dialog-container {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	z-index: 5;
+	top: 15%;
+	left: 15%;
+	min-width: 70%;
+	height: 600px;
+	width: 75%;
+	border-radius: 2px;
+	-webkit-animation: fadeEffect 1s;
+	color: black;
+	background: white;
+	-webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.28);
+	-moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.28);
+	box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.28);
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+}
+.execution.dialog-container.small {
+    left:15%;
+    min-width: 40%;
+    height: 250px;
+}
+
+.execution.dialog-container:not([open]) {
+	display: none;
+}
+
+.execution.dialog-container:open {
+	display: flex;
+	flex-direction: column;
+}
+
+.execution.dialog-container>.title {
+	color: white;
+	background: rgba(35, 131, 195, 0.95);
+	border: none;
+}
+
+.execution .title i {
+	float: right;
+	line-height: 40px;
+}
+
+.execution .title i:hover {
+	color: red;
+}
+
+.execution.dialog-content {
+	width: 100%;
+	margin-top: 40px;
+	height: calc(100% - 80px);
+	padding: 0;
+	//overflow: hidden;
+}
+
+.execution.cmd-options-menu {
+	display: flex;
+	flex-direction: row;
+	/* margin-top: 2px; */
+	height: 100px;
+	width: 100%;
+	background-color: #4ea4e0;
+	color: white;
+	align-items: center;
+	justify-content: center;
+	vertical-align: middle;
+	/*opacity: 0.75;*/
+}
+
+.execution.cmd-options-icons-bar {
+	display: inline-flex;
+	background-color: transparent;
+	color: black;
+	align-items: center;
+	justify-content: center;
+	white-space: nowrap;
+	width: 90%;
+	height: 95%;
+	vertical-align: middle;
+}
+
+.execution.cmd-options-icon {
+	display: flex;
+	flex-direction: column;
+	background-color: transparent;
+	color: black;
+	align-items: center;
+	justify-content: center;
+	white-space: nowrap;
+	width: 90%;
+	height: 100%;
+	vertical-align: middle;
+	padding: 5px;
+}
+
+.execution.cmd-options-icon:hover {
+	background: rgba(8, 8, 8, 0.05);
+}
+
+.execution.cmd-options-icon-wrapper {
+	height: 32px;
+	width: 32px;
+	font-size: 27px;
+}
+
+.execution.cmd-options-icon.red {
+	color: #903c3c;
+}
+
+.execution.cmd-options-icon.green {
+	color: #3b7a4c;
+}
+
+.execution.cmd-options-icon span {
+	color: white;
+}
+
+.execution.cmd-options-icon i {
+	display: inline-flex;
+	padding: 20px;
+	justify-content: center;
+	vertical-align: middle;
+	align-items: center;
+}
+
+.execution.cmd-options-qns i {
+	font-size: 18px;
+	line-height: 25px;
+	margin: 0;
+	color: #5a5a5a;
+	padding: 0px 4px;
+	width: 32px;
+	height: 32px;
+	text-align: center;
+}
+
+.execution.cmd-options-qns {
+	display: none;
+	position: relative;
+	width: 90%;
+	height: calc(100% - 130px);
+	margin: 15px auto;
+	border: 1px solid #dedede;
+	overflow: auto;
+}
+
+
+
+
+.execution.cmd-options-qns-button-bar {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	text-align: right;
+	height: 40px;
+	border-top: 1px solid #dedede;
+}
+
+.execution.cmd-options-qns-button-bar>div[name='next'] {
+	float: left
+}
+
+.execution.cmd-options-qns-button-bar>div[name='previous'] {
+	float: left
+}
+
+.execution.execution-button {
+	display: inline-block;
+	margin: 5px 5px 0px 2px;
+	padding: 2px 5px;
+	background: rgb(244, 244, 244);
+	border: solid #d2d2d2 1px;
+	color: #333;
+	width: 80px;
+	text-align: center;
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	font-family: 'Lato', sans-serif;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+}
+
+.execution.execution-button:hover {
+	background: #eaeaea;
+}
+
+.execution.cmd-options-qn {
+	display: block;
+	margin-top: 60px;
+	padding: 5px;
+	width: 90%;
+}
+
+.execution.cmd-options-data {
+	display: block;
+	margin-top: 3px;
+	padding: 5px;
+	width: 50%;
+}
+.execution.configure-layout-data {
+  display:inline-block;
+  margin-top:30px;
+  width: 100%;
+  padding: 5px;
+  height: 40px;
+}
+.execution.configure-layout-data-ws{
+	display:inline-block;
+  	width: 75%;
+  	vertical-align: bottom;
+}
+.execution.execution-button.browse {
+	margin: 5px 5px 0px 2px;
+	padding: 5px 3px;
+	line-height: 1.5;
+	//-webkit-appearance: button;
+}
+
+/* execution app related styles ends*/

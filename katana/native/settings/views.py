@@ -44,6 +44,9 @@ def general_setting_handler( request ):
 def profile_setting_handler( request ):
     return render(request, 'settings/profile_setting_handler.html', {"data": controls.profile_setting_handler(request)})
 
+def profile_about_handler( request ):
+    return render(request, 'settings/profile_about_handler.html', {"data": controls.profile_about_handler(request)})
+
 def smart_analysis_handler( request ):
     return render(request, 'settings/smart_analysis_handler.html', {"data": controls.smart_analysis_handler(request)})
 

@@ -1,0 +1,12 @@
+{
+  "icon": "pencil",
+  "color": "blue",
+  "developer": "Warrior Framework",
+  "description": "Edit Files using this App",
+  "app" : {"name" : "Editor", "url" : "/katana/editor/", "include": "native.editor.urls"},
+  "warrior-compatibility": ":warrior-3.7.0",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
+}

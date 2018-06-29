@@ -803,6 +803,11 @@ var katana = {
     }
   },
 
+  aboutUs: function(){
+    var aboutUs = "Warrior Framework started out as side project in 2015 and rapidly gained popularity within Fujitsu to become topmost provider of automation services in the company. <br><br> The potential of Warrior Framework did not go unnoticed and it was made publicly available under the Apache 2.0 License in mid 2017.<br><br> Today, Warrior Framework has successfully transformed into an Open Source Automation Platform wherein the user community can contribute back to the Platform by creating their Apps";
+    katana.popupController.open(aboutUs,"About Us",function(){console.log("success")});
+
+  },
   openProfile: function() {
     var $elem = this;
     $elem.closest('.active').removeClass('active');
@@ -916,7 +921,6 @@ var katana = {
       });
 
     },
-
   },
 
   templateAPI: {
@@ -985,6 +989,7 @@ var katana = {
     },
 
     post: function(url, csrf, toSend, callBack, fallBack, callBackData, fallBackData ) {
+
       var $elem = this && this != katana.templateAPI ? this : katana.$activeTab;
       var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
       var url = url ? url : $elem.attr('post-url');
@@ -1010,6 +1015,7 @@ var katana = {
     },
 
     get: function({url, csrf, toSend, dataType, callBack, fallBack, callBackData, fallBackData}={}) {
+      
 
       // intialize values for url, csrf, dataType, toSend
       var $elem = this ? this : katana.$activeTab;
@@ -1235,6 +1241,7 @@ var katana = {
           $directoryData.jstree().hide_dots();
           $tabContent.find('#explorer-up').off('click');
           $tabContent.find('#explorer-up').on('click', function() {
+            console.log("click");
             katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken, parent);
           });
         });

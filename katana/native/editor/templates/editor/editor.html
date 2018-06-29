@@ -1,0 +1,93 @@
+<head>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'editor/css/theme/abcdef.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/base16-dark.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/cobalt.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/dracula.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/neo.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/shadowfox.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/zenburn.css' %}">
+
+    <link rel="stylesheet" href="{% static 'editor/css/editor.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/codemirror.css' %}">
+    <script src = "{% static 'editor/js/codemirror.js' %}"></script>
+    <script src = "{% static 'editor/js/javascript.js' %}"></script>
+    <script src = "{% static 'editor/js/xml.js' %}"></script>
+    <script src = "{% static 'editor/js/python.js' %}"></script>
+    <script src = "{% static 'editor/js/css.js' %}"></script>
+    <script src = "{% static 'editor/js/htmlmixed.js' %}"></script>
+</head>
+<body>
+
+
+  <div class = "csrf-container"> {% csrf_token %} </div>
+  <div id="editor-container" class="editor edit-container" >
+
+        <div class="editor layout-panel"  auto-init="editor.filesViewer.loadFilesTree">
+
+                     <div class="editor panels-heading">
+                        <label>Files</label>
+                        <div class="editor panels-heading-icon">
+                        </div>
+                        <div class="editor panels-heading-icon">
+                          <i title="Open File" class="fa fa-edit" id="editor-edit-btn" katana-click="editor.filesViewer.configureLayout"></i>
+                        </div>
+                      </div>
+                      <div class="editor panels-body" >
+                        <div class = "up-btn-bar">
+                          <button title="Layout Settings"class = "btn btn-info" id="explorer-up"  katana-click= "editor.filesViewer.upDirectory"></button>
+                          <button title="Layout Settings"class = "btn btn-info" id="explorer-up" style = "transform: scaleY(-1);" katana-click= "editor.filesViewer.downDirectory"></button>
+
+                        </div>
+                        <div id="editor_layout_container"  data-startdir="{{defaults.start_dir}}" ></div>
+                      </div>
+        </div>
+        <div class = "editor selections-panel" id="editor-selections-panel">
+      <div class = "editor panels-heading" id="editor-selections-panel-heading">
+        <label> Code Editor </label>
+          <button title ="Save changes" id="save" class = "button" katana-click="editor.filesEditor.saveFile" style> Save File</button>
+          <div></div>
+      </div>
+
+          <div class = "editor selections-panels-body">
+            <div>
+              <p>Select a Theme:
+                <select onchange= "editor.filesEditor.changeTheme(this)" id = "select">
+                  <option selected> default</option>
+                  <option>abcdef</option>
+                  <option>base16-dark</option>
+                  <option>cobalt</option>
+                  <option>dracula</option>
+                  <option>neo</option>
+                  <option>shadowfox</option>
+                  <option>zenburn</option>
+
+                </select>
+              </p>
+            </div>
+            <textarea id="code"></textarea>
+
+          </div>
+        </div>
+</div>
+
+<div  class="editor dialog-container small" id="configure_layout_dialog" >
+      <div class="title"><label>Layout Settings</label> <i class="fa fa-times" katana-click="editor.filesViewer.close_configuration_dialog" ></i> </div>
+      <form  id="configure_layout_form">
+      <div class="editor dialog-content">
+           <div class="editor configure-layout-data" name="configure-layout-warriorspace-data" id="configure-layout-warriorspace-data">
+             	<div class="feild editor configure-layout-data-ws">
+	             	<label>Warriorspace</label>
+	             	<input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory" required>
+             	</div>
+				<div class="editor  editor-button browse" id="browse-ws"  katana-click="editor.filesViewer.openExplorer">Browse</div>
+         	</div>
+             <div class="editor cmd-options-qns-button-bar">
+               <div class="editor  editor-button" name="configure_layout_confirm" type="submit" katana-click="editor.filesViewer.confirm">Open File</div>
+             </div>
+
+      </div>
+  </form>
+</div>
+
+</body>

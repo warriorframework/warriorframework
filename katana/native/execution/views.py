@@ -178,6 +178,7 @@ class Execution(object):
         streaming fashion.
         """
         data_dict = json.loads(request.GET.get('data'))
+
         execution_file_list = data_dict['execution_file_list']
         cmd_string = data_dict['cmd_string']
         live_html_res_file = data_dict['liveHtmlFpath']
