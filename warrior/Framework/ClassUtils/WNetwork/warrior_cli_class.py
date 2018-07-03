@@ -1607,8 +1607,8 @@ class PexpectConnect(object):
                 print_exception(exception)
             else:
                 response = str(self.target_host.before)
-                # prints an error message, if the end prompt is not received
-                # even after 60 seconds wait time
+                # When the command gets timed out, the timeout exception is
+                # raised which will be saved to the after of spawn object
                 if self.target_host.after == self.pexpect.TIMEOUT:
                     pNote("EXCEPTION !! Command Timed Out", 'error')
                 else:
