@@ -10,6 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import ast
 import os
 import time
 from Framework import Utils
@@ -629,3 +630,25 @@ class CIregressionActions(object):
         if not status:
             pNote("Expected Value and Existing Value do not match", "error")
         return status
+
+    def instantiate_key_in_data_repository(self, key, value, datatype="str"):
+        """
+        This will create a key in the data_repository
+        :param key: name of the key that should be created in the data_repository.
+        :param value: value of the key added to the data_repository.
+        :param datatype: datatype of the value
+
+        :return: status (bool), output_dict (dict)
+        """
+        wdesc = "This keyword will create a key with value of a specific datatype in the data " \
+                "repository"
+        pNote(wdesc)
+        status = True
+        maps = {"str": str, "int": int, "float": float, "bool": bool, "list": list,
+                "tuple": tuple, "dict": dict}
+        if datatype.lower() not in maps:
+            pNote("Datatype '{0}' is not supported. Supported datatypes are Defaulting to str.".format(datatype))
+            datatype = "str"
+        output_dict = {key: maps[datatype.lower()](ast.literal_eval(value))}
+        pNote("Updating Data Repository with key: {0} and value: {1} with datatype: {2}".format(key, value, datatype))
+        return status, output_dict

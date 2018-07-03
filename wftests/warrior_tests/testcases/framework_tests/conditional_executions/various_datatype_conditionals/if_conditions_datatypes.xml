@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<Testcase>
+    <Details>
+        <Name>if_conditions_datatypes</Name>
+        <Title>Execute Type If Datatype check regression</Title>
+        <Engineer>Sanika Kulkarni</Engineer>
+        <Date>2018-07-03</Date>
+        <Time>13:48</Time>
+        <State/>
+        <InputDataFile>No_Data</InputDataFile>
+        <Datatype/>
+        <default_onError action="next"/>
+        <Logsdir/>
+        <Resultsdir/>
+        <ExpectedResults/>
+    </Details>
+    <Requirements>
+        <Requirement/>
+    </Requirements>
+    <Steps>
+        <step Driver="ci_regression_driver" Keyword="instantiate_key_in_data_repository" TS="1">
+            <Arguments>
+                <argument name="key" value="key_as_int"/>
+                <argument name="value" value="10"/>
+                <argument name="datatype" value="int"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Update String Key-Value in Data Repository</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="common_driver" Keyword="wait_for_timeout" TS="2">
+            <Arguments>
+                <argument name="timeout" value="1"/>
+            </Arguments>
+            <onError action="abort"/>
+            <Description>Step should be skipped. Conditional datatype must be int</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If Not">
+                <Rule Condition="int_key_as_int" Condvalue="10"/>
+            </Execute>
+            <context>negative</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="instantiate_key_in_data_repository" TS="3">
+            <Arguments>
+                <argument name="key" value="key_as_str"/>
+                <argument name="value" value="'value'"/>
+                <argument name="datatype" value="str"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Update Int Key-Value in Data Repository</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="common_driver" Keyword="wait_for_timeout" TS="4">
+            <Arguments>
+                <argument name="timeout" value="1"/>
+            </Arguments>
+            <onError action="abort"/>
+            <Description>Step should be skipped. Conditional datatype must be string</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If Not">
+                <Rule Condition="str_key_as_str" Condvalue="value"/>
+            </Execute>
+            <context>negative</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="instantiate_key_in_data_repository" TS="5">
+            <Arguments>
+                <argument name="key" value="key_as_float"/>
+                <argument name="value" value="1.23"/>
+                <argument name="datatype" value="float"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Update Float Key-Value in Data Repository</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="common_driver" Keyword="wait_for_timeout" TS="6">
+            <Arguments>
+                <argument name="timeout" value="1"/>
+            </Arguments>
+            <onError action="abort"/>
+            <Description>Step should be skipped. Conditional datatype must be float</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If Not">
+                <Rule Condition="float_key_as_float" Condvalue="1.23"/>
+            </Execute>
+            <context>negative</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="instantiate_key_in_data_repository" TS="7">
+            <Arguments>
+                <argument name="key" value="key_as_list"/>
+                <argument name="value" value="['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']"/>
+                <argument name="datatype" value="list"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Update Float Key-Value in Data Repository</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="common_driver" Keyword="wait_for_timeout" TS="8">
+            <Arguments>
+                <argument name="timeout" value="1"/>
+            </Arguments>
+            <onError action="abort"/>
+            <Description>Step should be skipped. Conditional datatype must be list</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If Not">
+                <Rule Condition="list_key_as_list" Condvalue="['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']"/>
+            </Execute>
+            <context>negative</context>
+            <impact>impact</impact>
+        </step>
+    </Steps>
+</Testcase>

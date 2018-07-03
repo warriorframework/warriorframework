@@ -110,15 +110,15 @@ def rule_parser(rule):
     operator = rule.get("Operator", "eq")
     if operator is not None and operator.lower() not in support_operators:
         pNote("Invaid Operator value, please use the following: {}".format(support_operators))
-        operator = None
+        operator = "eq"
+
+    arg_datatype_object = ArgumentDatatype(exec_condition, exec_cond_var)
+    exec_cond_var = arg_datatype_object.convert_arg_to_datatype()
 
     # Parse value with prefix
     supported_prefix = ["bool_", "str_", "int_", "float_", "list_", "tuple_", "dict_"]
     if any([exec_condition.startswith(i) for i in supported_prefix]):
-        exec_condition = exec_condition[exec_condition.find('_')+1:]
-
-    arg_datatype_object = ArgumentDatatype(exec_condition, exec_cond_var)
-    exec_cond_var = arg_datatype_object.convert_arg_to_datatype()
+        exec_condition = exec_condition[exec_condition.find('_') + 1:]
 
     status = logical_decision(exec_condition, exec_cond_var, operator)
     if status is False and else_action is not None:
