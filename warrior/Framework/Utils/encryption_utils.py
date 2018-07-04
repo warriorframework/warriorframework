@@ -18,6 +18,7 @@ import base64
 
 from Framework.Utils import file_Utils
 from Framework.Utils.print_Utils import print_exception, print_error, print_info
+from Framework.Utils.testcase_Utils import pNote
 import Tools
 
 try:
@@ -25,8 +26,7 @@ try:
     from Crypto.Cipher import AES
     from Crypto import Random
 except ImportError, err:
-    print_error(str(err))
-    print_info("{0} module is not installed".format(MOD))
+    pNote("Please Install Pycryptodome 3.6.1 and above", "error")
 
 from Framework.Utils.print_Utils import print_error
 
