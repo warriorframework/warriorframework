@@ -54,18 +54,18 @@ class ExecutionSummary():
             suite_result_dir = suite_detail.get('resultsdir')
             if suite_location is not None:
                 suite_tc_list.append(["Suites", suite_name, suite_status, suite_location])
-                for value in tree.iter('testcase'):
-                    testcase_details = value.attrib
-                    testcase_status = testcase_details.get('status')
-                    testcase_name = testcase_details.get('name')+".xml"
-                    testcase_location = testcase_details.get('testcasefile_path')
-                    case_result_dir_with_tc_name = testcase_details.get('resultsdir')
-                    if case_result_dir_with_tc_name is not None:
-                        case_result_dir = os.path.dirname(case_result_dir_with_tc_name)
+            for value in tree.iter('testcase'):
+                testcase_details = value.attrib
+                testcase_status = testcase_details.get('status')
+                testcase_name = testcase_details.get('name')+".xml"
+                testcase_location = testcase_details.get('testcasefile_path')
+                case_result_dir_with_tc_name = testcase_details.get('resultsdir')
+                if case_result_dir_with_tc_name is not None:
+                    case_result_dir = os.path.dirname(case_result_dir_with_tc_name)
                     # suite junit element will not have resultsdir attrib for case execution
-                        if suite_result_dir is None or suite_result_dir == case_result_dir:
-                            suite_tc_list.append(["Testcase", testcase_name, testcase_status,
-                                                  testcase_location])
+                    if suite_result_dir is None or suite_result_dir == case_result_dir:
+                        suite_tc_list.append(["Testcase", testcase_name, testcase_status,
+                                              testcase_location])
         # suite_tc_list appends suites and test cases as per execution order
         return suite_tc_list
 
