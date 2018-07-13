@@ -297,6 +297,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                        'Details',
                                                                        'type', 'Max_Attempts')
+        execution_value = 1 if execution_value == "" else execution_value
         print_info("Execution type: {0}, Attempts: {1}".format(execution_type, execution_value))
         i = 0
         while i < int(execution_value):
@@ -315,6 +316,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                        'Details',
                                                                        'type', 'Max_Attempts')
+        execution_value = 1 if execution_value == "" else execution_value
         print_info("Execution type: {0}, Attempts: {1}".format(execution_type, execution_value))
         i = 0
         while i < int(execution_value):
@@ -332,7 +334,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                         'Details', 'type',
                                                                         'Number_Attempts')
-        print_info("Execution type: {0}, Max Attempts: {1}".format(execution_type, execution_value))
+        execution_value = 1 if execution_value == "" else execution_value
+        print_info("Execution type: {0}, Attempts: {1}".format(execution_type, execution_value))
 
         i = 0
         while i < int(execution_value):
