@@ -278,6 +278,10 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     if not from_project:
         data_repository["war_parallel"] = False
 
+    root = Utils.xml_Utils.getRoot(testsuite_filepath)
+    suite_global_xml = root.find('Details')
+    runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(suite_global_xml)
+
     if execution_type.upper() == 'PARALLEL_TESTCASES':
         ts_junit_object.remove_html_obj()
         data_repository["war_parallel"] = True
@@ -288,12 +292,54 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                                           auto_defects=auto_defects)
 
     elif execution_type.upper() == 'SEQUENTIAL_TESTCASES':
-        print_info("Executing testccases sequentially")
-        test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
-                                                            data_repository, from_project,
-                                                            auto_defects=auto_defects)
+        if runmode is None:
+            print_info("Executing testcases sequentially")
+            test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
+                                                                data_repository, from_project,
+                                                                auto_defects=auto_defects)
 
-    elif execution_type.upper() == 'RUN_UNTIL_FAIL':
+        elif runmode.upper() is "RUF":
+            print_info("Execution type: {0}, Attempts: {1}".format(runmode, value))
+            i = 0
+            while i < int(value):
+                i += 1
+                print_debug("\n\n<======= ATTEMPT: {0} ======>".format(i))
+                test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
+                                                                    data_repository, from_project,
+                                                                    auto_defects=auto_defects)
+                test_count = i * len(testcase_list)
+                testsuite_utils.pSuite_update_suite_tests(str(test_count))
+                if str(test_suite_status).upper() == "FALSE" or\
+                   str(test_suite_status).upper() == "ERROR":
+                    break
+
+        elif runmode.upper() is "RUP":
+            print_info("Execution type: {0}, Attempts: {1}".format(runmode, value))
+            i = 0
+            while i < int(value):
+                i += 1
+                print_debug("\n\n<======= ATTEMPT: {0} ======>".format(i))
+                test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
+                                                                    data_repository, from_project,
+                                                                    auto_defects=auto_defects)
+                test_count = i * len(testcase_list)
+                testsuite_utils.pSuite_update_suite_tests(str(test_count))
+                if str(test_suite_status).upper() == "TRUE":
+                    break
+
+        elif runmode.upper() is "RMT":
+            print_info("Execution type: {0}, Attempts: {1}".format(runmode, value))
+            i = 0
+            while i < int(value):
+                i += 1
+                print_debug("\n\n<======= ATTEMPT: {0} ======>".format(i))
+                # We aren't actually summing each test result here...
+                test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
+                                                                    data_repository, from_project,
+                                                                    auto_defects=auto_defects)
+
+    # The below code is not modified/removed to preserve backward compatibility
+    elif execution_type.upper() == 'RUN_UNTIL_FAIL' and runmode is None:
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                        'Details',
                                                                        'type', 'Max_Attempts')
@@ -312,7 +358,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                str(test_suite_status).upper() == "ERROR":
                 break
 
-    elif execution_type.upper() == 'RUN_UNTIL_PASS':
+    elif execution_type.upper() == 'RUN_UNTIL_PASS' and runmode is None:
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                        'Details',
                                                                        'type', 'Max_Attempts')
@@ -330,7 +376,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
             if str(test_suite_status).upper() == "TRUE":
                 break
 
-    elif execution_type.upper() == 'RUN_MULTIPLE':
+    elif execution_type.upper() == 'RUN_MULTIPLE' and runmode is None:
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                         'Details', 'type',
                                                                         'Number_Attempts')
