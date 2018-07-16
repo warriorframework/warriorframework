@@ -266,7 +266,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                 testsuite_utils.update_tc_duration(str(tc_duration))
                 # if runmode is 'rup' & tc_status is True, skip the repeated
                 # execution of same testcase and move to next actual testcase
-                if runmode == "rup":
+                if runmode.upper() == "RUP":
                     goto_tc = str(value)
             elif tc_status == 'ERROR' or tc_status == 'EXCEPTION':
                 errors += 1
@@ -304,7 +304,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                     goto_tc = False
                 # if runmode is 'ruf' & tc_status is False, skip the repeated
                 # execution of same testcase and move to next actual testcase
-                if not goto_tc and runmode == "ruf":
+                if not goto_tc and runmode.upper() == "RUF":
                     goto_tc = str(value)
         elif retry_type is not None:
             if retry_type.upper() == 'IF':
