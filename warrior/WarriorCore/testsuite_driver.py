@@ -298,7 +298,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                                                 data_repository, from_project,
                                                                 auto_defects=auto_defects)
 
-        elif runmode.upper() is "RUF":
+        elif runmode.upper() == "RUF":
             print_info("Execution type: {0}, Attempts: {1}".format(runmode, value))
             i = 0
             while i < int(value):
@@ -313,7 +313,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                    str(test_suite_status).upper() == "ERROR":
                     break
 
-        elif runmode.upper() is "RUP":
+        elif runmode.upper() == "RUP":
             print_info("Execution type: {0}, Attempts: {1}".format(runmode, value))
             i = 0
             while i < int(value):
@@ -327,7 +327,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                 if str(test_suite_status).upper() == "TRUE":
                     break
 
-        elif runmode.upper() is "RMT":
+        elif runmode.upper() == "RMT":
             print_info("Execution type: {0}, Attempts: {1}".format(runmode, value))
             i = 0
             while i < int(value):
@@ -338,7 +338,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                                                     data_repository, from_project,
                                                                     auto_defects=auto_defects)
 
-    # The below code is not modified/removed to preserve backward compatibility
+    # The below runmode part is not modified/removed to preserve backward compatibility
     elif execution_type.upper() == 'RUN_UNTIL_FAIL' and runmode is None:
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                        'Details',
