@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <Project>
     <Details>
-        <Name>pj_runmode_at_tc_&_suite_level_at_project_file</Name>
-        <Title>Project for testing runmode tag in suite files & testcase levels</Title>
+        <Name>pj_runmode_at_tc_and_suite_level_at_project_file</Name>
+        <Title>Project for testing runmode tag in suite and testcase files</Title>
         <Engineer>Warrior_user</Engineer>
         <State>New</State>
         <Date>07-18-2018</Date>
