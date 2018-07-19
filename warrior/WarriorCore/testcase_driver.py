@@ -496,6 +496,9 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,
                                                        'Details', 'State')
+    root_element = Utils.xml_Utils.getRoot(testcase_filepath)
+    testcase_global = root_element.find('Details')
+    runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(testcase_global)
     if tc_state is not False and tc_state is not None and \
        tc_state.upper() == "DRAFT":
         print_warning("Testcase is in 'Draft' state, it may have keywords "
@@ -510,9 +513,47 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     else:
         if data_type.upper() == 'CUSTOM' and \
          runtype.upper() == 'SEQUENTIAL_KEYWORDS':
-            tc_status = execute_custom(data_type, runtype,
-                                       custom_sequential_kw_driver,
-                                       data_repository, step_list)
+            if runmode is None:
+                tc_status = execute_custom(data_type, runtype,
+                                           custom_sequential_kw_driver,
+                                           data_repository, step_list)
+            elif runmode.upper() == 'RUP':
+                print_info("Execution type: {0}, Attempts: {1}"
+                           .format(runmode, value))
+                i = 0
+                while i < int(value):
+                    i += 1
+                    print_debug("\n\n<======= ATTEMPT: {0} ======>\n".format(i))
+                    tc_status = execute_custom(data_type, runtype,
+                                               custom_sequential_kw_driver,
+                                               data_repository, step_list)
+                    if str(tc_status).upper() == "FALSE" or\
+                       str(tc_status).upper() == "ERROR":
+                        break
+
+            elif runmode.upper() == 'RUF':
+                print_info("Execution type: {0}, Attempts: {1}"
+                           .format(runmode, value))
+                i = 0
+                while i < int(value):
+                    i += 1
+                    print_debug("\n\n<======= ATTEMPT: {0} ======>\n".format(i))
+                    tc_status = execute_custom(data_type, runtype,
+                                               custom_sequential_kw_driver,
+                                               data_repository, step_list)
+                    if str(tc_status).upper() == "TRUE":
+                        break
+
+            elif runmode.upper() == 'RMT':
+                print_info("Execution type: {0}, Attempts: {1}"
+                           .format(runmode, value))
+                i = 0
+                while i < int(value):
+                    i += 1
+                    print_debug("\n\n<======= ATTEMPT: {0} ======>\n".format(i))
+                    tc_status = execute_custom(data_type, runtype,
+                                               custom_sequential_kw_driver,
+                                               data_repository, step_list)
         elif data_type.upper() == 'CUSTOM' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             tc_junit_object.remove_html_obj()

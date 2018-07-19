@@ -19,7 +19,7 @@ import traceback
 import glob
 
 import Framework.Utils as Utils
-from Framework.Utils.print_Utils import print_info, print_error, print_warning
+from Framework.Utils.print_Utils import print_info, print_error, print_warning, print_debug
 from WarriorCore.Classes import execution_files_class, junit_class
 from WarriorCore import common_execution_utils, sequential_testsuite_driver, \
  parallel_testsuite_driver
@@ -240,6 +240,9 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
 
     execution_type = Utils.xml_Utils.getChildAttributebyParentTag(project_filepath, 'Details',
                                                                   'type', 'exectype')
+    root = Utils.xml_Utils.getRoot(project_filepath)
+    project_global = root.find('Details')
+    runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(project_global)
 
     # for backward compatibility(when exectype is not provided)
     if execution_type is False:
@@ -253,9 +256,41 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                                                         data_repository, auto_defects,
                                                         ts_parallel=True)
     elif execution_type.upper() == 'SEQUENTIAL_SUITES':
-        print_info("Executing suites sequentially")
-        project_status = sequential_testsuite_driver.main(testsuite_list, project_repository,
+        if runmode is None:
+            print_info("Executing suites sequentially")
+            project_status = sequential_testsuite_driver.main(testsuite_list, project_repository,
                                                           data_repository, auto_defects)
+        elif runmode.upper() == 'RUP':
+            print_info("Execution type: {0}, Attempts: {1}".format(runmode, value))
+            i = 0
+            while i < int(value):
+                i += 1
+                print_debug("\n\n<======= ATTEMPT: {0} ======>\n".format(i))
+                project_status = sequential_testsuite_driver.main(testsuite_list, project_repository,
+                                                                  data_repository, auto_defects)
+                if str(project_status).upper() == "FALSE" or\
+                   str(project_status).upper() == "ERROR":
+                        break
+
+        elif runmode.upper() == 'RUF':
+            print_info("Execution type: {0}, Attempts: {1}".format(runmode, value))
+            i = 0
+            while i < int(value):
+                i += 1
+                print_debug("\n\n<======= ATTEMPT: {0} ======>\n".format(i))
+                project_status = sequential_testsuite_driver.main(testsuite_list, project_repository,
+                                                                  data_repository, auto_defects)
+                if str(project_status).upper() == "TRUE":
+                    break
+
+        elif runmode.upper() == 'RMT':
+            print_info("Execution type: {0}, Attempts: {1}".format(runmode, value))
+            i = 0
+            while i < int(value):
+                i += 1
+                print_debug("\n\n<======= ATTEMPT: {0} ======>\n".format(i))
+                project_status = sequential_testsuite_driver.main(testsuite_list, project_repository,
+                                                                  data_repository, auto_defects)
     else:
         print_error("unexpected project_type received...aborting execution")
         project_status = False
