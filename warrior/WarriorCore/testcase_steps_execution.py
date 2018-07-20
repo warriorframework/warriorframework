@@ -66,6 +66,7 @@ class TestCaseStepsExecutionClass(object):
         self.run_current_step = False
         self.current_triggered_action = False
         self.step_status = None
+        self.runmode_count = 0
 
     def execute_step(self, current_step_number, go_to_step_number):
         """
@@ -79,7 +80,6 @@ class TestCaseStepsExecutionClass(object):
 
         self.go_to_step_number = go_to_step_number
         # execute steps
-
         # Decide whether or not to execute keyword
         # First decide if this step should be executed in this iteration
         if not self.go_to_step_number or self.go_to_step_number == str(self.current_step_number):
@@ -99,7 +99,6 @@ class TestCaseStepsExecutionClass(object):
             common_execution_utils.get_runmode_from_xmlfile(self.current_step)
         retry_type, retry_cond, retry_cond_value, retry_value, retry_interval = \
             common_execution_utils.get_retry_from_xmlfile(self.current_step)
-
         if runmode is not None:
             return self._execute_runmode_step(runmode_timer, runmode, self.step_status, value)
 
@@ -205,9 +204,12 @@ class TestCaseStepsExecutionClass(object):
         runmode_evaluation = any([runmode == "RMT",
                                   runmode == "RUF" and step_status is True,
                                   runmode == "RUP" and step_status is False])
+        self.runmode_count += 1
         if runmode_timer is not None and runmode_evaluation:
             pNote("Wait for {0}sec before the next runmode attempt ".format(runmode_timer))
             wait_for_timeout(runmode_timer)
+        if self.runmode_count == value-1:
+            print_info("--------------------End of Runmode Execution--------------------")
         # if runmode is 'ruf' & step_status is False, skip the repeated
         # execution of same TC step and move to next actual step
         elif runmode == "RUF" and step_status is False:

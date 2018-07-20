@@ -147,10 +147,12 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     print_info("Teststep Description: {0}".format(step_description))
 
     if step.find("runmode") is not None and step.find("runmode").get("attempt") is not None:
-        print_info("keyword attempt: {0}".format(
+        if step.find("runmode").get("attempt") == 1:
+            print_info("----------------------Start of Runmode Execution-----------------------")
+        print_info("KEYWORD ATTEMPT: {0}".format(
             step.find("runmode").get("attempt")))
     if step.find("retry") is not None and step.find("retry").get("attempt") is not None:
-        print_info("keyword attempt: {0}".format(
+        print_info("KEYWORD ATTEMPT: {0}".format(
             step.find("retry").get("attempt")))
     kw_start_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Keyword execution starts".format(kw_start_time))
@@ -238,7 +240,6 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
 
     tc_resultsdir = data_repository['wt_resultsdir']
     tc_name = data_repository['wt_name']
-
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
                        kw_resultfile, impact, onerror, step_description,

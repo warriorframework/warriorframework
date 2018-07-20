@@ -33,6 +33,7 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
     """ Executes suites in a project sequentially """
 
     suite_cntr = 0
+    runmode_count = 0
     goto_testsuite = False
     ts_status_list = []
     ts_impact_list = []
@@ -67,6 +68,13 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
                                                                                     'onError',
                                                                                     'action')
         ts_onError_action = ts_onError_action if ts_onError_action else project_error_action
+        if testsuite.find("runmode") is not None and \
+           testsuite.find("runmode").get("attempt") is not None:
+                runmode_count += 1
+                if runmode_count == 1:
+                    print_info("----------------------Start of Runmode Execution-----------------------")
+                print_info("RUNMODE ATTEMPT: {0}"
+                           .format(testsuite.find("runmode").get("attempt")))
         if Utils.file_Utils.fileExists(testsuite_path):
             if not goto_testsuite and action is True:
 
@@ -158,9 +166,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         retry_type, retry_cond, retry_cond_value, retry_value,\
             retry_interval = common_execution_utils.get_retry_from_xmlfile(testsuite)
         if runmode is not None:
-            if testsuite.find("runmode") is not None and\
-              testsuite.find("runmode").get("attempt") is not None:
-                print_info("runmode attempt: {0}".format(testsuite.find("runmode").get("attempt")))
+            if runmode_count == value-1:
+                print_info("--------------------End of Runmode Execution--------------------")
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
             if not project_error_value and runmode == "RUF" and\
@@ -173,7 +180,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         elif retry_type is not None:
             if testsuite.find("retry") is not None and\
               testsuite.find("retry").get("attempt") is not None:
-                print_info("retry attempt: {0}".format(testsuite.find("retry").get("attempt")))
+                print_info("RETRY ATTEMPT: {0}"
+                           .format(testsuite.find("retry").get("attempt")))
             if retry_type.upper() == 'IF':
                 try:
                     if data_repository[retry_cond] == retry_cond_value:
