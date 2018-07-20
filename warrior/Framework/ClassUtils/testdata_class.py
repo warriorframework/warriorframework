@@ -557,14 +557,22 @@ class TestDataIterations(object):
             commands in the in the expanded cmd_list)
         """
         cmd_list = details_dict["command_list"]
+        print("****************************")
+        print("cmd_list: {0}".format(cmd_list))
         vc_file_list = details_dict["vc_file_list"]
+        print("****************************")
+        print("vc_file_list: {0}".format(vc_file_list))
         repeat_list = details_dict["repeat_list"]
+        print("****************************")
+        print("repeat_list: {0}".format(repeat_list))
         res_status = True
         ### for each command in cmd_list resolve the iterations
         cmd_list_length = len(cmd_list)
         cmd_loc_list = [0]
         cmd_size = 1
         for i, cmd in enumerate(cmd_list):
+            print("***************** Inside the for loop **********************")
+            print("{0}: {1}".format(i, cmd))
             vc_file = vc_file_list[i]
             iteration_status = self.validate_iteration_patterns(cmd, details_dict, i)
             cmd_size = 1 if cmd_size < 1 else cmd_size
@@ -642,12 +650,18 @@ class TestDataIterations(object):
 
         """
         # get the iteration pattern of the command
+        print("**************** Inside validate_iteration_patterns *****************************")
         cmd_iter_pattern = self.get_iteration_pattern(cmd)
+        print("cmd_iter_pattern: {0}".format(cmd_iter_pattern))
         cmd_status = self._validate_cmd_iterpattern(cmd, cmd_iter_pattern)
+        print("cmd_status: {0}".format(cmd_status))
         param_status = self._validate_params_iterpattern\
             (cmd, details_dict, cmd_iter_pattern, index)
+        print("param_status: {0}".format(param_status))
         vfy_search_status = self._validate_vfysearch_iterpattern(cmd, details_dict, index)
+        print("vfy_search_status: {0}".format(vfy_search_status))
         vfyparams_status = self._validate_vfyparams_iterpattern(cmd, details_dict, index)
+        print("vfyparams_status: {0}".format(vfyparams_status))
         status = cmd_status and param_status and vfy_search_status \
             and vfyparams_status
         return status
