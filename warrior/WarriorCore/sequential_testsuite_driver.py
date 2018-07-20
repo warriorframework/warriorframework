@@ -12,9 +12,6 @@ limitations under the License.
 '''
 
 # !/usr/bin/python
-"""This is sequential suite driver which is used to execute
-the suites of a project in sequential order"""
-
 import os
 import time
 import traceback
@@ -26,6 +23,9 @@ from WarriorCore import exec_type_driver
 import WarriorCore.testsuite_driver as testsuite_driver
 import WarriorCore.onerror_driver as onerror_driver
 from Framework.Utils.testcase_Utils import pNote
+
+"""This is sequential suite driver which is used to execute
+the suites of a project in sequential order"""
 
 
 def execute_sequential_testsuites(testsuite_list, project_repository,
@@ -142,7 +142,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         pj_junit_object.update_attr("impact", impact_dict.
                                     get(testsuite_impact.upper()), "ts",
                                     data_repository['wt_ts_timestamp'])
-        pj_junit_object.update_attr("onerror", onerror, "ts", data_repository['wt_ts_timestamp'])
+        pj_junit_object.update_attr("onerror", onerror, "ts",
+                                    data_repository['wt_ts_timestamp'])
 
         string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR",
                          "SKIP": "SKIP", "RAN": "RAN"}
