@@ -98,5 +98,13 @@
 			<onError action="next" value=""/>
 			<impact>impact</impact>
 		</Testsuite>
+		<Testsuite>
+			<path>suites/framework_tests/cond_var/pass.xml</path>
+			<Execute ExecType="No">
+				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
 	</Testsuites>
 </Project>
