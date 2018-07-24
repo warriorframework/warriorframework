@@ -196,9 +196,11 @@ class TestCaseStepsExecutionClass(object):
                                impact_dict.get(step_impact.upper()), "N/A", step_description)
         self.data_repository['step_{}_result'.format(self.current_step_number)] = "SKIPPED"
         # print the end of runmode execution
-        if self.current_step.find("runmode").get("attempt") == \
-           self.current_step.find("runmode").get("value")-1:
-            print_info("\n----------------- End of Step Runmode Execution -----------------\n")
+        if self.current_step.find("runmode") is not None and \
+           self.current_step.find("runmode").get("attempt") is not None:
+            if self.current_step.find("runmode").get("attempt") == \
+               self.current_step.find("runmode").get("value")-1:
+                print_info("\n----------------- End of Step Runmode Execution -----------------\n")
         return self.current_step_number, self.go_to_step_number, "continue"
 
     def _execute_runmode_step(self, runmode_timer, runmode, step_status, value):

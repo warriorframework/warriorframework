@@ -107,10 +107,12 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
                 msg = print_info('skipped testsuite: {0} '.format(testsuite_path))
                 # print the end of runmode execution as the steps skip when the condition
                 # is met for RUF/RUP
-                if testsuite.find("runmode").get("attempt") == \
-                   testsuite.find("runmode").get("value")-1:
-                    print_info("\n----------------- End of Testsuite Runmode Execution"
-                               " -----------------\n")
+                if testsuite.find("runmode") is not None and \
+                   testsuite.find("runmode").get("attempt") is not None:
+                    if testsuite.find("runmode").get("attempt") == \
+                       testsuite.find("runmode").get("value")-1:
+                        print_info("\n----------------- End of Testsuite Runmode Execution"
+                                   " -----------------\n")
                 tmp_timestamp = str(Utils.datetime_utils.get_current_timestamp())
                 time.sleep(2)
                 pj_junit_object.create_testsuite(

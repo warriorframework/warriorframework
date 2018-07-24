@@ -179,10 +179,12 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                                 str(tests), str(failures), time='0')
                 # print the end of runmode execution as the steps skip when the condition
                 # is met for RUF/RUP
-                if testcase.find("runmode").get("attempt") == \
-                   testcase.find("runmode").get("value")-1:
-                    print_info("\n----------------- End of Testcase Runmode Execution"
-                               " -----------------\n")
+                if testcase.find("runmode") is not None and \
+                   testcase.find("runmode").get("attempt") is not None:
+                    if testcase.find("runmode").get("attempt") == \
+                       testcase.find("runmode").get("value")-1:
+                            print_info("\n----------------- End of Testcase Runmode Execution"
+                                       " -----------------\n")
                 data_repository['wt_junit_object'].update_count(
                                 "skipped", "1", "ts",
                                 data_repository['wt_ts_timestamp'])
