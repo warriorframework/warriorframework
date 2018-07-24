@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="search_element_1">
+        <headless_mode>Yes</headless_mode>
+        <browser>
+            <browser_name>browser_1</browser_name>
+            <url>http://www.stackoverflow.com/</url>
+        </browser>
+        <browser>
+            <browser_name>browser_2</browser_name>
+            <url>http://www.google.com/</url>
+        </browser>
+        <browser>
+            <browser_name>browser_3</browser_name>
+            <url>http://www.yahoo.com/</url>
+        </browser>
+    </system>
+    <system name="search_element_2">
+        <headless_mode>Yes</headless_mode>
+        <browser>
+            <browser_name>browser_4</browser_name>
+            <url>http://www.google.com/</url>
+        </browser>
+    </system>
+    <system name="search_element_3">
+        <headless_mode>Yes</headless_mode>
+        <browser>
+            <browser_name>browser_5</browser_name>
+        </browser>
+    </system>
+    <system name="search_element_4">
+        <headless_mode>Yes</headless_mode>
+        <browser>
+            <browser_name>browser_6</browser_name>
+        </browser>
+        <browser>
+            <browser_name>browser_7</browser_name>
+        </browser>
+        <browser>
+            <browser_name>browser_8</browser_name>
+        </browser>
+    </system>
+</credentials>
