@@ -195,21 +195,26 @@ class TestCaseStepsExecutionClass(object):
                                kw_start_time, "0", "skipped",
                                impact_dict.get(step_impact.upper()), "N/A", step_description)
         self.data_repository['step_{}_result'.format(self.current_step_number)] = "SKIPPED"
+        # print the end of runmode execution
+        if self.current_step.find("runmode").get("attempt") == \
+           self.current_step.find("runmode").get("value")-1:
+            print_info("\n----------------- End of Step Runmode Execution -----------------\n")
         return self.current_step_number, self.go_to_step_number, "continue"
 
     def _execute_runmode_step(self, runmode_timer, runmode, step_status, value):
         """
         This function will execute a runmode step
         """
+        self.runmode_count += 1
         runmode_evaluation = any([runmode == "RMT",
                                   runmode == "RUF" and step_status is True,
                                   runmode == "RUP" and step_status is False])
-        self.runmode_count += 1
         if runmode_timer is not None and runmode_evaluation:
             pNote("Wait for {0}sec before the next runmode attempt ".format(runmode_timer))
             wait_for_timeout(runmode_timer)
+        # condition to print the end of runmode execution
         if self.runmode_count == value-1:
-            print_info("--------------------End of Runmode Execution--------------------")
+            print_info("\n----------------- End of Step Runmode Execution -----------------\n")
         # if runmode is 'ruf' & step_status is False, skip the repeated
         # execution of same TC step and move to next actual step
         elif runmode == "RUF" and step_status is False:

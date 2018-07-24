@@ -260,7 +260,6 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         print_error("unexpected project_type received...aborting execution")
         project_status = False
 
-    print_info("\n")
     project_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Project execution completed".format(project_end_time))
     project_duration = Utils.datetime_utils.get_time_delta(project_start_time)

@@ -71,8 +71,10 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         if testsuite.find("runmode") is not None and \
            testsuite.find("runmode").get("attempt") is not None:
                 runmode_count += 1
+                # condition to print the start of runmode execution
                 if runmode_count == 1:
-                    print_info("----------------------Start of Runmode Execution-----------------------")
+                    print_info("\n----------------- Start of Testsuite Runmode Execution"
+                               " -----------------\n")
                 print_info("RUNMODE ATTEMPT: {0}"
                            .format(testsuite.find("runmode").get("attempt")))
         if Utils.file_Utils.fileExists(testsuite_path):
@@ -103,6 +105,12 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
 
             else:
                 msg = print_info('skipped testsuite: {0} '.format(testsuite_path))
+                # print the end of runmode execution as the steps skip when the condition
+                # is met for RUF/RUP
+                if testsuite.find("runmode").get("attempt") == \
+                   testsuite.find("runmode").get("value")-1:
+                    print_info("\n----------------- End of Testsuite Runmode Execution"
+                               " -----------------\n")
                 tmp_timestamp = str(Utils.datetime_utils.get_current_timestamp())
                 time.sleep(2)
                 pj_junit_object.create_testsuite(
@@ -167,8 +175,10 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         retry_type, retry_cond, retry_cond_value, retry_value,\
             retry_interval = common_execution_utils.get_retry_from_xmlfile(testsuite)
         if runmode is not None:
+            # print the end of runmode execution when all the attempts finish
             if runmode_count == value-1:
-                print_info("--------------------End of Runmode Execution--------------------")
+                print_info("\n----------------- End of Testsuite Runmode Execution"
+                           " -----------------\n")
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
             if not project_error_value and runmode == "RUF" and\
