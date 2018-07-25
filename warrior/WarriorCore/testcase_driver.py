@@ -240,6 +240,7 @@ def get_steps_list(testcase_filepath):
                     copy_step = copy.deepcopy(step)
                     copy_step.find("runmode").set("value", go_next)
                     copy_step.find("runmode").set("attempt", i+1)
+                    copy_step.find("runmode").set("runmode_value", value)
                     step_list.append(copy_step)
             if retry_type is not None and retry_value > 0:
                 go_next = len(step_list) + retry_value + 1

@@ -33,7 +33,6 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
     """ Executes suites in a project sequentially """
 
     suite_cntr = 0
-    runmode_count = 0
     goto_testsuite = False
     ts_status_list = []
     ts_impact_list = []
@@ -70,9 +69,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         ts_onError_action = ts_onError_action if ts_onError_action else project_error_action
         if testsuite.find("runmode") is not None and \
            testsuite.find("runmode").get("attempt") is not None:
-                runmode_count += 1
                 # condition to print the start of runmode execution
-                if runmode_count == 1:
+                if testsuite.find("runmode").get("attempt") == 1:
                     print_info("\n----------------- Start of Testsuite Runmode Execution"
                                " -----------------\n")
                 print_info("RUNMODE ATTEMPT: {0}"
@@ -105,14 +103,6 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
 
             else:
                 msg = print_info('skipped testsuite: {0} '.format(testsuite_path))
-                # print the end of runmode execution as the steps skip when the condition
-                # is met for RUF/RUP
-                if testsuite.find("runmode") is not None and \
-                   testsuite.find("runmode").get("attempt") is not None:
-                    if testsuite.find("runmode").get("attempt") == \
-                       testsuite.find("runmode").get("value")-1:
-                        print_info("\n----------------- End of Testsuite Runmode Execution"
-                                   " -----------------\n")
                 tmp_timestamp = str(Utils.datetime_utils.get_current_timestamp())
                 time.sleep(2)
                 pj_junit_object.create_testsuite(
@@ -177,10 +167,6 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         retry_type, retry_cond, retry_cond_value, retry_value,\
             retry_interval = common_execution_utils.get_retry_from_xmlfile(testsuite)
         if runmode is not None:
-            # print the end of runmode execution when all the attempts finish
-            if runmode_count == value-1:
-                print_info("\n----------------- End of Testsuite Runmode Execution"
-                           " -----------------\n")
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
             if not project_error_value and runmode == "RUF" and\
@@ -249,7 +235,14 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
             elif goto_testsuite and int(goto_testsuite) < suite_cntr:
                 suite_cntr = int(goto_testsuite)-1
                 goto_testsuite = False
-
+    # print the end of runmode execution as the steps skip when the condition
+    # is met for RUF/RUP or when all the attempts finish
+    if testsuite.find("runmode") is not None and \
+       testsuite.find("runmode").get("attempt") is not None:
+        if testsuite.find("runmode").get("attempt") == \
+           testsuite.find("runmode").get("runmode_value"):
+            print_info("\n----------------- End of Testsuite Runmode Execution"
+                       " -----------------\n")
     project_status = Utils.testcase_Utils.compute_status_using_impact(ts_status_list,
                                                                       ts_impact_list)
 

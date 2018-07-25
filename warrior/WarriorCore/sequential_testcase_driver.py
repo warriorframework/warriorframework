@@ -80,7 +80,6 @@ def execute_sequential_testcases(testcase_list, suite_repository,
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
     tc_duration_list = []
     tc_junit_list = []
-    runmode_count = 0
 
     while tests < len(testcase_list):
         testcase = testcase_list[tests]
@@ -111,9 +110,8 @@ def execute_sequential_testcases(testcase_list, suite_repository,
         data_repository['wt_tc_impact'] = tc_impact
         if testcase.find("runmode") is not None and \
            testcase.find("runmode").get("attempt") is not None:
-            runmode_count += 1
             # condition to print the start of runmode execution
-            if runmode_count == 1:
+            if testcase.find("runmode").get("attempt") == 1:
                 print_info("\n----------------- Start of Testcase Runmode Execution"
                            " -----------------\n")
             print_info("TESTCASE ATTEMPT: {0}".format(
@@ -177,14 +175,6 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                 testsuite_utils.pSuite_update_suite_attributes(
                                 junit_resultfile, str(errors), str(skipped),
                                 str(tests), str(failures), time='0')
-                # print the end of runmode execution as the steps skip when the condition
-                # is met for RUF/RUP
-                if testcase.find("runmode") is not None and \
-                   testcase.find("runmode").get("attempt") is not None:
-                    if testcase.find("runmode").get("attempt") == \
-                       testcase.find("runmode").get("value")-1:
-                            print_info("\n----------------- End of Testcase Runmode Execution"
-                                       " -----------------\n")
                 data_repository['wt_junit_object'].update_count(
                                 "skipped", "1", "ts",
                                 data_repository['wt_ts_timestamp'])
@@ -276,10 +266,6 @@ def execute_sequential_testcases(testcase_list, suite_repository,
         retry_type, retry_cond, retry_cond_value, retry_value, \
             retry_interval = common_execution_utils.get_retry_from_xmlfile(testcase)
         if runmode is not None:
-            # print the end of runmode execution when all the attempts finish
-            if runmode_count == value-1:
-                print_info("\n----------------- End of Testcase Runmode Execution"
-                           " -----------------\n")
             if tc_status is True:
                 testsuite_utils.update_tc_duration(str(tc_duration))
                 # if runmode is 'rup' & tc_status is True, skip the repeated
@@ -392,7 +378,14 @@ def execute_sequential_testcases(testcase_list, suite_repository,
     # same system for 'iterative_parallel' suite execution
     if ts_iter is True:
         tc_junit_list = data_repository['wt_junit_object']
-
+    # print the end of runmode execution as the steps skip when the condition
+    # is met for RUF/RUP or when all the attempts finish
+    if testcase.find("runmode") is not None and \
+       testcase.find("runmode").get("attempt") is not None:
+        if testcase.find("runmode").get("attempt") == \
+           testcase.find("runmode").get("runmode_value"):
+            print_info("\n----------------- End of Testcase Runmode Execution"
+                       " -----------------\n")
     suite_status = Utils.testcase_Utils.compute_status_using_impact(
                                         tc_status_list, tc_impact_list)
 

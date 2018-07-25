@@ -160,6 +160,7 @@ def get_testsuite_list(project_filepath):
                     copy_ts = copy.deepcopy(ts)
                     copy_ts.find("runmode").set("value", go_next)
                     copy_ts.find("runmode").set("attempt", i+1)
+                    copy_ts.find("runmode").set("runmode_value", value)
                     testsuite_list.append(copy_ts)
             if retry_type is not None and retry_value > 0:
                 if len(new_testsuite_list) > 1:

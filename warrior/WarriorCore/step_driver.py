@@ -235,6 +235,12 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     hms = Utils.datetime_utils.get_hms_for_seconds(kw_duration)
     print_info("Keyword duration= {0}".format(hms))
     print_info("[{0}] Keyword execution completed".format(kw_end_time))
+    # condition to  print the end of runmode execution when all the attempts finish
+    if step.find("runmode") is not None and \
+       step.find("runmode").get("attempt") is not None:
+        if step.find("runmode").get("attempt") == \
+           step.find("runmode").get("runmode_value"):
+            print_info("\n----------------- End of Step Runmode Execution -----------------\n")
 
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
     tc_timestamp = data_repository['wt_tc_timestamp']

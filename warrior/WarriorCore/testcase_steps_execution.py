@@ -66,7 +66,6 @@ class TestCaseStepsExecutionClass(object):
         self.run_current_step = False
         self.current_triggered_action = False
         self.step_status = None
-        self.runmode_count = 0
 
     def execute_step(self, current_step_number, go_to_step_number):
         """
@@ -195,11 +194,12 @@ class TestCaseStepsExecutionClass(object):
                                kw_start_time, "0", "skipped",
                                impact_dict.get(step_impact.upper()), "N/A", step_description)
         self.data_repository['step_{}_result'.format(self.current_step_number)] = "SKIPPED"
-        # print the end of runmode execution
+        # print the end of runmode execution as the steps skip when the condition
+        # is met for RUF/RUP
         if self.current_step.find("runmode") is not None and \
            self.current_step.find("runmode").get("attempt") is not None:
             if self.current_step.find("runmode").get("attempt") == \
-               self.current_step.find("runmode").get("value")-1:
+               self.current_step.find("runmode").get("runmode_value"):
                 print_info("\n----------------- End of Step Runmode Execution -----------------\n")
         return self.current_step_number, self.go_to_step_number, "continue"
 
@@ -207,16 +207,12 @@ class TestCaseStepsExecutionClass(object):
         """
         This function will execute a runmode step
         """
-        self.runmode_count += 1
         runmode_evaluation = any([runmode == "RMT",
                                   runmode == "RUF" and step_status is True,
                                   runmode == "RUP" and step_status is False])
         if runmode_timer is not None and runmode_evaluation:
             pNote("Wait for {0}sec before the next runmode attempt ".format(runmode_timer))
             wait_for_timeout(runmode_timer)
-        # condition to print the end of runmode execution
-        if self.runmode_count == value-1:
-            print_info("\n----------------- End of Step Runmode Execution -----------------\n")
         # if runmode is 'ruf' & step_status is False, skip the repeated
         # execution of same TC step and move to next actual step
         elif runmode == "RUF" and step_status is False:
