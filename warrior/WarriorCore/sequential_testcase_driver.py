@@ -116,7 +116,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
            testcase.find("retry").get("attempt") is not None:
             print_info("testcase attempt: {0}".format(
                                 testcase.find("retry").get("attempt")))
-
+'''
         if Utils.file_Utils.fileExists(tc_path):
             tc_name = Utils.file_Utils.getFileName(tc_path)
             testsuite_utils.pSuite_testcase(junit_resultfile, suite_name,
@@ -220,6 +220,113 @@ def execute_sequential_testcases(testcase_list, suite_repository,
             elif goto_tc and goto_tc != str(tests):
                 data_repository['testcase_%d_result' % tests] = "ERROR"
                 continue
+'''
+        if action is True:
+            tc_name = Utils.file_Utils.getFileName(tc_path)
+            if Utils.file_Utils.fileExists(tc_path):                
+                testsuite_utils.pSuite_testcase(junit_resultfile, suite_name,
+                                                tc_name, time='0')
+
+                if not goto_tc:
+                    try:
+                        tc_result = testcase_driver.main(tc_path,
+                                                         data_repository,
+                                                         tc_context,
+                                                         runtype=tc_runtype,
+                                                         auto_defects=auto_defects,
+                                                         suite=suite_name,
+                                                         tc_onError_action=tc_onError_action,
+                                                         iter_ts_sys=iter_ts_sys)
+
+                        tc_status = tc_result[0]
+                        tc_duration = tc_result[1]
+                    except Exception:
+                        print_error('unexpected error {0}'.format(
+                                                      traceback.format_exc()))
+                        tc_status, tc_duration = False, False
+                        tc_impact = Utils.testcase_Utils.get_impact_from_xmlfile(
+                                                                                testcase)
+
+                elif goto_tc and goto_tc == str(tests):
+
+                    try:
+                        tc_result = testcase_driver.main(tc_path,
+                                                         data_repository,
+                                                         tc_context,
+                                                         runtype=tc_runtype,
+                                                         auto_defects=auto_defects,
+                                                         suite=suite_name,
+                                                         tc_onError_action=tc_onError_action,
+                                                         iter_ts_sys=iter_ts_sys)
+                        tc_status = tc_result[0]
+                        tc_duration = tc_result[1]
+                        goto_tc = False
+
+                    except Exception:
+                        print_error('unexpected error {0}'.format(
+                                                                  traceback.format_exc()))
+                        tc_status, tc_duration = False, False
+                        tc_impact = Utils.testcase_Utils.get_impact_from_xmlfile(
+                                                                    testcase)
+            else:
+                errors += 1
+                msg = print_error("Test case does not exist in the provided path: "
+                              "{0}".format(tc_path))
+                testsuite_utils.pSuite_testcase(junit_resultfile, suite_name,
+                                            tc_path, time='0')
+                testsuite_utils.pSuite_testcase_error(junit_resultfile, msg, '0')
+                tc_status = "ERROR"
+                if goto_tc and goto_tc == str(tests):
+                    goto_tc = False
+                elif goto_tc and goto_tc != str(tests):
+                    data_repository['testcase_%d_result' % tests] = "ERROR"
+                    continue           
+
+        else:
+            print_info('skipped testcase %s ' % tc_name)
+            skipped += 1
+            testsuite_utils.pSuite_testcase_skip(junit_resultfile)
+            testsuite_utils.pSuite_update_suite_attributes(
+            junit_resultfile, str(errors), str(skipped),
+                                str(tests), str(failures), time='0')
+            data_repository['wt_junit_object'].update_count(
+                                "skipped", "1", "ts",
+                                data_repository['wt_ts_timestamp'])
+            data_repository['wt_junit_object'].update_count(
+                                "tests", "1", "ts",
+                                data_repository['wt_ts_timestamp'])
+            data_repository['wt_junit_object'].update_count(
+                                "tests", "1", "pj", "not applicable")
+            tmp_timestamp = str(Utils.datetime_utils.get_current_timestamp())
+            time.sleep(2)
+            data_repository['wt_junit_object'].create_testcase(
+                                location="from testsuite",
+                                timestamp=tmp_timestamp,
+                                ts_timestamp=data_repository['wt_ts_timestamp'],
+                                classname=data_repository['wt_suite_name'],
+                                name=os.path.splitext(tc_name)[0])
+            data_repository['wt_junit_object'].add_testcase_message(
+                                                    tmp_timestamp, "skipped")
+            data_repository['wt_junit_object'].update_attr(
+                                "status", "SKIPPED", "tc", tmp_timestamp)
+            data_repository['testcase_%d_result' % tests] = "SKIP"
+            if Utils.file_Utils.fileExists(tc_path):
+                title = Utils.xml_Utils.getChildTextbyParentTag(
+                                            tc_path, 'Details', 'Title')
+                title = title.strip()
+            else:
+                title = "None"
+            data_repository['wt_junit_object'].update_attr(
+                                "title", title, "tc", tmp_timestamp)
+            data_repository['wt_junit_object'].update_attr(
+                                "impact", impact_dict.get(tc_impact.upper()),
+                                "tc", tmp_timestamp)
+            data_repository['wt_junit_object'].update_attr(
+                                "onerror", "N/A", "tc", tmp_timestamp)
+            data_repository['wt_junit_object'].output_junit(
+                                data_repository['wt_results_execdir'],
+                                print_summary=False)
+            continue         
 
         goto_tc_num = onerror_driver.main(testcase, suite_error_action,
                                           suite_error_value)
