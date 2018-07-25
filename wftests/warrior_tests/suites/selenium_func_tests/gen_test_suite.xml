@@ -45,7 +45,7 @@
 			<context>positive</context>
 			<runtype>sequential_keywords</runtype>
 			<onError action="next"/>
-			<impact>impact</impact>
+			<impact>noimpact</impact>
 		</Testcase>
 		<Testcase>
 			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_6.xml</path>
@@ -133,6 +133,7 @@
 		</Testcase>
 		<Testcase>
 			<path>../../testcases/selenium_func_tests/generic_tests/tc_mouse_hover.xml</path>
+      <Execute ExecType="No"/>
 			<context>positive</context>
 			<runtype>sequential_keywords</runtype>
 			<onError action="next"/>
