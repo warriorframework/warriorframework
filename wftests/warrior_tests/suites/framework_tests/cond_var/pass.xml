@@ -27,16 +27,5 @@
 			<rmt/>
 			<impact>impact</impact>
 		</Testcase>
-		<Testcase>
-			<path>testcases/framework_tests/cond_var/pass.xml</path>
-			<context>positive</context>
-			<runtype>sequential_keywords</runtype>
-			<onError action=" " value=""/>
-			<Execute ExecType="No">
-				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
-			</Execute>
-			<rmt/>
-			<impact>impact</impact>
-		</Testcase>
 	</Testcases>
 </TestSuite>
