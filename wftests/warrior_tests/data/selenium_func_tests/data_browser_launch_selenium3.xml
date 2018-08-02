@@ -2,7 +2,7 @@
 <credentials>
     <system name="ff_browser_check">
         <headless_mode>Yes</headless_mode>
-        <ip>168.127.47.210</ip>
+        <ip/>
         <remote>no</remote>
         <browser>
             <browser_name>browser_1</browser_name>

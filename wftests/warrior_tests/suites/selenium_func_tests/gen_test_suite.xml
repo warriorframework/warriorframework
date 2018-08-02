@@ -45,7 +45,7 @@
 			<context>positive</context>
 			<runtype>sequential_keywords</runtype>
 			<onError action="next"/>
-			<impact>noimpact</impact>
+			<impact>impact</impact>
 		</Testcase>
 		<Testcase>
 			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_6.xml</path>
