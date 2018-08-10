@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<Testcase>
+    <Details>
+        <Name>tc_browser_launch_and_maximize</Name>
+        <Title>browser launch and maximize</Title>
+        <ExpectedResults>PASS</ExpectedResults>
+        <Engineer>Sanika Kulkarni</Engineer>
+        <Date/>
+        <Time/>
+        <default_onError action='next'/>
+        <InputDataFile>../../../data/selenium_func_tests/data_browser_launch_and_maximize.xml
+        </InputDataFile>
+        <Datatype>Custom</Datatype>
+        <Logsdir/>
+        <Resultsdir/>
+    </Details>
+    <Requirements>
+        <Requirement>requirement-001</Requirement>
+        <Requirement>requirement-002</Requirement>
+    </Requirements>
+    <Steps>
+        <step TS='1' Driver='selenium_driver' Keyword='browser_launch_and_maximize'>
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+            </Arguments>
+        </step>
+        <step TS='2' Driver='selenium_driver' Keyword='browser_close'>
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+            </Arguments>
+        </step>
+        <step TS='3' Driver='selenium_driver' Keyword='browser_launch_and_maximize'>
+            <Arguments>
+                <argument name="system_name" value="search_element_2"/>
+            </Arguments>
+        </step>
+        <step TS='4' Driver='selenium_driver' Keyword='browser_close'>
+            <Arguments>
+                <argument name="system_name" value="search_element_2"/>
+            </Arguments>
+        </step>
+        <step TS='5' Driver='selenium_driver' Keyword='browser_launch_and_maximize'>
+            <Arguments>
+                <argument name="system_name" value="search_element_3"/>
+                <argument name="url" value="http://www.google.com"/>
+            </Arguments>
+        </step>
+        <step TS='6' Driver='selenium_driver' Keyword='browser_close'>
+            <Arguments>
+                <argument name="system_name" value="search_element_3"/>
+            </Arguments>
+        </step>
+        <step TS='7' Driver='selenium_driver' Keyword='browser_launch_and_maximize'>
+            <Arguments>
+                <argument name="system_name" value="search_element_4"/>
+                <argument name="url" value="https://www.stackoverflow.com"/>
+            </Arguments>
+        </step>
+        <step TS='8' Driver='selenium_driver' Keyword='browser_close'>
+            <Arguments>
+                <argument name="system_name" value="search_element_4"/>
+            </Arguments>
+        </step>
+        <step TS='9' Driver='selenium_driver' Keyword='browser_launch_and_maximize'>
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+                <argument name="browser_name" value="browser_2"/>
+            </Arguments>
+        </step>
+        <step TS='10' Driver='selenium_driver' Keyword='browser_close'>
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+                <argument name="browser_name" value="browser_2"/>
+            </Arguments>
+        </step>
+    </Steps>
+</Testcase>

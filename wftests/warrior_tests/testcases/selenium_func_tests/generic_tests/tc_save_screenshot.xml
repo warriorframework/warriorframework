@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                        <Name>tc_save_screenshot</Name>
+                        <Title>save screenshot of current browser window whenever a selenium kw fails</Title>
+                        <ExpectedResults>PASS</ExpectedResults>
+                        <Category>search</Category>
+                        <Engineer>Annalakshmi</Engineer>
+                        <Date/>
+                        <Time/>
+                        <default_onError action = 'next'  />
+                        <InputDataFile>../../../data/selenium_func_tests/data_save_screenshot.xml</InputDataFile>
+                        <Datatype>Custom</Datatype>
+                        <Logsdir/>
+                        <Resultsdir/>
+        </Details>
+       <Requirements>
+                        <Requirement>requirement-001</Requirement>
+                        <Requirement>requirement-002</Requirement>
+       </Requirements>
+        <Steps>
+			<step TS= '1' Driver='selenium_driver' Keyword='browser_launch' >
+                                <Arguments>
+                                        <argument name="url" value="http://www.google.com"/>
+                                        <argument name="system_name" value="search_element_1"/>
+                                </Arguments>
+                        </step>
+                        <step TS= '2' Driver='selenium_driver' Keyword='get_element_by_id' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                                <argument name="id" value="lst_ib"/>
+                        </Arguments>
+                        <context>negative</context>
+                	</step>
+                        <step TS= '3' Driver='selenium_driver' Keyword='click_an_element' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                                <argument name="locator_type" value="xpath"/>
+                                <argument name="locator" value=".//*[@id='tsf']/div[2]/div[3]/center/input[1"/>
+                        </Arguments>
+                        <context>negative</context>
+                        </step>
+                        <step TS= '4' Driver='selenium_driver' Keyword='wait_until_element_is_clickable' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                                <argument name="locator" value=".//*[@id='gbw']/div/div/div[1]/div[1]/d"/>
+                                <argument name="locator_type" value="xpath"/>
+                                <argument name="timeout" value="3"/>
+                        </Arguments>
+                        <context>negative</context>
+                        </step>
+                        <step TS= '5' Driver='selenium_driver' Keyword='verify_page_by_property' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                                <argument name="expected_value" value="http://stackoverflow.com/"/>
+                                <argument name="value_type" value="current_url"/>
+                        </Arguments>
+                        <context>negative</context>
+                        </step>
+                        <step TS= '6' Driver='selenium_driver' Keyword='save_screenshot' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                                <argument name="filename" value="screenshot_1"/>
+                        </Arguments>
+                        </step>
+                        <step TS= '7' Driver='selenium_driver' Keyword='browser_close' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                        </Arguments>
+                        </step>
+        </Steps>
+</Testcase>

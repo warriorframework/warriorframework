@@ -1,0 +1,13 @@
+{
+  "search_box":
+  [
+  	{"name":"q"},
+  	{"xpath" : "//*[@id='lst-ib']"}
+
+  ],
+
+  "element2":
+  [
+  	{"id": "nav-tags"}
+  ]
+}

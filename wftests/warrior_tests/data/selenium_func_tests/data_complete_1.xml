@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="search_element">
+        <headless_mode>Yes</headless_mode>
+        <ip>167.254.209.9</ip>
+    	<remote>no</remote>
+        <browser>
+            <browser_name>browser_1</browser_name>
+            <type>chrome</type>
+            <url>http://www.google.com/</url>
+            <xsize>500</xsize>
+            <ysize>750</ysize>
+            <xpos>100</xpos>
+            <ypos>200</ypos>
+            <xpath>.//*[@id='gbw']/div/div/div[1]/div[2]/a</xpath>
+            <id>gbw</id>>
+            <link_text>Images</link_text>
+            <tag_name>span</tag_name>
+            <class_name>gb_P</class_name>
+            <name_of_element>btnI</name_of_element>
+            <locator_type>name</locator_type>
+            <locator>btnI</locator>
+        </browser>
+        <browser browser_name="browser_2" type="chrome" url="http://www.google.com/" xsize="200" ysize="200" xpos="500" ypos="600">
+            <name_of_element>q</name_of_element>
+            <id>gb_70</id>
+        </browser>
+        <browser browser_name="browser_3" type="firefox" url="http://www.yahoo.com/" xsize="100" ysize="150" xpos="0" ypos="400">
+            <browser_name>browser_new_name</browser_name>
+            <type>chrome</type>
+            <url>http://www.google.com/</url>
+            <xsize>200</xsize>
+            <ysize>200</ysize>
+            <xpos>500</xpos>
+            <ypos>600</ypos>
+        </browser>
+    </system>
+</credentials>
+
+

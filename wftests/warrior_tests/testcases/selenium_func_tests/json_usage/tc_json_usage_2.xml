@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+            <Name>tc_json_usage_2</Name>
+            <Title>Testcase for element locating and oprations with data only in json file</Title>
+            <ExpectedResults>PASS</ExpectedResults>
+            <Category>search</Category>
+            <Engineer>Sanika Kulkarni</Engineer>
+            <Date/>
+            <Time/>
+            <default_onError action = 'next'  />
+            <InputDataFile>../../../data/selenium_func_tests/data_json_usage_1.xml</InputDataFile>
+            <Datatype>Custom</Datatype>
+            <Logsdir/>
+            <Resultsdir/>
+        </Details>
+       <Requirements>
+       			<Requirement>requirement-001</Requirement>
+       			<Requirement>requirement-002</Requirement>
+       </Requirements>
+        <Steps>
+			<step TS= '1' Driver='selenium_driver' Keyword='browser_launch' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '2' Driver='selenium_driver' Keyword='get_element_by_xpath' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '3' Driver='selenium_driver' Keyword='get_element_by_id' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '4' Driver='selenium_driver' Keyword='get_element_by_link_text' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '5' Driver='selenium_driver' Keyword='get_element_by_tagname' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '6' Driver='selenium_driver' Keyword='get_element_by_classname' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '7' Driver='selenium_driver' Keyword='get_element_by_name' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '8' Driver='selenium_driver' Keyword='get_element' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+					<argument name="locator_type" value="name"/>
+				</Arguments>
+			</step>
+			<step TS= '9' Driver='selenium_driver' Keyword='get_element' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+					<argument name="locator_type" value="id"/>
+				</Arguments>
+			</step>
+			<step TS= '10' Driver='selenium_driver' Keyword='browser_close' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+		</Steps>
+</Testcase>
