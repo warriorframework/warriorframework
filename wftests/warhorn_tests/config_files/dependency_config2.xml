@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!-- To read full documentation for this file, please refer to user_generated/config_sample.xml -->
+
+<data>
+    <warhorn name="Warhorn">
+        <dependency name="jira" install="yes" user="yes"/>
+        <dependency name="lxml" install="yes" user="yes"/>
+        <dependency name="ncclient" install="yes" user="yes"/>
+        <dependency name="paramiko" install="yes" user="yes"/>
+        <dependency name="pexpect" install="yes" user="yes"/>
+        <dependency name="pysnmp" install="yes" user="yes"/>
+        <dependency name="requests" install="yes" user="yes"/>
+        <dependency name="selenium" install="yes" user="yes"/>
+        <dependency name="xlrd" install="yes" user="yes"/>
+    </warhorn>
+
+	<warriorframework url="https://github.com/warriorframework/warriorframework.git"
+                      destination="" label="" clean_install="yes" clone="no">
+	</warriorframework>
+
+    <drivers>
+    </drivers>
+
+    <warriorspace>
+    </warriorspace>
+
+</data>
