@@ -31,7 +31,7 @@ used.
 5. ncclient-0.4.5 - used for netconf operations
 6. paramiko-1.15.2 - used by ncclient
 7. pysnmp-4.3.1	- used for snmp operations
-8. pycrypto-2.6.1 - used for encryption
+8. pycryptodome-3.6.1 - used for encryption
 
 Please note: some of the packages may require admin privileges to install them.
 These packages are python packages and hence they can be installed using pip/easy_install
@@ -176,21 +176,21 @@ Packages:
 	----------------
 	http://pysnmp.sourceforge.net/
 
-8. pycrypto-2.6.1
+8. pycryptodome-3.6.1
 	Used for password encryption.
 	Method encrypt(message) to return encrypted data. decrypt(message) returns decrypted data. 
-	It uses the AES encryption algorithm from pycrypto library. 
+	It uses the AES encryption algorithm from pycryptodome library.
 	The security key stored is in base64 encoded form and shall be decoded by the utility.
 	It needs a security key which is stored in a file. It's Base64 encoded in Tools/admin/secret.key
 	This utility reads the secret key from the file and use it for encryption/decryption. 
 
 	Installation command:
 	---------------------
-	sudo  pip install pycrypto
+	sudo  pip install pycryptodome
 
 	Reference links:
 	----------------
-	https://pypi.python.org/pypi/pycrypto
+	https://pypi.python.org/pypi/pycryptodome
 
 
 =========================================

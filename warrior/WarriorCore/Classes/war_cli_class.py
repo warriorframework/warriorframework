@@ -339,6 +339,8 @@ class WarriorCliClass(object):
 
         parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", help="encrypt data string")
 
+        parser.add_argument('-decrypt', action='store', nargs='*', dest="decrypt", help="decrypt data string")
+
         # Run Testcases/Suites/Projects in default locations
         parser.add_argument('-wt', action='store', nargs='*', dest="tc_name",
                             help="Runs testcases available in default path, "\
