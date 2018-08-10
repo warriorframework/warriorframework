@@ -215,7 +215,7 @@ def decide_action(w_cli_obj, namespace):
 
     # print filepath
     return (filepath, namespace.ad, namespace.version,
-            namespace.cse, namespace.ironclaw, namespace.jiraproj, overwrite,
+            namespace.ironclaw, namespace.jiraproj, overwrite,
             namespace.jiraid, namespace.dbsystem, namespace.headless)
 
 
