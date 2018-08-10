@@ -17,6 +17,7 @@ import argparse
 import xml.etree.ElementTree as ET
 import datetime, time
 import os
+import subprocess
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_error, print_info
 import WarriorCore.Classes.manual_defect_class as manual_defect_class
@@ -28,7 +29,7 @@ class WarriorCliClass(object):
     sim = False
 
     def __init__(self):
-        """empty constructor"""
+        """constructor"""
         return None
 
     @classmethod
@@ -40,15 +41,19 @@ class WarriorCliClass(object):
                 target_time, '%Y-%m-%d-%H-%M-%S')
             current_time = datetime.datetime.now().replace(microsecond=0)
             if target_time >= current_time:
-                print_info('warrior will sleep until ' + str(target_time))
-                print_info('please do not close this window')
+                print_info("warrior will sleep until : ".str(target_time))
+                print_info("please do not close this window")
                 time.sleep((target_time-current_time).total_seconds())
-                print_info('warrior is now awake')
+                print_info("warrior is now awake")
             else:
-                print_info('Please enter a future time')
+                print_info("Please enter a future time")
                 exit(1)
         except ValueError:
-            print_error('Please enter a legit time in yyyy-mm-dd-hh-mm-ss format')
+            print_info("Please enter a legit time in yyyy-mm-dd-hh-mm-ss format")
+            print_info('warrior will sleep until ' + str(target_time))
+            print_info('please do not close this window')
+            time.sleep((target_time-current_time).total_seconds())
+            print_info('warrior is now awake')
             exit(1)
 
     @classmethod
@@ -62,10 +67,9 @@ class WarriorCliClass(object):
             if Utils.file_Utils.get_extension_from_path(xmlfile_abspath) == ".xml":
                 if Utils.xml_Utils.getRoot(xmlfile_abspath).tag == 'Testcase':
                     result.append(xmlfile_abspath)
-                else:
-                    print_info(xmlfile_abspath + " is not a valid testcase xml")
             else:
-                print_info(xmlfile_abspath + " is not a xml file")
+                print_info(xmlfile_abspath + " is not a valid testcase xml")
+
         return result
 
     def check_tag(self, category_list, dirlist):
@@ -94,7 +98,7 @@ class WarriorCliClass(object):
                                 result.append(xmlfile)
             else:
                 print_error(str(folder) + "is not a directory")
-        print_info("Number of matching testcases: {0}".format(len(result)))
+                print_info("Number of matching testcases: {0}".format(len(result)))
         return result
 
     def examine_create_suite(self, namespace):
@@ -177,10 +181,10 @@ class WarriorCliClass(object):
                 exit(1)
         else:
             print_error("**********\nWrong combination of CLI arguments,"\
-                            " please choose only one testcase exec_type"\
-                            " and one keyword exec_type, Warrior CLI commands"\
-                            " does not support RMT and RUF with exec_type=parallel_keywords"\
-                            "\n**********")
+                " please choose only one testcase exec_type"\
+                " and one keyword exec_type, Warrior CLI commands"\
+                " does not support RMT and RUF with exec_type=parallel_keywords"\
+                "\n**********")
             exit(1)
         return filepath
 
@@ -197,7 +201,8 @@ class WarriorCliClass(object):
 
         # Display version and framework details 
         parser.add_argument('--version', action='store_true', default=False,
-                            help=':version: Help the user with Current Warrior version and other Warrior package details ')
+                            help=':version: Help the user with Current Warrior version \
+                            and other Warrior package details ')
 
 
         # schedule sleep
@@ -274,8 +279,8 @@ class WarriorCliClass(object):
                             help=":testcae sequential: Set testcase exec_type to sequential")
 
         parser.add_argument('-RMT', type=int, default=0,
-                            help=" :run multiple times: Set testcase exec_type to run multiple times,"\
-                            " Enter value for number of attempts after tag")
+                            help=" :run multiple times: Set testcase exec_type to run multiple"\
+                            " times, Enter value for number of attempts after tag")
 
         parser.add_argument('-RUF', type=int, default=0,
                             help=" :run until fail:  set testcase exec_type to run until fails,"\
@@ -337,7 +342,8 @@ class WarriorCliClass(object):
                             help="create a property in test junit files which name is "\
                             "resultlocation and value is <job_url<url>> + <jobid>")
 
-        parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", help="encrypt data string")
+        parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", \
+                            help="encrypt data string")
 
         # Run Testcases/Suites/Projects in default locations
         parser.add_argument('-wt', action='store', nargs='*', dest="tc_name",
@@ -376,6 +382,12 @@ class WarriorCliClass(object):
                             "and xml results will be stored in this " \
                             "database server, database config file " \
                             "location = Tools/database/database_config.xml.")
+        # Warrior User guide pdf opens
+        cur_path = os.getcwd()
+        split_path = cur_path.split('warriorframework')[0]
+        file_path = os.path.join(split_path, "warriorframework", "docs", "Warrior Framework User Guide.pdf")
+        cmd = ["nohup", "evince", "-p", "1", file_path]
+        subprocess.Popen(cmd, stderr=open(os.devnull, 'w'))
 
         #Running Warrior in Mock mode and Test mode
         parser.add_argument('-mock', action='store_true', default=False,
