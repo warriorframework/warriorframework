@@ -19,7 +19,7 @@
                     <question>Do you want to install ncclient?</question>
                 </value>
                 <value name="paramiko">
-                    <info>** paramiko is used by ncclient. The recommended version is 1.16.0. If you decide to install paramiko, warhorn would automatically install paramiko 1.16.0.
+                    <info>** paramiko is used by ncclient. The recommended version is 2.4.1. If you decide to install paramiko, warhorn would automatically install paramiko 2.4.1.
                     </info>
                     <question>Do you want to install paramiko?</question>
                 </value>
