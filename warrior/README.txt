@@ -29,7 +29,7 @@ used.
 3. requests-2.7.0 and above - used for rest operations
 4. selenium-2.45.0 and above - used for web based testing
 5. ncclient-0.4.5 - used for netconf operations
-6. paramiko-1.15.2 - used by ncclient
+6. paramiko-2.4.1 - used by ncclient
 7. pysnmp-4.3.1	- used for snmp operations
 8. pycryptodome-3.6.1 - used for encryption
 
@@ -154,7 +154,7 @@ Packages:
 	https://pypi.python.org/pypi/ncclient
 
 
-6. paramiko-1.15.2
+6. paramiko-2.4.1
 	Used by nccclient 
 
 	Installation command:

@@ -40,7 +40,7 @@ install:
       pip install requests==2.9.1 ;
       pip install selenium==2.53.0 ;
       pip install lxml==3.3.3 ;
-      pip install paramiko==1.16.0 ;
+      pip install paramiko==2.4.1 ;
       pip install pysnmp==4.3.2 ;
     fi
   - if [[ ${SELENIUM} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
