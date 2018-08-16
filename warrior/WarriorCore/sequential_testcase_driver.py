@@ -195,9 +195,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                 if Utils.file_Utils.fileExists(tc_path):
                     title = Utils.xml_Utils.getChildTextbyParentTag(
                                             tc_path, 'Details', 'Title')
-                    title = title.strip() if title else "None"
-                else: 
-                    title = "None"
+                title = title.strip() if Utils.file_Utils.fileExists(tc_path) and title else "None"
                 data_repository['wt_junit_object'].update_attr(
                                 "title", title, "tc", tmp_timestamp)
                 data_repository['wt_junit_object'].update_attr(
