@@ -1,0 +1,137 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_verify_presence_of_all_elements</Name>
+                <Title>Test case to verify if the user provided elements are available in DOM</Title>
+                <ExpectedResults>PASS</ExpectedResults>
+                <Category/>
+                <Engineer>Annalakshmi</Engineer>
+                <Date/>
+                <Time/>
+                <default_onError action = 'next'  />
+                <InputDataFile>../../../data/selenium_func_tests/data_verify_presence_of_all_elements.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <Logsdir/>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>requirement-001</Requirement>
+                <Requirement>requirement-002</Requirement>
+        </Requirements>
+        <Steps>
+                <step TS= '1' Driver='selenium_driver' Keyword='browser_launch' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="url" value="https://www.google.co.in"/>
+                        </Arguments>
+                </step>
+                <step TS= '2' Driver='selenium_driver' Keyword='verify_text_in_window_pane' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="verification_text" value="Googls,Sign in"/>
+                        </Arguments>
+                        <context>negative</context>
+                </step>
+                <step TS= '3' Driver='selenium_driver' Keyword='browser_launch' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                                <argument name="url" value="https://www.google.co.in"/>
+                        </Arguments>
+                </step>
+                <step TS= '4' Driver='selenium_driver' Keyword='verify_text_in_window_pane' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                                <argument name="verification_text" value="Gmail,image"/>"
+                        </Arguments>
+                </step>
+                <step TS= '5' Driver='selenium_driver' Keyword='browser_launch' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_3"/>
+                                <argument name="url" value="https://www.google.co.in"/>
+                        </Arguments>
+                </step>
+                <step TS= '6' Driver='selenium_driver' Keyword='verify_text_in_window_pane' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_3"/>
+                        </Arguments>
+                </step>
+                <step TS= '7' Driver='selenium_driver' Keyword='browser_launch' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_5"/>
+                                <argument name="url" value="http://github.com/login"/>
+                        </Arguments>
+                </step>
+                <step TS= '8' Driver='selenium_driver' Keyword='verify_text_in_window_pane' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_5"/>
+                        </Arguments>
+                        <context>negative</context>
+                </step>
+                <step TS= '9' Driver='selenium_driver' Keyword='verify_text_in_window_pane' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_5"/>
+                                <argument name="verification_text" value="Sign in"/>
+                        </Arguments>
+                </step>
+                <step TS= '10' Driver='selenium_driver' Keyword='browser_launch' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_2"/>
+                                <argument name="url" value="https://www.google.co.in"/>
+                        </Arguments>
+                </step>
+                <step TS= '11' Driver='selenium_driver' Keyword='verify_text_in_window_pane' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_2"/>
+                                <argument name="element_tag" value="text_to_verify"/>
+                        </Arguments>
+                </step>
+                <step TS= '12' Driver='selenium_driver' Keyword='verify_text_in_window_pane' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_2"/>
+                                <argument name="verification_text" value="Sign in"/>
+                        </Arguments>
+                </step>
+                <step TS= '13' Driver='selenium_driver' Keyword='browser_launch' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_4"/>
+                                <argument name="url" value="https://www.google.co.in"/>
+                        </Arguments>
+                </step>
+                <step TS= '14' Driver='selenium_driver' Keyword='verify_text_in_window_pane' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_4"/>
+                        </Arguments>
+                        <context>negative</context>
+                </step>
+                <step TS= '15' Driver='selenium_driver' Keyword='browser_close' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                        </Arguments>
+                </step>
+                <step TS= '16' Driver='selenium_driver' Keyword='browser_close' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                        </Arguments>
+                </step>
+                <step TS= '17' Driver='selenium_driver' Keyword='browser_close' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_2"/>
+                        </Arguments>
+                </step>
+                <step TS= '17' Driver='selenium_driver' Keyword='browser_close' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_3"/>
+                        </Arguments>
+                </step>
+                <step TS= '17' Driver='selenium_driver' Keyword='browser_close' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_4"/>
+                        </Arguments>
+                </step>
+                <step TS= '18' Driver='selenium_driver' Keyword='browser_close' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_5"/>
+                        </Arguments>
+                </step>
+        </Steps>
+</Testcase>

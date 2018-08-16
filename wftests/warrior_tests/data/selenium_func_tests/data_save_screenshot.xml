@@ -1,0 +1,11 @@
+<credentials>    
+    <system name="search_element_1">
+        <headless_mode>Yes</headless_mode>
+        <ip/>
+        <remote>no</remote>
+        <browser>
+            <browser_name>browser_3</browser_name>
+            <type>firefox</type>
+        </browser>
+    </system>
+</credentials>

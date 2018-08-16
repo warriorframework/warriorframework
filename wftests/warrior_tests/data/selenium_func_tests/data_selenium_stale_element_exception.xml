@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="search_element">
+        <headless_mode>Yes</headless_mode>
+        <ip/>
+        <remote>no</remote>
+        <browser>
+            <browser_name>browser_1</browser_name>
+        </browser>
+    </system>
+</credentials>

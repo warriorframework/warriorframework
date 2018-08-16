@@ -1,0 +1,164 @@
+<?xml version="1.0" ?>
+<TestSuite>
+	<Details>
+		<Name>gen_test_suite</Name>
+		<Title>selenium functional tests - generic</Title>
+		<Engineer>Sanika Kulkarni</Engineer>
+		<Date>06/21/2016</Date>
+		<Time>16:07:26</Time>
+		<type exectype="sequential_testcases"/>
+		<default_onError action="next"/>
+		<Resultsdir/>
+	</Details>
+	<Requirements/>
+	<Testcases>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_1.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_2.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_3.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_4.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_5.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_6.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_7.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_8.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_9.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+        <Testcase>
+            <path>../../testcases/selenium_func_tests/generic_tests/tc_verify_presence_of_all_elements.xml</path>
+            <context>positive</context>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next"/>
+            <impact>impact</impact>
+        </Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_10.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_multiple_key_press.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_browser_launch_url_check.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_stale_element_exception_1.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_stale_element_exception.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_drag_and_drop_by_offset.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_execute_script.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_mouse_hover.xml</path>
+      <Execute ExecType="No"/>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_save_screenshot.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_browser_launch_and_maximize.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/generic_tests/tc_navigation_verification.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+	</Testcases>
+</TestSuite>

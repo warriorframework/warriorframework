@@ -1,0 +1,181 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+			<Name>tc_selenium_generic_6</Name>
+			<Title>Test case to perform search action in google</Title>
+			<ExpectedResults>PASS</ExpectedResults>
+			<Category>search</Category>
+			<Engineer>Sanika Kulkarni</Engineer>
+			<Date/>
+			<Time/>
+			<default_onError action = 'next'  />
+			<InputDataFile>../../../data/selenium_func_tests/data_demo_selenium.xml</InputDataFile>
+			<Datatype>Custom</Datatype>
+			<Logsdir/>
+			<Resultsdir/>
+        </Details>
+       <Requirements>
+       			<Requirement>requirement-001</Requirement>
+       			<Requirement>requirement-002</Requirement>
+       </Requirements>
+        <Steps>
+			<step TS= '1' Driver='selenium_driver' Keyword='browser_launch' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="url" value="http://www.google.com"/>
+				</Arguments>
+			</step>
+			<step TS= '2' Driver='selenium_driver' Keyword='browser_maximize' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+				</Arguments>
+			</step>
+			<step TS= '3' Driver='selenium_driver' Keyword='get_element_by_partial_link_text' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="partial_link_text" value="Images"/>
+				</Arguments>
+			</step>
+			<step TS= '4' Driver='selenium_driver' Keyword='click_an_element' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="locator_type" value="partial_link"/>
+					<argument name="locator" value="Images"/>
+				</Arguments>
+			</step>
+			<step TS= '5' Driver='selenium_driver' Keyword='navigate_to_url' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="url" value="http://www.refreshyourcache.com/en/cache-test/"/>
+				</Arguments>
+			</step>
+			<step TS= '6' Driver='selenium_driver' Keyword='browser_refresh' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+				</Arguments>
+			</step>
+			<step TS= '7' Driver='selenium_driver' Keyword='browser_reload' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+				</Arguments>
+			</step>
+			<step TS= '8' Driver='selenium_driver' Keyword='navigate_to_url' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="url" value="http://www.google.com/"/>
+				</Arguments>
+			</step>
+			<step TS= '9' Driver='common_driver' Keyword='wait_for_timeout' >
+				<Arguments>
+					<argument name="timeout" value="10"/>
+				</Arguments>
+			</step>
+			<step TS= '10' Driver='selenium_driver' Keyword='get_element_by_xpath' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="xpath" value=".//*[@id='gb_70']"/>
+				</Arguments>
+			</step>
+			<step TS= '11' Driver='selenium_driver' Keyword='get_property_of_element' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="locator" value="gb_70"/>
+					<argument name="locator_type" value="id"/>
+					<argument name="attribute_name" value="class"/>
+				</Arguments>
+			</step>
+			<step TS= '12' Driver='selenium_driver' Keyword='check_property_of_element' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="locator" value="gb_70"/>
+					<argument name="locator_type" value="id"/>
+					<argument name="attribute_name" value="class"/>
+					<argument name="property_name" value="hidden"/>
+				</Arguments>
+				<context>negative</context>
+			</step>
+			<step TS= '13' Driver='selenium_driver' Keyword='navigate_to_url' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="url" value="http://www.w3schools.com/"/>
+				</Arguments>
+			</step>
+			<step TS= '14' Driver='selenium_driver' Keyword='verify_alert_is_present' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+				</Arguments>
+				<context>negative</context>
+			</step>
+			<step TS= '15' Driver='selenium_driver' Keyword='navigate_to_url' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="url" value="http://www.ask.com/"/>
+				</Arguments>
+			</step>
+			<step TS= '16' Driver='selenium_driver' Keyword='wait_until_element_is_clickable' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="locator" value="PartialFooter-item-link"/>
+					<argument name="locator_type" value="class"/>
+					<argument name="timeout" value="1"/>
+				</Arguments>
+			</step>
+			<step TS= '17' Driver='selenium_driver' Keyword='wait_until_presence_of_element_located' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="locator" value="PartialFooter-item-link"/>
+					<argument name="locator_type" value="class"/>
+					<argument name="timeout" value="1"/>
+				</Arguments>
+			</step>
+			<step TS= '18' Driver='selenium_driver' Keyword='wait_until_presence_of_all_elements_located' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="locator" value="a"/>
+					<argument name="locator_type" value="tag"/>
+					<argument name="timeout" value="1"/>
+				</Arguments>
+			</step>
+			<step TS= '19' Driver='selenium_driver' Keyword='get_element_by_partial_link_text' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="partial_link_text" value="About"/>
+				</Arguments>
+			</step>
+			<step TS= '20' Driver='selenium_driver' Keyword='click_an_element' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="locator" value="About"/>
+					<argument name="locator_type" value="partial_link"/>
+				</Arguments>
+			</step>
+			<step TS= '21' Driver='selenium_driver' Keyword='wait_until_visibility_is_determined' >
+                <Arguments>
+                    <argument name="system_name" value="search_element_3"/>
+                    <argument name="locator" value=".//a"/>
+                    <argument name="locator_type" value="xpath"/>
+                    <argument name="timeout" value="10"/>
+                </Arguments>
+                <context>positive</context>
+           </step>
+            <step TS= '22' Driver='selenium_driver' Keyword='wait_until_visibility_is_determined' >
+                 <Arguments>
+                     <argument name="system_name" value="search_element_3"/>
+                     <argument name="locator" value=".//a"/>
+                     <argument name="locator_type" value="xpath"/>
+                 </Arguments>
+            </step>
+			<step TS= '23' Driver='selenium_driver' Keyword='click_an_element' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="locator" value=".//a"/>
+					<argument name="locator_type" value="xpath"/>
+				</Arguments>
+			</step>
+			<step TS= '24' Driver='selenium_driver' Keyword='browser_close' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+				</Arguments>
+			</step>
+		</Steps>
+</Testcase>

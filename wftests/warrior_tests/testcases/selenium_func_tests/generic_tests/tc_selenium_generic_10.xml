@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_selenium_generic_10</Name>
+		<Title>Test case to get text from a web page and verify it</Title>
+		<ExpectedResults>PASS</ExpectedResults>
+		<Category/>
+		<Engineer>Arvind Kumar Sethuraman</Engineer>
+		<Date/>
+		<Time/>
+		<default_onError action = 'next'  />
+		<InputDataFile>../../../data/selenium_func_tests/data_selenium_generic_10.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<Logsdir/>
+		<Resultsdir/>
+	</Details>
+	<Requirements>
+		<Requirement>requirement-001</Requirement>
+		<Requirement>requirement-002</Requirement>
+	</Requirements>
+	<Steps>
+		<step TS= '1' Driver='selenium_driver' Keyword='browser_launch' > <!-- Will launch or open a new browser in window -->
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+			</Arguments>
+		</step>
+        <step TS= '2' Driver='selenium_driver' Keyword='browser_maximize' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+			</Arguments>
+		</step>
+		<step TS= '3' Driver='selenium_driver' Keyword='verify_text' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+                <argument name="locator" value="id-search-field"/>
+				<argument name="locator_type" value="id"/>
+				<argument name="var" value="searchtext"/>
+				<argument name="expected" value="Search"/>
+			</Arguments>
+		</step>
+		<step TS= '4' Driver='selenium_driver' Keyword='verify_text' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+                <argument name="locator" value="id-search-field"/>
+				<argument name="locator_type" value="id"/>
+				<argument name="var" value="searchtext"/>
+				<argument name="expected" value="GO"/>
+			</Arguments>
+            <context>negative</context>
+		</step>
+		<step TS= '5' Driver='selenium_driver' Keyword='verify_text' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+				<argument name="locator" value="submit"/>
+				<argument name="locator_type" value="id"/>
+				<argument name="var" value="gsub"/>
+				<argument name="expected" value="GO"/>
+			</Arguments>
+		</step>
+		<step TS= '6' Driver='selenium_driver' Keyword='verify_text' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+				<argument name="locator" value="submit"/>
+				<argument name="locator_type" value="id"/>
+				<argument name="var" value="gsub"/>
+				<argument name="expected" value="Search"/>
+			</Arguments>
+            <context>negative</context>
+		</step>
+		<step TS= '7' Driver='selenium_driver' Keyword='browser_close' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+			</Arguments>
+		</step>
+	</Steps>
+</Testcase>

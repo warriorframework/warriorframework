@@ -1,0 +1,117 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+			<Name>tc_df_usage_3</Name>
+			<Title>Testacse to test elemnt operation with data from the datafile</Title>
+			<ExpectedResults>PASS</ExpectedResults>
+			<Category/>
+			<Engineer>Sanika Kulkarni</Engineer>
+			<Date/>
+			<Time/>
+			<default_onError action = 'next'  />
+			<InputDataFile>../../../data/selenium_func_tests/data_complete_1.xml</InputDataFile>
+			<Datatype>Custom</Datatype>
+			<Logsdir/>
+			<Resultsdir/>
+        </Details>
+       <Requirements>
+       			<Requirement>requirement-001</Requirement>
+       			<Requirement>requirement-002</Requirement>
+       </Requirements>
+        <Steps>
+			<step TS= '1' Driver='selenium_driver' Keyword='browser_launch' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '2' Driver='selenium_driver' Keyword='browser_maximize' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '3' Driver='selenium_driver' Keyword='get_element_by_name' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '4' Driver='selenium_driver' Keyword='fill_an_element' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+					<argument name="locator_type" value="name"/>
+					<argument name="locator" value="q"/>
+					<argument name="text" value="python"/>
+				</Arguments>
+			</step>
+			<step TS= '5' Driver='selenium_driver' Keyword='send_keys_to_an_element' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+					<argument name="locator_type" value="name"/>
+					<argument name="locator" value="q"/>
+					<argument name="text" value="RETURN"/>
+				</Arguments>
+			</step>
+			<step TS= '6' Driver='selenium_driver' Keyword='get_element_by_name' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '7' Driver='selenium_driver' Keyword='clear_text' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+					<argument name="locator_type" value="name"/>
+					<argument name="locator" value="q"/>
+				</Arguments>
+			</step>
+			<step TS= '8' Driver='selenium_driver' Keyword='get_element_by_name' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '9' Driver='selenium_driver' Keyword='type_text' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+					<argument name="locator_type" value="name"/>
+					<argument name="locator" value="q"/>
+					<argument name="text" value=" javascript"/>
+				</Arguments>
+			</step>
+			<step TS= '10' Driver='selenium_driver' Keyword='send_keys_to_an_element' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+					<argument name="locator_type" value="name"/>
+					<argument name="locator" value="q"/>
+					<argument name="text" value="RETURN"/>
+				</Arguments>
+			</step>
+			<step TS= '11' Driver='selenium_driver' Keyword='get_element_by_id' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+			<step TS= '12' Driver='selenium_driver' Keyword='click_an_element' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+					<argument name="locator" value="gb_70"/>
+					<argument name="locator_type" value="id"/>
+				</Arguments>
+			</step>
+			<step TS= '13' Driver='selenium_driver' Keyword='browser_close' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="browser_name" value="browser_2"/>
+				</Arguments>
+			</step>
+		</Steps>
+</Testcase>
