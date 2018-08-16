@@ -36,5 +36,13 @@
                         <onError action="next"/>
                         <impact>impact</impact>
                 </Testcase>
+                <Testcase>
+                        <path>invalid/testcase/path</path>
+                        <Execute ExecType="No"/>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
         </Testcases>
 </TestSuite>

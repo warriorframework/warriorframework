@@ -67,7 +67,7 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
                                                                                     'onError',
                                                                                     'action')
         ts_onError_action = ts_onError_action if ts_onError_action else project_error_action
-        if Utils.file_Utils.fileExists(testsuite_path):
+        if Utils.file_Utils.fileExists(testsuite_path) or action is False:
             if not goto_testsuite and action is True:
 
                 testsuite_result = testsuite_driver.main(testsuite_path,

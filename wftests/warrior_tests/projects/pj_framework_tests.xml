@@ -16,5 +16,11 @@
             <onError action="next" value=""/>
             <impact>impact</impact>
         </Testsuite>
+        <Testsuite>
+            <path>invalid/suite/path</path>
+            <Execute ExecType="No"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
     </Testsuites>
 </Project>
