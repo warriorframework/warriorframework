@@ -32,6 +32,7 @@ import os, re, sys
 from Framework.ClassUtils.gnmi_utils_class import gNMI
 import Framework.Utils as Utils
 from Framework.Utils import testcase_Utils, config_Utils, data_Utils, file_Utils
+from Framework.Utils.print_Utils import print_info
 from time import sleep
 
 class gnmiactions(object):
@@ -133,7 +134,7 @@ class gnmiactions(object):
                                                  timestamp=timestamp,
                                                  user_arg=user_arg
                                                  )
-        status, result, child = gnmi_execute.execuate(cmd_string, username,
+        status, result, child = gnmi_execute.execute(cmd_string, username,
                                                       password, external_system,
                                                       external_system_session, gnmi_obj)
         if status and verify and result:
@@ -225,7 +226,7 @@ class gnmiactions(object):
                                                  timestamp=timestamp,
                                                  streaming_duration=streaming_duration,
                                                  user_arg=user_arg)
-        status, result, child = gnmi_execute.execuate(cmd_string, username,
+        status, result, child = gnmi_execute.execute(cmd_string, username,
                                                       password, external_system,
                                                       external_system_session, stop_after, gnmi_obj)
         if status and verify and result:
@@ -331,7 +332,7 @@ class gnmiactions(object):
                                                  client_key=client_key,
                                                  q_query=q_query)
         if cmd_string:
-            status, result, child = gnmi_execute.execuate(cmd_string, username,
+            status, result, child = gnmi_execute.execute(cmd_string, username,
                                                           password, external_system,
                                                           external_system_session, None,
                                                           gnmi_obj)
