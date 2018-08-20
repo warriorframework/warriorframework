@@ -230,12 +230,14 @@ def execute_sequential_testcases(testcase_list, suite_repository,
             onerror = "Abort"
         else:
             onerror = "Goto:" + str(goto_tc_num)
-        data_repository['wt_junit_object'].update_attr(
-                        "impact", impact_dict.get(tc_impact.upper()), "tc",
-                        data_repository['wt_tc_timestamp'])
-        data_repository['wt_junit_object'].update_attr(
-                        "onerror", onerror, "tc",
-                        data_repository['wt_tc_timestamp'])
+
+        if tc_status != 'ERROR':     
+            data_repository['wt_junit_object'].update_attr(
+                            "impact", impact_dict.get(tc_impact.upper()), "tc",
+                            data_repository['wt_tc_timestamp'])
+            data_repository['wt_junit_object'].update_attr(
+                            "onerror", onerror, "tc",
+                            data_repository['wt_tc_timestamp'])
 
         tc_status_list.append(tc_status)
         tc_duration_list.append(tc_duration)

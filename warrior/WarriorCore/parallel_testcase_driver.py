@@ -107,7 +107,8 @@ def execute_parallel_testcases(testcase_list, suite_repository,
         tc_name_list.append(result[1])
         tc_impact_list.append(result[2])
         tc_duration_list.append(result[3])
-        tc_junit_list.append(result[4])
+        if result[0] != 'ERROR':         
+            tc_junit_list.append(result[4])
     
     # parallel testcases generate multiple testcase junit result files
     # each files log the result for one testcase and not intergrated

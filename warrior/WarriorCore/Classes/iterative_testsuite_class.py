@@ -109,8 +109,10 @@ class IterativeTestsuite(object):
             ts_result = sequential_testcase_driver.main(self.testcase_list, self.suite_repository,
                                                         self.data_repository, self.from_project,
                                                         self.auto_defects, iter_ts_sys=system)
-            ts_status = ts_result and ts_status
-
+            if ts_result == 'ERROR':
+                ts_status = 'ERROR' 
+            else:
+                ts_status = ts_result and ts_status
         return ts_status
 
     def execute_iterative_parallel(self):
