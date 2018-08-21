@@ -95,7 +95,7 @@ class Junit(object):
                 if testcase.get("timestamp") == timestamp:
                     return [testcase, testsuite, self.root]
 
-    def get_tc_with_timestamp(self, timestamp):
+    def get_tc_with_timestamp(self, timestamp=None):
         """ Get case element based on the timestamp value """
         for testsuite in list(self.root):
             for testcase in list(testsuite):

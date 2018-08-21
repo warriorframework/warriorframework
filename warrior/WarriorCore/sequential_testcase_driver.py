@@ -69,6 +69,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
     suite_error_action = suite_repository['def_on_error_action']
     suite_error_value = suite_repository['def_on_error_value']
     testsuite_dir = os.path.dirname(testsuite_filepath)
+    data_repository['wt_tc_timestamp'] = None
 
     errors = 0
     skipped = 0
@@ -231,13 +232,12 @@ def execute_sequential_testcases(testcase_list, suite_repository,
         else:
             onerror = "Goto:" + str(goto_tc_num)
 
-        if tc_status != 'ERROR':     
-            data_repository['wt_junit_object'].update_attr(
-                            "impact", impact_dict.get(tc_impact.upper()), "tc",
-                            data_repository['wt_tc_timestamp'])
-            data_repository['wt_junit_object'].update_attr(
-                            "onerror", onerror, "tc",
-                            data_repository['wt_tc_timestamp'])
+        data_repository['wt_junit_object'].update_attr(
+                        "impact", impact_dict.get(tc_impact.upper()), "tc",
+                        data_repository['wt_tc_timestamp'])
+        data_repository['wt_junit_object'].update_attr(
+                        "onerror", onerror, "tc",
+                        data_repository['wt_tc_timestamp'])
 
         tc_status_list.append(tc_status)
         tc_duration_list.append(tc_duration)
