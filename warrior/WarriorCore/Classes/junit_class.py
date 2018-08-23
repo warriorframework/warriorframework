@@ -95,7 +95,7 @@ class Junit(object):
                 if testcase.get("timestamp") == timestamp:
                     return [testcase, testsuite, self.root]
 
-    def get_tc_with_timestamp(self, timestamp=None):
+    def get_tc_with_timestamp(self, timestamp):
         """ Get case element based on the timestamp value """
         for testsuite in list(self.root):
             for testcase in list(testsuite):
@@ -205,7 +205,7 @@ class Junit(object):
         if elem.get(attr) is not None:
             elem.set(attr, str(int(elem.get(attr)) + int(value)))
 
-    def update_attr(self, attr, value, elem_type, timestamp):
+    def update_attr(self, attr, value, elem_type, timestamp=None):
         """
             update the value of an attribute based on
             element type (project, testsuite or testcase) and timestamp
