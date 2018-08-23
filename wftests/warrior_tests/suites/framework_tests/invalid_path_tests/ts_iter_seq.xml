@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_iter_seq</Name>
+                <Title>TS with iterative testcases(datafile) with sequential testcase execution</Title>
+                <Engineer>ka</Engineer>
+                <Date>05/23/2017</Date>
+                <Time>14:11:26</Time>
+                <type exectype="iterative_sequential"/>
+                <State/>
+                <default_onError action="next"/>
+                <Resultsdir/>
+                <InputDataFile>../../../data/framework_tests/data_iter_ts.xml</InputDataFile>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>invalid_testcase_path</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/iter_execution/tc_seq_1.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>
