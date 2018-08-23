@@ -2,9 +2,9 @@
 <TestSuite>
 	<Details>
 		<Name>cond_var</Name>
-		<Title>Test tc status on giving invalid path for parallel testcases</Title>
+		<Title>Validate tc status on giving invalid path for parallel testcases</Title>
 		<Engineer>Sayyeda Farheen</Engineer>
-		<Date>08/21/2018</Date>
+		<Date>08/23/2018</Date>
 		<type exectype="parallel_testcases"/>
 		<State/>
 		<default_onError action="next"/>

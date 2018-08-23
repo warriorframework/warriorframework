@@ -2,10 +2,9 @@
 <TestSuite>
         <Details>
                 <Name>ts_iter_seq</Name>
-                <Title>TS with iterative testcases(datafile) with sequential testcase execution</Title>
-                <Engineer>ka</Engineer>
-                <Date>05/23/2017</Date>
-                <Time>14:11:26</Time>
+                <Title>Validate tc status on giving invalid path for iterative sequential testcases</Title>
+		            <Engineer>Sayyeda Farheen</Engineer>
+		            <Date>08/23/2018</Date>
                 <type exectype="iterative_sequential"/>
                 <State/>
                 <default_onError action="next"/>
