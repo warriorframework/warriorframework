@@ -3,8 +3,8 @@
         <Details>
                 <Name>ts_iter_seq</Name>
                 <Title>Validate tc status on giving invalid path for iterative sequential testcases</Title>
-		            <Engineer>Sayyeda Farheen</Engineer>
-		            <Date>08/23/2018</Date>
+                <Engineer>Sayyeda Farheen</Engineer>
+                <Date>08/23/2018</Date>
                 <type exectype="iterative_sequential"/>
                 <State/>
                 <default_onError action="next"/>
