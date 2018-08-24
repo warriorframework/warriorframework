@@ -9,7 +9,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+'''
 
+"""
 Iterative testsuite:
 An iterative suite is one where the  exectype="iterative_sequential" or "iterative_parallel".
 
@@ -58,7 +60,8 @@ For the eg the execution would be as follows.
 case-1, case-2, case-3  will be executed on sys-1 sequentially,
 at the same time case-1, case-2, case-3  will be executed on sys-2 sequentially.
 So the case executions will take place in parallel on all the systems at the same time.
-'''
+
+"""
 
 from Framework.Utils import data_Utils
 from Framework.Utils.testcase_Utils import pNote
