@@ -66,7 +66,7 @@ def execute_parallel_testcases(testcase_list, suite_repository,
         data_repository['wt_tc_impact'] = tc_impact
 
         # instead of using args_list, we need to use an ordered dict
-        # for tc args because intially q will be none and 
+        # for tc args because intially q will be none and
         # we need to cange it after creating a new q
         # then we need to maintain the position of arguments
         # before calling the testcase driver main function.
@@ -81,8 +81,7 @@ def execute_parallel_testcases(testcase_list, suite_repository,
                                     ("tc_onError_action", tc_onError_action),
                                     ("iter_ts_sys", iter_ts_sys),
                                     ("output_q", output_q),
-                                    ("jiraproj", jiraproj)
-                                    ])
+                                    ("jiraproj", jiraproj)])
 
         process, jobs_list, output_q = create_and_start_process_with_queue(target_module,
                                                                            tc_args_dict,
