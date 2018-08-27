@@ -11,10 +11,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-# !/usr/bin/python
-"""This is sequential suite driver which is used to execute
-the suites of a project in sequential order"""
-
 import os
 import time
 import traceback
@@ -26,6 +22,10 @@ from WarriorCore import exec_type_driver
 import WarriorCore.testsuite_driver as testsuite_driver
 import WarriorCore.onerror_driver as onerror_driver
 from Framework.Utils.testcase_Utils import pNote
+
+# !/usr/bin/python
+"""This is sequential suite driver which is used to execute
+the suites of a project in sequential order"""
 
 
 def compute_status(testsuite_status, testsuite_impact, testsuite, ts_status_list,
@@ -102,7 +102,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
 
         testsuite_rel_path = testsuite_utils.get_path_from_xmlfile(testsuite)
         if testsuite_rel_path is not None:
-            testsuite_path = Utils.file_Utils.getAbsPath(testsuite_rel_path, project_dir)
+            testsuite_path = Utils.file_Utils.getAbsPath(testsuite_rel_path,
+                                                         project_dir)
         else:
             testsuite_path = str(testsuite_rel_path)
         print_info("\n")
@@ -228,7 +229,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
                         condition_met = True
                         pNote("Wait for {0}sec before retrying".format(retry_interval))
                         pNote("The given condition '{0}' matches the expected"
-                              "value '{1}'".format(data_repository[retry_cond], retry_cond_value))
+                              "value '{1}'".format(data_repository[retry_cond],
+                                                   retry_cond_value))
                         time.sleep(int(retry_interval))
                     else:
                         condition_met = False
