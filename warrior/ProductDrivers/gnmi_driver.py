@@ -11,10 +11,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-"""" gNMI driver """
+""" gNMI driver """
 
-import Actions.GnmiActions
 from WarriorCore import kw_driver
+import Actions.GnmiActions
 
 def main(keyword, data_repository, args_repository):
     """Import all actions related to gNMI driver and call the driver Utils
@@ -25,4 +25,3 @@ def main(keyword, data_repository, args_repository):
     # and then add them to the package_list below
     package_list = [Actions.GnmiActions]
     return kw_driver.execute_keyword(keyword, data_repository, args_repository, package_list)
-

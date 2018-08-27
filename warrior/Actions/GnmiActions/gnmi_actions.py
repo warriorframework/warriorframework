@@ -14,7 +14,7 @@ limitations under the License.
 """
 gRPC Network Management Interface (gNMI) defines gRPC-based protocol for the modification and
 retrieval of configuration from a network element.
-As well as the control and generation of telemetry streams from a network element 
+As well as the control and generation of telemetry streams from a network element
 to a data collection system.
 Warrior Keyword will support the gNMI Client Services.
 gNMI Services:
@@ -29,10 +29,10 @@ Once/Polling/Stream
 """
 
 import os, re, sys
-from Framework.ClassUtils.gnmi_utils_class import gNMI
 import Framework.Utils as Utils
 from Framework.Utils import testcase_Utils, config_Utils, data_Utils, file_Utils
 from Framework.Utils.print_Utils import print_info
+from Framework.ClassUtils.gnmi_utils_class import gNMI
 from time import sleep
 
 class gnmiactions(object):
@@ -41,6 +41,7 @@ class gnmiactions(object):
     """
 
     def __init__(self):
+        """ Initializing logs,results and datafile paths """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -84,8 +85,8 @@ class gnmiactions(object):
                                             external_system_session)
         return status
  
-    def gNMI_get(self, system_name, q_query, verify=None, 
-                external_system=None, external_system_session=None, timestamp="''", user_arg=""):
+    def gNMI_get(self, system_name, q_query, verify=None,
+                 external_system=None, external_system_session=None, timestamp="''", user_arg=""):
         """
         When set, CLI will perform a Get request.
         """
@@ -95,8 +96,8 @@ class gnmiactions(object):
         result = None
         outputdict = {}
         gnmi_execute = gNMI()
-        gnmi_param = ['gNMI_CLI_binary', 'ip', 'gNMI_port', 'username', 'password', 'prompt', 
-                        'ca_crt', 'client_crt', 'client_key']
+        gnmi_param = ['gNMI_CLI_binary', 'ip', 'gNMI_port', 'username', 'password', 'prompt',
+                      'ca_crt', 'client_crt', 'client_key']
         gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                     system_name,
                                                     gnmi_param)
@@ -108,8 +109,8 @@ class gnmiactions(object):
         if external_system:
             ext_gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                             external_system,
-                                                            ['gNMI_CLI_binary', 'ca_crt', 
-                                                            'client_crt', 'client_key'])
+                                                            ['gNMI_CLI_binary', 'ca_crt',
+                                                             'client_crt', 'client_key'])
         #binary = file_Utils.getAbsPath(gnmi_param_dic['gNMI_CLI_binary'], self.tc_path)
         #ca_crt = file_Utils.getAbsPath(gnmi_param_dic['gNMI_ca_crt'], self.tc_path)
 
@@ -126,16 +127,15 @@ class gnmiactions(object):
                                                  ip=gnmi_param_dic['ip'],
                                                  gNMI_port=gnmi_param_dic['gNMI_port'],
                                                  ca_crt=ca_crt,
-                                                 clinet_crt_path=client_crt,
+                                                 client_crt_path=client_crt,
                                                  client_key=client_key,
                                                  get="get",
                                                  q_query=q_query,
                                                  timestamp=timestamp,
-                                                 user_arg=user_arg
-                                                 )
+                                                 user_arg=user_arg)
         status, result, child = gnmi_execute.execute(cmd_string, username,
-                                                      password, prompt, external_system,
-                                                      external_system_session, gnmi_obj)
+                                                     password, prompt, external_system,
+                                                     external_system_session, gnmi_obj)
         if status and verify and result:
             status = gnmi_execute.verify(result, verify)
 
@@ -188,8 +188,8 @@ class gnmiactions(object):
         result = None
         outputdict = {}
         gnmi_execute = gNMI()
-        gnmi_param = ['gNMI_CLI_binary', 'ip', 'gNMI_port', 'username', 'password', 'prompt', 
-                        'ca_crt', 'client_crt', 'client_key']
+        gnmi_param = ['gNMI_CLI_binary', 'ip', 'gNMI_port', 'username', 'password', 'prompt',
+                      'ca_crt', 'client_crt', 'client_key']
         gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                     system_name,
                                                     gnmi_param)
@@ -202,14 +202,14 @@ class gnmiactions(object):
             ext_gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                             external_system,
                                                             ['gNMI_CLI_binary', 'ca_crt',
-                                                            'client_crt', 'client_key'])
+                                                             'client_crt', 'client_key'])
         #binary = file_Utils.getAbsPath(gnmi_param_dic['gNMI_CLI_binary'], self.tc_path)
         #ca_crt = file_Utils.getAbsPath(gnmi_param_dic['gNMI_ca_crt'], self.tc_path)
 
         if external_system == None:
-           binary, ca_crt, client_crt, client_key = self.__check_param(gnmi_param_dic)
+            binary, ca_crt, client_crt, client_key = self.__check_param(gnmi_param_dic)
         else:
-           binary, ca_crt, client_crt, client_key = self.__check_param(ext_gnmi_param_dic)
+            binary, ca_crt, client_crt, client_key = self.__check_param(ext_gnmi_param_dic)
 
         username = gnmi_param_dic.get('username')
         password = gnmi_param_dic.get('password')
@@ -220,7 +220,7 @@ class gnmiactions(object):
                                                  ip=gnmi_param_dic['ip'],
                                                  gNMI_port=gnmi_param_dic['gNMI_port'],
                                                  ca_crt=ca_crt,
-                                                 clinet_crt_path=client_crt,
+                                                 client_crt_path=client_crt,
                                                  client_key=client_key,
                                                  qt_querytype=qt_querytype,
                                                  q_query=q_query,
@@ -305,7 +305,7 @@ class gnmiactions(object):
                                                     system_name,
                                                     gnmi_param)
         __gnmi_obj = Utils.data_Utils.get_object_from_datarepository(str(system_name)+
-                                                                        "_gnmi_session")
+                                                                     "_gnmi_session")
         if __gnmi_obj:
             gnmi_obj = __gnmi_obj
         else:
@@ -314,7 +314,7 @@ class gnmiactions(object):
             ext_gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                             external_system,
                                                             ['gNMI_CLI_binary', 'ca_crt',
-                                                            'client_crt', 'client_key'])
+                                                             'client_crt', 'client_key'])
         #binary = file_Utils.getAbsPath(gnmi_param_dic['gNMI_CLI_binary'], self.tc_path)
         #ca_crt = file_Utils.getAbsPath(gnmi_param_dic['gNMI_ca_crt'], self.tc_path)
 
@@ -332,15 +332,15 @@ class gnmiactions(object):
                                                  gNMI_port=gnmi_param_dic['gNMI_port'],
                                                  username=username, password=password,
                                                  ca_crt=ca_crt,
-                                                 clinet_crt_path=client_crt,
+                                                 client_crt_path=client_crt,
                                                  operation=operation,
                                                  client_key=client_key,
                                                  q_query=q_query)
         if cmd_string:
             status, result, child = gnmi_execute.execute(cmd_string, username,
-                                                          password, prompt, external_system,
-                                                          external_system_session, None,
-                                                          gnmi_obj)
+                                                         password, prompt, external_system,
+                                                         external_system_session, None,
+                                                         gnmi_obj)
         if status and verify:
             status = gnmi_execute.verify(result, verify)
         outputdict = {'{}_gnmi_result'.format(system_name): result}

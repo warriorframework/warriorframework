@@ -32,6 +32,7 @@ class gNMI(object):
     """gNMI Utils Class"""
 
     def __init__(self):
+        """___init___"""
         self.ju = JU()
 
     def scp_client_ca(self, cmd_string, passwd, external_system=None, external_system_session=None):
@@ -90,7 +91,7 @@ class gNMI(object):
         return status
 
     def execute(self, cmd_string, uname, passwd, prompt, external_system=None,
-                 external_system_session=None, stop_after=None, gnmi_obj=None, script="No"):
+                external_system_session=None, stop_after=None, gnmi_obj=None, script="No"):
         """
         Execute gNMI command using gNMI binary
         :param cmd_string:
@@ -116,9 +117,9 @@ class gNMI(object):
             child.sendline(cmd_string)
         if script.lower() == "no":
             credentials = {"username.*": uname, "password.*": passwd}
-            for response,value in credentials.iteritems():
+            for response, value in credentials.iteritems():
                 index = child.expect([response, ".*error.*", pexpect.EOF, pexpect.TIMEOUT],
-                                   timeout=5)
+                                     timeout=5)
                 if index == 0:
                     child.sendline(value)
                     testcase_Utils.pNote(child.match.group(0) + value)
@@ -213,15 +214,8 @@ class gNMI(object):
             status = True
         return status, result
 
-    def get_cmd_string(self, binary, ip,
-                       gNMI_port,
-                       ca_crt,
-                       clinet_crt_path,
-                       client_key,
-                       q_query,
-                       get=None,
-                       qt_querytype=None,
-                       polling_interval="30s", timestamp="",
+    def get_cmd_string(self, binary, ip, gNMI_port, ca_crt, client_crt_path, client_key, q_query,
+                       get=None, qt_querytype=None, polling_interval="30s", timestamp="",
                        streaming_duration="0s", user_arg="",
                        venv=None, operation=None, username=None, password=None):
         """
@@ -244,82 +238,64 @@ class gNMI(object):
         """
         cmd_string = None
         if get:
-            cmd_string = "{} --address {}:{} --ca_crt {} --client_crt {} --client_key {}  --get --proto {}" \
-                         " -with_user_pass --timestamp {} {}".format(binary,
-                                                                     ip,
-                                                                     gNMI_port,
-                                                                     ca_crt,
-                                                                     clinet_crt_path,
-                                                                     client_key,
-                                                                     q_query,
-                                                                     timestamp,
-                                                                     user_arg
-                                                                     )
+            cmd_string = "{} --address {}:{} --ca_crt {} --client_crt {} --client_key {} --get" \
+                         " --proto {} -with_user_pass --timestamp {} {}".format(binary, ip,
+                                                                                gNMI_port, ca_crt,
+                                                                                client_crt_path,
+                                                                                client_key, q_query,
+                                                                                timestamp, user_arg)
         if qt_querytype:
             if qt_querytype == "once":
-                cmd_string = "{} --address {}:{} --ca_crt {} --client_crt {} --client_key {} --q {} -qt={}" \
-                             " -with_user_pass --timestamp {} {}".format(binary,
-                                                                         ip,
-                                                                         gNMI_port,
-                                                                         ca_crt,
-                                                                         clinet_crt_path,
-                                                                         client_key,
-                                                                         q_query,
-                                                                         qt_querytype, timestamp,
-                                                                         user_arg
-                                                                         )
+                cmd_string = "{} --address {}:{} --ca_crt {} --client_crt {} --client_key {}" \
+                             " --q {} -qt={} -with_user_pass --timestamp {} {}".format(binary,
+                                                                                       ip,
+                                                                                       gNMI_port,
+                                                                                       ca_crt,
+                                                                                       client_crt_path,
+                                                                                       client_key,
+                                                                                       q_query,
+                                                                                       qt_querytype,
+                                                                                       timestamp,
+                                                                                       user_arg)
                 testcase_Utils.pNote(cmd_string)
             elif qt_querytype == "polling":
                 if polling_interval[-1] != "s":
                     polling_interval = polling_interval+'s'
-                cmd_string = "{} --address {}:{} --ca_crt {} --client_crt {} --client_key {} --q {} -qt={}" \
-                             " --polling_interval={}" \
-                             " -with_user_pass --timestamp {} {}".format(binary,
-                                                                         ip,
-                                                                         gNMI_port,
-                                                                         ca_crt,
-                                                                         clinet_crt_path,
-                                                                         client_key,
-                                                                         q_query,
+                cmd_string = "{} --address {}:{} --ca_crt {} --client_crt {} --client_key {}" \
+                             " --q {} -qt={} --polling_interval={}" \
+                             " -with_user_pass --timestamp {} {}".format(binary, ip, gNMI_port,
+                                                                         ca_crt, client_crt_path,
+                                                                         client_key, q_query,
                                                                          qt_querytype,
                                                                          polling_interval,
-                                                                         timestamp, user_arg
-                                                                         )
+                                                                         timestamp, user_arg)
                 testcase_Utils.pNote(cmd_string)
             elif qt_querytype == "streaming":
                 if polling_interval[-1] != "s":
                     polling_interval = polling_interval+'s'
                 if streaming_duration[-1] != "s":
                     streaming_duration = streaming_duration+'s'
-                cmd_string = "{} --address {}:{} --ca_crt {} --client_crt {} --client_key {} --q {} -qt={} --polling_interval={}" \
-                             " -with_user_pass --timestamp {}" \
-                             " -streaming_duration {} {}".format(binary,
-                                                                 ip,
-                                                                 gNMI_port,
-                                                                 ca_crt,
-                                                                 clinet_crt_path,
-                                                                 client_key,
-                                                                 q_query,
-                                                                 qt_querytype,
-                                                                 polling_interval,
-                                                                 timestamp,
-                                                                 streaming_duration, user_arg
-                                                                 )
+                cmd_string = "{} --address {}:{} --ca_crt {} --client_crt {} --client_key {}" \
+                             " --q {} -qt={} --polling_interval={} -with_user_pass" \
+                             " --timestamp {} -streaming_duration {} {}".format(binary, ip,
+                                                                                gNMI_port, ca_crt,
+                                                                                client_crt_path,
+                                                                                client_key,q_query,
+                                                                                qt_querytype,
+                                                                                polling_interval,
+                                                                                timestamp,
+                                                                                streaming_duration,
+                                                                                user_arg)
                 testcase_Utils.pNote(cmd_string)
             else:
                 testcase_Utils.pNote("The querytype do not match! qt_querytype"
                                      " must be one of: (once, polling, streaming)", "error")
         if operation:
             if operation in ["set"]:
-                cmd_string = "{} --address {}:{} " \
-                             "--ca_crt {} --client_crt {} --client_key {}  --set --proto {}  -with_user_pass".format(binary,
-                                                                                  ip,
-                                                                                  gNMI_port,
-                                                                                  ca_crt,
-                                                                                  clinet_crt_path,
-                                                                                  client_key,
-                                                                                  q_query
-                                                                                  )
+                cmd_string = "{} --address {}:{} --ca_crt {} --client_crt {} --client_key {}" \
+                             " --set --proto {}  -with_user_pass".format(binary, ip, gNMI_port,
+                                                                         ca_crt, client_crt_path,
+                                                                         client_key, q_query)
                 testcase_Utils.pNote(cmd_string)
             else:
                 testcase_Utils.pNote("The operation type do not match! operation must be"
