@@ -49,41 +49,6 @@ class gnmiactions(object):
         self.logfile = Utils.config_Utils.logfile
         self.tc_path = Utils.config_Utils.tc_path
 
-    def get_client_certificate(self, system_name, op_type="sftp", external_system=None,
-                               external_system_session=None):
-        """
-        Get client side certificate(.ca file) from gNMI server using SCP
-        and copy it at Warrior Config_files directory.
-        :param system_name:
-        :param op_type: What type of operation user want to perform "scp/sftp" default "sftp"
-        :return: True or False
-        """
-        wdesc = "Get client side certificate from gNMI server"
-        testcase_Utils.pSubStep(wdesc)
-        gnmi_execute = gNMI()
-        status = False
-
-        param = ['username', 'password', 'ip', 'gNMI_CLI_binary', 'sftp_port', 'gNMI_CA']
-        param_dic = data_Utils.get_credentials(self.datafile,
-                                               system_name,
-                                               param)
-        cofg_path = file_Utils.getAbsPath(param_dic['gNMI_CA'], self.tc_path)
-        port = param_dic.get('sftp_port', '22')
-        if external_system:
-            param = ['gNMI_CA']
-            ext_param_dic = data_Utils.get_credentials(self.datafile,
-                                                       external_system,
-                                                       param)
-            cofg_path = ext_param_dic.get("gNMI_CA")
-        cmd_string_crt = "{} -P {} {}@{}:/etc/gnmi/cert/active.crt" \
-                         " {}/{}_client.crt".format(op_type, port,
-                                                    param_dic['username'],
-                                                    param_dic['ip'], cofg_path,
-                                                    system_name)
-        testcase_Utils.pNote(cmd_string_crt)
-        status = gnmi_execute.scp_client_ca(cmd_string_crt, param_dic['password'], external_system,
-                                            external_system_session)
-        return status
  
     def gNMI_get(self, system_name, q_query, verify=None,
                  external_system=None, external_system_session=None, timestamp="''", user_arg=""):
@@ -115,10 +80,10 @@ class gnmiactions(object):
         #ca_crt = file_Utils.getAbsPath(gnmi_param_dic['gNMI_ca_crt'], self.tc_path)
 
         if external_system == None:
-            binary, ca_crt, client_crt, client_key = self.__check_param(gnmi_param_dic)
+            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(gnmi_param_dic)
         else:
-            binary, ca_crt, client_crt, client_key = self.__check_param(ext_gnmi_param_dic)
-
+            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(ext_gnmi_param_dic)
+ 
         username = gnmi_param_dic.get('username')
         password = gnmi_param_dic.get('password')
         prompt = gnmi_param_dic.get('prompt')
@@ -207,15 +172,14 @@ class gnmiactions(object):
         #ca_crt = file_Utils.getAbsPath(gnmi_param_dic['gNMI_ca_crt'], self.tc_path)
 
         if external_system == None:
-            binary, ca_crt, client_crt, client_key = self.__check_param(gnmi_param_dic)
+            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(gnmi_param_dic)
         else:
-            binary, ca_crt, client_crt, client_key = self.__check_param(ext_gnmi_param_dic)
-
+            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(ext_gnmi_param_dic)
+ 
         username = gnmi_param_dic.get('username')
         password = gnmi_param_dic.get('password')
         prompt = gnmi_param_dic.get('prompt')
-        #testcase_Utils.pNote("gNMI CLI Binary : {}".format(binary))
-        #testcase_Utils.pNote("gNMI Client CA : {}".format(ca_path))
+
         cmd_string = gnmi_execute.get_cmd_string(binary=binary,
                                                  ip=gnmi_param_dic['ip'],
                                                  gNMI_port=gnmi_param_dic['gNMI_port'],
@@ -319,10 +283,10 @@ class gnmiactions(object):
         #ca_crt = file_Utils.getAbsPath(gnmi_param_dic['gNMI_ca_crt'], self.tc_path)
 
         if external_system == None:
-            binary, ca_crt, client_crt, client_key = self.__check_param(gnmi_param_dic)
+            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(gnmi_param_dic)
         else:
-            binary, ca_crt, client_crt, client_key = self.__check_param(ext_gnmi_param_dic)
-
+            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(ext_gnmi_param_dic)
+ 
         username = gnmi_param_dic.get('username')
         password = gnmi_param_dic.get('password')
         prompt = gnmi_param_dic.get('prompt')
@@ -345,13 +309,3 @@ class gnmiactions(object):
             status = gnmi_execute.verify(result, verify)
         outputdict = {'{}_gnmi_result'.format(system_name): result}
         return status, outputdict
- 
-    def __check_param(self, p_dic):
-        """
-        Sub Method
-        """
-        binary = p_dic.get('gNMI_CLI_binary')
-        ca_crt = p_dic['ca_crt']
-        client_crt = p_dic['client_crt']
-        client_key = p_dic['client_key']
-        return binary, ca_crt, client_crt, client_key
