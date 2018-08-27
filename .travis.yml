@@ -27,11 +27,13 @@ matrix:
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes
       addons:
         firefox: "46.0"
+        chrome: stable
     - sudo: required
       dist: trusty
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes SELENIUM_3=yes GECKODRIVER=yes
       addons:
         firefox: "60.0"
+        chrome: stable
     - sudo: false
       dist: trusty
       env: INSTALL=no TESTFILE=./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml COPILOT=yes
@@ -50,7 +52,7 @@ install:
     fi
   - if [[ ${SELENIUM} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
       pip install pyvirtualdisplay==0.2.1 ;
-      wget https://chromedriver.storage.googleapis.com/2.32/chromedriver_linux64.zip;
+      wget https://chromedriver.storage.googleapis.com/2.40/chromedriver_linux64.zip;
       unzip chromedriver_linux64.zip;
       chmod +x chromedriver;
       mv chromedriver ~/bin/chromedriver;
