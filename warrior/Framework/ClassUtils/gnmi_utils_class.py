@@ -89,7 +89,7 @@ class gNMI(object):
             testcase_Utils.pNote("Client certificate copy Failed.", "error")
         return status
 
-    def execute(self, cmd_string, uname, passwd, external_system=None,
+    def execute(self, cmd_string, uname, passwd, prompt, external_system=None,
                  external_system_session=None, stop_after=None, gnmi_obj=None, script="No"):
         """
         Execute gNMI command using gNMI binary
@@ -105,41 +105,31 @@ class gNMI(object):
         """
         status = False
         result = None
-        excute = False
+        execute = False
         child = None
         if external_system == None:
-            if gnmi_obj == None:
-                child = pexpect.spawn(cmd_string)
-                child.maxread = 50000
-            else:
-                child = gnmi_obj
-                child = pexpect.spawn(cmd_string)
-                child.maxread = 50000
+            child = pexpect.spawn(cmd_string)
+            child.maxread = 50000
         else:
             session_id = data_Utils.get_session_id(external_system, external_system_session)
             child = data_Utils.get_object_from_datarepository(session_id)
             child.sendline(cmd_string)
         if script.lower() == "no":
-            u_index = child.expect(["username.*", ".*error.*", pexpect.EOF, pexpect.TIMEOUT],
+            credentials = {"username.*": uname, "password.*": passwd}
+            for response,value in credentials.iteritems():
+                index = child.expect([response, ".*error.*", pexpect.EOF, pexpect.TIMEOUT],
                                    timeout=5)
-            if u_index == 0:
-                child.sendline(uname)
-                status = True
-                testcase_Utils.pNote(child.match.group(0) + uname)
-                excute = True
-            else:
-                excute = False
-            p_index = child.expect(["password.*", ".*error.*", pexpect.EOF, pexpect.TIMEOUT],
-                                   timeout=5)
-            if p_index == 0:
-                testcase_Utils.pNote(child.match.group(0))
-                child.sendline(passwd)
-                excute = True
-            else:
-                excute = False
-        if excute or script.lower() == "yes":
+                if index == 0:
+                    child.sendline(value)
+                    testcase_Utils.pNote(child.match.group(0) + value)
+                    execute = True
+                    status = True
+                else:
+                    execute = False
+                    break
+        if execute or script.lower() == "yes":
             if stop_after == None and "polling" not in cmd_string and "streaming" not in cmd_string:
-                j_index = child.expect(['.*(%|#|\$)', pexpect.EOF, pexpect.TIMEOUT], timeout=50)
+                j_index = child.expect([prompt, pexpect.EOF, pexpect.TIMEOUT], timeout=50)
                 if j_index == 1 or j_index == 0:
                     if "client had error while displaying results" not in child.before:
                         if j_index == 1:
@@ -159,7 +149,7 @@ class gNMI(object):
                 testcase_Utils.pNote("Will Kill the process after {}sec".format(stop_after))
                 child.sendcontrol('C')
                 try:
-                    child.expect([pexpect.EOF, '.*(%|#|\$)'], timeout=int(stop_after))
+                    child.expect([pexpect.EOF, prompt], timeout=int(stop_after))
                 except:
                     testcase_Utils.pNote("Sending Ctrl+Z")
                 if "client had error while displaying results" not in child.before:
@@ -168,19 +158,20 @@ class gNMI(object):
                 status = True
         return status, result, child
 
-    def verify(self, json_object, serach_list):
+    def verify(self, json_object, search_list):
         """
         Verify gNMI output JSON
         :param json_object:
-        :param serach_list:
+        :param search_list:
         :return: True or False
         """
         status = True
+        json_str = ""
         if isinstance(json_object, dict):
             json_str = json.dumps(json_object)
         else:
             json_str = json_object
-        for search_pattern in [x.strip() for x in serach_list.split(',')]:
+        for search_pattern in [x.strip() for x in search_list.split(',')]:
             if re.search(search_pattern, json_str, re.DOTALL):
                 status = status and True
                 testcase_Utils.pNote("{} is Present in Output JSON".format(search_pattern))
