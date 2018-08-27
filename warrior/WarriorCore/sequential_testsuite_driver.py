@@ -28,6 +28,54 @@ import WarriorCore.onerror_driver as onerror_driver
 from Framework.Utils.testcase_Utils import pNote
 
 
+def compute_status(testsuite_status, testsuite_impact, testsuite, ts_status_list,
+                   ts_impact_list):
+    """
+    This function computes the overall status
+    """
+    runmode, _, _ = \
+        common_execution_utils.get_runmode_from_xmlfile(testsuite)
+    if runmode is None:
+        ts_status_list.append(testsuite_status)
+        ts_impact_list.append(testsuite_impact)
+    elif runmode.upper() == "RMT":
+        ts_status_list.append(testsuite_status)
+        ts_impact_list.append(testsuite_impact)
+    elif runmode.upper() == "RUP":
+        if testsuite.find('runmode').get('status') is None or \
+           testsuite.find('runmode').get('status') == "":
+            ts_status_list.append(testsuite_status)
+            ts_impact_list.append(testsuite_impact)
+        elif testsuite.find('runmode').get('status') == 'last_instance' or \
+             testsuite.find('runmode').get('status') == 'expected':
+                if testsuite_status is True or \
+                  (testsuite.find('runmode').get('attempt') ==
+                   testsuite.find('runmode').get('runmode_value')):
+                    ts_status_list.append(testsuite_status)
+                    ts_impact_list.append(testsuite_impact)
+    elif runmode.upper() == "RUF":
+        if testsuite.find('runmode').get('status') is None or \
+           testsuite.find('runmode').get('status') == "":
+            ts_status_list.append(testsuite_status)
+            ts_impact_list.append(testsuite_impact)
+        elif testsuite.find('runmode').get('status') == 'last_instance':
+            if testsuite_status is False or \
+              (testsuite.find('runmode').get('attempt') ==
+               testsuite.find('runmode').get('runmode_value')):
+                    ts_status_list.append(testsuite_status)
+                    ts_impact_list.append(testsuite_impact)
+        elif testsuite.find('runmode').get('status') == 'expected':
+            if testsuite_status is False:
+                ts_status_list.append(True)
+                ts_impact_list.append(testsuite_impact)
+            elif testsuite_status is not False and \
+                (testsuite.find('runmode').get('attempt') ==
+                 testsuite.find('runmode').get('runmode_value')):
+                    ts_status_list.append(False)
+                    ts_impact_list.append(testsuite_impact)
+    return ts_status_list, ts_impact_list
+
+
 def execute_sequential_testsuites(testsuite_list, project_repository,
                                   data_repository, auto_defects):
     """ Executes suites in a project sequentially """
@@ -146,8 +194,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
             print_error("unexpected testsuite status, default to exception")
             data_repository['testsuite_%d_result' % suite_cntr] = "ERROR"
 
-        ts_status_list.append(testsuite_status)
-        ts_impact_list.append(testsuite_impact)
+        ts_status_list, ts_impact_list = compute_status(testsuite_status, testsuite_impact,
+                                                        testsuite, ts_status_list, ts_impact_list)
         if testsuite_impact.upper() == 'IMPACT':
             msg = "Status of the executed test suite impacts Project result"
         elif testsuite_impact.upper() == 'NOIMPACT':

@@ -214,12 +214,14 @@ def get_testcase_list(testsuite_filepath):
                         copy_tc = copy.deepcopy(tc)
                         copy_tc.find("runmode").set("value", go_next)
                         copy_tc.find("runmode").set("attempt", i+1)
+                        copy_tc.find("runmode").set("runmode_value", value)
                         testcase_list.append(copy_tc)
                 # only one step in step list, append new step
                 else:
                     for i in range(0, value):
                         copy_tc = copy.deepcopy(tc)
                         copy_tc.find("runmode").set("attempt", i+1)
+                        copy_tc.find("runmode").set("runmode_value", value)
                         testcase_list.append(tc)
             if retry_type is not None and retry_value > 0:
                 if len(new_testcase_list) > 1:
