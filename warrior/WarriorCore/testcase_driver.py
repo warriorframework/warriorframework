@@ -285,23 +285,23 @@ def report_testcase_result(tc_status, data_repository):
     Utils.testcase_Utils.pTestResult(tc_status, data_repository['wt_resultfile'])
     root = Utils.xml_Utils.getRoot(data_repository['wt_resultfile'])
     fail_count = 0
-    for value in root.findall('Keyword'):
-        kw_status = value.find('KeywordStatus').text
-        if kw_status != "PASS" and kw_status != "RAN":
-            fail_count += 1
-            kw_name = value.find('Name').text
-            get_step_value = value.attrib.values()
-            step_num = ','.join(get_step_value)
-            if fail_count == 1:
-                print_info("++++++++++++++++++++++++ Summary of Failed Keywords +++++++++++++++++++"
-                           "+++++")
-                print_info("{0:15} {1:45} {2:10}".format('StepNumber', 'KeywordName', 'Status'))
-                print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
-                                                         str(kw_status)))
-            elif fail_count > 1:
-                print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
-                                                         str(kw_status)))
-    print_info("=================== END OF TESTCASE ===========================")
+    #for value in root.findall('Keyword'):
+    #    kw_status = value.find('KeywordStatus').text
+    #    if kw_status != "PASS" and kw_status != "RAN":
+    #        fail_count += 1
+    #        kw_name = value.find('Name').text
+    #        get_step_value = value.attrib.values()
+    #        step_num = ','.join(get_step_value)
+    #        if fail_count == 1:
+    #            print_info("++++++++++++++++++++++++ Summary of Failed Keywords +++++++++++++++++++"
+    #                       "+++++")
+    #            print_info("{0:15} {1:45} {2:10}".format('StepNumber', 'KeywordName', 'Status'))
+    #            print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
+    #                                                     str(kw_status)))
+    #        elif fail_count > 1:
+    #            print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
+    #                                                     str(kw_status)))
+    #print_info("=================== END OF TESTCASE ===========================")
 
 
 def get_system_list(datafile, node_req=False, iter_req=False):
