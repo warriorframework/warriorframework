@@ -61,7 +61,7 @@ class gnmiactions(object):
         result = None
         outputdict = {}
         gnmi_execute = gNMI()
-        gnmi_param = ['gNMI_CLI_binary', 'ip', 'gNMI_port', 'username', 'password', 'prompt',
+        gnmi_param = ['ip', 'gNMI_port', 'username', 'password', 'prompt',
                       'ca_crt', 'client_crt', 'client_key']
         gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                     system_name,
@@ -74,22 +74,18 @@ class gnmiactions(object):
         if external_system:
             ext_gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                             external_system,
-                                                            ['gNMI_CLI_binary', 'ca_crt',
-                                                             'client_crt', 'client_key'])
-        #binary = file_Utils.getAbsPath(gnmi_param_dic['gNMI_CLI_binary'], self.tc_path)
-        #ca_crt = file_Utils.getAbsPath(gnmi_param_dic['gNMI_ca_crt'], self.tc_path)
+                                                            ['ca_crt', 'client_crt', 'client_key'])
 
         if external_system == None:
-            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(gnmi_param_dic)
+            ca_crt, client_crt, client_key = data_Utils.set_gnmi_cert_params(gnmi_param_dic)
         else:
-            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(ext_gnmi_param_dic)
+            ca_crt, client_crt, client_key = data_Utils.set_gnmi_cert_params(ext_gnmi_param_dic)
  
         username = gnmi_param_dic.get('username')
         password = gnmi_param_dic.get('password')
         prompt = gnmi_param_dic.get('prompt')
 
-        cmd_string = gnmi_execute.get_cmd_string(binary=binary,
-                                                 ip=gnmi_param_dic['ip'],
+        cmd_string = gnmi_execute.get_cmd_string(ip=gnmi_param_dic['ip'],
                                                  gNMI_port=gnmi_param_dic['gNMI_port'],
                                                  ca_crt=ca_crt,
                                                  client_crt_path=client_crt,
@@ -153,7 +149,7 @@ class gnmiactions(object):
         result = None
         outputdict = {}
         gnmi_execute = gNMI()
-        gnmi_param = ['gNMI_CLI_binary', 'ip', 'gNMI_port', 'username', 'password', 'prompt',
+        gnmi_param = ['ip', 'gNMI_port', 'username', 'password', 'prompt',
                       'ca_crt', 'client_crt', 'client_key']
         gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                     system_name,
@@ -166,22 +162,18 @@ class gnmiactions(object):
         if external_system:
             ext_gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                             external_system,
-                                                            ['gNMI_CLI_binary', 'ca_crt',
-                                                             'client_crt', 'client_key'])
-        #binary = file_Utils.getAbsPath(gnmi_param_dic['gNMI_CLI_binary'], self.tc_path)
-        #ca_crt = file_Utils.getAbsPath(gnmi_param_dic['gNMI_ca_crt'], self.tc_path)
+                                                            ['ca_crt', 'client_crt', 'client_key'])
 
         if external_system == None:
-            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(gnmi_param_dic)
+            ca_crt, client_crt, client_key = data_Utils.set_gnmi_cert_params(gnmi_param_dic)
         else:
-            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(ext_gnmi_param_dic)
+            ca_crt, client_crt, client_key = data_Utils.set_gnmi_cert_params(ext_gnmi_param_dic)
  
         username = gnmi_param_dic.get('username')
         password = gnmi_param_dic.get('password')
         prompt = gnmi_param_dic.get('prompt')
 
-        cmd_string = gnmi_execute.get_cmd_string(binary=binary,
-                                                 ip=gnmi_param_dic['ip'],
+        cmd_string = gnmi_execute.get_cmd_string(ip=gnmi_param_dic['ip'],
                                                  gNMI_port=gnmi_param_dic['gNMI_port'],
                                                  ca_crt=ca_crt,
                                                  client_crt_path=client_crt,
@@ -263,7 +255,7 @@ class gnmiactions(object):
         result = None
         outputdict = {}
         gnmi_execute = gNMI()
-        gnmi_param = ['gNMI_CLI_binary', 'ip', 'gNMI_port', 'username',
+        gnmi_param = ['ip', 'gNMI_port', 'username',
                       'password', 'prompt', 'ca_crt', 'client_crt', 'client_key']
         gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                     system_name,
@@ -277,22 +269,18 @@ class gnmiactions(object):
         if external_system:
             ext_gnmi_param_dic = data_Utils.get_credentials(self.datafile,
                                                             external_system,
-                                                            ['gNMI_CLI_binary', 'ca_crt',
-                                                             'client_crt', 'client_key'])
-        #binary = file_Utils.getAbsPath(gnmi_param_dic['gNMI_CLI_binary'], self.tc_path)
-        #ca_crt = file_Utils.getAbsPath(gnmi_param_dic['gNMI_ca_crt'], self.tc_path)
+                                                            ['ca_crt', 'client_crt', 'client_key'])
 
         if external_system == None:
-            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(gnmi_param_dic)
+            ca_crt, client_crt, client_key = data_Utils.set_gnmi_cert_params(gnmi_param_dic)
         else:
-            binary, ca_crt, client_crt, client_key = data_Utils.set_gnmi_params(ext_gnmi_param_dic)
+            ca_crt, client_crt, client_key = data_Utils.set_gnmi_cert_params(ext_gnmi_param_dic)
  
         username = gnmi_param_dic.get('username')
         password = gnmi_param_dic.get('password')
         prompt = gnmi_param_dic.get('prompt')
 
-        cmd_string = gnmi_execute.get_cmd_string(binary=binary,
-                                                 ip=gnmi_param_dic['ip'],
+        cmd_string = gnmi_execute.get_cmd_string(ip=gnmi_param_dic['ip'],
                                                  gNMI_port=gnmi_param_dic['gNMI_port'],
                                                  username=username, password=password,
                                                  ca_crt=ca_crt,

@@ -2140,12 +2140,11 @@ def generate_datafile(lists_of_systems, output_dir, filename):
     return result
 
 
-def set_gnmi_params(p_dic):
+def set_gnmi_cert_params(p_dic):
     """
     Set the data params for GNMI
     """
-    binary = p_dic['gNMI_CLI_binary']
     ca_crt = p_dic['ca_crt']
     client_crt = p_dic['client_crt']
     client_key = p_dic['client_key']
-    return binary, ca_crt, client_crt, client_key
+    return ca_crt, client_crt, client_key
