@@ -17,7 +17,7 @@
                 <Requirement/>
         </Requirements>
         <Steps>
-                <step Driver="ci_regression_driver" Keyword="create_tmp_dir" TS="1" draft="yes">
+                <step Driver="ci_regressioksjfhkdsfhn_driver" Keyword="create_tmp_dir" TS="1" draft="yes">
                         <Arguments>
                         </Arguments>
                         <onError action="next"/>
