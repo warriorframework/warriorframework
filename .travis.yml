@@ -45,7 +45,7 @@ install:
     fi
   - if [[ ${SELENIUM} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
       pip install pyvirtualdisplay==0.2.1 ;
-      wget https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip;
+      wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip;
       unzip chromedriver_linux64.zip;
       chmod +x chromedriver;
       mv chromedriver ~/bin/chromedriver;
