@@ -18,7 +18,7 @@
 		<Requirement/>
 	</Requirements>
 	<Steps>
-		<step Driver="ci_regression_driveryuiweyfiu" Keyword="local_data_test" TS="1">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
 			<Arguments>
 				<argument name="desired_status" value="pass"/>
 			</Arguments>
@@ -26,7 +26,7 @@
 			<Description>local_data_test</Description>
 			<iteration_type type=""/>
 			<Execute ExecType="Yes"/>
-			<context>positive</context>
+			<context>negative</context>
 			<impact>impact</impact>
 			<rmt/>
 		</step>
