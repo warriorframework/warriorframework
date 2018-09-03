@@ -35,53 +35,6 @@ def update_suite_attribs(junit_resultfile, errors, skipped,
                                                    str(skipped), str(tests), str(failures), time)
 
 
-def compute_status(tc_status, tc_impact, testcase, tc_status_list, tc_impact_list):
-    """
-    This function computes the overall status
-    """
-    runmode, _, _ = \
-        common_execution_utils.get_runmode_from_xmlfile(testcase)
-    if runmode is None:
-        tc_status_list.append(tc_status)
-        tc_impact_list.append(tc_impact)
-    elif runmode.upper() == "RMT":
-        tc_status_list.append(tc_status)
-        tc_impact_list.append(tc_impact)
-    elif runmode.upper() == "RUP":
-        if testcase.find('runmode').get('status') is None or \
-           testcase.find('runmode').get('status') == "":
-            tc_status_list.append(tc_status)
-            tc_impact_list.append(tc_impact)
-        elif testcase.find('runmode').get('status') == 'last_instance' or \
-             testcase.find('runmode').get('status') == 'expected':
-                if tc_status is True or \
-                  (testcase.find('runmode').get('attempt') ==
-                   testcase.find('runmode').get('runmode_value')):
-                    tc_status_list.append(tc_status)
-                    tc_impact_list.append(tc_impact)
-    elif runmode.upper() == "RUF":
-        if testcase.find('runmode').get('status') is None or \
-           testcase.find('runmode').get('status') == "":
-            tc_status_list.append(tc_status)
-            tc_impact_list.append(tc_impact)
-        elif testcase.find('runmode').get('status') == 'last_instance':
-            if tc_status is False or \
-              (testcase.find('runmode').get('attempt') ==
-               testcase.find('runmode').get('runmode_value')):
-                    tc_status_list.append(tc_status)
-                    tc_impact_list.append(tc_impact)
-        elif testcase.find('runmode').get('status') == 'expected':
-            if tc_status is False:
-                tc_status_list.append(True)
-                tc_impact_list.append(tc_impact)
-            elif tc_status is not False and \
-                (testcase.find('runmode').get('attempt') ==
-                 testcase.find('runmode').get('runmode_value')):
-                    tc_status_list.append(False)
-                    tc_impact_list.append(tc_impact)
-    return tc_status_list, tc_impact_list
-
-
 def execute_sequential_testcases(testcase_list, suite_repository,
                                  data_repository, from_project, auto_defects,
                                  iter_ts_sys, tc_parallel, queue, ts_iter):
@@ -283,8 +236,10 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                         "onerror", onerror, "tc",
                         data_repository['wt_tc_timestamp'])
 
-        tc_status_list, tc_impact_list = compute_status(tc_status, tc_impact,
-                                                        testcase, tc_status_list, tc_impact_list)
+        tc_status_list, tc_impact_list = \
+            common_execution_utils.compute_status(testcase, tc_status_list,
+                                                  tc_status_list,
+                                                  tc_status, tc_impact)
         tc_duration_list.append(tc_duration)
 
         string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR",

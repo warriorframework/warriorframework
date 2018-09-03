@@ -71,6 +71,7 @@ def get_runmode_from_xmlfile(element):
 
     return (rt_type, rt_value, runmode_timer)
 
+
 def get_retry_from_xmlfile(element):
     """Get 'retry' tag and its values from the testcase step.
        This value can be combined with runmode values
@@ -88,8 +89,8 @@ def get_retry_from_xmlfile(element):
         retry_value = retry_tag.get('count')
         retry_interval = retry_tag.get('interval')
         if not retry_type in ['if', 'if not']:
-            print_warning("Unsupported value '{0}' provided for 'retry:"\
-                          "type' tag. Supported values : 'if, if not' "\
+            print_warning("Unsupported value '{0}' provided for 'retry:"
+                          "type' tag. Supported values : 'if, if not' "
                           .format(retry_type))
             return (None, None, None, 5, 5)
         if (retry_cond is None) or (retry_cond_value is None):
@@ -100,14 +101,61 @@ def get_retry_from_xmlfile(element):
         retry_value = str(retry_value)
         if retry_interval.isdigit() is False:
             retry_interval = 5
-            print_warning("The value provided for "\
-                          "retry:retry_interval is not valid, "\
+            print_warning("The value provided for "
+                          "retry:retry_interval is not valid, "
                           "using default value 5 for execution")
         retry_interval = int(retry_interval)
         if retry_value.isdigit() is False:
             retry_value = 5
-            print_warning("The value provided for "\
-                          "retry:retry_value is not valid, "\
+            print_warning("The value provided for "
+                          "retry:retry_value is not valid, "
                           "using default value 5 for execution")
         retry_value = int(retry_value)
     return (retry_type, retry_cond, retry_cond_value, retry_value, retry_interval)
+
+
+def compute_status(element, status_list, impact_list, status, impact):
+    """
+        This function computes the overall status in case/suite/project
+        execution
+    """
+    runmode, _, _ = get_runmode_from_xmlfile(element)
+    if runmode is None:
+        status_list.append(status)
+        impact_list.append(impact)
+    elif runmode.upper() == "RMT":
+            status_list.append(status)
+            impact_list.append(impact)
+    elif runmode.upper() == "RUP":
+        if element.find('runmode').get('status') is None or \
+           element.find('runmode').get('status') == "":
+                status_list.append(status)
+                impact_list.append(impact)
+        elif element.find('runmode').get('status') == 'last_instance' or \
+                element.find('runmode').get('status') == 'expected':
+            if status is True or \
+                (element.find('runmode').get('attempt') ==
+                 element.find('runmode').get('runmode_value')):
+                    status_list.append(status)
+                    impact_list.append(impact)
+    elif runmode.upper() == "RUF":
+        if element.find('runmode').get('status') is None or \
+           element.find('runmode').get('status') == "":
+            status_list.append(status)
+            impact_list.append(impact)
+        elif element.find('runmode').get('status') == 'last_instance':
+            if status is False or \
+                (element.find('runmode').get('attempt') ==
+                 element.find('runmode').get('runmode_value')):
+                    status_list.append(status)
+                    impact_list.append(impact)
+        elif element.find('runmode').get('status') == 'expected':
+            if status is False:
+                status_list.append(True)
+                impact_list.append(impact)
+            elif status is not False and \
+                (element.find('runmode').get('attempt') ==
+                 element.find('runmode').get('runmode_value')):
+                    status_list.append(False)
+                    impact_list.append(impact)
+    return status_list, impact_list

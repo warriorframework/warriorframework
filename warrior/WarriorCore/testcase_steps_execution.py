@@ -145,51 +145,6 @@ class TestCaseStepsExecutionClass(object):
             self.current_step_number = int(self.current_triggered_action) - 1
         return self.current_step_number, self.go_to_step_number, "continue"
 
-    def compute_status(self, step_status, step_impact):
-        """
-        This function computes the overall status
-        """
-        runmode, _, _ = \
-            common_execution_utils.get_runmode_from_xmlfile(self.current_step)
-        if runmode is None:
-            self.step_status_list.append(step_status)
-            self.step_impact_list.append(step_impact)
-        elif runmode.upper() == "RMT":
-            self.step_status_list.append(step_status)
-            self.step_impact_list.append(step_impact)
-        elif runmode.upper() == "RUP":
-            if self.current_step.find('runmode').get('status') is None or \
-               self.current_step.find('runmode').get('status') == "":
-                self.step_status_list.append(step_status)
-                self.step_impact_list.append(step_impact)
-            elif self.current_step.find('runmode').get('status') == 'last_instance' or \
-                 self.current_step.find('runmode').get('status') == 'expected':
-                    if step_status is True or \
-                      (self.current_step.find('runmode').get('attempt') ==
-                       self.current_step.find('runmode').get('runmode_value')):
-                        self.step_status_list.append(step_status)
-                        self.step_impact_list.append(step_impact)
-        elif runmode.upper() == "RUF":
-            if self.current_step.find('runmode').get('status') is None or \
-               self.current_step.find('runmode').get('status') == "":
-                self.step_status_list.append(step_status)
-                self.step_impact_list.append(step_impact)
-            elif self.current_step.find('runmode').get('status') == 'last_instance':
-                if step_status is False or \
-                  (self.current_step.find('runmode').get('attempt') ==
-                   self.current_step.find('runmode').get('runmode_value')):
-                        self.step_status_list.append(step_status)
-                        self.step_impact_list.append(step_impact)
-            elif self.current_step.find('runmode').get('status') == 'expected':
-                if step_status is False:
-                    self.step_status_list.append(True)
-                    self.step_impact_list.append(step_impact)
-                elif step_status is not False and \
-                    (self.current_step.find('runmode').get('attempt') ==
-                     self.current_step.find('runmode').get('runmode_value')):
-                        self.step_status_list.append(False)
-                        self.step_impact_list.append(step_impact)
-
     def _execute_current_step(self):
         """
         This function actually executes a given step and returns necessary details about that step.
@@ -208,7 +163,11 @@ class TestCaseStepsExecutionClass(object):
             step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(self.current_step)
             print_error('unexpected error {0}'.format(traceback.format_exc()))
         self.go_to_step_number = False
-        self.compute_status(step_status, step_impact)
+        self.step_status_list, self.step_impact_list = \
+            common_execution_utils.compute_status(self.current_step,
+                                                  self.step_status_list,
+                                                  self.step_impact_list,
+                                                  step_status, step_impact)
         self.kw_resultfile_list.append(kw_resultfile)
         return step_status
 
