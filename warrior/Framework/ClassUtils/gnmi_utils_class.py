@@ -90,7 +90,7 @@ class gnmi(object):
             testcase_Utils.pNote("Client certificate copy Failed.", "error")
         return status
 
-    def execute(self, cmd_string, uname, passwd, prompt, external_system=None,
+    def execute(self, binary, cmd_string, uname, passwd, prompt, external_system=None,
                 external_system_session=None, stop_after=None, gnmi_obj=None, script="No"):
         """
         Execute gnmi command using gnmi binary
@@ -108,7 +108,6 @@ class gnmi(object):
         result = None
         execute = False
         child = None
-        binary = "/proj/sw/3rdparty/gnmi/gnmi_cli"
         cmd = binary + cmd_string
         testcase_Utils.pNote("********** Command to be Executed ********** \n {0}".format(cmd))
         if external_system == None:

@@ -101,6 +101,11 @@ class gnmiactions(object):
                                                     system_name,
                                                     gnmi_param)
         __gnmi_obj = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_gnmi_session")
+        file_dir = os.path.dirname(os.path.abspath(__file__))
+        war_dir = os.path.abspath(os.path.join(file_dir, '../..'))
+        binary = os.path.join(war_dir, 'Framework/Gnmi/gnmi_cli')
+        
+        testcase_Utils.pNote("***** Binary path: {0} *****".format(binary))
         if __gnmi_obj:
             gnmi_obj = __gnmi_obj
         else:
@@ -131,7 +136,7 @@ class gnmiactions(object):
                                                  timestamp=timestamp,
                                                  streaming_duration=streaming_duration,
                                                  user_arg=user_arg)
-        status, result, child = gnmi_execute.execute(cmd_string, username,
+        status, result, child = gnmi_execute.execute(binary, cmd_string, username,
                                                       password, prompt, external_system,
                                                       external_system_session, stop_after, gnmi_obj)
         if status and verify and result:
@@ -214,6 +219,10 @@ class gnmiactions(object):
                                                     gnmi_param)
         __gnmi_obj = Utils.data_Utils.get_object_from_datarepository(str(system_name)+
                                                                      "_gnmi_session")
+        file_dir = os.path.dirname(os.path.abspath(__file__))
+        war_dir = os.path.abspath(os.path.join(file_dir, '../..'))
+        binary = os.path.join(war_dir, 'Framework/Gnmi/gnmi_cli')
+        testcase_Utils.pNote("***** Binary path: {0} *****".format(binary))
         if __gnmi_obj:
             gnmi_obj = __gnmi_obj
         else:
@@ -251,7 +260,7 @@ class gnmiactions(object):
                                                      operation=operation, q_query=q_query)
         print_info("** {0} Operation in progress **".format(operation))
         if cmd_string:
-            status, result, child = gnmi_execute.execute(cmd_string, username,
+            status, result, child = gnmi_execute.execute(binary, cmd_string, username,
                                                          password, prompt, external_system,
                                                          external_system_session, None,
                                                          gnmi_obj)
