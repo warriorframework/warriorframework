@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="search_element">
+        <headless_mode>yes</headless_mode>
+        <ip/>
+        <remote>no</remote>
+        <browser>
+            <browser_name>browser_1</browser_name>
+            <type>firefox</type>
+        </browser>
+    </system>
+    <system name="search_element_1">
+        <headless_mode>yes</headless_mode>
+        <ip/>
+        <remote>no</remote>
+        <browser>
+            <browser_name>browser_2</browser_name>
+            <type>firefox</type>
+        </browser>
+    </system>
+    <system name="search_element_2">
+        <headless_mode>yes</headless_mode>
+        <ip/>
+        <remote>no</remote>
+        <browser>
+            <browser_name>browser_2</browser_name>
+            <type>firefox</type>
+            <user_script>window.alert('hi')</user_script>
+        </browser>
+    </system>
+</credentials>

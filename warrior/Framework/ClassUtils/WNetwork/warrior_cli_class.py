@@ -1606,8 +1606,13 @@ class PexpectConnect(object):
             except Exception as exception:
                 print_exception(exception)
             else:
-                response = self.target_host.before
-                response = str(response) + str(self.target_host.after)
+                response = str(self.target_host.before)
+                # When the command gets timed out, the pexpect.TIMEOUT exception
+                # will be raised and it is set to the after property of spawn object
+                if self.target_host.after == self.pexpect.TIMEOUT:
+                    pNote("EXCEPTION !! Command Timed Out", 'error')
+                else:
+                    response = response + str(self.target_host.after)
                 pNote("Response:\n{0}\n".format(response))
                 pNote(msg, "debug")
                 if status is True:

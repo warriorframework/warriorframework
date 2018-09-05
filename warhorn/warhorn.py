@@ -25,7 +25,7 @@ from source.utils import (check_installed_python_version, print_info, verify_pyt
                           get_date_and_time, get_relative_path, set_file_names, get_dependencies,
                           setDone, getDone, get_parent_dir, get_all_direct_child_nodes,
                           remove_extra_list_elements, git_clone_repository, get_latest_tag,
-                          git_checkout_label, get_dest, install_depen)
+                          git_checkout_label, get_dest, install_depen, embed_user_cred_in_url)
 
 """
 
@@ -277,6 +277,12 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
 
     # Validating the URL
     url = get_attribute_value(node, "url")
+
+    if repo_name == "tools":
+        # for http/https url types, embed username & password in url
+        username = get_attribute_value(node, "username")
+        password = get_attribute_value(node, "password")
+        url = embed_user_cred_in_url(url, username, password)
 
     if url == "":
         print_error("Can't clone repository without the url!",
@@ -659,6 +665,11 @@ def clone_drivers(base_path, current_dir, **kwargs):
             url = get_attribute_value(repository, "url")
             name = get_repository_name(url)
 
+            # for http/https url types, embed username & password in url
+            username = get_attribute_value(repository, "username")
+            password = get_attribute_value(repository, "password")
+            url = embed_user_cred_in_url(url, username, password)
+
             # url validation
             if url == "":
                 print_error("Can't clone repository without the url!",
@@ -798,6 +809,11 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
             if clone == "" or clone == "yes":
                 url = get_attribute_value(repository, "url")
                 name = get_repository_name(url)
+
+                # for http/https url types, embed username & password in url
+                username = get_attribute_value(repository, "username")
+                password = get_attribute_value(repository, "password")
+                url = embed_user_cred_in_url(url, username, password)
 
                 # url validation
                 if url == "":

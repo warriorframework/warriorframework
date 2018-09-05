@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+			<Name>tc_browser_launch_selenium3</Name>
+            <Title>browser_launch_selenium3</Title>
+            <ExpectedResults>PASS</ExpectedResults>
+            <Engineer>Nagammai Alagappan</Engineer>
+            <Date/>
+            <Time/>
+            <default_onError action = 'next'/>
+            <InputDataFile>../../Data/data_browser_launch_selenium3.xml</InputDataFile>
+            <Datatype>Custom</Datatype>
+            <Logsdir/>
+            <Resultsdir/>
+        </Details>
+       <Requirements>
+			<Requirement>requirement-001</Requirement>
+            <Requirement>requirement-002</Requirement>
+       </Requirements>
+        <Steps>
+			<step TS= '1' Driver='selenium_driver' Keyword='browser_launch' >
+            	<Arguments>
+            		<argument name="system_name" value="ff_browser_check"/>
+                	<argument name="binary" value="/home/nalagapp/Downloads/firefox/firefox"/>
+                	<argument name="gecko_path" value="/home/nalagapp/Downloads/geckodriver"/>
+                	<argument name="proxy_ip" value="10.145.22.10"/>
+                	<argument name="proxy_port" value="8080"/>
+				</Arguments>
+			</step>
+            <step TS= '2' Driver='selenium_driver' Keyword='browser_close' >
+            	<Arguments>
+                	<argument name="system_name" value="ff_browser_check"/>
+				</Arguments>
+			</step>
+        </Steps>
+</Testcase>

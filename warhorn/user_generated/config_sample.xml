@@ -7,7 +7,7 @@
             jira: 1.0.3
             lxml: 3.5
             ncclient: 0.4.6
-            paramiko: 1.16.0
+            paramiko: 2.4.1
             pexpect: 4.2
             pysnmp: 4.3.1
             requests: 2.9.1
@@ -76,6 +76,16 @@
         ** label: This is an attribute can be set to reflect the name of the
         branch, or tag, or commit-id that the user wants to checkout.
 
+        ** username: It is to specify the username of the repository to
+        be cloned. It is applicable only for http or https url types, leave
+        it empty for other url types. If the username is provided in the url
+        itself, that will be used instead of the value specified in the
+        username attribute.
+
+        ** password: It is to specify the password of the repository to
+        be cloned. It is applicable only for http or https url types, leave
+        it empty other url types.
+
         ** all_drivers: If the user wants to clone all the drivers in the
         repository, s/he can set this tag to 'yes'.
 
@@ -132,6 +142,17 @@
 
         ** label: This is an attribute can be set to reflect the name of the
         branch, or tag, or commit-id that the user wants to checkout.
+
+        ** username: It is to specify the username of the repository to
+        be cloned. It is applicable only for http or https url types, leave
+        it empty for other url types. If the username is provided in the url
+        itself, that will be used instead of the value specified in the
+        username attribute.
+
+        ** password: It is to specify the password of the repository to
+        be cloned. It is applicable only for http or https url types, leave
+        it empty other url types.
+
         -->
 
 		<!-- Sample

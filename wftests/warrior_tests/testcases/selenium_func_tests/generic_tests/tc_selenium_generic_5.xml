@@ -1,0 +1,175 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+			<Name>tc_selenium_generic_5</Name>
+			<Title>Test case to perform search action in google</Title>
+			<ExpectedResults>PASS</ExpectedResults>
+			<Category>search</Category>
+			<Engineer>Sanika Kulkarni</Engineer>
+			<Date/>
+			<Time/>
+			<default_onError action = 'next'  />
+			<InputDataFile>../../../data/selenium_func_tests/data_demo_selenium.xml</InputDataFile>
+			<Datatype>Custom</Datatype>
+			<Logsdir/>
+			<Resultsdir/>
+        </Details>
+       <Requirements>
+       			<Requirement>requirement-001</Requirement>
+       			<Requirement>requirement-002</Requirement>
+       </Requirements>
+        <Steps>
+			<step TS= '1' Driver='selenium_driver' Keyword='browser_launch' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="url" value="http://www.google.com"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '2' Driver='selenium_driver' Keyword='browser_maximize' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '3' Driver='selenium_driver' Keyword='open_a_new_tab' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="url" value="http://www.stackoverflow.com"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '4' Driver='selenium_driver' Keyword='open_a_new_tab' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="url" value="http://www.yahoo.com"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '5' Driver='selenium_driver' Keyword='open_a_new_tab' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="url" value="http://www.ask.com"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '6' Driver='selenium_driver' Keyword='switch_between_tabs' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="tab_number" value="1"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '7' Driver='selenium_driver' Keyword='navigate_to_url' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="url" value="http://www.github.com"/>
+					<argument name="tab_number" value="3"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '8' Driver='selenium_driver' Keyword='close_a_tab' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="tab_number" value="1"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '9' Driver='selenium_driver' Keyword='browser_refresh' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '10' Driver='selenium_driver' Keyword='get_window_size' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '11' Driver='selenium_driver' Keyword='get_window_position' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '12' Driver='selenium_driver' Keyword='save_screenshot' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="filename" value="screenshot_1"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '13' Driver='selenium_driver' Keyword='close_a_tab' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="tab_number" value="2"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '14' Driver='selenium_driver' Keyword='close_a_tab' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="tab_number" value="1"/>
+				</Arguments>
+        <impact>noimpact</impact>
+			</step>
+			<step TS= '15' Driver='selenium_driver' Keyword='verify_page_by_property' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+					<argument name="expected_value" value="http://stackoverflow.com/"/>
+					<argument name="value_type" value="current_url"/>
+				</Arguments>
+        <impact>noimpact</impact>
+				<context>negative</context>
+			</step>
+			<step TS= '16' Driver='selenium_driver' Keyword='browser_launch' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+					<argument name="url" value="http://www.seleniumlearn.com/drag-and-drop-html"/>
+				</Arguments>
+			</step>
+			<step TS= '17' Driver='common_driver' Keyword='wait_for_timeout' >
+				<Arguments>
+					<argument name="timeout" value="10"/>
+				</Arguments>
+			</step>
+			<step TS= '18' Driver='selenium_driver' Keyword='drag_and_drop_an_element' >
+				<Arguments>
+                    <argument name="system_name" value="search_element_4"/>
+                    <argument name="source_locator_type" value="element_tag=xpath"/>
+                    <argument name="target_locator_type" value="second_element_tag=xpath"/>
+                    <argument name="element_tag" value="element_config_file=source_element"/>
+                    <argument name="second_element_tag" value="second_element_config_file=target_drag"/>
+                </Arguments>
+            </step>
+			<step TS= '19' Driver='selenium_driver' Keyword='browser_launch' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="url" value="http://www.mkyong.com/wp-content/uploads/jQuery/jQuery-bind-unbind-example.html"/>
+				</Arguments>
+			</step>
+			<step TS= '20' Driver='selenium_driver' Keyword='double_click_an_element' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+					<argument name="locator" value="BoxId"/>
+					<argument name="locator_type" value="id"/>
+				</Arguments>
+			</step>
+			<step TS= '21' Driver='selenium_driver' Keyword='browser_close' >
+				<Arguments>
+					<argument name="system_name" value="search_element_3"/>
+				</Arguments>
+			</step>
+			<step TS= '22' Driver='selenium_driver' Keyword='browser_close' >
+				<Arguments>
+					<argument name="system_name" value="search_element_2"/>
+				</Arguments>
+			</step>
+			<step TS= '23' Driver='selenium_driver' Keyword='browser_close' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+				</Arguments>
+			</step>
+		</Steps>
+</Testcase>

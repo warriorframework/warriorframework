@@ -117,7 +117,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
             print_info("testcase attempt: {0}".format(
                                 testcase.find("retry").get("attempt")))
 
-        if Utils.file_Utils.fileExists(tc_path):
+        if Utils.file_Utils.fileExists(tc_path) or action is False:
             tc_name = Utils.file_Utils.getFileName(tc_path)
             testsuite_utils.pSuite_testcase(junit_resultfile, suite_name,
                                             tc_name, time='0')
@@ -192,9 +192,10 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                 data_repository['wt_junit_object'].update_attr(
                                 "status", "SKIPPED", "tc", tmp_timestamp)
                 data_repository['testcase_%d_result' % tests] = "SKIP"
-                title = Utils.xml_Utils.getChildTextbyParentTag(
-                                        tc_path, 'Details', 'Title')
-                title = title.strip() if title else "None"
+                if Utils.file_Utils.fileExists(tc_path):
+                    title = Utils.xml_Utils.getChildTextbyParentTag(
+                                            tc_path, 'Details', 'Title')
+                title = title.strip() if Utils.file_Utils.fileExists(tc_path) and title else "None"
                 data_repository['wt_junit_object'].update_attr(
                                 "title", title, "tc", tmp_timestamp)
                 data_repository['wt_junit_object'].update_attr(
