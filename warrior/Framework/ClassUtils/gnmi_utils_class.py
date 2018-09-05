@@ -131,7 +131,7 @@ class gnmi(object):
                     execute = False
                     break
         if execute or script.lower() == "yes":
-            if stop_after == None and "polling" not in cmd_string.lower() \
+            if stop_after == None and "poll" not in cmd_string.lower() \
                                   and "stream" not in cmd_string.lower():
                 j_index = child.expect([prompt, pexpect.EOF, pexpect.TIMEOUT], timeout=50)
                 if j_index == 1 or j_index == 0:
