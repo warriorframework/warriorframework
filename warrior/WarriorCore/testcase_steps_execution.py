@@ -210,11 +210,11 @@ class TestCaseStepsExecutionClass(object):
             wait_for_timeout(runmode_timer)
         # if runmode is 'ruf' & step_status is False, skip the repeated
         # execution of same TC step and move to next actual step
-        elif runmode == "RUF" and step_status is False:
+        elif runmode.upper() == "RUF" and step_status is False:
             self.go_to_step_number = str(value)
         # if runmode is 'rup' & step_status is True, skip the repeated
         # execution of same TC step and move to next actual step
-        elif runmode == "RUP" and step_status is True:
+        elif runmode.upper() == "RUP" and step_status is True:
             self.go_to_step_number = str(value)
         else:
             if step_status is False or str(step_status).upper() in ["ERROR", "EXCEPTION"]:

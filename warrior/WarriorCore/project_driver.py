@@ -94,89 +94,6 @@ def get_project_details(project_filepath, res_startdir, logs_startdir, data_repo
     return project_repository
 
 
-def get_testsuite_list(project_filepath):
-    """Takes the location of any Project.xml file as input
-    Returns a list of all the Testsuite elements present in the Project"""
-
-    testsuite_list = []
-    root = Utils.xml_Utils.getRoot(project_filepath)
-    testsuites = root.find('Testsuites')
-    if testsuites is None:
-        print_info('Testsuite is empty: tag <Testsuites> not "\
-                   "found in the input file ')
-    else:
-        new_testsuite_list = []
-        orig_testsuite_list = testsuites.findall('Testsuite')
-        for orig_ts in orig_testsuite_list:
-            orig_ts_path = orig_ts.find('path').text
-            if '*' not in orig_ts_path:
-                new_testsuite_list.append(orig_ts)
-            # When the file path has asterisk(*), get the Warrior XML testsuite
-            # files matching the given pattern
-            else:
-                orig_ts_abspath = Utils.file_Utils.getAbsPath(
-                    orig_ts_path, os.path.dirname(project_filepath))
-                print_info("Provided testsuite path: '{}' has asterisk(*) in "
-                           "it. All the Warrior testsuite XML files matching "
-                           "the given pattern will be executed.".format(orig_ts_abspath))
-                # Get all the files matching the pattern and sort them by name
-                all_files = sorted(glob.glob(orig_ts_abspath))
-                # Get XML files
-                xml_files = [fl for fl in all_files if fl.endswith('.xml')]
-                ts_files = []
-                # Get Warrior testsuite XML files
-                for xml_file in xml_files:
-                    root = Utils.xml_Utils.getRoot(xml_file)
-                    if root.tag.upper() == "TESTSUITE":
-                        ts_files.append(xml_file)
-                # Copy the XML object and set the filepath as path value for
-                # all the files matching the pattern
-                if ts_files:
-                    for ts_file in ts_files:
-                        new_ts = copy.deepcopy(orig_ts)
-                        new_ts.find('path').text = ts_file
-                        new_testsuite_list.append(new_ts)
-                        print_info("Testsuite: '{}' added to the execution "
-                                   "list ".format(ts_file))
-                else:
-                    print_warning("Asterisk(*) pattern match failed for '{}' due "
-                                  "to at least one of the following reasons:\n"
-                                  "1. No files matched the given pattern\n"
-                                  "2. Invalid testsuite path is given\n"
-                                  "3. No testsuite XMLs are available\n"
-                                  "Given path will be used for the Warrior "
-                                  "execution.".format(orig_ts_abspath))
-                    new_testsuite_list.append(orig_ts)
-
-        for ts in new_testsuite_list:
-            runmode, value, _ = common_execution_utils.\
-                get_runmode_from_xmlfile(ts)
-            retry_type, _, _, retry_value, _ = common_execution_utils.\
-                get_retry_from_xmlfile(ts)
-            if runmode is not None and value > 0:
-                # more than one suite in suite list, insert new suite
-                go_next = len(testsuite_list) + value + 1
-                for i in range(0, value):
-                    copy_ts = copy.deepcopy(ts)
-                    copy_ts.find("runmode").set("value", go_next)
-                    copy_ts.find("runmode").set("attempt", i+1)
-                    testsuite_list.append(copy_ts)
-            if retry_type is not None and retry_value > 0:
-                if len(new_testsuite_list) > 1:
-                    go_next = len(testsuite_list) + retry_value + 1
-                    if runmode is not None:
-                        get_runmode = ts.find('runmode')
-                        ts.remove(get_runmode)
-                    for i in range(0, retry_value):
-                        copy_ts = copy.deepcopy(ts)
-                        copy_ts.find("retry").set("count", go_next)
-                        copy_ts.find("retry").set("attempt", i+1)
-                        testsuite_list.append(copy_ts)
-            if retry_type is None and runmode is None:
-                testsuite_list.append(ts)
-        return testsuite_list
-
-
 def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs_startdir,
                     data_repository):
     """
@@ -201,7 +118,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     project_repository = get_project_details(project_filepath, res_startdir, logs_startdir,
                                              data_repository)
     project_repository['project_title'] = project_title
-    testsuite_list = get_testsuite_list(project_filepath)
+    testsuite_list = common_execution_utils.get_step_list(project_filepath,
+                                                          "Testsuites", "Testsuite")
     # Prints the path of result summary file at the beginning of execution
     if data_repository['war_file_type'] == "Project":
         filename = os.path.basename(project_filepath)

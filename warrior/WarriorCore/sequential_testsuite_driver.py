@@ -163,12 +163,12 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
                 print_info("runmode attempt: {0}".format(testsuite.find("runmode").get("attempt")))
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
-            if not project_error_value and runmode == "RUF" and\
+            if not project_error_value and runmode.upper() == "RUF" and\
                     testsuite_status is False:
                 goto_testsuite = str(value)
             # if runmode is 'rup' & step_status is True, skip the repeated
             # execution of same TC step and move to next actual step
-            elif runmode == "RUP" and testsuite_status is True:
+            elif runmode.upper() == "RUP" and testsuite_status is True:
                 goto_testsuite = str(value)
         elif retry_type is not None:
             if testsuite.find("retry") is not None and\
