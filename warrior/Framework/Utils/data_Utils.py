@@ -2115,3 +2115,13 @@ def generate_datafile(lists_of_systems, output_dir, filename):
             fd.write(xml_Utils.convert_element_to_string(root))
             result.append(output_file)
     return result
+
+
+def set_gnmi_cert_params(p_dic):
+    """
+    Set the data params for GNMI
+    """
+    ca_crt = p_dic['ca_crt']
+    client_crt = p_dic['client_crt']
+    client_key = p_dic['client_key']
+    return ca_crt, client_crt, client_key
