@@ -20,12 +20,12 @@
         <Testsuite>
             <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_ts_local_level.xml</path>
             <onError action="next" value=""/>
-            <impact>noimpact</impact>
+            <impact>impact</impact>
         </Testsuite>
         <Testsuite>
             <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_ts_local_level.xml</path>
             <onError action="next" value=""/>
-            <impact>noimpact</impact>
+            <impact>impact</impact>
         </Testsuite>
 
         <!-- verify runmode at suite global level -->
@@ -59,32 +59,6 @@
             <impact>impact</impact>
         </Testsuite>
 
- <!-- runmode at project local level  -->
-        <Testsuite>
-            <path>../suites/framework_tests/runmode_tests/ts_runmode_rmt_at_pj_local_level.xml</path>
-            <onError action="next" value=""/>
-	    <runmode type="RMT" value="3"/>
-            <impact>noimpact</impact>
-        </Testsuite>
-        <Testsuite>
-            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_pj_local_level.xml</path>
-            <onError action="next" value=""/>
-	    <runmode type="RUP" value="7"/>
-            <impact>noimpact</impact>
-        </Testsuite>
-        <Testsuite>
-            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_pj_local_level.xml</path>
-            <onError action="next" value=""/>
-	    <runmode type="RUF" value="7"/>
-            <impact>noimpact</impact>
-        </Testsuite>
-
-        <!-- verify runmode at project global level -->
-        <Testsuite>
-            <path>../suites/framework_tests/runmode_tests/ts_runmode_verify_at_pj_local_level.xml</path>
-            <onError action="next" value=""/>
-            <impact>impact</impact> 
-        </Testsuite>
 
 <!-- runmode at case local level -->
         <Testsuite>
