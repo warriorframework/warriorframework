@@ -110,12 +110,12 @@ def execute_sequential_testcases(testcase_list, suite_repository,
         data_repository['wt_tc_impact'] = tc_impact
         if testcase.find("runmode") is not None and \
            testcase.find("runmode").get("attempt") is not None:
-            print_info("testcase attempt: {0}".format(
-                                testcase.find("runmode").get("attempt")))
+            print_info("testcase attempt: {0}".format(testcase.find("runmode")
+                                                      .get("attempt")))
         if testcase.find("retry") is not None and \
            testcase.find("retry").get("attempt") is not None:
-            print_info("testcase attempt: {0}".format(
-                                testcase.find("retry").get("attempt")))
+            print_info("testcase attempt: {0}".format(testcase.find("retry")
+                                                      .get("attempt")))
 
         if Utils.file_Utils.fileExists(tc_path) or action is False:
             tc_name = Utils.file_Utils.getFileName(tc_path)

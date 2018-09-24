@@ -236,20 +236,20 @@ def compute_status(element, status_list, impact_list, status, impact):
         status_list.append(status)
         impact_list.append(impact)
     elif runmode.upper() == "RMT":
-            status_list.append(status)
-            impact_list.append(impact)
+        status_list.append(status)
+        impact_list.append(impact)
     elif runmode.upper() == "RUP":
         if element.find('runmode').get('status') is None or \
            element.find('runmode').get('status') == "":
-                status_list.append(status)
-                impact_list.append(impact)
+            status_list.append(status)
+            impact_list.append(impact)
         elif element.find('runmode').get('status') == 'last_instance' or \
                 element.find('runmode').get('status') == 'expected':
             if status is True or \
                 (element.find('runmode').get('attempt') ==
                  element.find('runmode').get('runmode_value')):
-                    status_list.append(status)
-                    impact_list.append(impact)
+                status_list.append(status)
+                impact_list.append(impact)
     elif runmode.upper() == "RUF":
         if element.find('runmode').get('status') is None or \
            element.find('runmode').get('status') == "":
@@ -259,8 +259,8 @@ def compute_status(element, status_list, impact_list, status, impact):
             if status is False or \
                 (element.find('runmode').get('attempt') ==
                  element.find('runmode').get('runmode_value')):
-                    status_list.append(status)
-                    impact_list.append(impact)
+                status_list.append(status)
+                impact_list.append(impact)
         elif element.find('runmode').get('status') == 'expected':
             if status is False:
                 status_list.append(True)
@@ -268,6 +268,6 @@ def compute_status(element, status_list, impact_list, status, impact):
             elif status is not False and \
                 (element.find('runmode').get('attempt') ==
                  element.find('runmode').get('runmode_value')):
-                    status_list.append(False)
-                    impact_list.append(impact)
+                status_list.append(False)
+                impact_list.append(impact)
     return status_list, impact_list
