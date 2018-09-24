@@ -1490,29 +1490,6 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,
     return status
 
 
-def get_cse_script_args_string(datafile, system_name):
-    """Form the argument string for the CSE script from the arguments
-    provided in datafile"""
-    args_string = False
-    tag_value = get_child_tag_value_list(datafile, system_name, ['Arguments'])
-
-    if tag_value is not False:
-        tag_list = tag_value[0]
-        value_list = tag_value[1]
-        script_args_list = []
-        x = len(tag_list)
-        for x in range(0, x):
-            attr = '-' + tag_list[x]
-            value = value_list[x]
-            script_args_list.append(attr)
-            if value is None:
-                value = ''
-            script_args_list.append(value)
-        args_string = ' '.join(script_args_list)
-
-        return args_string
-
-
 def evaluate_tc_argument_value(element):
     """ Splits the value of the attribute value in the argument tag in the TC
     """
@@ -2138,3 +2115,13 @@ def generate_datafile(lists_of_systems, output_dir, filename):
             fd.write(xml_Utils.convert_element_to_string(root))
             result.append(output_file)
     return result
+
+
+def set_gnmi_cert_params(p_dic):
+    """
+    Set the data params for GNMI
+    """
+    ca_crt = p_dic['ca_crt']
+    client_crt = p_dic['client_crt']
+    client_key = p_dic['client_key']
+    return ca_crt, client_crt, client_key

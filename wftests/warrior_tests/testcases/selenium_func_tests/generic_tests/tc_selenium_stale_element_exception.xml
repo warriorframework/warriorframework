@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_selenium_stale_element_exception</Name>
+                <Title>stale element exception test</Title>
+                <ExpectedResults>PASS</ExpectedResults>
+                <Category/>
+                <Engineer>Annalakshmi</Engineer>
+                <Date/>
+                <Time/>
+                <default_onError action = 'next'  />
+                <InputDataFile>../../../data/selenium_func_tests/data_selenium_stale_element_exception.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <Logsdir/>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>requirement-001</Requirement>
+                <Requirement>requirement-002</Requirement>
+        </Requirements>
+        <Steps>
+                <step TS= '1' Driver='selenium_driver' Keyword='browser_launch' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="type" value="firefox"/>
+                                <argument name="url" value="https://www.google.co.in/"/>
+                        </Arguments>
+                </step>
+                <step TS= '2' Driver='selenium_driver' Keyword='get_element_by_id' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="id" value="gbw"/>
+                        </Arguments>
+                </step>
+                <step TS= '3' Driver='selenium_driver' Keyword='click_an_element' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="locator_type" value="id"/>
+                                <argument name="locator" value="gb_70"/>
+                        </Arguments>
+                </step>
+                <step TS= '4' Driver='selenium_driver' Keyword='click_an_element' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="locator_type" value="id"/>
+                                <argument name="locator" value="gbw"/>
+                        </Arguments>
+                        <context>negative</context>
+                </step>
+                <step TS= '5' Driver='selenium_driver' Keyword='browser_close' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                        </Arguments>
+                </step>
+        </Steps>
+</Testcase>

@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<Project>
+	<Details>
+		<Name>selenium_project</Name>
+		<Title>selenium functional tests</Title>
+		<Engineer>Sanika Kulkarni</Engineer>
+		<Date>06/21/2016</Date>
+		<Time>16:14:45</Time>
+		<default_onError action="next"/>
+	</Details>
+	<Testsuites>
+		<Testsuite>
+			<path>../suites/selenium_func_tests/gen_test_suite.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/selenium_func_tests/df_usage_suite.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/selenium_func_tests/json_usage_suite.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+	</Testsuites>
+</Project>

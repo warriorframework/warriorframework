@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="ff_browser_check">
+        <headless_mode>Yes</headless_mode>
+        <ip/>
+        <remote>no</remote>
+        <browser>
+            <browser_name>browser_1</browser_name>
+            <url>http://www.google.com/</url>
+        </browser>
+    </system>
+</credentials>

@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+            <Name>tc_json_usage_1</Name>
+            <Title>Testcase for browser functions with data only in the json file</Title>
+            <ExpectedResults>PASS</ExpectedResults>
+            <Category/>
+            <Engineer>Sanika Kulkarni</Engineer>
+            <Time/>
+            <default_onError action = 'next'  />
+            <InputDataFile>../../../data/selenium_func_tests/data_json_usage_1.xml</InputDataFile>
+            <Datatype>Custom</Datatype>
+            <Logsdir/>
+            <Resultsdir/>
+        </Details>
+       <Requirements>
+           <Requirement>requirement-001</Requirement>
+           <Requirement>requirement-002</Requirement>
+       </Requirements>
+        <Steps>
+			<step TS= '1' Driver='selenium_driver' Keyword='browser_launch' > <!-- Will launch or open a new browser in window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+				</Arguments>
+			</step>
+			<step TS= '2' Driver='selenium_driver' Keyword='browser_maximize' > <!-- Will maximize a browser window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+				</Arguments>
+			</step>
+			<step TS= '2' Driver='selenium_driver' Keyword='navigate_to_url' > <!-- Will maximize a browser window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+					<argument name="element_tag" value="next_tag"/>
+				</Arguments>
+			</step>
+			<step TS= '3' Driver='selenium_driver' Keyword='set_window_size' > <!-- Will minimize a browser window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+					<argument name="element_tag" value="trial_tag"/>
+				</Arguments>
+			</step>
+			<step TS= '4' Driver='selenium_driver' Keyword='set_window_position' > <!-- Will minimize a browser window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+					<argument name="element_tag" value="trial_tag"/>
+				</Arguments>
+			</step>
+			<step TS= '5' Driver='selenium_driver' Keyword='browser_close' > <!-- Will minimize a browser window -->
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+				</Arguments>
+			</step>
+		</Steps>
+</Testcase>

@@ -1,0 +1,103 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_mouse_hover</Name>
+                <Title>Test case to perform mouse_hover action in google</Title>
+                <ExpectedResults>PASS</ExpectedResults>
+                <Category/>
+                <Engineer>Annalakshmi</Engineer>
+                <Date/>
+                <Time/>
+                <default_onError action = 'next'  />
+                <InputDataFile>../../../data/selenium_func_tests/data_mouse_hover.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <Logsdir/>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>requirement-001</Requirement>
+                <Requirement>requirement-002</Requirement>
+        </Requirements>
+        <Steps>
+                <step TS= '1' Driver='selenium_driver' Keyword='browser_launch' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="url" value="http://seleniumlearn.com/"/>
+                        </Arguments>
+                </step>
+                <step TS= '2' Driver='selenium_driver' Keyword='get_element_by_xpath' >
+                                <Arguments>
+                                        <argument name="system_name" value="search_element"/>
+                                        <argument name="xpath" value=".//*[@id='menu-336-1']/a"/>
+                                </Arguments>
+                </step>
+                <step TS= '3' Driver='selenium_driver' Keyword='mouse_over' >
+                                <Arguments>
+                                        <argument name="system_name" value="search_element"/>
+                                        <argument name="locator_type" value="xpath"/>
+                                        <argument name="locator" value=".//*[@id='menu-336-1']/a"/>
+                                </Arguments>
+                </step>
+                <step TS= '4' Driver='selenium_driver' Keyword='set_implicit_wait' >
+                                <Arguments>
+                                        <argument name="system_name" value="search_element"/>
+                                        <argument name="timeout" value="10"/>
+                                </Arguments>
+                </step>
+                <step TS= '5' Driver='selenium_driver' Keyword='click_an_element' >
+                                <Arguments>
+                                        <argument name="system_name" value="search_element"/>
+                                        <argument name="locator" value=".//*[@id='menu-336-1']/a"/>
+                                        <argument name="locator_type" value="xpath"/>
+                                </Arguments>
+                </step>
+                <step TS= '6' Driver='selenium_driver' Keyword='set_implicit_wait' >
+                                <Arguments>
+                                        <argument name="system_name" value="search_element"/>
+                                        <argument name="timeout" value="5"/>
+                                </Arguments>
+                </step>
+                <step TS= '7' Driver='selenium_driver' Keyword='browser_launch' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                                <argument name="url" value="http://seleniumlearn.com/"/>
+                        </Arguments>
+                </step>
+                <step TS= '8' Driver='selenium_driver' Keyword='mouse_over' >
+                                <Arguments>
+                                        <argument name="system_name" value="search_element_1"/>
+                                        <argument name="locator_type" value="xpath"/>
+                                        <argument name="locator" value=".//*[@id='menu-336-1']/a"/>
+                                </Arguments>
+                </step>
+                <step TS= '9' Driver='selenium_driver' Keyword='set_implicit_wait' >
+                                <Arguments>
+                                        <argument name="system_name" value="search_element_1"/>
+                                        <argument name="timeout" value="5"/>
+                                </Arguments>
+                </step>
+                <step TS= '10' Driver='selenium_driver' Keyword='click_an_element' >
+                                <Arguments>
+                                        <argument name="system_name" value="search_element_1"/>
+                                        <argument name="locator" value=".//*[@id='menu-367-1']/a"/>
+                                        <argument name="locator_type" value="xpath"/>
+                                </Arguments>
+                </step>
+                <step TS= '11' Driver='selenium_driver' Keyword='set_implicit_wait' >
+                                <Arguments>
+                                        <argument name="system_name" value="search_element_1"/>
+                                        <argument name="timeout" value="5"/>
+                                </Arguments>
+                </step>
+                <step TS= '12' Driver='selenium_driver' Keyword='browser_close' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                        </Arguments>
+                </step>
+                <step TS= '13' Driver='selenium_driver' Keyword='browser_close' >
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                        </Arguments>
+                </step>
+        </Steps>
+</Testcase>

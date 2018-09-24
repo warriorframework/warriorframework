@@ -18,20 +18,31 @@ import base64
 
 from Framework.Utils import file_Utils
 from Framework.Utils.print_Utils import print_exception, print_error, print_info
+from Framework.Utils.testcase_Utils import pNote
 import Tools
 
 try:
-    MOD = 'Pycrypto'
+    MOD = 'Pycryptodome'
     from Crypto.Cipher import AES
     from Crypto import Random
 except ImportError, err:
-    print_error(str(err))
-    print_info("{0} module is not installed".format(MOD))
+    pNote("Please Install Pycryptodome 3.6.1 and above", "error")
 
 from Framework.Utils.print_Utils import print_error
 
-
 def get_key(encoded_key):
+    """
+    Function that returns enc instance using
+    secret key, passed to this
+    function or read from secret.key file
+
+    Args:
+        encoded_key - False or base64 secrety key for encryption
+
+    Return:
+        IV - Random seed used to enc
+        CIPHER - Enc instance used to for encryption
+    """
     IV = None
     CIPHER = None
     if encoded_key is False:
@@ -71,6 +82,19 @@ def decrypt(message, encoded_key=False):
         return message
 
 def set_secret_key(plain_text_key):
+    """
+    Function that saves base64 encoded
+    format of  secret key, passed to this
+    function and saved to secret.key file
+
+    Args:
+        plain_text_key - Plain text key, that is is used for encryption
+
+    Return:
+        status - True if key is base64 encoded and saved
+                 False if not saved
+        key - base64 endoced key
+    """
     encoded_key = False
     # Checks the length of the plain text secret key
     if not len(plain_text_key) == 16:

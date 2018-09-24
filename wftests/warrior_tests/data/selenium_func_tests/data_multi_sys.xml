@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<credentials>	
+    <system name="search_element">
+        <headless_mode>Yes</headless_mode>
+        <ip/>
+    	  <remote>no</remote>
+        <browser>
+            <browser_name>browser_1</browser_name>
+            <type>chrome</type>
+            <url>http://stackoverflow.com/</url>
+        </browser>
+        <browser>
+            <browser_name>browser_2</browser_name>
+            <type>chrome</type>
+            <url></url>
+        </browser>
+        <browser browser_name="browser_3" type="firefox" url="http://stackoverflow.com/">
+            <url>https://www.google.co.in</url>
+        </browser>
+    </system>
+</credentials>
+
+
