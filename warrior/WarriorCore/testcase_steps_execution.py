@@ -199,7 +199,7 @@ class TestCaseStepsExecutionClass(object):
         if self.current_step.find("runmode") is not None and \
            self.current_step.find("runmode").get("attempt") is not None:
             if self.current_step.find("runmode").get("attempt") == \
-               self.current_step.find("runmode").get("runmode_value"):
+               self.current_step.find("runmode").get("runmode_val"):
                 print_info("\n----------------- End of Step Runmode Execution -----------------\n")
         return self.current_step_number, self.go_to_step_number, "continue"
 

@@ -240,7 +240,7 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
     if testsuite.find("runmode") is not None and \
        testsuite.find("runmode").get("attempt") is not None:
         if testsuite.find("runmode").get("attempt") == \
-           testsuite.find("runmode").get("runmode_value"):
+           testsuite.find("runmode").get("runmode_val"):
             print_info("\n----------------- End of Testsuite Runmode Execution"
                        " -----------------\n")
     project_status = Utils.testcase_Utils.compute_status_using_impact(ts_status_list,

@@ -114,12 +114,12 @@ def execute_sequential_testcases(testcase_list, suite_repository,
             if testcase.find("runmode").get("attempt") == 1:
                 print_info("\n----------------- Start of Testcase Runmode Execution"
                            " -----------------\n")
-            print_info("TESTCASE ATTEMPT: {0}".format(
-                                testcase.find("runmode").get("attempt")))
+            print_info("TESTCASE ATTEMPT: {0}".format(testcase.find("runmode")
+                                                      .get("attempt")))
         if testcase.find("retry") is not None and \
            testcase.find("retry").get("attempt") is not None:
-            print_info("TESTCASE ATTEMPT: {0}".format(
-                                testcase.find("retry").get("attempt")))
+            print_info("TESTCASE ATTEMPT: {0}".format(testcase.find("retry")
+                                                      .get("attempt")))
 
         if Utils.file_Utils.fileExists(tc_path) or action is False:
             tc_name = Utils.file_Utils.getFileName(tc_path)
@@ -384,7 +384,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
     if testcase.find("runmode") is not None and \
        testcase.find("runmode").get("attempt") is not None:
         if testcase.find("runmode").get("attempt") == \
-           testcase.find("runmode").get("runmode_value"):
+           testcase.find("runmode").get("runmode_val"):
             print_info("\n----------------- End of Testcase Runmode Execution"
                        " -----------------\n")
     suite_status = Utils.testcase_Utils.compute_status_using_impact(

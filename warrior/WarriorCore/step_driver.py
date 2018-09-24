@@ -239,7 +239,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     if step.find("runmode") is not None and \
        step.find("runmode").get("attempt") is not None:
         if step.find("runmode").get("attempt") == \
-           step.find("runmode").get("runmode_value"):
+           step.find("runmode").get("runmode_val"):
             print_info("\n----------------- End of Step Runmode Execution -----------------\n")
 
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
