@@ -40,6 +40,7 @@ def append_step_list(step_list, step, value, go_next, mode, tag):
         copy_step = copy.deepcopy(step)
         copy_step.find(mode).set(tag, go_next)
         copy_step.find(mode).set("attempt", i + 1)
+        copy_step.find(mode).set(mode+"_val", value)
         step_list.append(copy_step)
     return step_list
 
@@ -247,7 +248,7 @@ def compute_status(element, status_list, impact_list, status, impact):
                 element.find('runmode').get('status') == 'expected':
             if status is True or \
                 (element.find('runmode').get('attempt') ==
-                 element.find('runmode').get('runmode_value')):
+                 element.find('runmode').get('runmode_val')):
                 status_list.append(status)
                 impact_list.append(impact)
     elif runmode.upper() == "RUF":
@@ -258,7 +259,7 @@ def compute_status(element, status_list, impact_list, status, impact):
         elif element.find('runmode').get('status') == 'last_instance':
             if status is False or \
                 (element.find('runmode').get('attempt') ==
-                 element.find('runmode').get('runmode_value')):
+                 element.find('runmode').get('runmode_val')):
                 status_list.append(status)
                 impact_list.append(impact)
         elif element.find('runmode').get('status') == 'expected':
@@ -267,7 +268,7 @@ def compute_status(element, status_list, impact_list, status, impact):
                 impact_list.append(impact)
             elif status is not False and \
                 (element.find('runmode').get('attempt') ==
-                 element.find('runmode').get('runmode_value')):
+                 element.find('runmode').get('runmode_val')):
                 status_list.append(False)
                 impact_list.append(impact)
     return status_list, impact_list
