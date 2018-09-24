@@ -238,7 +238,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
 
         tc_status_list, tc_impact_list = \
             common_execution_utils.compute_status(testcase, tc_status_list,
-                                                  tc_status_list,
+                                                  tc_impact_list,
                                                   tc_status, tc_impact)
         tc_duration_list.append(tc_duration)
 
