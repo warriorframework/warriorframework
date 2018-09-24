@@ -18,7 +18,7 @@ app.controller('newWarhornConfigFileCtrl', ['$scope', '$http', '$controller', '$
 
         $scope.dependencies = [
             ["jira", false, "1.0.3"], ["lxml", true, "3.5"],
-            ["ncclient", false, "0.4.6"], ["paramiko", true, "1.16.0"],
+            ["ncclient", false, "0.4.6"], ["paramiko", true, "2.4.1"],
             ["pexpect", true, "3.1"], ["pysnmp", true, "4.3.2"],
             ["requests", true, "2.9.1"], ["selenium", true, "2.48.0"]
         ];

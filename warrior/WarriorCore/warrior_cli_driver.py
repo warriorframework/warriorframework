@@ -178,6 +178,33 @@ def decide_action(w_cli_obj, namespace):
             print_error("Encrypted text could not be generated.")
         exit(1)
 
+    elif namespace.decrypt:
+        status = True
+        encoded_key = False
+        if namespace.secretkey:
+            # Checks if User has given a string for creating a secret key
+            status, encoded_key = Encrypt.set_secret_key(namespace.secretkey)
+        else:
+            # If secret key has not been given, checks for the existence of the
+            # secret.key file
+            path = file_Utils.get_parent_dir(os.path.realpath(__file__),
+                                             "WarriorCore")
+            path = os.path.join(path, "Tools", "admin", "secret.key")
+            if not os.path.exists(path):
+                print_error("Could not find the secret.key file in Tools/Admin!"
+                            " Please use '-secretkey your_key_text' in the "
+                            "-encrypt command for creating the file!")
+                status = False
+        if status:
+            # sends secret key and encrypted text password for decryption
+            message = Encrypt.decrypt(namespace.decrypt[0], encoded_key)
+            # Checks if message is not hexadecimal
+            print_info("The decrypted text for '{0}' is: {1}".
+                       format(namespace.decrypt[0], message))
+        else:
+            print_error("Decrypted text could not be generated.")
+        exit(1)
+
     elif any(cli_args):
         filepath = w_cli_obj.examine_cli_args(cli_args, namespace)
 
@@ -215,7 +242,7 @@ def decide_action(w_cli_obj, namespace):
 
     # print filepath
     return (filepath, namespace.ad, namespace.version,
-            namespace.cse, namespace.ironclaw, namespace.jiraproj, overwrite,
+            namespace.ironclaw, namespace.jiraproj, overwrite,
             namespace.jiraid, namespace.dbsystem, namespace.headless)
 
 

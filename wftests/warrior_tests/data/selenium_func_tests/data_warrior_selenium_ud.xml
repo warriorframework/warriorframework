@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="system_1">
+        <headless_mode>Yes</headless_mode>
+        <ip/>
+    	  <remote>no</remote>
+        <browser>
+            <browser_name>browser_1</browser_name>
+            <type>chrome</type>
+            <!-- <element_config_file>../config_files/selenium_func_tests/warrior_selenium_tc_Config.json</element_config_file> -->
+            <url>https://www.stackoverflow.com</url>
+            <config_file1>../../config_files/selenium_func_tests/ec_warrior_selenium_Config.json</config_file1>
+
+        	<loc_type_1>name</loc_type_1>
+        	<loc_type_2>xpath</loc_type_2>
+
+        	<locator_1>q</locator_1>
+
+        	<element_tag_1>search_box</element_tag_1>
+
+        </browser>
+
+        <browser>
+            <browser_name>browser_2</browser_name>
+            <type>firefox</type>
+           <!--  <element_config_file>../config_files/selenium_func_tests/warrior_selenium_tc_Config.json</element_config_file> -->
+            <url>https://www.google.com</url>
+            <config_file1>../../config_files/selenium_func_tests/ec_warrior_selenium_Config.json</config_file1>
+
+        	<loc_type_1>name</loc_type_1>
+        	<loc_type_2>xpath</loc_type_2>
+
+        	<locator_1>q</locator_1>
+
+        	<element_tag_1>search_box</element_tag_1>
+        </browser>
+
+    </system>
+</credentials>

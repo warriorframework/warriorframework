@@ -17,13 +17,13 @@ matrix:
       env: INSTALL=yes TESTFILES_2=yes
     - sudo: required
       dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes
       addons:
         firefox: "46.0"
         chrome: stable
     - sudo: required
       dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes SELENIUM_3=yes GECKODRIVER=yes
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes SELENIUM_3=yes GECKODRIVER=yes
       addons:
         firefox: "60.0"
         chrome: stable
@@ -40,7 +40,7 @@ install:
       pip install requests==2.9.1 ;
       pip install selenium==2.53.0 ;
       pip install lxml==3.3.3 ;
-      pip install paramiko==1.16.0 ;
+      pip install paramiko==2.4.1 ;
       pip install pysnmp==4.3.2 ;
     fi
   - if [[ ${SELENIUM} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
@@ -54,8 +54,8 @@ install:
       pip install selenium==3.8 ;
     fi
   - if [[ ${GECKODRIVER} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
-      wget https://github.com/mozilla/geckodriver/releases/download/v0.20.1/geckodriver-v0.20.1-linux64.tar.gz;
-      tar -xvzf geckodriver-v0.20.1-linux64.tar.gz;
+      wget https://github.com/mozilla/geckodriver/releases/download/v0.20.0/geckodriver-v0.20.0-linux64.tar.gz;
+      tar -xvzf geckodriver-v0.20.0-linux64.tar.gz;
       chmod +x geckodriver;
       mv geckodriver ~/bin/geckodriver;
     fi

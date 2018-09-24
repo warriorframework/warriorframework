@@ -255,10 +255,6 @@ class WarriorCliClass(object):
                             "Multiple files of different type can be provided "\
                             "(separated by a space)")
 
-        # Trigger cse execution
-        parser.add_argument('-cse', action='store_true', default=False,
-                            help=':cse: Run CSE execution from Warrior command line')
-
         # Run Ironclaw tool
         parser.add_argument('-ironclaw', action='store_true', default=False,
                             help=":ironclaw: Run Warrior's IronClaw tool. "
@@ -342,6 +338,8 @@ class WarriorCliClass(object):
                             "resultlocation and value is <job_url<url>> + <jobid>")
 
         parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", help="encrypt data string")
+
+        parser.add_argument('-decrypt', action='store', nargs='*', dest="decrypt", help="decrypt data string")
 
         # Run Testcases/Suites/Projects in default locations
         parser.add_argument('-wt', action='store', nargs='*', dest="tc_name",

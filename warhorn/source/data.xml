@@ -19,7 +19,7 @@
                     <question>Do you want to install ncclient?</question>
                 </value>
                 <value name="paramiko">
-                    <info>** paramiko is used by ncclient. The recommended version is 1.16.0. If you decide to install paramiko, warhorn would automatically install paramiko 1.16.0.
+                    <info>** paramiko is used by ncclient. The recommended version is 2.4.1. If you decide to install paramiko, warhorn would automatically install paramiko 2.4.1.
                     </info>
                     <question>Do you want to install paramiko?</question>
                 </value>
@@ -52,6 +52,11 @@
                    <info>** cloudshell-automation-api is used for cloushell related operations. The recommended version is 7.1.0.34. If you decide to install cloudshell-automation-api, warhorn would automatically install cloudshell-automation-api 7.1.0.34.
                    </info>
                    <question>Do you want to install cloudshell-automation-api?</question>
+               </value>
+                <value name="pycryptodome">
+                   <info>** pycryptodome is used for encrypt/decrypt related operations. The recommended version is 3.6.1. If you decide to install pycryptodome, warhorn would automatically install pycryptodome 3.6.1.
+                   </info>
+                   <question>Do you want to install pycryptodome?</question>
                </value>
             </attribute>
         </child>

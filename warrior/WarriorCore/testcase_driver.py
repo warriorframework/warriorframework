@@ -214,49 +214,6 @@ def junit_requirements(testcase_filepath, tc_junit_object, timestamp):
             tc_junit_object.add_requirement(req_id, timestamp)
 
 
-def get_steps_list(testcase_filepath):
-    """Takes the location of any Testcase xml file as input
-    Returns a list of all the step elements present in the Testcase
-
-    :Arguments:
-        1. testcase_filepath    = full path of the Testcase xml file
-    """
-    step_list = []
-    root = Utils.xml_Utils.getRoot(testcase_filepath)
-    Steps = root.find('Steps')
-    if Steps is None:
-        print_warning("Case: '{}' has no Steps/Keywords "
-                      "to be executed".format(testcase_filepath))
-    else:
-        step_list = []
-        new_step_list = Steps.findall('step')
-        # execute step multiple times
-        for _, step in enumerate(new_step_list):
-            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(step)
-            retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(step)
-            if runmode is not None and value > 0:
-                go_next = len(step_list) + value + 1
-                for i in range(0, value):
-                    copy_step = copy.deepcopy(step)
-                    copy_step.find("runmode").set("value", go_next)
-                    copy_step.find("runmode").set("attempt", i+1)
-                    copy_step.find("runmode").set("runmode_value", value)
-                    step_list.append(copy_step)
-            if retry_type is not None and retry_value > 0:
-                go_next = len(step_list) + retry_value + 1
-                if runmode is not None:
-                    get_runmode = step.find('runmode')
-                    step.remove(get_runmode)
-                for i in range(0, retry_value):
-                    copy_step = copy.deepcopy(step)
-                    copy_step.find("retry").set("count", go_next)
-                    copy_step.find("retry").set("attempt", i+1)
-                    step_list.append(copy_step)
-            if retry_type is None and runmode is None:
-                step_list.append(step)
-        return step_list
-
-
 def compute_testcase_status(step_status, tc_status):
     """Compute the status of the testcase based on the step_status and the impact value of the step
 
@@ -493,7 +450,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         html_filepath = os.path.join(data_repository['wt_resultsdir'],
                                      Utils.file_Utils.getNameOnly(filename)) + '.html'
         print_info("HTML result file: {0}".format(html_filepath))
-    step_list = get_steps_list(testcase_filepath)
+    step_list = common_execution_utils.get_step_list(testcase_filepath,
+                                                     "Steps", "step")
 
     tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,
                                                        'Details', 'State')
