@@ -44,7 +44,7 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
     wp_results_execdir = project_repository['wp_results_execdir']
     wp_logs_execdir = project_repository['wp_logs_execdir']
     project_error_value = project_repository['def_on_error_value']
-
+    data_repository['wt_ts_timestamp'] = None
     jiraproj = data_repository['jiraproj']
     pj_junit_object = data_repository['wt_junit_object']
 

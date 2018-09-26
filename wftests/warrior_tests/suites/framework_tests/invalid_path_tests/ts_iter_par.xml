@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_iter_seq</Name>
+                <Title>Validate tc status on giving invalid path for iterative parallel testcases</Title>
+                <Engineer>Sayyeda Farheen</Engineer>
+                <Date>08/23/2018</Date>
+                <type exectype="iterative_parallel"/>
+                <State/>
+                <default_onError action="next"/>
+                <Resultsdir/>
+                <InputDataFile>../../../data/framework_tests/data_iter_ts.xml</InputDataFile>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>invalid_testcase_path</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/iter_execution/tc_seq_1.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>
