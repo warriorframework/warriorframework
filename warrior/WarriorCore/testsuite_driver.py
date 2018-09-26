@@ -15,8 +15,6 @@ import os
 import time
 import traceback
 import shutil
-import copy
-import glob
 import sequential_testcase_driver
 import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
@@ -342,9 +340,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                                                     auto_defects=auto_defects)
                 testsuite_status_list.append(test_suite_status)
         if runmode is not None:
-            test_suite_status = common_execution_utils.compute_runmode_status(
-                                                        testsuite_status_list,
-                                                        runmode, suite_global_xml)
+            test_suite_status = common_execution_utils.compute_runmode_status(testsuite_status_list,
+                                                                runmode, suite_global_xml)
     # The below runmode part is not modified/removed to preserve backward compatibility
     elif execution_type.upper() == 'RUN_UNTIL_FAIL' and runmode is None:
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
@@ -477,7 +474,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 def main(testsuite_filepath, data_repository={}, from_project=False, auto_defects=False,
          jiraproj=None, res_startdir=None, logs_startdir=None, ts_onError_action=None,
          queue=None, ts_parallel=False):
-    """Executes a test suite """ 
+    """Executes a test suite """
     try:
         test_suite_status, suite_repository = execute_testsuite(testsuite_filepath,
                                                                 data_repository, from_project,

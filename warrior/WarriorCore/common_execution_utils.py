@@ -227,7 +227,10 @@ def get_retry_from_xmlfile(element):
 
 
 def compute_runmode_status(global_status_list, runmode, global_xml):
-    if global_xml.find('runmode').get('status') == None or \
+    """ Computes the status of runmode execution when runmode is provided in
+       global level (Deatils section)
+    """
+    if global_xml.find('runmode').get('status') is None or \
         global_xml.find('runmode').get('status') == "" or \
             runmode.upper() == "RMT":
         if "FALSE" in global_status_list or False in global_status_list:
@@ -242,7 +245,7 @@ def compute_runmode_status(global_status_list, runmode, global_xml):
         if global_xml.find('runmode').get('status') == 'last_instance':
             status_value = global_status_list.pop()
         elif global_xml.find('runmode').get('status') == 'expected' and \
-                (global_status_list.pop() == True or
+                (global_status_list.pop() is True or
                  global_status_list.pop() == "TRUE"):
             status_value = True
         else:
@@ -251,7 +254,7 @@ def compute_runmode_status(global_status_list, runmode, global_xml):
         if global_xml.find('runmode').get('status') == 'last_instance':
             status_value = global_status_list.pop()
         elif global_xml.find('runmode').get('status') == 'expected' and \
-                (global_status_list.pop() == False or
+                (global_status_list.pop() is False or
                  global_status_list.pop() == "FALSE"):
             status_value = True
         else:
