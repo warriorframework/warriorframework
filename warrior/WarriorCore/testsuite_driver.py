@@ -339,9 +339,6 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                                                     data_repository, from_project,
                                                                     auto_defects=auto_defects)
                 testsuite_status_list.append(test_suite_status)
-        if runmode is not None:
-            test_suite_status = common_execution_utils.compute_runmode_status(testsuite_status_list,
-                                                                runmode, suite_global_xml)
     # The below runmode part is not modified/removed to preserve backward compatibility
     elif execution_type.upper() == 'RUN_UNTIL_FAIL' and runmode is None:
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
@@ -420,7 +417,9 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     else:
         print_error("unexpected suite_type received...aborting execution")
         test_suite_status = False
-
+    if runmode is not None:
+        test_suite_status = common_execution_utils.compute_runmode_status(testsuite_status_list,
+                                                            runmode, suite_global_xml)
     print_info("\n")
     suite_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Testsuite execution completed".format(suite_end_time))

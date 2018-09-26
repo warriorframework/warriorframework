@@ -245,8 +245,8 @@ def compute_runmode_status(global_status_list, runmode, global_xml):
         if global_xml.find('runmode').get('status') == 'last_instance':
             status_value = global_status_list.pop()
         elif global_xml.find('runmode').get('status') == 'expected' and \
-                (global_status_list.pop() is True or
-                 global_status_list.pop() == "TRUE"):
+                (global_status_list[-1] is True or
+                 global_status_list[-1] == "TRUE"):
             status_value = True
         else:
             status_value = global_status_list.pop()
@@ -254,8 +254,8 @@ def compute_runmode_status(global_status_list, runmode, global_xml):
         if global_xml.find('runmode').get('status') == 'last_instance':
             status_value = global_status_list.pop()
         elif global_xml.find('runmode').get('status') == 'expected' and \
-                (global_status_list.pop() is False or
-                 global_status_list.pop() == "FALSE"):
+                (global_status_list[-1] is False or
+                 global_status_list[-1] == "FALSE"):
             status_value = True
         else:
             status_value = global_status_list.pop()
