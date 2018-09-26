@@ -40,6 +40,7 @@ def append_step_list(step_list, step, value, go_next, mode, tag):
         copy_step = copy.deepcopy(step)
         copy_step.find(mode).set(tag, go_next)
         copy_step.find(mode).set("attempt", i + 1)
+        copy_step.find(mode).set(mode+"_val", value)
         step_list.append(copy_step)
     return step_list
 

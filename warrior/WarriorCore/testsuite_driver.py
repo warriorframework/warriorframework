@@ -417,7 +417,6 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         print_error("unexpected suite_type received...aborting execution")
         test_suite_status = False
 
-    print_info("\n")
     suite_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Testsuite execution completed".format(suite_end_time))
     suite_duration = Utils.datetime_utils.get_time_delta(suite_start_time)
