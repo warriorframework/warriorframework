@@ -97,7 +97,6 @@ class TestCaseStepsExecutionClass(object):
             common_execution_utils.get_runmode_from_xmlfile(self.current_step)
         retry_type, retry_cond, retry_cond_value, retry_value, retry_interval = \
             common_execution_utils.get_retry_from_xmlfile(self.current_step)
-
         if runmode is not None:
             return self._execute_runmode_step(runmode_timer, runmode, self.step_status, value)
 
@@ -198,6 +197,13 @@ class TestCaseStepsExecutionClass(object):
                                kw_start_time, "0", "skipped",
                                impact_dict.get(step_impact.upper()), "N/A", step_description)
         self.data_repository['step_{}_result'.format(self.current_step_number)] = "SKIPPED"
+        # print the end of runmode execution as the steps skip when the condition
+        # is met for RUF/RUP
+        if self.current_step.find("runmode") is not None and \
+           self.current_step.find("runmode").get("attempt") is not None:
+            if self.current_step.find("runmode").get("attempt") == \
+               self.current_step.find("runmode").get("runmode_val"):
+                print_info("\n----------------- End of Step Runmode Execution -----------------\n")
         return self.current_step_number, self.go_to_step_number, "continue"
 
     def _execute_runmode_step(self, runmode_timer, runmode, step_status, value):

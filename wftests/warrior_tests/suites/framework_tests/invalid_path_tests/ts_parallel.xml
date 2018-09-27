@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<TestSuite>
+	<Details>
+		<Name>cond_var</Name>
+		<Title>Validate tc status on giving invalid path for parallel testcases</Title>
+		<Engineer>Sayyeda Farheen</Engineer>
+		<Date>08/23/2018</Date>
+		<type exectype="parallel_testcases"/>
+		<State/>
+		<default_onError action="next"/>
+		<Resultsdir/>
+		<IDF/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Testcases>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/pass.xml</path>
+			<context>positive</context>
+			<runtype>parallel_keywords</runtype>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>invalid_testcase_path</path>
+			<context>positive</context>
+			<runtype>parallel_keywords</runtype>
+			<impact>impact</impact>
+		</Testcase>
+	</Testcases>
+</TestSuite>

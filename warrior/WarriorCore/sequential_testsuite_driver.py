@@ -11,6 +11,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+# !/usr/bin/python
+
 import os
 import time
 import traceback
@@ -23,7 +25,6 @@ import WarriorCore.testsuite_driver as testsuite_driver
 import WarriorCore.onerror_driver as onerror_driver
 from Framework.Utils.testcase_Utils import pNote
 
-# !/usr/bin/python
 """This is sequential suite driver which is used to execute
 the suites of a project in sequential order"""
 
@@ -44,7 +45,7 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
     wp_results_execdir = project_repository['wp_results_execdir']
     wp_logs_execdir = project_repository['wp_logs_execdir']
     project_error_value = project_repository['def_on_error_value']
-
+    data_repository['wt_ts_timestamp'] = None
     jiraproj = data_repository['jiraproj']
     pj_junit_object = data_repository['wt_junit_object']
 
@@ -68,6 +69,14 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
                                                                                     'onError',
                                                                                     'action')
         ts_onError_action = ts_onError_action if ts_onError_action else project_error_action
+        if testsuite.find("runmode") is not None and \
+           testsuite.find("runmode").get("attempt") is not None:
+                # condition to print the start of runmode execution
+                if testsuite.find("runmode").get("attempt") == 1:
+                    print_info("\n----------------- Start of Testsuite Runmode Execution"
+                               " -----------------\n")
+                print_info("RUNMODE ATTEMPT: {0}"
+                           .format(testsuite.find("runmode").get("attempt")))
         if Utils.file_Utils.fileExists(testsuite_path) or action is False:
             if not goto_testsuite and action is True:
 
@@ -135,7 +144,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         pj_junit_object.update_attr("impact", impact_dict.
                                     get(testsuite_impact.upper()), "ts",
                                     data_repository['wt_ts_timestamp'])
-        pj_junit_object.update_attr("onerror", onerror, "ts", data_repository['wt_ts_timestamp'])
+        pj_junit_object.update_attr("onerror", onerror, "ts",
+                                    data_repository['wt_ts_timestamp'])
 
         string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR",
                          "SKIP": "SKIP", "RAN": "RAN"}
@@ -161,9 +171,6 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         retry_type, retry_cond, retry_cond_value, retry_value,\
             retry_interval = common_execution_utils.get_retry_from_xmlfile(testsuite)
         if runmode is not None:
-            if testsuite.find("runmode") is not None and\
-              testsuite.find("runmode").get("attempt") is not None:
-                print_info("runmode attempt: {0}".format(testsuite.find("runmode").get("attempt")))
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
             if not project_error_value and runmode.upper() == "RUF" and\
@@ -176,7 +183,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
         elif retry_type is not None:
             if testsuite.find("retry") is not None and\
               testsuite.find("retry").get("attempt") is not None:
-                print_info("retry attempt: {0}".format(testsuite.find("retry").get("attempt")))
+                print_info("RETRY ATTEMPT: {0}"
+                           .format(testsuite.find("retry").get("attempt")))
             if retry_type.upper() == 'IF':
                 try:
                     if data_repository[retry_cond] == retry_cond_value:
@@ -232,7 +240,14 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
             elif goto_testsuite and int(goto_testsuite) < suite_cntr:
                 suite_cntr = int(goto_testsuite)-1
                 goto_testsuite = False
-
+    # print the end of runmode execution as the steps skip when the condition
+    # is met for RUF/RUP or when all the attempts finish
+    if testsuite.find("runmode") is not None and \
+       testsuite.find("runmode").get("attempt") is not None:
+        if testsuite.find("runmode").get("attempt") == \
+           testsuite.find("runmode").get("runmode_val"):
+            print_info("\n----------------- End of Testsuite Runmode Execution"
+                       " -----------------\n")
     project_status = Utils.testcase_Utils.compute_status_using_impact(ts_status_list,
                                                                       ts_impact_list)
 
