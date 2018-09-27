@@ -417,6 +417,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     else:
         print_error("unexpected suite_type received...aborting execution")
         test_suite_status = False
+
     if runmode is not None:
         test_suite_status = common_execution_utils.compute_runmode_status(testsuite_status_list,
                                                             runmode, suite_global_xml)

@@ -205,7 +205,7 @@ class Junit(object):
         if elem.get(attr) is not None:
             elem.set(attr, str(int(elem.get(attr)) + int(value)))
 
-    def update_attr(self, attr, value, elem_type, timestamp):
+    def update_attr(self, attr, value, elem_type, timestamp=None):
         """
             update the value of an attribute based on
             element type (project, testsuite or testcase) and timestamp

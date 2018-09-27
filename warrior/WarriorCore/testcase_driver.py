@@ -213,7 +213,6 @@ def junit_requirements(testcase_filepath, tc_junit_object, timestamp):
         for req_id in req_id_list:
             tc_junit_object.add_requirement(req_id, timestamp)
 
-
 def compute_testcase_status(step_status, tc_status):
     """Compute the status of the testcase based on the step_status and the impact value of the step
 

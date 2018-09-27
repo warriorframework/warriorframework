@@ -3,9 +3,8 @@
 	<Details>
 		<Name>selenium_project</Name>
 		<Title>selenium functional tests</Title>
-		<Engineer>Sanika Kulkarni</Engineer>
-		<Date>06/21/2016</Date>
-		<Time>16:14:45</Time>
+		<Engineer>Sayyeda Farheen</Engineer>
+		<Date>07/25/2018</Date>
 		<default_onError action="next"/>
 	</Details>
 	<Testsuites>
