@@ -229,8 +229,12 @@ def get_retry_from_xmlfile(element):
 
 def compute_runmode_status(global_status_list, runmode, global_xml):
     """ Computes the status of runmode execution when runmode is provided in
-       global level (Deatils section)
+       global level (Details section)
     """
+    if global_xml.find('runmode').get('status') not in [None, '', 'last_instance', 'expected']:
+            print_warning("Unsupported value for status. Please provide a valid value. "
+                          "Using the Default value for execution")
+            global_xml.find('runmode').set('status', '')
     if global_xml.find('runmode').get('status') is None or \
         global_xml.find('runmode').get('status') == "" or \
             runmode.upper() == "RMT":
