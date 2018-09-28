@@ -201,7 +201,7 @@ def get_retry_from_xmlfile(element):
         retry_cond_value = retry_tag.get('Condvalue')
         retry_value = retry_tag.get('count')
         retry_interval = retry_tag.get('interval')
-        if not retry_type in ['if', 'if not']:
+        if retry_type not in ['if', 'if not']:
             print_warning("Unsupported value '{0}' provided for 'retry:"
                           "type' tag. Supported values : 'if, if not' "
                           .format(retry_type))
@@ -232,9 +232,9 @@ def compute_runmode_status(global_status_list, runmode, global_xml):
        global level (Details section)
     """
     if global_xml.find('runmode').get('status') not in [None, '', 'last_instance', 'expected']:
-            print_warning("Unsupported value for status. Please provide a valid value. "
-                          "Using the Default value for execution")
-            global_xml.find('runmode').set('status', '')
+        print_warning("Unsupported value for status. Please provide a valid value. "
+                      "Using the Default value for execution")
+        global_xml.find('runmode').set('status', '')
     if global_xml.find('runmode').get('status') is None or \
         global_xml.find('runmode').get('status') == "" or \
             runmode.upper() == "RMT":
@@ -250,8 +250,8 @@ def compute_runmode_status(global_status_list, runmode, global_xml):
         if global_xml.find('runmode').get('status') == 'last_instance':
             status_value = global_status_list.pop()
         elif global_xml.find('runmode').get('status') == 'expected' and \
-                (global_status_list[-1] is True or
-                 global_status_list[-1] == "TRUE"):
+            (global_status_list[-1] is True or
+             global_status_list[-1] == "TRUE"):
             status_value = True
         else:
             status_value = global_status_list.pop()
@@ -259,8 +259,8 @@ def compute_runmode_status(global_status_list, runmode, global_xml):
         if global_xml.find('runmode').get('status') == 'last_instance':
             status_value = global_status_list.pop()
         elif global_xml.find('runmode').get('status') == 'expected' and \
-                (global_status_list[-1] is False or
-                 global_status_list[-1] == "FALSE"):
+            (global_status_list[-1] is False or
+             global_status_list[-1] == "FALSE"):
             status_value = True
         else:
             status_value = global_status_list.pop()
