@@ -15,8 +15,6 @@ import os
 import time
 import traceback
 import shutil
-import copy
-import glob
 import sequential_testcase_driver
 import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
@@ -192,6 +190,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                               execution directory will be created (results for the testsuite will
                               be stored in the  testsuite execution directory.)
     """
+    testsuite_status_list = []
     suite_start_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Testsuite execution starts".format(suite_start_time))
     initialize_suite_fields(data_repository)
@@ -308,6 +307,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                                                     data_repository, from_project,
                                                                     auto_defects=auto_defects)
                 test_count = i * len(testcase_list)
+                testsuite_status_list.append(test_suite_status)
                 testsuite_utils.pSuite_update_suite_tests(str(test_count))
                 if str(test_suite_status).upper() == "FALSE" or\
                    str(test_suite_status).upper() == "ERROR":
@@ -323,6 +323,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                                                     data_repository, from_project,
                                                                     auto_defects=auto_defects)
                 test_count = i * len(testcase_list)
+                testsuite_status_list.append(test_suite_status)
                 testsuite_utils.pSuite_update_suite_tests(str(test_count))
                 if str(test_suite_status).upper() == "TRUE":
                     break
@@ -337,7 +338,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                 test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
                                                                     data_repository, from_project,
                                                                     auto_defects=auto_defects)
-
+                testsuite_status_list.append(test_suite_status)
     # The below runmode part is not modified/removed to preserve backward compatibility
     elif execution_type.upper() == 'RUN_UNTIL_FAIL' and runmode is None:
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
@@ -417,6 +418,10 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         print_error("unexpected suite_type received...aborting execution")
         test_suite_status = False
 
+    if runmode is not None:
+        test_suite_status = common_execution_utils.compute_runmode_status(testsuite_status_list,
+                                                            runmode, suite_global_xml)
+    print_info("\n")
     suite_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Testsuite execution completed".format(suite_end_time))
     suite_duration = Utils.datetime_utils.get_time_delta(suite_start_time)
@@ -469,7 +474,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 def main(testsuite_filepath, data_repository={}, from_project=False, auto_defects=False,
          jiraproj=None, res_startdir=None, logs_startdir=None, ts_onError_action=None,
          queue=None, ts_parallel=False):
-    """Executes a test suite """ 
+    """Executes a test suite """
     try:
         test_suite_status, suite_repository = execute_testsuite(testsuite_filepath,
                                                                 data_repository, from_project,
