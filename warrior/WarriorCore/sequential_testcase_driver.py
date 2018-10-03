@@ -241,7 +241,11 @@ def execute_sequential_testcases(testcase_list, suite_repository,
         data_repository['wt_junit_object'].update_attr(
                         "onerror", onerror, "tc",
                         data_repository['wt_tc_timestamp'])
-        tc_status_list.append(tc_status)
+
+        tc_status_list, tc_impact_list = \
+            common_execution_utils.compute_status(testcase, tc_status_list,
+                                                  tc_impact_list,
+                                                  tc_status, tc_impact)
         tc_duration_list.append(tc_duration)
 
         string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR",
@@ -254,7 +258,6 @@ def execute_sequential_testcases(testcase_list, suite_repository,
             print_error("unexpected testcase status, default to exception")
             data_repository['testcase_%d_result' % tests] = "ERROR"
 
-        tc_impact_list.append(tc_impact)
         if tc_impact.upper() == 'IMPACT':
             msg = "Status of the executed test case impacts Testsuite result"
         elif tc_impact.upper() == 'NOIMPACT':

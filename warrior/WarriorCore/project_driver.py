@@ -60,9 +60,9 @@ def get_project_details(project_filepath, res_startdir, logs_startdir, data_repo
     if def_on_error_value is None or def_on_error_value is False:
         def_on_error_value = None
 
-    if data_repository.has_key('ow_resultdir'):
+    if 'ow_resultdir' in data_repository:
         res_startdir = data_repository['ow_resultdir']
-    if data_repository.has_key('ow_logdir'):
+    if 'ow_logdir' in data_repository:
         logs_startdir = data_repository['ow_logdir']
 
     efile_obj = execution_files_class.ExecFilesClass(project_filepath,

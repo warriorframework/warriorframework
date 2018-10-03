@@ -93,7 +93,6 @@ class TestCaseStepsExecutionClass(object):
         else:
             # Skip because of goto
             return self._skip_because_of_goto()
-
         runmode, value, runmode_timer = \
             common_execution_utils.get_runmode_from_xmlfile(self.current_step)
         retry_type, retry_cond, retry_cond_value, retry_value, retry_interval = \
@@ -163,9 +162,12 @@ class TestCaseStepsExecutionClass(object):
             step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(self.current_step)
             print_error('unexpected error {0}'.format(traceback.format_exc()))
         self.go_to_step_number = False
-        self.step_status_list.append(step_status)
+        self.step_status_list, self.step_impact_list = \
+            common_execution_utils.compute_status(self.current_step,
+                                                  self.step_status_list,
+                                                  self.step_impact_list,
+                                                  step_status, step_impact)
         self.kw_resultfile_list.append(kw_resultfile)
-        self.step_impact_list.append(step_impact)
         return step_status
 
     def _skip_because_of_goto(self):
@@ -190,7 +192,8 @@ class TestCaseStepsExecutionClass(object):
 
         impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
         self.data_repository['wt_junit_object']. \
-            add_keyword_result(self.data_repository['wt_tc_timestamp'], self.current_step_number, keyword, "SKIPPED",
+            add_keyword_result(self.data_repository['wt_tc_timestamp'],
+                               self.current_step_number, keyword, "SKIPPED",
                                kw_start_time, "0", "skipped",
                                impact_dict.get(step_impact.upper()), "N/A", step_description)
         self.data_repository['step_{}_result'.format(self.current_step_number)] = "SKIPPED"
@@ -339,7 +342,8 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue, skip
     if step_num is None:
         step_num = 0
         while step_num < len(step_list):
-            step_num, goto_stepnum, do_continue = tc_step_exec_obj.execute_step(step_num, goto_stepnum)
+            step_num, goto_stepnum, do_continue = tc_step_exec_obj.execute_step(step_num,
+                                                                                goto_stepnum)
             if do_continue == "break":
                 break
     else:
@@ -370,5 +374,6 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue, skip
 
 def main(step_list, data_repository, system_name=None, parallel=False, queue=False):
     """ Executes a testcase """
-    steps_execution_status = execute_steps(step_list, data_repository, system_name, parallel, queue)
+    steps_execution_status = execute_steps(step_list, data_repository,
+                                           system_name, parallel, queue)
     return steps_execution_status

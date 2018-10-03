@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<Project>
+    <Details>
+        <Name>pj_runmode_at_project_local_file</Name>
+        <Title>Project for testing runmode tag project local level</Title>
+        <Engineer>Warrior_user</Engineer>
+        <State>New</State>
+        <Date>07-18-2018</Date>
+        <Time>11:59:51</Time>
+        <default_onError action="next"/>
+    </Details>
+    <Testsuites> 
+<!-- runmode at project local level  -->
+     <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rmt_at_pj_local_level.xml</path>
+            <onError action="next" value=""/>
+	    <runmode type="RMT" value="3"/>
+            <impact>noimpact</impact>
+        </Testsuite>
+	 <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rmt_at_pj_local_level_with_status.xml</path>
+            <onError action="next" value=""/>
+	    <runmode type="RMT" value="2" status=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
+      <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_pj_local_level.xml</path>
+            <onError action="next" value=""/>
+	    <runmode type="RUP" value="7"/>
+            <impact>noimpact</impact>
+        </Testsuite>  
+	  <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_pj_local_level_with_last_instance.xml</path>
+            <onError action="next" value=""/>
+	    <runmode type="RUP" value="4" status="last_instance"/>
+            <impact>impact</impact>
+        </Testsuite> 
+	  <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_pj_local_level_with_expected.xml</path>
+            <onError action="next" value=""/>
+	    <runmode type="RUP" value="4" status="expected"/>
+            <impact>impact</impact> 
+        </Testsuite> 
+         <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_pj_local_level.xml</path>
+            <onError action="next" value=""/>
+	    <runmode type="RUF" value="7"/>
+            <impact>noimpact</impact>
+        </Testsuite> 
+	  <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_pj_local_level_with_last_instance.xml</path>
+            <onError action="next" value=""/>
+	    <runmode type="RUF" value="4" status="last_instance"/>
+            <impact>noimpact</impact>
+        </Testsuite>
+	 <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_pj_local_level_with_expected.xml</path>
+            <onError action="next" value=""/>
+	    <runmode type="RUF" value="4" status="expected"/>
+            <impact>impact</impact>
+        </Testsuite> 
+
+        <!-- verify runmode at project global level -->
+      <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_verify_at_pj_local_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact> 
+        </Testsuite> 
+   </Testsuites>
+</Project>
+

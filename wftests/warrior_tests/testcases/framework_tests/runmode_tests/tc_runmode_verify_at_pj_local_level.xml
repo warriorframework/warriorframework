@@ -28,6 +28,18 @@
                         <context>positive</context>
                         <impact>impact</impact>
                 </step>
+		 <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="2"/>
+                                <argument name="object_key" value="pj_rmt_count_local_status"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="1">
                         <Arguments>
                                 <argument name="expected" value="4"/>
@@ -40,10 +52,58 @@
                         <context>positive</context>
                         <impact>impact</impact>
                 </step>
+		<step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="2"/>
+                                <argument name="object_key" value="pj_rup_count_local_ls"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+		<step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="2"/>
+                                <argument name="object_key" value="pj_rup_count_local_exp"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="1">
                         <Arguments>
                                 <argument name="expected" value="5"/>
                                 <argument name="object_key" value="pj_ruf_count_local"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+		<step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="2"/>
+                                <argument name="object_key" value="pj_ruf_count_local_ls"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+	        <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="2"/>
+                                <argument name="object_key" value="pj_ruf_count_local_exp"/>
                                 <argument name="type" value="int"/>
                         </Arguments>
                         <onError action="next"/>

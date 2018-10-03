@@ -7,10 +7,10 @@
                 <default_onError action="next"/>
                 <Logsdir>../../../Execution</Logsdir>
                 <Resultsdir>../../../Execution</Resultsdir>
-                <Date>07-18-2018</Date>
+                <Date>2017-10-31</Date>
                 <InputDataFile>No_Data</InputDataFile>
                 <Time>11:34</Time>
-                <Engineer>Warrior_user</Engineer>
+                <Engineer>Warrior</Engineer>
         </Details>
         <Requirements>
                 <Requirement/>
@@ -36,6 +36,35 @@
                                 <argument name="comparison" value="eq"/>
                                 <argument name="type" value="int"/>
                                 <argument name="object_key" value="tc_rmt"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+		<step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
+                        <Arguments>
+                                <argument name="key" value="tc_rmt_status"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="2"/>
+                                <argument name="max_status" value="pass"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+			<runmode type="RMT" value="2" status=""/>
+                        <impact>impact</impact>
+                </step>
+		<step Driver="common_driver" Keyword="verify_data" TS="2" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="2"/>
+                                <argument name="comparison" value="eq"/>
+                                <argument name="type" value="int"/>
+                                <argument name="object_key" value="tc_rmt_status"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>

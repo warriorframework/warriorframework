@@ -12,6 +12,7 @@ limitations under the License.
 '''
 
 # !/usr/bin/python
+
 import os
 import time
 import traceback
@@ -54,7 +55,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
 
         testsuite_rel_path = testsuite_utils.get_path_from_xmlfile(testsuite)
         if testsuite_rel_path is not None:
-            testsuite_path = Utils.file_Utils.getAbsPath(testsuite_rel_path, project_dir)
+            testsuite_path = Utils.file_Utils.getAbsPath(testsuite_rel_path,
+                                                         project_dir)
         else:
             testsuite_path = str(testsuite_rel_path)
         print_info("\n")
@@ -155,8 +157,10 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
             print_error("unexpected testsuite status, default to exception")
             data_repository['testsuite_%d_result' % suite_cntr] = "ERROR"
 
-        ts_status_list.append(testsuite_status)
-        ts_impact_list.append(testsuite_impact)
+        ts_status_list, ts_impact_list = \
+            common_execution_utils.compute_status(testsuite, ts_status_list,
+                                                  ts_impact_list,
+                                                  testsuite_status, testsuite_impact)
         if testsuite_impact.upper() == 'IMPACT':
             msg = "Status of the executed test suite impacts Project result"
         elif testsuite_impact.upper() == 'NOIMPACT':
@@ -187,7 +191,8 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
                         condition_met = True
                         pNote("Wait for {0}sec before retrying".format(retry_interval))
                         pNote("The given condition '{0}' matches the expected"
-                              "value '{1}'".format(data_repository[retry_cond], retry_cond_value))
+                              "value '{1}'".format(data_repository[retry_cond],
+                                                   retry_cond_value))
                         time.sleep(int(retry_interval))
                     else:
                         condition_met = False
