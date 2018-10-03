@@ -278,7 +278,7 @@ def compute_status(element, status_list, impact_list, status, impact):
                     impact_list.append(impact)
     return status_list, impact_list
 
-  
+
 def compute_runmode_status(global_status_list, runmode, global_xml):
     """ Computes the status of runmode execution when runmode is provided in
        global level (Details section)
@@ -317,4 +317,3 @@ def compute_runmode_status(global_status_list, runmode, global_xml):
         else:
             status_value = global_status_list.pop()
     return status_value
-
