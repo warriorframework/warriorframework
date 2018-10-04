@@ -1,116 +1,124 @@
-Release: Ninja
-Version: warrior-3.9.1
+Release: Ninja 
+Version: warrior-3.10.0
 
-===================
-1: Release details
-===================
+=================== 
+1: Release details 
+=================== 
+
 This is release Ninja of Warrior Test Automation Framework
 
-
-
 -------------------------------
-1.1: List of available releases
+ 1.1: List of available releases
 -------------------------------
+1. Ninja = warrior-3.1.0 to 3.10.0
 
-1. Ninja = warrior-3.1.0 to current
-
-
-
-==================
+================== 
 2. Version Details
-==================
-You are on Release Ninja, Version warrior-3.9.1 of Warrior Framework.
+================== 
+You are on Release Ninja, Version warrior-3.10.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
 
-
-
 +++++++++++++++++++++++++++++++++
-2.1. Change log for this release
+ 2.1. Change log for this release
 +++++++++++++++++++++++++++++++++
 
----------
-Bugfixes:
----------
-[WAR-1911] - Revert changes made to set default value for env in pexpect_spawn_with_env method
+-------------------- New Features: --------------------
+[WAR-1759] - gNMI interface support from warrior required
+[WAR-542] - As a user, I want to know if a step/testcase passed all attempts when that it was set to RUF & RUP
+[WAR-599] - As a user, I need a way to state the final step status when running a step with RUP
+[WAR-1348] - Modularise Runmode across Warrior. As a user, I want same tags for Runmode whereever i use Runmode functions such as RMT, RUP & RUF
+[WAR-1993] - Warhorn: Py2: Paramiko needs to be updated due to security vulnerabilities
+[WAR-1994] - Katana: Need to update the paramiko version in katana
 
 
-=================================================
+------------ Bugfixes: ------------
+[WAR-1116] - Remove 'cse script execution' option from warriorframework repo
+[WAR-1806] - A case/suite with invalid filepath makes the suite/project('s) end result status as ERROR even if the case/suite exec_type is 'No'
+[WAR-1828] - Testsuite end result printed as PASS eventhough the testcase in that suite is not in provided path
+[WAR-1830] - Success/Failure of multiple projects execution in command line is only based on the status of the last project
+[WAR-1858] - Suite status with runmode in suite global level, reflects the status of the last attempted case
+[WAR-1910] - Selenium: Regression: Correct data in failing selenium regression tests.
+[WAR-1650] - Need to change the way warhorn clones repositories in order to support cloning private repositories
+[WAR-1840] - Handle session timeout changes in pexpect 4.x for connect/send keywords
+
+
+
+
+
+================================================= 
 3. Procedure to get a specific version of Warrior
 =================================================
 
 1. Clone warriorframework
 
-$ git clone https://github.com/warriorframework/warriorframework.git
+     $ git clone https://github.com/warriorframework/warriorframework.git
 
-2. go to warriorframework directory
+2. Go to warriorframework directory
 
-$cd warriorframework
+     $cd warriorframework
 
 3. To check the list of versions available, execute "git tag --list" command
 
-$ git tag --list
-warior-3.1.0
-warior-3.1.1
-warior-3.2.0
-warior-3.3.0
-$
+     $ git tag --list 
+	 warrior-3.1.0
+	 warrior-3.1.1
+	 warrior-3.2.0
+	 warrior-3.3.0
+	 warrior-3.3.1
+	 warrior-3.4.0
+	 warrior-3.5.0
+	 warrior-3.6.0
+	 warrior-3.7.0
+	 warrior-3.8.0
+	 warrior-3.9.0
+	 warrior-3.9.1
+	 warrior-3.10.0
 
-3. To Check the current version you are at, execute "git branch" command
+4. To Check the current version you are at, execute "git branch" command
+     $ git branch 
+	 * master 
+     - * indicates the active version.
+	 - In the above example master is the active version.
+	 - If the active version is master it means you are not using a standard release version of warrior framework
+	 and hence it may not be a stable tested version.
 
-$ git branch
-* master
-$
+5. To switch to a specific version from master, execute 'git checkout <version_name>' command.
 
-- * indicates the active version.
-- In the above example master is the active version.
-- If the active version is master it means you are not using a standard release version of warrior framework and hence it may
-not be a stable tested version.
+    $ git checkout warrior-3.10.0
+	 Note: checking out 'warrior-3.10.0'.
 
-4. To switch to a specific version from master, execute 'git checkout <version_name>' command.
+	You are in 'detached HEAD' state. You can look around, make experimental
+	changes and commit them, and you can discard any commits you make in this
+	state without impacting any branches by performing another checkout.
 
-$ git checkout warrior-3.3.0
-Note: checking out 'warrior-3.3.0'.
+	If you want to create a new branch to retain commits you create, you may
+	do so (now or later) by using -b with the checkout command again.
+	Example:
 
-You are in 'detached HEAD' state. You can look around, make experimental
-changes and commit them, and you can discard any commits you make in this
-state without impacting any branches by performing another checkout.
+	git checkout -b new_branch_name
 
-If you want to create a new branch to retain commits you create, you may
-do so (now or later) by using -b with the checkout command again. Example:
+	HEAD is now at abcba40... update version and release_notes for hotfix-3.10.0
+	
+	
 
-git checkout -b <new-branch-name>
+6. Execute git branch command to verify the active version.
+	$ git branch 
+	* (detached from warrior-3.10.0) master	
+	- * indicates the active version.
 
-HEAD is now at 146313d... reduce command timeout, wait after timeout=60
-$
+7. Switch from one version to another (current=warrior-3.10.0, switch to warrior-3.9.0)
+    $git checkout warrior-3.9.0
+	Previous HEAD position was 6cea565... Update version.txt
+    HEAD is now at ba0fdc8... Update version.txt
+	$git branch
+    * (detached from warrior-3.10.0)
+	master	
 
-5. Execute git branch command to verify the active version.
+8. Switch to master branch again.
 
-$ git branch
-* (HEAD detached at warrior-3.3.0)
-master
-$
-
-- * indicates the active version.
-
-6. Switch from one version to another (current=warrior-3.3.0, switch to warrior-3.2.0)
-
-$ git checkout warrior-3.2.0
-Previous HEAD position was 146313d... reduce command timeout, wait after timeout=60
-HEAD is now at ecb6373... WAR-180, handle nd prompt on timeout
-$
-$ git branch
-* (HEAD detached at warrior-3.2.0)
-master
-$
-
-7. Switch to master branch again.
-
-$ git checkout master
-Previous HEAD position was ecb6373... WAR-180, handle nd prompt on timeout
-Switched to branch 'master'
-Your branch is up-to-date with 'origin/master'.
-$
-$
-$ git branch
-* master
-$
+   $ git checkout master 
+    Previous HEAD position was ba0fdc8... Update version.txt
+    Switched to branch 'master'
+     
+   $ git branch
+   * master 
