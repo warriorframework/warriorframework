@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_runmode_rup_at_pj_local_level-last_instance</Name>
+                <Title>test suite to run runmode(RUP) at project file section</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>07-18-2018</Date>
+                <Time>11:37:26</Time>
+                <default_onError action="next"/>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>Requirement-001</Requirement>
+                <Requirement>Requirement-002</Requirement>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/runmode_tests/tc_runmode_rup_at_pj_local_level_with_last_instance.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>

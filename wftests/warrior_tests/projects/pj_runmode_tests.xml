@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<Project>
+    <Details>
+        <Name>pj_runmode_at_tc_and_suite_level_at_project_file</Name>
+        <Title>Project for testing runmode tag in suite and testcase files</Title>
+        <Engineer>Warrior_user</Engineer>
+        <State>New</State>
+        <Date>07-18-2018</Date>
+        <Time>11:59:51</Time>
+        <default_onError action="next"/>
+    </Details>
+    <Testsuites>
+
+ <!-- runmode at suite local level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rmt_at_ts_local_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_ts_local_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_ts_local_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+
+        <!-- verify runmode at suite global level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_verify_at_ts_local_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+
+<!-- runmode at suite global level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rmt_at_ts_global_level_with_new_tag.xml</path>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_ts_global_level_with_new_tag.xml</path>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_ts_global_level_with_new_tag.xml</path>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
+
+        <!-- verify runmode at suite global level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_verify_at_ts_global_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+
+
+<!-- runmode at case local level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_at_tc_local_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+
+   </Testsuites>
+</Project>
+
+

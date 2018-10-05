@@ -14,6 +14,7 @@
         <dependency name="selenium" install="yes" user="no"/>
         <dependency name="xlrd" install="no" user="no"/>
         <dependency name="cloudshell-automation-api" install="yes" user="no"/>
+        <dependency name="pycryptodome" install="yes" user="no"/>
     </warhorn>
 
     <!-- Fill this out with the details of the virtual environment
@@ -37,7 +38,8 @@
 
     Fill this out with the details of the repository that you want to clone
 
-    <tools url="http://repository/one/url.git" overwrite="yes" clone="yes">
+    <tools url="http://repository/one/url.git" overwrite="yes" clone="yes"
+           label="" username="" password="">
     </tools>
 
     -->
@@ -48,7 +50,8 @@
 
         Fill this out with the details of the repository that you want to clone
 
-        <repository url="http://repository/one/url.git" clone="yes" label="tag-name" all_drivers="no">
+        <repository url="http://repository/one/url.git" clone="yes" label="tag-name" all_drivers="no"
+                    username="" password="">
             <driver name="driver_one_name" clone="yes"/>
 			<driver name="driver_two_name" clone=""/>
 			<driver name="driver_three_name" clone="no"/>
@@ -65,7 +68,8 @@
 
         Fill this out with the details of the repository that you want to clone
 
-        <repository url="http://warriorspace/repository/url.git" overwrite="no" label="commit-id" clone="yes">
+        <repository url="http://warriorspace/repository/url.git" overwrite="no" label="commit-id" clone="yes"
+                    username="" password="">
         </repository>
 
         -->

@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_runmode_rmt_at_ts_local_level</Name>
+                <Title>test suite to run runmode(RMT) at testsuite file local section</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>07-18-2018</Date>
+                <Time>11:37:26</Time>
+                <default_onError action="next"/>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>Requirement-001</Requirement>
+                <Requirement>Requirement-002</Requirement>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/runmode_tests/tc_runmode_rmt_at_ts_local_level.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+			<runmode type="RMT" value="3"/>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+		  <Testcase>
+                        <path>../../../testcases/framework_tests/runmode_tests/tc_runmode_rmt_at_ts_local_level_with_status.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+			<runmode type="RMT" value="4" status=""/>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>

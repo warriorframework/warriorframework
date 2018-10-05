@@ -1,0 +1,170 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_selenium_generic_8</Name>
+		<Title>Test case to perform search in stackoverflow and google</Title>
+		<ExpectedResults/>
+		<Category>search</Category>
+		<Engineer>sathya</Engineer>
+		<Date>2016-07-14</Date>
+		<Time>13:29</Time>
+		<default_onError action="next"/>
+		<InputDataFile>../../../data/selenium_func_tests/data_warrior_selenium_ud.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<Logsdir/>
+		<Resultsdir/>
+		<State>Released</State>
+	</Details>
+	<Requirements>
+		<Requirement>requirement-001</Requirement>
+		<Requirement>requirement-002</Requirement>
+	</Requirements>
+	<Steps>
+		<step Driver="selenium_driver" Keyword="browser_launch" TS="1">
+			<Arguments>
+				<argument name="system_name" value="system_1"/>
+				<argument name="browser_name" value="browser_1"/>
+			</Arguments>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="selenium_driver" Keyword="browser_launch" TS="2">
+			<Arguments>
+				<argument name="system_name" value="system_1"/>
+				<argument name="browser_name" value="browser_2"/>
+			</Arguments>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="common_driver" Keyword="wait_for_timeout" TS="3">
+			<Arguments>
+				<argument name="timeout" value="20"/>
+			</Arguments>
+			<onError action=" "/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="selenium_driver" Keyword="get_element" TS="4">
+			<Arguments>
+				<argument name="system_name" value="system_1"/>
+				<argument name="element_config_file" value="tag=config_file1"/>
+				<argument name="locator" value="tag=locator_1"/>
+				<argument name="locator_type" value="tag=loc_type_1"/>
+			</Arguments>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="selenium_driver" Keyword="type_text" TS="5">
+			<Arguments>
+				<argument name="system_name" value="system_1"/>
+				<argument name="browser_name" value="browser_1"/>
+				<argument name="element_config_file" value="tag=config_file1"/>
+				<argument name="element_tag" value="tag=element_tag_1"/>
+				<argument name="locator_type" value="tag=loc_type_1"/>
+				<argument name="text" value="python"/>
+			</Arguments>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="selenium_driver" Keyword="send_keys_to_an_element" TS="6">
+			<Arguments>
+				<argument name="system_name" value="system_1"/>
+				<argument name="element_config_file" value="tag=config_file1"/>
+				<argument name="element_tag" value="search_box"/>
+				<argument name="locator_type" value="tag=loc_type_1"/>
+				<argument name="text" value="RETURN"/>
+			</Arguments>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="selenium_driver" Keyword="get_element" TS="7">
+			<Arguments>
+				<argument name="system_name" value="system_1"/>
+				<argument name="browser_name" value="browser_2"/>
+				<argument name="element_config_file" value="tag=config_file1"/>
+				<argument name="element_tag" value="tag=element_tag_1"/>
+				<argument name="locator_type" value="tag=loc_type_2"/>
+
+			</Arguments>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="selenium_driver" Keyword="clear_text" TS="8">
+			<Arguments>
+				<argument name="system_name" value="system_1"/>
+				<argument name="browser_name" value="browser_2"/>
+				<argument name="element_config_file" value="tag=config_file1"/>
+				<argument name="locator_type" value="tag=loc_type_2"/>
+				<argument name="element_tag" value="tag=element_tag_1"/>
+			</Arguments>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="selenium_driver" Keyword="type_text" TS="9">
+			<Arguments>
+				<argument name="system_name" value="system_1"/>
+				<argument name="browser_name" value="browser_2"/>
+				<argument name="element_config_file" value="tag=config_file1"/>
+				<argument name="element_tag" value="search_box"/>
+				<argument name="locator_type" value="tag=loc_type_2"/>
+				<argument name="text" value="java"/>
+			</Arguments>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="selenium_driver" Keyword="send_keys_to_an_element" TS="10">
+			<Arguments>
+				<argument name="system_name" value="system_1"/>
+				<argument name="browser_name" value="browser_2"/>
+				<argument name="element_config_file" value="tag=config_file1"/>
+				<argument name="element_tag" value="search_box"/>
+				<argument name="locator_type" value="tag=loc_type_2"/>
+				<argument name="text" value="RETURN"/>
+
+			</Arguments>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="common_driver" Keyword="wait_for_timeout" TS="11">
+			<Arguments>
+				<argument name="timeout" value="10"/>
+			</Arguments>
+			<onError action=" "/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+			<iteration_type type=""/>
+		</step>
+		<step Driver="selenium_driver" Keyword="browser_close" TS="12">
+			<Arguments>
+				<argument name="system_name" value="system_1"/>
+			</Arguments>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<iteration_type type=""/>
+		</step>
+	</Steps>
+</Testcase>

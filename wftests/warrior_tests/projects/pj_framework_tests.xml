@@ -16,5 +16,35 @@
             <onError action="next" value=""/>
             <impact>impact</impact>
         </Testsuite>
+        <Testsuite>
+            <path>invalid/suite/path</path>
+            <Execute ExecType="No"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/invalid_path_tests/ts_sequential.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/invalid_path_tests/ts_parallel.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/invalid_path_tests/ts_iter_seq.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/invalid_path_tests/ts_iter_par.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
     </Testsuites>
 </Project>
