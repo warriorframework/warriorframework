@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <Testcase>
         <Details>
-                <Name>tc_runmode_rmt_at_tc_global_level_with_status_expected</Name>
-                <Title>Test the runmode functionality specified at testcase local level</Title>
+                <Name>tc_runmode_verify_at_ts_global_level</Name>
+                <Title>Verify the runmode functionality specified at testsuite file detail section</Title>
                 <Datatype>Custom</Datatype>
                 <default_onError action="next"/>
                 <Logsdir>../../../Execution</Logsdir>
@@ -10,40 +10,35 @@
                 <Date>2017-10-31</Date>
                 <InputDataFile>No_Data</InputDataFile>
                 <Time>11:34</Time>
-                <Engineer>Warrior</Engineer>
+                <Engineer>Ka Hei Chan</Engineer>
         </Details>
         <Requirements>
                 <Requirement/>
         </Requirements>
         <Steps>
-                <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
                         <Arguments>
-                                <argument name="key" value="tc_rmt_pos"/>
-                                <argument name="status" value="pass"/>
-                                <argument name="max_value" value="3"/>
-                                <argument name="max_status" value="pass"/>
+                                <argument name="expected" value="2"/>
+                                <argument name="object_key" value="tc_rup"/>
+                                <argument name="type" value="int"/>
                         </Arguments>
                         <onError action="next"/>
                         <Description></Description>
                         <Execute ExecType="Yes"/>
                         <context>positive</context>
-
                         <impact>impact</impact>
                 </step>
-
-                <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
+                <step Driver="common_driver" Keyword="verify_data" TS="2">
                         <Arguments>
-                                <argument name="key" value="tc_rmt_neg"/>
-                                <argument name="status" value="fail"/>
-                                <argument name="max_value" value="1"/>
-                                <argument name="max_status" value="fail"/>
+                                <argument name="expected" value="3"/>
+                                <argument name="object_key" value="tc_rup_last"/>
+                                <argument name="type" value="int"/>
                         </Arguments>
                         <onError action="next"/>
                         <Description></Description>
                         <Execute ExecType="Yes"/>
                         <context>positive</context>
-                        <impact>noimpact</impact>
+                        <impact>impact</impact>
                 </step>
-
         </Steps>
 </Testcase>

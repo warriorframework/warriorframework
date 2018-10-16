@@ -18,7 +18,7 @@
         <Steps>
                 <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
                         <Arguments>
-                                <argument name="key" value="tc_rup_pos"/>
+                                <argument name="key" value="tc_rup"/>
                                 <argument name="status" value="fail"/>
                                 <argument name="max_value" value="2"/>
                                 <argument name="max_status" value="pass"/>
@@ -28,20 +28,6 @@
                         <Execute ExecType="Yes"/>
                         <context>positive</context>
                         <impact>impact</impact>
-                </step>
-
-                <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
-                        <Arguments>
-                                <argument name="key" value="tc_rup_neg"/>
-                                <argument name="status" value="fail"/>
-                                <argument name="max_value" value="2"/>
-                                <argument name="max_status" value="fail"/>
-                        </Arguments>
-                        <onError action="next"/>
-                        <Description></Description>
-                        <Execute ExecType="Yes"/>
-                        <context>positive</context>
-                        <impact>noimpact</impact>
                 </step>
 
         </Steps>

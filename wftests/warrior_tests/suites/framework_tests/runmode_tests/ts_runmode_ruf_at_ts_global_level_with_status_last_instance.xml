@@ -6,7 +6,7 @@
                 <Engineer>Warrior_user</Engineer>
                 <Date>2018-10-11</Date>
                 <Time>11:37:26</Time>
-                <runmode type="RUF" value="3" status="last_instance"/>
+                <runmode type="RUF" value="5" status="last_instance"/>
                 <default_onError action="next"/>
                 <Resultsdir/>
         </Details>
