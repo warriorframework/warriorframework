@@ -13,8 +13,31 @@
 		<Engineer>Anil Kumar</Engineer>
 	</Details>
 	<Steps>
-        <step Driver="common_driver" Keyword="get_current_timestamp" TS="1">
+     <step Driver="common_driver" Keyword="get_current_timestamp" TS="1">
+        <Arguments>
+            <argument name="current_time" value="timestamp1"/>
+			  </Arguments>
+			<onError action="next"/>
+			<Description>To get current timestamp</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+
+		<step Driver="common_driver" Keyword="get_time_delta" TS="1">
 			<Arguments>
+                <argument name="start_time" value="timestamp1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Returns the time difference between start_time and current_time</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+    </step>
+    
+    <step Driver="common_driver" Keyword="get_current_timestamp" TS="1">
+      <Arguments>
+            <argument name="current_time" value="timestamp2"/>
 			</Arguments>
 			<onError action="next"/>
 			<Description>To get current timestamp</Description>
@@ -25,26 +48,14 @@
 
 		<step Driver="common_driver" Keyword="get_time_delta" TS="1">
 			<Arguments>
-                <argument name="start_time" value="2018-10-22 16:14:21"/>
+        <argument name="start_time" value="timestamp1"/> 
+        <argument name="end_time" value="timestamp2"/>
 			</Arguments>
 			<onError action="next"/>
-			<Description>Returns the time difference between start_time and current_time</Description>
+			<Description>Returns the time difference between start_time and end_time</Description>
 			<Execute ExecType="Yes"/>
 			<context>positive</context>
 			<impact>impact</impact>
-		</step>
-
-        <step Driver="common_driver" Keyword="get_time_delta" TS="1">
-			<Arguments>
-                <argument name="start_time" value="2018-10-22 04:14:21"/>
-                <argument name="end_time" value="2018-10-22 04:15:21"/>
-			</Arguments>
-			<onError action="next"/>
-			<Description>Returns the time difference between start_time and current_time</Description>
-			<Execute ExecType="Yes"/>
-			<context>positive</context>
-			<impact>impact</impact>
-		</step>
-
+    </step>
 	</Steps>
 </Testcase>
