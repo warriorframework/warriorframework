@@ -15,6 +15,7 @@ limitations under the License.
 
 import json
 import os
+import datetime
 
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_error
@@ -360,3 +361,53 @@ class CommonActions(object):
         status = Utils.data_Utils.verify_arith_exp(expression, expected,
                                                    comparison, repo_key)
         return status
+
+    def get_current_timestamp(self):
+        """Returns system current timestamp with date and month
+         Arguments:
+            No args
+
+            Returns:
+                  1. status(boolean)
+                  2. Current System Time in the  object format of Year, Month, Date, Time(without microseconds)
+                  Eg :datetime.datetime(2018, 10, 22, 5, 51, 21)
+
+        """
+        wDesc = "To get the current time in the format of yyyy-mm-dd hh:mm:ss"
+        Utils.testcase_Utils.pNote(wDesc)
+        status = True
+        currentdate = datetime_utils.get_current_timestamp()
+        output_dict = {"current_time": currentdate}
+        return status, output_dict
+
+    def get_time_delta(self, start_time, end_time=None):
+        """Returns system current timestamp with date and month
+          Arguments:
+                  1. start_time = time stamp in the object format of system datetime(without microseconds)
+                            eg: datetime.datetime(2018, 10, 22, 5, 51, 21)
+                            or
+                            time stamp in the format of system datetime(without microseconds)
+                            eg: 2015-04-27 16:48:21
+
+                  2. end_time(optional) = time stamp in the object format of system datetime(without microseconds)
+                            eg: datetime.datetime(2018, 10, 22, 5, 51, 21)
+                            or
+                            time stamp in the format of system datetime(without microseconds)
+                            eg: 2015-04-27 16:48:21
+
+            Returns:
+                  1. status(boolean)
+                  2. Time delta = Returns time difference between the present system time and between
+                     the time stamp which comes as argument in the format of seconds.
+                         eg: 212342.0
+        """
+        wDesc = "To display the difference between two timestamps"
+        Utils.testcase_Utils.pNote(wDesc)
+        status = True
+        if type(start_time) == str:
+            start_time = datetime.datetime.strptime("{}".format(start_time), '%Y-%m-%d %H:%M:%S')
+        if end_time:
+            end_time = datetime.datetime.strptime("{}".format(end_time), '%Y-%m-%d %H:%M:%S')
+        time_delta = datetime_utils.get_time_delta(start_time, end_time=end_time)
+        output_dict = {"time_difference": time_delta}
+        return status, output_dict
