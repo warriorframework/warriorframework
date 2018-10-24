@@ -48,6 +48,7 @@ cmd_params = OrderedDict([("command_list", "send"),
                           ("resp_ref_list", "resp_ref"),
                           ("resp_req_list", "resp_req"),
                           ("resp_pat_req_list", "resp_pat_req"),
+                          ("resp_pat_key_list", "resp_pat_key"),
                           ("resp_key_list", "resp_keys"),
                           ("inorder_resp_ref_list", "inorder_resp_ref"),
                           ("log_list", "monitor"),
@@ -596,7 +597,6 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     If user has not provided a specific value for
     command attribute returns the global values
     assigned in the testdata """
-
     global_cmd_params = global_obj.find("command_params") if global_obj is \
         not None else None
     global_exempt_list = ["send", "monitor"]
@@ -2125,3 +2125,4 @@ def set_gnmi_cert_params(p_dic):
     client_crt = p_dic['client_crt']
     client_key = p_dic['client_key']
     return ca_crt, client_crt, client_key
+
