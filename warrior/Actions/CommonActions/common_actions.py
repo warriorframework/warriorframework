@@ -362,7 +362,7 @@ class CommonActions(object):
                                                    comparison, repo_key)
         return status
 
-    def get_current_timestamp(self, current_time):
+    def get_current_timestamp(self, current_time="current_time"):
         """Returns system current timestamp.
            :Arguments:
                   1. current_time (string) : name of the key to store in data repository
@@ -382,7 +382,7 @@ class CommonActions(object):
         status = True
         return status, output_dict
 
-    def get_time_delta(self, start_time, end_time=None):
+    def get_time_delta(self, start_time, end_time=None, time_diff="time_diff"):
         """Returns time difference between two timestamps in seconds.
            :Arguments:
                   1. start_time = start time key in the data repository, 
@@ -393,9 +393,11 @@ class CommonActions(object):
                                           value should be datetime object in data repo.
                                           Ex: 'timestamp2'
 
+                  3. time_diff(optional) = time diff key in the data repository
+
            :Returns:
                   1. status(boolean)
-                  2. time_diff (dict element) : name = time_delta, value = difference between the given start time and 
+                  2. time_diff (dict element) : name = time_diff, value = difference between the given start time and 
                      end time in seconds (ex: 212342.0)
 
         """
@@ -406,6 +408,6 @@ class CommonActions(object):
           end_time = Utils.data_Utils.get_object_from_datarepository(end_time)
         time_delta = datetime_utils.get_time_delta(start_time=start_time, end_time=end_time)
         print_info("delta between given timestamps : {0} seconds".format(time_delta))
-        output_dict = {"time_diff": time_delta}
+        output_dict = {time_diff: time_delta}
         status = True
         return status, output_dict
