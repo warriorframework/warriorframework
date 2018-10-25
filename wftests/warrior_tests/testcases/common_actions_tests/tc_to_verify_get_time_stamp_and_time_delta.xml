@@ -59,6 +59,19 @@
 			<context>positive</context>
 			<impact>impact</impact>
     </step>
+
+		<step Driver="common_driver" Keyword="display_msg_to_console" TS="5">
+			<Arguments>
+        <argument name="name_of_the_key" value="time_diff1"/>
+        <argument name="message" value="the time difference is "/>
+
+			</Arguments>
+			<onError action="next"/>
+			<Description>To display data repository key value along with message</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+    </step>
     
 	</Steps>
 </Testcase>
