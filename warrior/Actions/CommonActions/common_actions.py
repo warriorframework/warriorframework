@@ -373,8 +373,8 @@ class CommonActions(object):
                      Ex :datetime.datetime(2018, 10, 22, 5, 51, 21)
 
         """
-        wDesc = "To get the current timestamp in the format of yyyy-mm-dd hh:mm:ss"
-        Utils.testcase_Utils.pNote(wDesc)
+        wdesc = "To get the current timestamp in the format of yyyy-mm-dd hh:mm:ss"
+        Utils.testcase_Utils.pNote(wdesc)
         currentdate = datetime_utils.get_current_timestamp()
         print_info("current timestamp : {0}".format(currentdate))
         output_dict = {current_time: currentdate}
@@ -400,8 +400,8 @@ class CommonActions(object):
                      given start time and end time in seconds (ex: 212342.0)
 
         """
-        wDesc = "To get time difference between two timestamps"
-        Utils.testcase_Utils.pNote(wDesc)
+        wdesc = "To get time difference between two timestamps"
+        Utils.testcase_Utils.pNote(wdesc)
         start_time = Utils.data_Utils.get_object_from_datarepository(start_time)
         if end_time:
             end_time = Utils.data_Utils.get_object_from_datarepository(end_time)
@@ -421,8 +421,8 @@ class CommonActions(object):
         Return:
             1) status(boolean)
         """
-        wDesc = "To display message to the console"
-        Utils.testcase_Utils.pNote(wDesc)
+        wdesc = "To display message to the console"
+        Utils.testcase_Utils.pNote(wdesc)
         status = True
         value_of_key = get_object_from_datarepository(name_of_the_key)
         print "{} {}".format(message, value_of_key)
