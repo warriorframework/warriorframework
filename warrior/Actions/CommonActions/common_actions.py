@@ -425,5 +425,5 @@ class CommonActions(object):
         Utils.testcase_Utils.pNote(wdesc)
         status = True
         value_of_key = get_object_from_datarepository(name_of_the_key)
-        print "{} {}".format(message, value_of_key)
+        print_info("{} {}".format(message, value_of_key))
         return status
