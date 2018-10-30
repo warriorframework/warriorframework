@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_runmode_rup_at_tc_local_level_with_status_expected</Name>
+                <Title>Test the runmode functionality specified at suite level</Title>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir>../../../Execution</Logsdir>
+                <Resultsdir>../../../Execution</Resultsdir>
+                <Date>2018-10-11</Date>
+                <InputDataFile>No_Data</InputDataFile>
+                <Time>11:34</Time>
+                <Engineer>Warrior</Engineer>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+                        <Arguments>
+                                <argument name="key" value="tc_rup"/>
+                                <argument name="status" value="fail"/>
+                                <argument name="max_value" value="2"/>
+                                <argument name="max_status" value="pass"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+
+        </Steps>
+</Testcase>
