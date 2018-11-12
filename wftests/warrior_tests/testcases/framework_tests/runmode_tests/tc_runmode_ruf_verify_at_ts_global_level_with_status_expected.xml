@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_runmode_ruf_verify_at_ts_global_level_with_status_expected</Name>
+                <Title>Verify the runmode functionality specified at testsuite file detail section</Title>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir>../../../Execution</Logsdir>
+                <Resultsdir>../../../Execution</Resultsdir>
+                <Date>2017-10-31</Date>
+                <InputDataFile>No_Data</InputDataFile>
+                <Time>11:34</Time>
+                <Engineer>Ka Hei Chan</Engineer>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="5"/>
+                                <argument name="object_key" value="tc_ruf_exp"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="2">
+                        <Arguments>
+                                <argument name="expected" value="5"/>
+                                <argument name="object_key" value="tc_ruf_last"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+        </Steps>
+</Testcase>
