@@ -31,7 +31,6 @@ from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from WarriorCore.Classes.warmock_class import mocked
 from timeit import itertools
-from Framework.Utils.config_Utils import data_repository
 
 """ Module for performing CLI operations """
 
@@ -321,16 +320,15 @@ class WarriorCli(object):
         resp_pat_req = details_dict["resp_pat_req_list"][index]
         resp_keys = details_dict["resp_key_list"][index]
         inorder = details_dict["inorder_resp_ref_list"][index]
-        resp_pat_key = details_dict["resp_pat_key_list"][index]
         status = True
         if inorder is not None and inorder.lower().startswith("n"):
             inorder = False
         else:
             inorder = True
+
         resp_req = {None: 'y', '': 'y',
                     'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
         resp_ref = {None: str(index+1), '': str(index+1)}.get(resp_ref, str(resp_ref))
-        resp_pat_key = {None: str(index+1), '': str(index+1)}.get(resp_pat_key, str(resp_pat_key))
         if not resp_req == "n":
             save_msg1 = "User has requested saving response"
             save_msg2 = "Response pattern required by user is : {0}"
@@ -343,13 +341,10 @@ class WarriorCli(object):
                 response = reobj.group(0) if reobj is not None else ""
                 temp_resp_dict = {resp_ref: response}
                 resp_key_list.append(temp_resp_dict)
-                resp_key_dict = {resp_pat_key: response}
-                data_repository.update(resp_key_dict)
                 pNote(save_msg1+'.')
                 pNote(save_msg2.format(resp_pat_req))
             elif resp_keys is not None:
                 keys = resp_ref.split(',')
-                resp_pat_list = resp_pat_key.split(',')
                 # get the patterns from pattern entries in testdata file
                 patterns = []
                 # error out if any of the key element can not be retrieved
@@ -381,9 +376,6 @@ class WarriorCli(object):
                         # update resp_key_list with resp_ref keys and
                         # their corresponding matched patterns
                         resp_key_list.append(dict(zip(keys, grps)))
-                        for resp, grps in zip(patterns, resp_pat_list):
-                            resp_key_dict = {grps: resp}
-                            data_repository.update(resp_key_dict)
                         pNote(save_msg2.format(pattern))
                     else:
                         print_error("inorder search of patterns in response "
@@ -399,11 +391,6 @@ class WarriorCli(object):
                         presponse = reobj.group(0) if reobj is not None else ""
                         temp_resp_key_list.append(presponse)
                         pNote(save_msg2.format(pattern))
-                    for resp, pattern in zip(resp_pat_list, patterns):
-                        reobj = re.search(pattern, response)
-                        presponse = reobj.group(0) if reobj is not None else ""
-                        resp_key_dict = {resp: presponse}
-                        data_repository.update(resp_key_dict)
                     resp_key_list.append(dict(zip(keys, temp_resp_key_list)))
             else:
                 temp_resp_dict = {resp_ref: response}
@@ -577,7 +564,6 @@ class WarriorCli(object):
         resp_ref = details_dict["resp_ref_list"][index]
         resp_req = details_dict["resp_req_list"][index]
         resp_pat_req = details_dict["resp_pat_req_list"][index]
-        resp_pat_key = details_dict["resp_pat_key_list"][index]
         verify_on_list = details_dict["verify_on_list"][index]
         log_list = details_dict["log_list"][index]
         inorder_search = details_dict["inorder_search_list"][index]
@@ -593,7 +579,6 @@ class WarriorCli(object):
                     'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
         resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
         resp_pat_req = {None: ""}.get(resp_pat_req, str(resp_pat_req))
-        resp_pat_key = {None: index+1, '': index+1}.get(resp_pat_key, str(resp_pat_key))
         sleeptime = {None: 0, "": 0, "none": 0, False: 0, "false": 0}.get(
             str(sleeptime).lower(), str(sleeptime))
         sleeptime = int(sleeptime)
@@ -610,7 +595,6 @@ class WarriorCli(object):
         pNote("Response required: {0}".format(resp_req))
         pNote("Response reference: {0}".format(resp_ref))
         pNote("Response pattern required: {0}".format(resp_pat_req))
-        pNote("Response pattern key: {0}".format(resp_pat_key))
 
         if not command:
             pNote("Received a boolean False or None type instead of a string "

@@ -48,7 +48,6 @@ cmd_params = OrderedDict([("command_list", "send"),
                           ("resp_ref_list", "resp_ref"),
                           ("resp_req_list", "resp_req"),
                           ("resp_pat_req_list", "resp_pat_req"),
-                          ("resp_pat_key_list", "resp_pat_key"),
                           ("resp_key_list", "resp_keys"),
                           ("inorder_resp_ref_list", "inorder_resp_ref"),
                           ("log_list", "monitor"),
@@ -225,7 +224,8 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
                             cred_value[child.tag] = child.text
                             if 'wtype' in child.attrib:
                                 cred_value[child.tag] = get_actual_cred_value(
-                                    child.tag, child.text, child.attrib['wtype'], startdir)
+                                                        child.tag, child.text,
+                                                        child.attrib['wtype'], startdir)
                     else:
                         cred_value = get_cred_value_from_elem(element, x, startdir)
                 output_dict[x] = cred_value
@@ -365,7 +365,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         print_info("Resolving testdata details from DB system - "
                    "'{}'".format(testdatafile.get('td_system')))
         db_td_obj = database_utils_class.create_database_connection(
-            'dataservers', testdatafile.get('td_system'))
+                        'dataservers', testdatafile.get('td_system'))
         root = db_td_obj.get_tdblock_as_xmlobj(testdatafile)
 
         # if testdata block in the datafile has separate db system
@@ -374,7 +374,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             print_info("Resolving testdata-global block from DB system - "
                        "'{}'".format(testdatafile.get('global_system')))
             db_tdglobal_obj = database_utils_class.create_database_connection(
-                'dataservers', testdatafile.get('global_system'))
+                                'dataservers', testdatafile.get('global_system'))
             global_obj = db_tdglobal_obj.get_globalblock_as_xmlobj(testdatafile)
             db_tdglobal_obj.close_connection()
         else:
@@ -391,7 +391,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         print_info("Resolving varconfig details from DB system - "
                    "'{}'".format(varconfigfile.get('var_system')))
         db_var_obj = database_utils_class.create_database_connection(
-            'dataservers', varconfigfile.get('var_system'))
+                        'dataservers', varconfigfile.get('var_system'))
         varconfigfile = db_var_obj.get_varblock_as_xmlobj(varconfigfile)
         db_var_obj.close_connection()
 
@@ -411,7 +411,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             print_info("var_sub:{0}".format(var_sub))
             td_obj = TestData()
             details_dict = td_obj.varsub_varconfig_substitutions(
-                details_dict, vc_file=None, var_sub=var_sub, start_pat=start_pat, end_pat=end_pat)
+                            details_dict, vc_file=None, var_sub=var_sub,
+                            start_pat=start_pat, end_pat=end_pat)
 
             details_dict = td_obj.wdf_substitutions(details_dict, datafile,
                                                     kw_system_name=system_name)
@@ -424,7 +425,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             # List substitution happens after iteration because
             # list sub cannot recognize the + sign in iteration
             cmd_list_substituted, verify_text_substituted = td_obj.list_substitution_precheck(
-                varconfigfile, details_dict, start_pat, end_pat)
+                                                                varconfigfile, details_dict,
+                                                                start_pat, end_pat)
             td_obj.list_substitution(details_dict, varconfigfile, cmd_list_substituted,
                                      verify_text_substituted, start_pat, end_pat)
 
@@ -442,13 +444,14 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             iter_type = testdata.get('iter_type', None)
             # Type-2 iteration - per_td_block
             if iter_type == "per_td_block":
-                details_dict, cmd_loc_list = td_iter_obj.repeat_per_td_block(details_dict,
-                                                                             cmd_loc_list)
-                details_dict = td_iter_obj.arrange_per_td_block(details_dict, cmd_loc_list)
+                details_dict, cmd_loc_list = td_iter_obj.repeat_per_td_block(
+                                                details_dict, cmd_loc_list)
+                details_dict = td_iter_obj.arrange_per_td_block(details_dict,
+                                                                cmd_loc_list)
 
             details_dict = td_obj.varsub_varconfig_substitutions(
-                details_dict, vc_file=varconfigfile, var_sub=None, start_pat=start_pat,
-                end_pat=end_pat)
+                            details_dict, vc_file=varconfigfile, var_sub=None,
+                            start_pat=start_pat, end_pat=end_pat)
             testdata_dict[testdata_key] = details_dict
         else:
             not_found += 1
@@ -847,15 +850,15 @@ def get_no_impact_logic(context_str):
     """Get the silent tag from context
     return silence value and context value"""
     value = {
-        'YES:NOIMPACT': (True, 'YES'),
-        'YES': (False, 'YES'),
-        'Y:NOIMPACT': (True, 'YES'),
-        'Y': (False, 'YES'),
-        'NO:NOIMPACT': (True, 'No'),
-        'NO': (False, 'No'),
-        'N:NOIMPACT': (True, 'No'),
-        'N': (False, 'No'),
-    }.get(context_str.upper(), False)
+              'YES:NOIMPACT': (True, 'YES'),
+              'YES': (False, 'YES'),
+              'Y:NOIMPACT': (True, 'YES'),
+              'Y': (False, 'YES'),
+              'NO:NOIMPACT': (True, 'No'),
+              'NO': (False, 'No'),
+              'N:NOIMPACT': (True, 'No'),
+              'N': (False, 'No'),
+            }.get(context_str.upper(), False)
 
     return value
 
@@ -1520,13 +1523,13 @@ def resolve_argument_value_to_get_tag_value(datafile, system_name,
         tag_name = evaluate_tc_argument_value(element_value_in_argument)
         if tag_name:
             system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(
-                datafile, "system")
+                                                                datafile, "system")
             if system_name_list == [] or system_name_list is None or system_name_list is False:
                 return element_value_in_argument
             for system in system_name_list:
                 if system.attrib["name"] == system_name:
                     node_list = xml_Utils.get_matching_firstlevel_children_from_node(
-                        system, tag_name)
+                                                                    system, tag_name)
                     if node_list == [] or node_list is None or node_list is False:
                         print_error("The tag value: {0} is not defined in the "
                                     "datafile:{1}".format(tag_name, datafile))
@@ -1559,7 +1562,7 @@ def get_user_specified_tag_values_in_tc(datafile, system_name, **kwargs):
     for element in kwargs:
         if kwargs[element] is not None:
             credentials[element] = resolve_argument_value_to_get_tag_value(
-                datafile, system_name, kwargs[element])
+                                    datafile, system_name, kwargs[element])
     return credentials
 
 
@@ -1664,7 +1667,8 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                                 get_var_by_string_prefix(string))
                         elif isinstance(raw_value[k], (list, dict)):
                             raw_value[k] = str(raw_value[k]).replace(
-                                start_pattern+string+end_pattern, get_var_by_string_prefix(string))
+                                    start_pattern+string+end_pattern,
+                                    get_var_by_string_prefix(string))
                             raw_value[k] = ast.literal_eval(raw_value[k])
                         else:
                             print_error("Unsupported format - " +
@@ -2121,4 +2125,3 @@ def set_gnmi_cert_params(p_dic):
     client_crt = p_dic['client_crt']
     client_key = p_dic['client_key']
     return ca_crt, client_crt, client_key
-
