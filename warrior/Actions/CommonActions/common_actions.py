@@ -118,7 +118,7 @@ class CommonActions(object):
         return status
 
     def store_in_repo(self, datavar=None, datavalue=None, type='str',
-                      filepath=None, jsonkey="repo_variables"):
+                      filepath=None, jsonkey="repo_variables", slurp=False):
         """Stores datavalue in datavar of datarepository
         :Argument:
             1. datavar = Key to be used to store datavalue in data_repository,
@@ -131,6 +131,8 @@ class CommonActions(object):
                           It is to store multiple key,value pairs in datarepository.
             5. jsonkey = The key where all the REPO variables & values are
                          defined in the filepath
+            6. slurp = Set to True to store whole json file content to data repository.
+                       default value is set to False
 
             Sample JSON file:
                  {
@@ -183,6 +185,14 @@ class CommonActions(object):
                 filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     json_doc = json.load(json_handle)
+                    if slurp:
+                        print_info("slurp mode enabled, all content of given"+ \
+                            " json file will be stored in data repository")
+                        update_datarepository(json_doc)
+                        print_info("{0} dictionary stored in Warrior data_repository".\
+                            format(json_doc))
+                        status = True
+                        return status 
                     if jsonkey in json_doc:
                         repo_dict = json_doc[jsonkey]
                         for var_key, var_value in repo_dict.items():
