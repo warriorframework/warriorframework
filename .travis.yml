@@ -74,6 +74,6 @@ script:
     fi
 
 after_success:
-  - if [[ ${COPILOT} = "yes" ]]; then
-      bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload);
-    fi
+  - #if [[ ${COPILOT} = "yes" ]]; then
+    #  bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload);
+    #fi
