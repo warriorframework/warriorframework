@@ -132,7 +132,7 @@ class CommonActions(object):
             5. jsonkey = The key where all the REPO variables & values are
                          defined in the filepath
             6. slurp = Set to True to store whole json file content to data repository.
-                       default value is set to False
+                       default value is set to False.
 
             Sample JSON file:
                  {
