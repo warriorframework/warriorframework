@@ -402,7 +402,7 @@ $scope.showRules = function(execType){
                 });
             }
         };
-
+        /* handles getting the step number to be copied from dropdown*/
         $scope.copyStep = function(){
             $scope.stepToBeCopied= $scope.stepToBeCopiedUI;
             if( $scope.editArgs == 1){
@@ -717,6 +717,7 @@ $scope.showRules = function(execType){
                 else{
                     flag = true;
                 }
+                /* Handles the drop down of copy step when we open any existing file */
                 $scope.nextStepIndex = [];
                 for (i = 0; i < $scope.model.Testcase.Steps.step.length; i++) {
                     $scope.editstepcheck = 1;
@@ -1130,6 +1131,7 @@ $scope.showRules = function(execType){
         function(isConfirm){
             if (isConfirm) {
                 $scope.$apply($scope.model.Testcase.Steps.step.splice(index, 1));
+                /* handles the population of the step number depending on the RMT/RUF/RUP after delete any step*/
                 $scope.$apply(function() {
                     if($scope.model.Testcase.Steps.step.length > 0) {
                         $scope.nextStepIndex = [];
@@ -1812,6 +1814,7 @@ $scope.showRules = function(execType){
         }
         rec.runmode._value = $scope.status.step.runmode._value;
     }
+    /*Populating the step numbers for edit, insert and new step */
     if($scope.model.Testcase.Steps.step.length > 0) {
 
         if($scope.editIndex || $scope.editIndex === 0) {
