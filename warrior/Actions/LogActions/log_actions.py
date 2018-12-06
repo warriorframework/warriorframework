@@ -54,9 +54,11 @@ class LogActions(object):
         Utils.testcase_Utils.pNote(wdesc)
         if not (message or list_message or dict_message):
             print_error("Please specify atleast one message for printing")
+            Utils.testcase_Utils.pNote("Please specify atleast one message for printing")
             return True
         if not self.map_function.get(type):
             print_error("type : "+type+" is not supported")
+            Utils.testcase_Utils.pNote("type : "+type+" is not supported")
             return True
         if message:
             self.map_function[type](message)
