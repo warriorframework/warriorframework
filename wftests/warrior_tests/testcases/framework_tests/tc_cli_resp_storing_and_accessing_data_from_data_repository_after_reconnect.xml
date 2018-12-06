@@ -1,0 +1,252 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_cli_resp_storing_and_accessing_data_from_data_repository_after_reconnect</Name>
+                <Title>Verify response reference saves in appropriate system</Title>
+                <InputDataFile>../../data/cli_resp_Data.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir>../../../Execution</Logsdir>
+                <Resultsdir>../../../Execution</Resultsdir>
+                <Date>2018-12-05</Date>
+                <Time>11:20</Time>
+                <Engineer>Anil</Engineer>
+        </Details>
+        <Requirements>
+                <Requirement>ssh-connect-001</Requirement>
+                <Requirement>ssh-disconnect-001</Requirement>
+        </Requirements>
+        <Steps>
+
+                <step Driver="cli_driver" Keyword="connect_ssh" TS="1">
+                        <Arguments>
+                                <argument name="system_name" value="sys1"/>
+                                <argument name="session_name" value="session1"/>
+                                <argument name="int_timeout" value="50"/>
+                                <argument name="prompt" value="labadmin@rtxttalp01:"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+
+            <step Driver="cli_driver" Keyword="connect_ssh" TS="2">
+                        <Arguments>
+                                <argument name="system_name" value="sys2"/>
+                                <argument name="session_name" value="session2"/>
+                                <argument name="int_timeout" value="50"/>
+                                <argument name="prompt" value="labadmin@rtxttalp01:"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+
+            <step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="3" draft="no">
+                        <Arguments>
+                                <argument name="title" value="title_1"/>
+                                <argument name="system_name" value="sys1"/>
+                                <argument name="session_name" value="session1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+
+            <step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="4" draft="no">
+                        <Arguments>
+                                <argument name="title" value="title_4"/>
+                                <argument name="system_name" value="sys1"/>
+                                <argument name="session_name" value="session1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+
+            <step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="5" draft="no">
+                        <Arguments>
+                                <argument name="title" value="title_1"/>
+                                <argument name="system_name" value="sys2"/>
+                                <argument name="session_name" value="session2"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+
+            <step Driver="common_driver" Keyword="verify_data" TS="6" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="Desktop"/>
+                                <argument name="object_key" value="sys1session1_td_response.title_1.td1_cmd1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+
+             <step Driver="common_driver" Keyword="verify_data" TS="7" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="Hi this"/>
+                                <argument name="object_key" value="sys1session1_td_response.title_4.lsoutK1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+
+            <step Driver="common_driver" Keyword="verify_data" TS="8" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="Templates"/>
+                                <argument name="object_key" value="sys2session2_td_response.title_1.td1_cmd2"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+
+            <step Driver="cli_driver" Keyword="disconnect" TS="9">
+                        <Arguments>
+                                <argument name="system_name" value="sys1"/>
+                                <argument name="session_name" value="session1"/>
+
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>disconnect</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+
+            <step Driver="cli_driver" Keyword="disconnect" TS="10">
+                        <Arguments>
+                                <argument name="system_name" value="sys2"/>
+                                <argument name="session_name" value="session2"/>
+
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>disconnect</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+
+            <step Driver="cli_driver" Keyword="connect_ssh" TS="11">
+                        <Arguments>
+                                <argument name="system_name" value="sys1"/>
+                                <argument name="session_name" value="session1"/>
+                                <argument name="int_timeout" value="50"/>
+                                <argument name="prompt" value="labadmin@rtxttalp01:"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+
+            <step Driver="cli_driver" Keyword="connect_ssh" TS="12">
+                        <Arguments>
+                                <argument name="system_name" value="sys2"/>
+                                <argument name="session_name" value="session2"/>
+                                <argument name="int_timeout" value="50"/>
+                                <argument name="prompt" value="labadmin@rtxttalp01:"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+            <step Driver="common_driver" Keyword="verify_data" TS="13" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="Desktop"/>
+                                <argument name="object_key" value="value"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+
+            <step Driver="common_driver" Keyword="verify_data" TS="14" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="Templates"/>
+                                <argument name="object_key" value="temp"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+
+            <step Driver="common_driver" Keyword="verify_data" TS="15" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="Hi this"/>
+                                <argument name="object_key" value="test"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+
+
+        </Steps>
+</Testcase>
+

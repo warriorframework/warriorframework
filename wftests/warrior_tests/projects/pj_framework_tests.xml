@@ -46,5 +46,11 @@
             <onError action="next" value=""/>
             <impact>noimpact</impact>
         </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/ts_cli_resp_storing_and_accessing_data_from_data_repository_after_reconnect.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
     </Testsuites>
 </Project>

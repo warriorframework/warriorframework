@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_cli_resp_storing_and_accessing_data_from_data_repository_after_reconnect</Name>
+                <Title>Test suite for testing test data response is accessible after reconnect </Title>
+                <Engineer>Anil Kumar</Engineer>
+                <Date>06/12/2018</Date>
+                <Time>12:14:26</Time>
+                <type exectype="sequential_testcases"/>
+                <default_onError action="next"/>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>Requirement-001</Requirement>
+                <Requirement>Requirement-002</Requirement>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../testcases/framework_tests/tc_cli_resp_storing_and_accessing_data_from_data_repository_after_reconnect.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>
+
