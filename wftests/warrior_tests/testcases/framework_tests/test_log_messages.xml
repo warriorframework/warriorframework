@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>test_log_messages</Name>
+                <Title>testcase to print log messages</Title>
+                <Engineer>Sekhar</Engineer>
+                <Date>2018-12-04</Date>
+                <Time>11:27</Time>
+                <State/>
+                <InputDataFile>No_Data</InputDataFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="log_driver" Keyword="log_message" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="list_message" value="[&quot;my message1&quot;, &quot;my message2&quot;]"/>
+                                <argument name="type" value="INFO"/>
+                                <argument name="message" value="Printing just a simple message, This is yummy"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Operator="eq"/>
+                        </Execute>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="store_in_repo" TS="2" draft="no">
+                        <Arguments>
+                                <argument name="datavar" value="fruit1"/>
+                                <argument name="datavalue" value="Apple"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="store_in_repo" TS="3" draft="no">
+                        <Arguments>
+                                <argument name="datavar" value="fruit2"/>
+                                <argument name="datavalue" value="Mango"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="log_driver" Keyword="log_message" TS="4" draft="no">
+                        <Arguments>
+                                <argument name="dict_message" value="{'my first preference' : 'fruit1', 'my next preference' : 'fruit2'}"/>
+                                <argument name="type" value="INFO"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="log_driver" Keyword="log_message" TS="5" draft="no">
+                        <Arguments>
+                                <argument name="list_message" value="['warn1', 'warn2']"/>
+                                <argument name="type" value="WARN"/>
+                                <argument name="message" value="this is warning"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="log_driver" Keyword="log_message" TS="6" draft="no">
+                        <Arguments>
+                                <argument name="message" value="this is error"/>
+                                <argument name="type" value="ERROR"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="log_driver" Keyword="log_message" TS="7" draft="no">
+                        <Arguments>
+                                <argument name="message" value="this is debug"/>
+                                <argument name="type" value="DEBUG"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+        </Steps>
+</Testcase>
