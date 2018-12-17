@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_to_verify_get_time_stamp_and_time_delta</Name>
+		<Title>verify comparison operations</Title>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir>Execution</Logsdir>
+                <InputDataFile>No_Data</InputDataFile>
+		<Resultsdir>Execution</Resultsdir>
+		<Date>2016-12-30</Date>
+		<Time>16:20</Time>
+		<Engineer>Anil Kumar</Engineer>
+	</Details>
+	<Steps>
+     <step Driver="common_driver" Keyword="get_current_timestamp" TS="1">
+        <Arguments>
+            <argument name="current_time" value="timestamp1"/>
+			  </Arguments>
+			<onError action="next"/>
+			<Description>To get current timestamp</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+
+		<step Driver="common_driver" Keyword="get_time_delta" TS="1">
+			<Arguments>
+        <argument name="start_time" value="timestamp1"/>
+        <argument name="time_diff" value="time_diff1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Returns the time difference between start_time and current_time</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+    </step>
+    
+    <step Driver="common_driver" Keyword="get_current_timestamp" TS="1">
+      <Arguments>
+            <argument name="current_time" value="timestamp2"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>To get current timestamp</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+
+		<step Driver="common_driver" Keyword="get_time_delta" TS="1">
+			<Arguments>
+        <argument name="start_time" value="timestamp1"/> 
+        <argument name="end_time" value="timestamp2"/>
+        <argument name="time_diff" value="time_diff2"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Returns the time difference between start_time and end_time</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+    
+	</Steps>
+</Testcase>
