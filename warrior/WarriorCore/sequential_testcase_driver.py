@@ -269,7 +269,8 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                                                                 testcase)
         retry_type, retry_cond, retry_cond_value, retry_value, \
             retry_interval = common_execution_utils.get_retry_from_xmlfile(testcase)
-        if runmode is not None:
+        # Adding condition to check tc_status is error or not
+        if runmode is not None or tc_status == "ERROR":
             if tc_status is True:
                 testsuite_utils.update_tc_duration(str(tc_duration))
                 # if runmode is 'rup' & tc_status is True, skip the repeated
@@ -294,6 +295,11 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                 elif goto_tc and int(goto_tc) < tests:
                     tests = int(goto_tc)-1
                     goto_tc = False
+                # Handles the goto value is greater than total no of TC's
+                if int(goto_tc) > len(testcase_list):
+                    print_error("The goto value {} is more than no of TC's {} so skipping all the TC's".format(
+                        goto_tc, len(testcase_list)))
+
             elif tc_status is False:
                 failures += 1
                 testsuite_utils.pSuite_testcase_failure(junit_resultfile,

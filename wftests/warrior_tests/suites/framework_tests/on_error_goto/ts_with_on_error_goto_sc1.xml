@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_with_on_error_goto_sc1</Name>
+                <Title>test suite with rup and goto on error scenario</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>11/17/2017</Date>
+                <Time>16:37:44</Time>
+                <default_onError action="next" value=""/>
+                <Resultsdir/>
+                <InputDataFile/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/on_error_goto/tc_on_error_goto_sc1.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="RUP" value="5"/>
+                </Testcase>
+
+                <Testcase>
+                        <path>../../../testcases/framework_tests/on_error_goto/tc_on_error_goto_sc2.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="goto" value="90"/>
+                        <impact>noimpact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+
+                </Testcase>
+
+                <Testcase>
+                        <path>../../../testcases/framework_tests/on_error_goto/tc_on_error_goto_sc1.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+
+                </Testcase>
+
+                <Testcase>
+                        <path>../../../testcases/framework_tests/on_error_goto/tc_on_error_goto_sc2.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+
+                </Testcase>
+        </Testcases>
+</TestSuite>

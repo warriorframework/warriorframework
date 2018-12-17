@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_on_error_goto_sc1</Name>
+		<Title>testing</Title>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir>Execution</Logsdir>
+                <InputDataFile>No_Data</InputDataFile>
+		<Resultsdir>Execution</Resultsdir>
+		<Date>2018-12-7</Date>
+		<Time>16:20</Time>
+		<Engineer>Anil Kumar</Engineer>
+	</Details>
+	<Steps>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="1">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="demovalue"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="2">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="demovalue"/>
+				<argument name="comparison" value="eq"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+
+	</Steps>
+</Testcase>
