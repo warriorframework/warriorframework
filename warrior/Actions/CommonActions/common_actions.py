@@ -370,3 +370,55 @@ class CommonActions(object):
         status = Utils.data_Utils.verify_arith_exp(expression, expected,
                                                    comparison, repo_key)
         return status
+
+    def get_current_timestamp(self, current_time="current_time"):
+        """Returns system current timestamp.
+           :Arguments:
+                  1. current_time (string) : name of the key to store in data repository
+
+           :Returns:
+                1. status(boolean)
+                2. current_time (dict element) : name = current_time given in the argument,
+                    value = Current System Time in the  object format of Year, Month, Date,
+                    Time(without microseconds)
+                     Ex :datetime.datetime(2018, 10, 22, 5, 51, 21)
+
+        """
+        wdesc = "To get the current timestamp in the format of yyyy-mm-dd hh:mm:ss"
+        Utils.testcase_Utils.pNote(wdesc)
+        currentdate = datetime_utils.get_current_timestamp()
+        print_info("current timestamp : {0}".format(currentdate))
+        output_dict = {current_time: currentdate}
+        status = True
+        return status, output_dict
+
+    def get_time_delta(self, start_time, end_time=None, time_diff="time_diff"):
+        """Returns time difference between two timestamps in seconds.
+           :Arguments:
+                1. start_time = start time key in the data repository,
+                                  value should be datetime object in data repo.
+                                  Ex: 'timestamp1'
+
+                2. end_time(optional) = end time key in the data repository,
+                                          value should be datetime object in data repo.
+                                          Ex: 'timestamp2'
+
+                  3. time_diff(optional) = time diff key in the data repository
+
+           :Returns:
+                  1. status(boolean)
+                  2. time_diff (dict element) : name = time_diff, value = difference between the
+                     given start time and end time in seconds (ex: 212342.0)
+
+        """
+        wdesc = "To get time difference between two timestamps"
+        Utils.testcase_Utils.pNote(wdesc)
+        start_time = Utils.data_Utils.get_object_from_datarepository(start_time)
+        if end_time:
+            end_time = Utils.data_Utils.get_object_from_datarepository(end_time)
+        time_delta = datetime_utils.get_time_delta(start_time=start_time, end_time=end_time)
+        print_info("delta between given timestamps : {0} seconds".format(time_delta))
+        output_dict = {time_diff: time_delta}
+        status = True
+        return status, output_dict
+
