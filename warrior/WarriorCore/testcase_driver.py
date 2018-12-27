@@ -378,6 +378,7 @@ def check_and_create_defects(tc_status, auto_defects, data_repository, tc_junit_
 
 def execute_steps(data_type, runtype, data_repository, step_list, tc_junit_object, iter_ts_sys):
     """executes steps based on given data_type and runtype"""
+    tc_status = True
     if data_type.upper() == 'CUSTOM' and \
         runtype.upper() == 'SEQUENTIAL_KEYWORDS':
         tc_status = execute_custom(data_type, runtype,\
