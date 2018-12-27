@@ -358,7 +358,7 @@ class TestcaseUtils(object):
         EXCEPTION -> ERROR
         """
         result = {True: 'PASS', False: 'FAIL',
-                  'ERROR': 'ERROR', 'EXCEPTION': 'ERROR', 'RAN': 'RAN'}.get(text)
+            'ERROR': 'ERROR', 'EXCEPTION': 'ERROR', 'RAN': 'RAN', 'WARN': 'WARN'}.get(text)
         if result is None:
             print_error("junk or no value received, expecting TRUE/FALSE/ERROR/EXCEPTION")
             result = 'ERROR'
@@ -372,7 +372,7 @@ class TestcaseUtils(object):
         On receiving a Skip reports keyword status as Skipped
         On receiving a Exception reports keyword status as Exception
         On receiving a Error reports Keyword status as Error
-        On receiving a RAN reports Keyword status as RAN 
+        On receiving a RAN reports Keyword status as RAN
 
         :Arguments:
             1. status = (bool) True or False
@@ -610,7 +610,7 @@ class TestcaseUtils(object):
                 print_info("Hence using default value for context which is 'positive'")
                 context = 'POSITIVE'
         return context
-    
+
     def get_description_from_xmlfile(self, element):
         """Gets the description value of a step/testcase/suite
         from the testcase.xml/testsuite.xml/project.xml file """

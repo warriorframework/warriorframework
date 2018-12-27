@@ -133,10 +133,26 @@ class WarriorHtmlResults:
             self.create_line_result(project_node, "Project")
             for testsuite_node in project_node.findall("testsuite"):
                 self.create_line_result(testsuite_node, "Testsuite")
+                for setup_node in testsuite_node.findall("Setup"):
+                    self.create_line_result(setup_node, "Setup")
+                    self.steps = 0
+                    for step_node in setup_node.findall("properties"):
+                        for node in step_node.findall("property"):
+                            if node.get('type') == 'keyword':
+                                self.steps += 1
+                                self.create_line_result(node, "Keyword")
                 for testcase_node in testsuite_node.findall("testcase"):
                     self.create_line_result(testcase_node, "Testcase")
                     self.steps = 0
                     for step_node in testcase_node.findall("properties"):
+                        for node in step_node.findall("property"):
+                            if node.get('type') == 'keyword':
+                                self.steps += 1
+                                self.create_line_result(node, "Keyword")
+                for cleanup_node in testsuite_node.findall("Cleanup"):
+                    self.create_line_result(setup_node, "Cleanup")
+                    self.steps = 0
+                    for step_node in cleanup_node.findall("properties"):
                         for node in step_node.findall("property"):
                             if node.get('type') == 'keyword':
                                 self.steps += 1

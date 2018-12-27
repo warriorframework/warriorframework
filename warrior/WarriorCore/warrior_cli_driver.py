@@ -16,9 +16,9 @@ import sys
 import Tools
 from Framework.Utils import file_Utils
 from Framework.Utils.data_Utils import get_credentials
-from WarriorCore.Classes import war_cli_class
 from Framework.Utils.print_Utils import print_error, print_info
 import Framework.Utils.encryption_utils as Encrypt
+from WarriorCore.Classes import war_cli_class
 """Handle all the cli command, new functions may be added later"""
 
 
@@ -100,6 +100,10 @@ def decide_overwrite_var(namespace):
             namespace.datafile = os.getcwd() + os.sep + namespace.datafile
         overwrite['ow_datafile'] = namespace.datafile
 
+    if namespace.testwrapperfile:
+        if namespace.testwrapperfile[0] != os.sep:
+            namespace.testwrapperfile = os.getcwd() + os.sep + namespace.testwrapperfile
+        overwrite['ow_testwrapperfile'] = namespace.testwrapperfile
     if namespace.resultdir:
         if namespace.resultdir[0] != os.sep:
             namespace.resultdir = os.getcwd() + os.sep + namespace.resultdir
