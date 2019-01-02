@@ -150,7 +150,7 @@ class WarriorHtmlResults:
                                 self.steps += 1
                                 self.create_line_result(node, "Keyword")
                 for cleanup_node in testsuite_node.findall("Cleanup"):
-                    self.create_line_result(setup_node, "Cleanup")
+                    self.create_line_result(cleanup_node, "Cleanup")
                     self.steps = 0
                     for step_node in cleanup_node.findall("properties"):
                         for node in step_node.findall("property"):
