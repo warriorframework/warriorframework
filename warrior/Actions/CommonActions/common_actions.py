@@ -200,6 +200,8 @@ class CommonActions(object):
                 filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     json_doc = json.load(json_handle)
+                    #if slurp is set to True, all content of given json file will be
+                    #store in data repository
                     if slurp:
                         print_info("slurp mode enabled, all content of given"+ \
                             " json file will be stored in data repository")
