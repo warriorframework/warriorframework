@@ -44,6 +44,7 @@ datafile_relpath = './config/data.json'
 statesfile_relpath = './config/states.json'
 newtestcasefile_relpath = './config/newtestcase.xml'
 newtestsuitefile_relpath = './config/newtestsuite.xml'
+newTestWrapperfilecase_relpath = './config/newtestwrapperfile.xml'
 newprojectfile_relpath = './config/newproject.xml'
 newdatafile_relpath = './config/newdatafile.xml'
 states_relpath = './config/states.json'
@@ -57,6 +58,7 @@ NAMEFILE = os.path.normpath((os.path.join(current_file_dir, name_file_relpath)))
 DATAFILE = os.path.normpath((os.path.join(current_file_dir, datafile_relpath)))
 STATESFILE = os.path.normpath((os.path.join(current_file_dir, statesfile_relpath)))
 NEWTESTCASEFILE = os.path.normpath((os.path.join(current_file_dir, newtestcasefile_relpath)))
+NEWTestWrapperFILECASE = os.path.normpath((os.path.join(current_file_dir, newTestWrapperfilecase_relpath)))
 NEWTESTSUITEFILE = os.path.normpath((os.path.join(current_file_dir, newtestsuitefile_relpath)))
 NEWPROJECTFILE = os.path.normpath((os.path.join(current_file_dir, newprojectfile_relpath)))
 NEWDATAFILE = os.path.normpath((os.path.join(current_file_dir, newdatafile_relpath)))
@@ -376,12 +378,12 @@ def check_path_existance(cfg):
 
     In this function we assert that all paths except the engineer entry in the config.json file is valid.
     '''
-    paths = 'testsuitedir projdir pythonsrcdir xmldir pythonpath idfdir testdata warhorn_config'.split()
+    paths = 'testsuitedir projdir pythonsrcdir xmldir xmldir1 pythonpath idfdir testdata warhorn_config'.split()
     op = {
         'status': 'ok',
         'notfounds': []
     }
-    nonmandatory = 'testsuitedir projdir xmldir pythonpath idfdir testdata warhorn_config'.split()
+    nonmandatory = 'testsuitedir projdir xmldir xmldir1 pythonpath idfdir testdata warhorn_config'.split()
     for path in paths:
         print 'path', path
         if path in nonmandatory:
@@ -407,6 +409,7 @@ def updateconfig():
     '''
     lines, httpstatus, op = "", 200, {}
     lines = json.dumps(request.json, indent=2)
+    print(lines);
     cfg = json.loads(lines)
     if cfg is None:
         with open(CFGFILE, 'r') as f:
@@ -470,6 +473,7 @@ def populatepaths(data):
         path += os.sep + path_list[i]
     output = {}
     dirs = {"xmldir": "Testcases",
+            "xmldir1": "TestWrapperfilecases",
             "testsuitedir": "Suites",
             "projdir": "Projects",
             "idfdir": "Data",
@@ -706,6 +710,29 @@ def testcasefile(filename, subdirs):
     return content
 
 
+@route('/TestWrapperfilecasefilenames/:directory')
+def TestWrapperfilecasefiles(directory):
+    if directory == "none":
+        directory = None
+    onlyfiles = getSubFiles('xmldir1', directory)
+    return onlyfiles
+
+
+@route('/TestWrapperfilecasefoldernames/:directory')
+def TestWrapperfilecasefiles(directory):
+    if directory == "none":
+        directory = None
+    onlyfolders = getSubFolders('xmldir1', directory)
+    return onlyfolders
+
+@route('/TestWrapperfilecase/:filename/:subdirs')
+def TestWrapperfilecase(filename, subdirs):
+    if subdirs == "none":
+        subdirs = None
+    content = getXMLFileContent('xmldir1', NEWTestWrapperFILECASE, filename, subdirs)
+    return content
+
+
 @route('/warhornconfigfile/:filename/:subdirs')
 def warhornconfigfile(filename, subdirs):
     if subdirs == "none":
@@ -732,7 +759,7 @@ def getXMLFileContent(identifier, filetype, filename, subdirs=None):
     else:
         with open(cfg[identifier] + dir_path + os.sep + filename, 'r') as f:
             xmlfilecontent = f.read()
-    if identifier == "xmldir":
+    if identifier == "xmldir" or  "xmldir1":
         res = {'xml': xmlfilecontent,
                'pycmts': py_file_details(),
                'engineer': cfg['engineer'],
@@ -1144,6 +1171,7 @@ def checkExistenceOfFile(filename, filetype, subdirs=None):
 
     folder = {
         "testcase": "xmldir",
+        "TestWrapper":"xmldir1",
         "suite": "testsuitedir",
         "project": "projdir",
         "warhornconfigfile": "warhorn_config",
@@ -1197,6 +1225,12 @@ def testsuitefile(filename, subdirs):
 @route('/savetestcase/:filename/:subdirs', method='POST')
 def savetestcase(filename, subdirs):
     output = saveFile(filename, subdirs, "xmldir")
+    return output
+
+
+@route('/saveTestWrapperfilecase/:filename/:subdirs', method='POST')
+def saveTestWrapperfilecase(filename, subdirs):
+    output = saveFile(filename, subdirs, "xmldir1")
     return output
 
 

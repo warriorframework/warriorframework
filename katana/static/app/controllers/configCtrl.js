@@ -23,6 +23,7 @@ app.controller('configCtrl', ['$scope', '$route', '$http', 'fileFactory', functi
     $scope.default_paths = {
         "pythonsrcdir": "Warrior",
         "xmldir": "Testcases",
+        "xmldir1": "TestWrapper",
         "testsuitedir": "Suites",
         "projdir": "Projects",
         "idfdir": "Data",
@@ -35,6 +36,7 @@ app.controller('configCtrl', ['$scope', '$route', '$http', 'fileFactory', functi
         pythonsrcdir: "",
         testsuitedir: "",
         projdir: "",
+        xmldir1:"",
         idfdir: "",
         testdata: "",
         warhorn_config: "",
@@ -90,6 +92,7 @@ app.controller('configCtrl', ['$scope', '$route', '$http', 'fileFactory', functi
                 $scope.orig.pythonsrcdir = $scope.cfg.pythonsrcdir;
                 $scope.orig.testsuitedir = $scope.cfg.testsuitedir;
                 $scope.orig.projdir = $scope.cfg.projdir;
+                $scope.orig.xmldir1 = $scope.cfg.xmldir1;
                 $scope.orig.idfdir = $scope.cfg.idfdir;
                 $scope.orig.testdata = $scope.cfg.testdata;
                 $scope.orig.warhorn_config = $scope.cfg.warhorn_config;
@@ -218,6 +221,7 @@ app.controller('configCtrl', ['$scope', '$route', '$http', 'fileFactory', functi
 
         else{
             console.log("saving json");
+
             $http.post('/updateconfig', $scope.cfg)
                 .success(function(data, status, headers, config) {
                     console.log("Success updating config.json");
@@ -234,6 +238,7 @@ app.controller('configCtrl', ['$scope', '$route', '$http', 'fileFactory', functi
                     fileFactory.get_files_and_folders($scope.path)
                 })
                 .error(function(data, status, headers, config) {
+
                     console.log("Failed to update config.json");
                     var op = data;
                         var pathsnotfound = _.map(op.notfounds, function (nf) {
