@@ -1,0 +1,16 @@
+{
+  "repo_variables":
+  { 
+    "var1": "30",
+    "var2.var3.a": "10",
+    "var2.var3.b": "100",
+    "var2.var4": "1",
+    "var2.var5": "2",
+    "var6.a": {"type": "int", "value": "40"},
+    "var6.b": {"type": "int", "value": "50"}
+  },
+  "user_defined_tag":
+  { "var7.a" : 
+    {"type": "int", "value": "50"}
+  }
+}

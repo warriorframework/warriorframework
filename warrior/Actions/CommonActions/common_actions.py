@@ -166,6 +166,21 @@ class CommonActions(object):
                 dic[var] = val
             return dic
 
+        def verify_key_already_exists_and_update(orig_dict, new_dict):
+            """
+            This function updates new_dict in orig_dict.
+            :param orig_dict: Dictionary to be updated
+            :param new_dict: Dictionary to update
+
+            :return: updated dictionary
+            """
+            for key, value in new_dict.items():
+                if key not in orig_dict:
+                    orig_dict[key] = value
+                else:
+                    verify_key_already_exists_and_update(orig_dict[key], value)
+            return orig_dict
+
         status = False
         pass_msg = "Value: {0} is stored in a Key: {1} of Warrior data_repository"
 
@@ -194,6 +209,7 @@ class CommonActions(object):
                         status = True
                         return status 
                     if jsonkey in json_doc:
+                        dict_to_update = {}
                         repo_dict = json_doc[jsonkey]
                         for var_key, var_value in repo_dict.items():
                             if isinstance(var_value, dict):
@@ -205,9 +221,12 @@ class CommonActions(object):
                                     value = str(var_value['value'])
                             else:
                                 value = str(var_value)
-                            dict_to_update = get_dict_to_update(var_key, value)
-                            update_datarepository(dict_to_update)
-                            print_info(pass_msg.format(value, var_key))
+                            build_dict = get_dict_to_update(var_key, value)
+                            verify_key_already_exists_and_update\
+                                (orig_dict=dict_to_update, new_dict=build_dict)
+                        update_datarepository(dict_to_update)
+                        print_info("{0} dictionary stored in Warrior data_repository".\
+                            format(dict_to_update))
                     else:
                         print_error('The {0} file is missing the key '
                                     '\"repo_variables\", please refer to '
