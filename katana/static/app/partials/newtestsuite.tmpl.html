@@ -756,6 +756,134 @@
             </div>
         </div>
 
+
+        <div class="row">
+            <div class="form-group">
+                <label for="JocketFile"
+                       class="col-sm-2 control-label ellipsis-the-overflow">Jocket File</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="newtestsuiteTooltip.jocketFile.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.jocketFile.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.jocketFile.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.jocketFile.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.jocketFile.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.jocketFile.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.jocketFile.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.jocketFile.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6" ng-show="status.nojocketfile == '1'">
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               required
+                               id="JocketFile2"
+                               ng-change="monitorPathBtnValueForJocket()"
+                               ng-model=''
+                               ng-click="loadDataFile(JocketFile)"
+                               ng-disabled="status.nojocketfile == '1'"
+                               placeholder="Location of the Jocket file" style="cursor:pointer;">
+                        <span class="input-group-addon" style="background-color: white">
+                            <input id="jCheckbox2" type="checkbox"
+                                   ng-model='status.nojocketfile'
+                                   ng-click='noteJocketStatus()'
+                                   ng-true-value="'1'" ng-false-value="'0'">
+                            <label for="jCheckbox">&nbsp;I Don't Want A Jocket File.</label>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-5" ng-hide="status.nojocketfile == '1'">
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               required
+                               id="JocketFile"
+                               ng-change="monitorPathBtnValueForJocket()"
+                               ng-model='JocketFile'
+                               ng-click="loadDataFile(JocketFile)"
+                               ng-disabled="status.nojocketfile == '1'"
+                               placeholder="Location of the Jocket file" style="cursor:pointer;">
+                        <span class="input-group-addon" style="background-color: white">
+                            <input id="jCheckbox" type="checkbox"
+                                   ng-model='status.nojocketfile'
+                                   ng-click='noteJocketStatus()'
+                                   ng-true-value="'1'" ng-false-value="'0'">
+                            <label for="jCheckbox">&nbsp;I Don't Want A Jocket File.</label>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-1" ng-hide="status.nojocketfile == '1'">
+                    <input type="button"
+                           class="btn btn-default form-control ellipsis-the-overflow"
+                           value="path"
+                           ng-value="btnValueJocket"
+                           ng-click="toggleModalJocket()">
+                </div>
+                <modal title="Select a Jocket File" show-modal="showModalJ">
+                    <div class="form-group" style="padding: 5%">
+                        <div id="tree_div_j" ng-click="getPathsJocket($event)"></div>
+                    </div>
+                    <input type="button"
+                           value="Submit"
+                           class="btn btn-default"
+                           ng-click="storePathsJocket()">
+                </modal>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="newtestsuiteTooltip.jocketFile.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.jocketFile.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.jocketFile.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.jocketFile.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.jocketFile.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.jocketFile.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.jocketFile.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.jocketFile.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <hr/>
 
         <div class="row" style="padding-left:1em">
@@ -2469,6 +2597,6 @@
             </div>
 
        </div>
-              
+
     </form>
 </div>

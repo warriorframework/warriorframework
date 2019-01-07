@@ -1,14 +1,13 @@
 <?xml version="1.0" ?>
 <TestWrapper>
         <Details>
-                <Name>TestWrapper_sample</Name>
-                <Title>testing</Title>
-                <Datatype/>
+                <Name>tw_sample</Name>
+                <Title>sample</Title>
+                <Datatype>Custom</Datatype>
                 <Runtype>Sequential_keywords</Runtype>
-                <Date>2019-01-03</Date>
-                <Time>08:21</Time>
+                <Date>2019-01-07</Date>
+                <Time>04:25</Time>
                 <Engineer>Anil</Engineer>
-                <InputDataFile>No_Data</InputDataFile>
                 <default_onError action="next"/>
         </Details>
         <Setup>
