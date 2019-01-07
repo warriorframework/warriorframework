@@ -227,7 +227,7 @@ def compute_testcase_status(step_status, tc_status):
         return tc_status and step_status
 
 
-def report_testcase_result(tc_status, data_repository):
+def report_testcase_result(tc_status, data_repository, tag="Steps"):
     """Report the testcase result to the result file
 
     :Arguments:
@@ -252,10 +252,10 @@ def report_testcase_result(tc_status, data_repository):
                 print_info("++++++++++++++++++++++++ Summary of Failed Keywords +++++++++++++++++++"
                            "+++++")
                 print_info("{0:15} {1:45} {2:10}".format('StepNumber', 'KeywordName', 'Status'))
-                print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
+                print_info("{0:15} {1:45} {2:10}".format(str(step_num), tag+"-"+str(kw_name),
                                                          str(kw_status)))
             elif fail_count > 1:
-                print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
+                print_info("{0:15} {1:45} {2:10}".format(str(step_num), tag+"-"+str(kw_name),
                                                          str(kw_status)))
     print_info("=================== END OF TESTCASE ===========================")
 
@@ -567,13 +567,16 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
             #setting onError action to 'abort' for all setup steps
             _ = [step.find("onError").set("action", "abort") for step in setup_step_list]
             print_info("****** SETUP STEPS EXECUTION STARTS *******")
+            data_repository['wt_step_type'] = 'setup'
             setup_tc_status = execute_steps(j_data_type, j_runtype, \
                 data_repository, setup_step_list, tc_junit_object, iter_ts_sys)
+            data_repository['wt_step_type'] = 'step'
             print_info("setup_tc_status : {0}".format(setup_tc_status))
             print_info("****** SETUP STEPS EXECUTION ENDS *******")
         if isinstance(setup_tc_status, bool) and setup_tc_status:
             if steps_tag == "Steps":
                 print_info("****** TEST STEPS EXECUTION STARTS *******")
+            data_repository['wt_step_type'] = 'step'
             tc_status = execute_steps(data_type, runtype, \
                 data_repository, step_list, tc_junit_object, iter_ts_sys)
             if steps_tag == "Steps":
@@ -589,8 +592,10 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
             cleanup_step_list = common_execution_utils.get_step_list(testwrapperfile,
                                                                      "Cleanup", "step")
             print_info("****** CLEANUP STEPS EXECUTION STARTS *******")
+            data_repository['wt_step_type'] = 'cleanup'
             cleanup_tc_status = execute_steps(j_data_type, j_runtype, \
                 data_repository, cleanup_step_list, tc_junit_object, iter_ts_sys)
+            data_repository['wt_step_type'] = 'step'
             print_info("cleanup_tc_status : {0}".format(cleanup_tc_status))
             print_info("****** CLEANUP STEPS EXECUTION ENDS *******")
 
@@ -636,7 +641,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     tc_junit_object.update_attr("logsdir", os.path.dirname(data_repository['wt_logsdir']),
                                 "tc", tc_timestamp)
 
-    report_testcase_result(tc_status, data_repository)
+    report_testcase_result(tc_status, data_repository, tag=steps_tag)
     if not from_ts:
         tc_junit_object.update_count(tc_status, "1", "pj", "not appicable")
         tc_junit_object.update_count("suites", "1", "pj", "not appicable")

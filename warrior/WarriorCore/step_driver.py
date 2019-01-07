@@ -247,6 +247,8 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     impact = impact_dict.get(step_impact.upper())
     tc_resultsdir = data_repository['wt_resultsdir']
     tc_name = data_repository['wt_name']
+    if data_repository['wt_step_type'] != 'step':
+        keyword = data_repository['wt_step_type']+ "--" + keyword
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
                        kw_resultfile, impact, onerror, step_description,
