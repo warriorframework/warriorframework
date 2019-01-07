@@ -23,7 +23,7 @@ app.controller('configCtrl', ['$scope', '$route', '$http', 'fileFactory', functi
     $scope.default_paths = {
         "pythonsrcdir": "Warrior",
         "xmldir": "Testcases",
-        "xmldir1": "TestWrapper",
+        "testwrapper": "TestWrapper",
         "testsuitedir": "Suites",
         "projdir": "Projects",
         "idfdir": "Data",
@@ -36,7 +36,7 @@ app.controller('configCtrl', ['$scope', '$route', '$http', 'fileFactory', functi
         pythonsrcdir: "",
         testsuitedir: "",
         projdir: "",
-        xmldir1:"",
+        testwrapper:"",
         idfdir: "",
         testdata: "",
         warhorn_config: "",
@@ -92,7 +92,7 @@ app.controller('configCtrl', ['$scope', '$route', '$http', 'fileFactory', functi
                 $scope.orig.pythonsrcdir = $scope.cfg.pythonsrcdir;
                 $scope.orig.testsuitedir = $scope.cfg.testsuitedir;
                 $scope.orig.projdir = $scope.cfg.projdir;
-                $scope.orig.xmldir1 = $scope.cfg.xmldir1;
+                $scope.orig.testwrapper = $scope.cfg.testwrapper;
                 $scope.orig.idfdir = $scope.cfg.idfdir;
                 $scope.orig.testdata = $scope.cfg.testdata;
                 $scope.orig.warhorn_config = $scope.cfg.warhorn_config;

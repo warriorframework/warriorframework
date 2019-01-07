@@ -23,7 +23,7 @@ app.controller('TestWrapperfilecaseCtrl', ['$scope', '$http', 'fileFactory', fun
     function readConfig(){
         $http.get('/readconfig')
             .success(function(data, status, headers, config) {
-                var temp = data["xmldir1"];
+                var temp = data["testwrapper"];
                 $scope.base_dir = temp.split('\\').pop().split('/').pop();
                 if(temp == ""){
                     setTimeout(function(){
@@ -78,7 +78,7 @@ app.controller('TestWrapperfilecaseCtrl', ['$scope', '$http', 'fileFactory', fun
                                                     .then(
                                                     function(data) {
                                                         if(data["exists"] == "yes"){
-                                                            fileFactory.updateconfigfromtab("xmldir1", test_value)
+                                                            fileFactory.updateconfigfromtab("testwrapper", test_value)
                                                             .then(
                                                                 function(data) {
                                                                     if(data["updated"] == "yes") {

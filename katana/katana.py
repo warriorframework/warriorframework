@@ -88,7 +88,7 @@ def katana():
     return template('index', template_lookup=template_lookup)
 
 @route('/datafilepath/:path')
-def datafilepath(path):   
+def datafilepath(path):
     path = path.replace(">", os.sep)
     subsystem_name_list = []
     system_name_list = []
@@ -110,7 +110,7 @@ def datafilepath(path):
 
 
 @route('/sysName/:path/:filename')
-def sysName(path,filename): 
+def sysName(path,filename):
     filename = filename.replace(">", os.sep)
     lines = ""
     subsystem_list = []
@@ -378,12 +378,12 @@ def check_path_existance(cfg):
 
     In this function we assert that all paths except the engineer entry in the config.json file is valid.
     '''
-    paths = 'testsuitedir projdir pythonsrcdir xmldir xmldir1 pythonpath idfdir testdata warhorn_config'.split()
+    paths = 'testsuitedir projdir pythonsrcdir xmldir testwrapper pythonpath idfdir testdata warhorn_config'.split()
     op = {
         'status': 'ok',
         'notfounds': []
     }
-    nonmandatory = 'testsuitedir projdir xmldir xmldir1 pythonpath idfdir testdata warhorn_config'.split()
+    nonmandatory = 'testsuitedir projdir xmldir testwrapper pythonpath idfdir testdata warhorn_config'.split()
     for path in paths:
         print 'path', path
         if path in nonmandatory:
@@ -473,7 +473,7 @@ def populatepaths(data):
         path += os.sep + path_list[i]
     output = {}
     dirs = {"xmldir": "Testcases",
-            "xmldir1": "TestWrapperfilecases",
+            "testwrapper": "TestWrapperfilecases",
             "testsuitedir": "Suites",
             "projdir": "Projects",
             "idfdir": "Data",
@@ -714,7 +714,7 @@ def testcasefile(filename, subdirs):
 def TestWrapperfilecasefiles(directory):
     if directory == "none":
         directory = None
-    onlyfiles = getSubFiles('xmldir1', directory)
+    onlyfiles = getSubFiles('testwrapper', directory)
     return onlyfiles
 
 
@@ -722,14 +722,14 @@ def TestWrapperfilecasefiles(directory):
 def TestWrapperfilecasefiles(directory):
     if directory == "none":
         directory = None
-    onlyfolders = getSubFolders('xmldir1', directory)
+    onlyfolders = getSubFolders('testwrapper', directory)
     return onlyfolders
 
 @route('/TestWrapperfilecase/:filename/:subdirs')
 def TestWrapperfilecase(filename, subdirs):
     if subdirs == "none":
         subdirs = None
-    content = getXMLFileContent('xmldir1', NEWTestWrapperFILECASE, filename, subdirs)
+    content = getXMLFileContent('testwrapper', NEWTestWrapperFILECASE, filename, subdirs)
     return content
 
 
@@ -759,7 +759,7 @@ def getXMLFileContent(identifier, filetype, filename, subdirs=None):
     else:
         with open(cfg[identifier] + dir_path + os.sep + filename, 'r') as f:
             xmlfilecontent = f.read()
-    if identifier == "xmldir" or  "xmldir1":
+    if identifier == "xmldir" or  "testwrapper":
         res = {'xml': xmlfilecontent,
                'pycmts': py_file_details(),
                'engineer': cfg['engineer'],
@@ -1171,7 +1171,7 @@ def checkExistenceOfFile(filename, filetype, subdirs=None):
 
     folder = {
         "testcase": "xmldir",
-        "TestWrapper":"xmldir1",
+        "TestWrapper":"testwrapper",
         "suite": "testsuitedir",
         "project": "projdir",
         "warhornconfigfile": "warhorn_config",
@@ -1230,7 +1230,7 @@ def savetestcase(filename, subdirs):
 
 @route('/saveTestWrapperfilecase/:filename/:subdirs', method='POST')
 def saveTestWrapperfilecase(filename, subdirs):
-    output = saveFile(filename, subdirs, "xmldir1")
+    output = saveFile(filename, subdirs, "testwrapper")
     return output
 
 

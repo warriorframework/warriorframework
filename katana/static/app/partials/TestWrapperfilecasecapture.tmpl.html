@@ -132,7 +132,7 @@
                            required
                            id="Title"
                            ng-model='model.TestWrapper.Details.Title'
-                           placeholder="Description of this TextWrapper">
+                           placeholder="Description of this TestWrapper">
                 </div>
                 <div class="col-sm-1 align-fa-icon-after-input">
                     <div class="tooltip-on-right">
@@ -253,124 +253,83 @@
         </div>
 
 
-        <div class="row">
-            <div class="form-group">
-                <label for="InputDataFile"
-                       class="col-sm-2 control-label ellipsis-the-overflow">Input Data File</label>
+
+             <!-- Data Type File -->
+
+         <div class="row">
+            <div class="form-group" ng-show="status.nodatafile == '0' && cleanupstatus.nodatafile =='0'">
+                <label for="Datatype"
+                       class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Data
+                    type</label>
                 <div class="tooltip-on-right align-fa-icon-after-label">
                     <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                     <span class="tooltip-content">
-                        <div ng-if="testcaseTooltips.inputDataFile.tooltip != ''">
+                        <div ng-if="testcaseTooltips.datatype.tooltip != ''">
                             <i class="fa fa-rocket" aria-hidden="true"></i>
                             &nbsp;
-                            {{testcaseTooltips.inputDataFile.tooltip}}
+                            {{testcaseTooltips.datatype.tooltip}}
                             <br>
                         </div>
-                        <div ng-if="testcaseTooltips.inputDataFile.protip != ''">
+                        <div ng-if="testcaseTooltips.datatype.protip != ''">
                             <br>
                             <i class="fa fa-bolt" aria-hidden="true"></i>
                             &nbsp;
-                            {{testcaseTooltips.inputDataFile.protip}}
+                            {{testcaseTooltips.datatype.protip}}
                             <br>
                         </div>
-                        <div ng-if="testcaseTooltips.inputDataFile.bantip != ''">
+                        <div ng-if="testcaseTooltips.datatype.bantip != ''">
                             <br>
                             <i class="fa fa-ban" aria-hidden="true"></i>
                             &nbsp;
-                            {{testcaseTooltips.inputDataFile.bantip}}
+                            {{testcaseTooltips.datatype.bantip}}
                             <br>
                         </div>
-                        <div ng-if="testcaseTooltips.inputDataFile.snowflake != ''">
+                        <div ng-if="testcaseTooltips.datatype.snowflake != ''">
                             <br>
                             <i class="fa fa-snowflake-o" aria-hidden="true"></i>
                             &nbsp;
-                            {{testcaseTooltips.inputDataFile.snowflake}}
+                            {{testcaseTooltips.datatype.snowflake}}
                             <br>
                         </div>
                     </span>
                 </div>
-                <div class="col-sm-6" ng-show="status.nodatafile == '1'">
-                    <div class="input-group">
-                        <input type="text" class="form-control"
-                               required
-                               id="InputDataFile2"
-                               ng-change="monitorPathBtnValue()"
-                               ng-model='model.TestWrapper.Details.InputDataFile'
-                               ng-click="loadDataFile(model.TestWrapper.Details.InputDataFile)"
-                               ng-disabled="status.nodatafile == '1'"
-                               placeholder="Location of the Input Data file" style="cursor:pointer;">
-                        <span class="input-group-addon" style="background-color: white">
-                            <input id="idfCheckbox2" type="checkbox"
-                                   ng-model='status.nodatafile'
-                                   ng-click='noteInputDataStatus()'
-                                   ng-true-value="'1'" ng-false-value="'0'">
-                            <label for="idfCheckbox">&nbsp;I Don't Want A Data File.</label>
-                        </span>
-                    </div>
+                <div class="col-sm-6">
+                    <select class='form-control'
+                            ng-change="changeExistingIterTypes()"
+                            ng-model='model.TestWrapper.Details.Datatype'
+                            ng-options="o as o for o in status.datatypes"
+                            id="Datatype">
+                    </select>
                 </div>
-                <div class="col-sm-5" ng-hide="status.nodatafile == '1'">
-                    <div class="input-group">
-                        <input type="text" class="form-control"
-                               required
-                               id="InputDataFile"
-                               ng-change="monitorPathBtnValue()"
-                               ng-model='model.TestWrapper.Details.InputDataFile'
-                               ng-click="loadDataFile(model.TestWrapper.Details.InputDataFile)"
-                               ng-disabled="status.nodatafile == '1'"
-                               placeholder="Location of the Input Data file" style="cursor:pointer;">
-                        <span class="input-group-addon" style="background-color: white">
-                            <input id="idfCheckbox" type="checkbox"
-                                   ng-model='status.nodatafile'
-                                   ng-click='noteInputDataStatus()'
-                                   ng-true-value="'1'" ng-false-value="'0'">
-                            <label for="idfCheckbox">&nbsp;I Don't Want A Data File.</label>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-sm-1" ng-hide="status.nodatafile == '1'">
-                    <input type="button"
-                           class="btn btn-default form-control ellipsis-the-overflow"
-                           ng-value="btnValue"
-                           ng-click="toggleModal()">
-                </div>
-                <modal title="Select a Data File" show-modal="showModal">
-                    <div class="form-group" style="padding: 5%">
-                        <div id="tree_div" ng-click="getPaths($event)"></div>
-                    </div>
-                    <input type="button"
-                           value="Submit"
-                           class="btn btn-default"
-                           ng-click="storePaths()">
-                </modal>
                 <div class="col-sm-1 align-fa-icon-after-input">
                     <div class="tooltip-on-right">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                         <span class="tooltip-content">
-                            <div ng-if="testcaseTooltips.inputDataFile.tooltip != ''">
+                            <div ng-if="testcaseTooltips.datatype.tooltip != ''">
                                 <i class="fa fa-rocket" aria-hidden="true"></i>
                                 &nbsp;
-                                {{testcaseTooltips.inputDataFile.tooltip}}
+                                {{testcaseTooltips.datatype.tooltip}}
                                 <br>
                             </div>
-                            <div ng-if="testcaseTooltips.inputDataFile.protip != ''">
+                            <div ng-if="testcaseTooltips.datatype.protip != ''">
                                 <br>
                                 <i class="fa fa-bolt" aria-hidden="true"></i>
                                 &nbsp;
-                                {{testcaseTooltips.inputDataFile.protip}}
+                                {{testcaseTooltips.datatype.protip}}
                                 <br>
                             </div>
-                            <div ng-if="testcaseTooltips.inputDataFile.bantip != ''">
+                            <div ng-if="testcaseTooltips.datatype.bantip != ''">
                                 <br>
                                 <i class="fa fa-ban" aria-hidden="true"></i>
                                 &nbsp;
-                                {{testcaseTooltips.inputDataFile.bantip}}
+                                {{testcaseTooltips.datatype.bantip}}
                                 <br>
                             </div>
-                            <div ng-if="testcaseTooltips.inputDataFile.snowflake != ''">
+                            <div ng-if="testcaseTooltips.datatype.snowflake != ''">
                                 <br>
                                 <i class="fa fa-snowflake-o" aria-hidden="true"></i>
                                 &nbsp;
-                                {{testcaseTooltips.inputDataFile.snowflake}}
+                                {{testcaseTooltips.datatype.snowflake}}
                                 <br>
                             </div>
                         </span>
@@ -380,7 +339,135 @@
         </div>
 
 
-        <hr/>
+
+        <!--<div class="row">-->
+            <!--<div class="form-group">-->
+                <!--<label for="InputDataFile"-->
+                       <!--class="col-sm-2 control-label ellipsis-the-overflow">Input Data File</label>-->
+                <!--<div class="tooltip-on-right align-fa-icon-after-label">-->
+                    <!--<i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>-->
+                    <!--<span class="tooltip-content">-->
+                        <!--<div ng-if="testcaseTooltips.inputDataFile.tooltip != ''">-->
+                            <!--<i class="fa fa-rocket" aria-hidden="true"></i>-->
+                            <!--&nbsp;-->
+                            <!--{{testcaseTooltips.inputDataFile.tooltip}}-->
+                            <!--<br>-->
+                        <!--</div>-->
+                        <!--<div ng-if="testcaseTooltips.inputDataFile.protip != ''">-->
+                            <!--<br>-->
+                            <!--<i class="fa fa-bolt" aria-hidden="true"></i>-->
+                            <!--&nbsp;-->
+                            <!--{{testcaseTooltips.inputDataFile.protip}}-->
+                            <!--<br>-->
+                        <!--</div>-->
+                        <!--<div ng-if="testcaseTooltips.inputDataFile.bantip != ''">-->
+                            <!--<br>-->
+                            <!--<i class="fa fa-ban" aria-hidden="true"></i>-->
+                            <!--&nbsp;-->
+                            <!--{{testcaseTooltips.inputDataFile.bantip}}-->
+                            <!--<br>-->
+                        <!--</div>-->
+                        <!--<div ng-if="testcaseTooltips.inputDataFile.snowflake != ''">-->
+                            <!--<br>-->
+                            <!--<i class="fa fa-snowflake-o" aria-hidden="true"></i>-->
+                            <!--&nbsp;-->
+                            <!--{{testcaseTooltips.inputDataFile.snowflake}}-->
+                            <!--<br>-->
+                        <!--</div>-->
+                    <!--</span>-->
+                <!--</div>-->
+                <!--<div class="col-sm-6" ng-show="status.nodatafile == '1'">-->
+                    <!--<div class="input-group">-->
+                        <!--<input type="text" class="form-control"-->
+                               <!--required-->
+                               <!--id="InputDataFile2"-->
+                               <!--ng-change="monitorPathBtnValue()"-->
+                               <!--ng-model='model.TestWrapper.Details.InputDataFile'-->
+                               <!--ng-click="loadDataFile(model.TestWrapper.Details.InputDataFile)"-->
+                               <!--ng-disabled="status.nodatafile == '1'"-->
+                               <!--placeholder="Location of the Input Data file" style="cursor:pointer;">-->
+                        <!--<span class="input-group-addon" style="background-color: white">-->
+                            <!--<input id="idfCheckbox2" type="checkbox"-->
+                                   <!--ng-model='status.nodatafile'-->
+                                   <!--ng-click='noteInputDataStatus()'-->
+                                   <!--ng-true-value="'1'" ng-false-value="'0'">-->
+                            <!--<label for="idfCheckbox">&nbsp;I Don't Want A Data File.</label>-->
+                        <!--</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="col-sm-5" ng-hide="status.nodatafile == '1'">-->
+                    <!--<div class="input-group">-->
+                        <!--<input type="text" class="form-control"-->
+                               <!--required-->
+                               <!--id="InputDataFile"-->
+                               <!--ng-change="monitorPathBtnValue()"-->
+                               <!--ng-model='model.TestWrapper.Details.InputDataFile'-->
+                               <!--ng-click="loadDataFile(model.TestWrapper.Details.InputDataFile)"-->
+                               <!--ng-disabled="status.nodatafile == '1'"-->
+                               <!--placeholder="Location of the Input Data file" style="cursor:pointer;">-->
+                        <!--<span class="input-group-addon" style="background-color: white">-->
+                            <!--<input id="idfCheckbox" type="checkbox"-->
+                                   <!--ng-model='status.nodatafile'-->
+                                   <!--ng-click='noteInputDataStatus()'-->
+                                   <!--ng-true-value="'1'" ng-false-value="'0'">-->
+                            <!--<label for="idfCheckbox">&nbsp;I Don't Want A Data File.</label>-->
+                        <!--</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="col-sm-1" ng-hide="status.nodatafile == '1'">-->
+                    <!--<input type="button"-->
+                           <!--class="btn btn-default form-control ellipsis-the-overflow"-->
+                           <!--ng-value="btnValue"-->
+                           <!--ng-click="toggleModal()">-->
+                <!--</div>-->
+                <!--<modal title="Select a Data File" show-modal="showModal">-->
+                    <!--<div class="form-group" style="padding: 5%">-->
+                        <!--<div id="tree_div" ng-click="getPaths($event)"></div>-->
+                    <!--</div>-->
+                    <!--<input type="button"-->
+                           <!--value="Submit"-->
+                           <!--class="btn btn-default"-->
+                           <!--ng-click="storePaths()">-->
+                <!--</modal>-->
+                <!--<div class="col-sm-1 align-fa-icon-after-input">-->
+                    <!--<div class="tooltip-on-right">-->
+                        <!--<i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>-->
+                        <!--<span class="tooltip-content">-->
+                            <!--<div ng-if="testcaseTooltips.inputDataFile.tooltip != ''">-->
+                                <!--<i class="fa fa-rocket" aria-hidden="true"></i>-->
+                                <!--&nbsp;-->
+                                <!--{{testcaseTooltips.inputDataFile.tooltip}}-->
+                                <!--<br>-->
+                            <!--</div>-->
+                            <!--<div ng-if="testcaseTooltips.inputDataFile.protip != ''">-->
+                                <!--<br>-->
+                                <!--<i class="fa fa-bolt" aria-hidden="true"></i>-->
+                                <!--&nbsp;-->
+                                <!--{{testcaseTooltips.inputDataFile.protip}}-->
+                                <!--<br>-->
+                            <!--</div>-->
+                            <!--<div ng-if="testcaseTooltips.inputDataFile.bantip != ''">-->
+                                <!--<br>-->
+                                <!--<i class="fa fa-ban" aria-hidden="true"></i>-->
+                                <!--&nbsp;-->
+                                <!--{{testcaseTooltips.inputDataFile.bantip}}-->
+                                <!--<br>-->
+                            <!--</div>-->
+                            <!--<div ng-if="testcaseTooltips.inputDataFile.snowflake != ''">-->
+                                <!--<br>-->
+                                <!--<i class="fa fa-snowflake-o" aria-hidden="true"></i>-->
+                                <!--&nbsp;-->
+                                <!--{{testcaseTooltips.inputDataFile.snowflake}}-->
+                                <!--<br>-->
+                            <!--</div>-->
+                        <!--</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+
+        <!--<hr/>-->
 
         <!--<div class="row" style="padding-left:1em">-->
             <!--<div class="form-group">-->

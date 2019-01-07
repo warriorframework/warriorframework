@@ -239,11 +239,11 @@ $scope.showCleanupRules = function(execType){
             for (i = $scope.path_array.length - 1; i >= 0; i--) {
                 data_folder_array.push($scope.path_array[i])
             }
-            if ($scope.cfg.xmldir1.indexOf('/') === -1) {
-                tc_folder_array = $scope.cfg.xmldir1.split("\\");
+            if ($scope.cfg.testwrapper.indexOf('/') === -1) {
+                tc_folder_array = $scope.cfg.testwrapper.split("\\");
             }
             else {
-                tc_folder_array = $scope.cfg.xmldir1.split("/");
+                tc_folder_array = $scope.cfg.testwrapper.split("/");
             }
             if($scope.subdirs != "none"){
                 var subdir_array = $scope.subdirs.split(",");
@@ -745,7 +745,7 @@ $scope.showCleanupRules = function(execType){
               "Name": "",
               "Title": "",
               "Engineer": "",
-              "InputDataFile": ""
+              "DataType": ""
 
             },
 
@@ -919,13 +919,13 @@ $scope.showCleanupRules = function(execType){
 
 
                 var flag = true;
-//                for(i=0; i<$scope.status.datatypes.length; i++){
-//                    if($scope.model.TestWrapper.Details.Datatype.toLowerCase() == $scope.status.datatypes[i].toLowerCase()){
-//                        $scope.model.TestWrapper.Details.Datatype = $scope.status.datatypes[i];
-//                        flag = false;
-//                        break;
-//                    }
-//                }
+                for(i=0; i<$scope.status.datatypes.length; i++){
+                    if($scope.model.TestWrapper.Details.Datatype.toLowerCase() == $scope.status.datatypes[i].toLowerCase()){
+                        $scope.model.TestWrapper.Details.Datatype = $scope.status.datatypes[i];
+                        flag = false;
+                        break;
+                    }
+                }
                 if(flag){
                     $scope.model.TestWrapper.Details.Datatype = "Custom"
                 }
@@ -1221,7 +1221,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                 }
                 }
 
-
+//---------setup step function
                 if($scope.model.TestWrapper.Details.Datatype === "Hybrid"){
                     for (i = 0; i < $scope.model.TestWrapper.Setup.step.length; i++) {
                         if ($scope.model.TestWrapper.Setup.step[i].iteration_type === undefined) {
@@ -1235,6 +1235,26 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                         $scope.original_iter_types.push($scope.model.TestWrapper.Setup.step[i].iteration_type._type);
                     }
                 }
+
+                //---Cleanup step function
+
+                  if($scope.model.TestWrapper.Details.Datatype === "Hybrid"){
+                    for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
+                        if ($scope.model.TestWrapper.Cleanup.step[i].iteration_type === undefined) {
+                            $scope.model.TestWrapper.Cleanup.step[i].iteration_type = {_type: "Standard"}
+                        }
+                        $scope.original_iter_types.push($scope.model.TestWrapper.Cleanup.step[i].iteration_type._type);
+                    }
+                } else {
+                    for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
+                        $scope.model.TestWrapper.Cleanup.step[i].iteration_type = {_type: ""};
+                        $scope.original_iter_types.push($scope.model.TestWrapper.Cleanup.step[i].iteration_type._type);
+                    }
+                }
+
+
+
+
 //-------Setup Function
                 if (  ! _.isArray($scope.model.TestWrapper.Setup['step'])) {
                     var xstep = $scope.model.TestWrapper.Setup['step'];
@@ -3299,20 +3319,38 @@ console.log("startSetupStepEdit",edtype);
 //            return;
 //        }
 
-//        for (i = 0; i < $scope.model.TestWrapper.Setup.step.length; i++) {
-//
-//            if($scope.model.TestWrapper.Details.Datatype == "Hybrid"){
-//                    if($scope.status.step.iteration_type._type == ""){
-//                        $scope.status.step.iteration_type._type= "Standard";
-//                        $scope.model.TestWrapper.Details.Datatype = "Hybrid";
-//                    }
-//                    else{
-//                        $scope.status.step.iteration_type._type = $scope.status.step.iteration_type._type;
-//
-//                    }
-//        $scope.model.TestWrapper.Details.Datatype = "Hybrid";
-//            }
-//    }
+        for (var i = 0; i < $scope.model.TestWrapper.Setup.step.length; i++) {
+
+            if($scope.model.TestWrapper.Details.Datatype == "Hybrid"){
+                    if($scope.status.step.iteration_type._type == ""){
+                        $scope.status.step.iteration_type._type= "Standard";
+                        $scope.model.TestWrapper.Details.Datatype = "Hybrid";
+                    }
+                    else{
+                        $scope.status.step.iteration_type._type = $scope.status.step.iteration_type._type;
+
+                    }
+        $scope.model.TestWrapper.Details.Datatype = "Hybrid";
+            }
+    }
+
+
+
+  for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
+
+            if($scope.model.TestWrapper.Details.Datatype == "Hybrid"){
+                    if($scope.cleanupstatus.step.iteration_type._type == ""){
+                        $scope.cleanupstatus.step.iteration_type._type= "Standard";
+                        $scope.model.TestWrapper.Details.Datatype = "Hybrid";
+                    }
+                    else{
+                        $scope.cleanupstatus.step.iteration_type._type = $scope.cleanupstatus.step.iteration_type._type;
+
+                    }
+        $scope.model.TestWrapper.Details.Datatype = "Hybrid";
+            }
+    }
+
 
         if ($scope.model.TestWrapper.Details.InputDataFile == 'No_Data') {
             $scope.model.TestWrapper.Details.Datatype = '';
@@ -3522,7 +3560,7 @@ _.each(_.range(1, $scope.model.TestWrapper.Cleanup.step.length+1), function (i) 
                               "Name": "",
                               "Title": "",
                               "Engineer": "",
-                              "InputDataFile": "",
+                              "Datatype": "",
 
                             },
 
