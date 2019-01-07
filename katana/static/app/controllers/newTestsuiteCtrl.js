@@ -1388,7 +1388,7 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
                         },
                         "Resultsdir": $scope.resultsdirSuite,
                         "InputDataFile": $scope.IDFSuite,
-                        "JocketFile": $scope.JocketFile
+                        "TestWrapperFile": $scope.TestWrapperFile
                     },
                     "Requirements": {
                         "Requirement": $scope.suitereqs
@@ -1447,7 +1447,7 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
             var tc_folder_array = [];
             var folder_index = -1;
             var final_array = [];
-            $scope.JocketFile = "";
+            $scope.TestWrapperFile = "";
             if ($scope.cfg.idfdir.indexOf('/') === -1) {
                 data_folder_array = $scope.cfg.idfdir.split("\\");
             }
@@ -1493,10 +1493,10 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
                 final_array.push(data_folder_array[i]);
             }
             for (i = 0; i < final_array.length; i++) {
-                $scope.JocketFile = $scope.JocketFile + final_array[i] + "/"
+                $scope.TestWrapperFile = $scope.TestWrapperFile + final_array[i] + "/"
             }
-            if (!$scope.JocketFile.match(/\.\.\/$/)) {
-                $scope.JocketFile = $scope.JocketFile.slice(0, -1);
+            if (!$scope.TestWrapperFile.match(/\.\.\/$/)) {
+                $scope.TestWrapperFile = $scope.TestWrapperFile.slice(0, -1);
             }
             $scope.btnValueJocket = "Edit";
             $scope.toggleModalJocket();
@@ -1508,7 +1508,7 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
             $scope.showModalJ.visible = !$scope.showModalJ.visible;
         };
         $scope.monitorPathBtnValueForJocket = function(){
-            if($scope.JocketFile === undefined || $scope.JocketFile === ""){
+            if($scope.TestWrapperFile === undefined || $scope.TestWrapperFile === ""){
                 $scope.btnValueJocket = "Path";
             } else {
                 $scope.btnValueJocket = "Edit";
@@ -1527,7 +1527,7 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
 
         }
         $scope.status.jclass = clazz;
-        $scope.JocketFile = jval;
+        $scope.TestWrapperFile = jval;
         if($scope.status.nojocketfile != '1') {
             $scope.changeExistingIterTypes();
         }

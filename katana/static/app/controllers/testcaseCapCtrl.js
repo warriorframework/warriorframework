@@ -37,7 +37,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.temp_path_array = [];
         $scope.earlier_li = [];
         $scope.btnValue = "Path";
-        $scope.btnValueTestWrapper = "Path";
+        $scope.btnValueJocket = "Path";
         $scope.showModal = {visible: false};
         $scope.showModalJ = {visible: false};
         $scope.sysList = [];
@@ -196,7 +196,7 @@ $scope.showRules = function(execType){
              }
         };
 
-        $scope.getPathsTestWrapper = function(e) {
+        $scope.getPathsJocket = function(e) {
             $scope.path_array = [];
             $scope.earlier_li.className = "";
             if(e == undefined){
@@ -279,7 +279,7 @@ $scope.showRules = function(execType){
             $scope.toggleModal();
         };
 
-        $scope.storePathsTestWrapper = function() {
+        $scope.storePathsJocket = function() {
             var data_folder_array = [];
             var tc_folder_array = [];
             var folder_index = -1;
@@ -335,8 +335,8 @@ $scope.showRules = function(execType){
             if (!$scope.model.Testcase.Details.TestWrapperFile.match(/\.\.\/$/)) {
                 $scope.model.Testcase.Details.TestWrapperFile = $scope.model.Testcase.Details.TestWrapperFile.slice(0, -1);
             }
-            $scope.btnValueTestWrapper = "Edit";
-            $scope.toggleModalTestWrapper();
+            $scope.btnValueJocket = "Edit";
+            $scope.toggleModalJocket();
         };
 
         fileFactory.readdatafile()
@@ -361,7 +361,7 @@ $scope.showRules = function(execType){
             $scope.showModal.visible = !$scope.showModal.visible;
         };
 
-        $scope.toggleModalTestWrapper = function(){
+        $scope.toggleModalJocket = function(){
             document.getElementById("tree_div_j").innerHTML = $scope.table;
             CollapsibleLists.applyTo(document.getElementById('tree_div_j'));
             $scope.showModalJ.visible = !$scope.showModalJ.visible;
@@ -374,11 +374,11 @@ $scope.showRules = function(execType){
                 $scope.btnValue = "Edit";
             }
         };
-        $scope.monitorPathBtnValueForTestWrapper = function(){
+        $scope.monitorPathBtnValueForJocket = function(){
             if($scope.model.Testcase.Details.TestWrapperFile === undefined || $scope.model.Testcase.Details.TestWrapperFile === ""){
-                $scope.btnValueTestWrapper = "Path";
+                $scope.btnValueJocket = "Path";
             } else {
-                $scope.btnValueTestWrapper = "Edit";
+                $scope.btnValueJocket = "Edit";
             }
         };
 
@@ -671,7 +671,8 @@ $scope.showRules = function(execType){
               "InputDataFile": "",
               "Datatype": "",
               "Logsdir": "",
-              "Resultsdir": ""
+              "Resultsdir": "",
+              "TestWrapperFile": ""
             },
             "Requirements": {
               "Requirement": []
@@ -992,7 +993,7 @@ $scope.showRules = function(execType){
 
                 $scope.status.nodatafile =
                     ($scope.model.Testcase.Details.InputDataFile == 'No_Data') ? '1' : '0';
-                $scope.status.noTestWrapperfile =
+                $scope.status.nojocketfile =
                     ($scope.model.Testcase.Details.TestWrapperFile == 'No_Data') ? '1' : '0';
                 $scope.status.datatype =
                     ($scope.status.nodatafile == '0') ? '' : $scope.model.Testcase.Details.Datatype;
@@ -1110,11 +1111,11 @@ $scope.showRules = function(execType){
 
         };
 
-    $scope.noteTestWrapperStatus = function () {
+    $scope.noteJocketStatus = function () {
 
-        var jval = '', // 'TestWrapper File Required'
+        var jval = '', // 'Jocket File Required'
             clazz = '';
-        if ($scope.status.noTestWrapperfile == '1') {
+        if ($scope.status.nojocketfile == '1') {
             if($scope.editStepFlag == 1){
                 $scope.noDatacheck();
             }
@@ -1127,10 +1128,10 @@ $scope.showRules = function(execType){
         }
         $scope.status.jclass = clazz;
         $scope.model.Testcase.Details.TestWrapperFile = jval;
-        if($scope.status.noTestWrapperfile != '1') {
+        if($scope.status.nojocketfile != '1') {
             $scope.changeExistingIterTypes();
         }
-        $scope.monitorPathBtnValueForTestWrapper();
+        $scope.monitorPathBtnValueForJocket();
 
         };
 
@@ -1426,7 +1427,7 @@ $scope.showRules = function(execType){
                 else{
                     if($scope.status.nodatafile == '0'){
                     swal({
-                        title: "Kindly provide the correct Relative path for Input data File and TestWrapper File, if auto-population of system & Subsystem name is needed.",
+                        title: "Kindly provide the correct Relative path for Input data File and Jocket File, if auto-population of system & Subsystem name is needed.",
                         closeOnConfirm: true,
                         confirmButtonColor: '#3b3131',
                         confirmButtonText: "Ok",
@@ -2511,7 +2512,8 @@ $scope.showRules = function(execType){
                               "InputDataFile": "",
                               "Datatype": "",
                               "Logsdir": "",
-                              "Resultsdir": ""
+                              "Resultsdir": "",
+                              "TestWrapperFile": ""
                             },
                             "Requirements": {
                               "Requirement": []
@@ -2546,4 +2548,4 @@ $scope.showRules = function(execType){
     }
     window.S = $scope;
 
-}]);
+``}]);

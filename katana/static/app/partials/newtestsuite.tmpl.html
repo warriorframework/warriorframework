@@ -759,8 +759,8 @@
 
         <div class="row">
             <div class="form-group">
-                <label for="JocketFile"
-                       class="col-sm-2 control-label ellipsis-the-overflow">Jocket File</label>
+                <label for="TestWrapper"
+                       class="col-sm-2 control-label ellipsis-the-overflow">TestWrapper File</label>
                 <div class="tooltip-on-right align-fa-icon-after-label">
                     <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                     <span class="tooltip-content">
@@ -797,18 +797,18 @@
                     <div class="input-group">
                         <input type="text" class="form-control"
                                required
-                               id="JocketFile2"
+                               id="TestWrapper2"
                                ng-change="monitorPathBtnValueForJocket()"
                                ng-model=''
-                               ng-click="loadDataFile(JocketFile)"
+                               ng-click="loadDataFile(TestWrapperFile)"
                                ng-disabled="status.nojocketfile == '1'"
-                               placeholder="Location of the Jocket file" style="cursor:pointer;">
+                               placeholder="Location of the TestWrapper file" style="cursor:pointer;">
                         <span class="input-group-addon" style="background-color: white">
                             <input id="jCheckbox2" type="checkbox"
                                    ng-model='status.nojocketfile'
                                    ng-click='noteJocketStatus()'
                                    ng-true-value="'1'" ng-false-value="'0'">
-                            <label for="jCheckbox">&nbsp;I Don't Want A Jocket File.</label>
+                            <label for="jCheckbox">&nbsp;I Don't Want A TestWrapper File.</label>
                         </span>
                     </div>
                 </div>
@@ -816,18 +816,18 @@
                     <div class="input-group">
                         <input type="text" class="form-control"
                                required
-                               id="JocketFile"
+                               id="TestWrapper"
                                ng-change="monitorPathBtnValueForJocket()"
-                               ng-model='JocketFile'
-                               ng-click="loadDataFile(JocketFile)"
+                               ng-model='TestWrapperFile'
+                               ng-click="loadDataFile(TestWrapperFile)"
                                ng-disabled="status.nojocketfile == '1'"
-                               placeholder="Location of the Jocket file" style="cursor:pointer;">
+                               placeholder="Location of the TestWrapper file" style="cursor:pointer;">
                         <span class="input-group-addon" style="background-color: white">
                             <input id="jCheckbox" type="checkbox"
                                    ng-model='status.nojocketfile'
                                    ng-click='noteJocketStatus()'
                                    ng-true-value="'1'" ng-false-value="'0'">
-                            <label for="jCheckbox">&nbsp;I Don't Want A Jocket File.</label>
+                            <label for="jCheckbox">&nbsp;I Don't Want A TestWrapper File.</label>
                         </span>
                     </div>
                 </div>
@@ -838,7 +838,7 @@
                            ng-value="btnValueJocket"
                            ng-click="toggleModalJocket()">
                 </div>
-                <modal title="Select a Jocket File" show-modal="showModalJ">
+                <modal title="Select a TestWrapper File" show-modal="showModalJ">
                     <div class="form-group" style="padding: 5%">
                         <div id="tree_div_j" ng-click="getPathsJocket($event)"></div>
                     </div>

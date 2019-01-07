@@ -101,7 +101,7 @@
 		"bantip": "This field takes in only numerical values. No alphabets, spaces, or special characters.",
 		"snowflake": ""
 	},
-	"InputDataFile":{
+	"inputDataFile":{
 		"tooltip": "You can provide a path to the Input Data File here.",
 		"protip": "ProTip: A relative path to the data file is recommended so that the Case becomes generic.",
 		"bantip": "",
@@ -114,8 +114,8 @@
 		"snowflake": "If the Suite is in the 'New' state, you would be able to create a skeletal Suite i.e. a Suite without a single Case; otherwise, a Suite requires at least one Case."
 	},
 	"jocketFile": {
-        "tooltip": "You can provide a path to the Jocket File here.",
-        "protip": "ProTip: A relative path to the jocket file is recommended so that the Case becomes generic.",
+        "tooltip": "You can provide a path to the TestWrapper File here.",
+        "protip": "ProTip: A relative path to the TestWrapper file is recommended so that the Case becomes generic.",
         "bantip": "",
         "snowflake": ""
     },

@@ -22,9 +22,11 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
         $scope.alldirinfo = "";
         $scope.table = "";
         $scope.path_array = [];
+        $scope.jocket_path_array =[];
         $scope.td_df_path_array = [];
         $scope.temp_path_array = [];
         $scope.earlier_li = [];
+        $scope.jocket_earlier_li =[];
         $scope.td_df_earlier_li = [];
         $scope.idf_path_array = [];
         $scope.idf_earlier_li = "";
@@ -44,6 +46,8 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
         $scope.testcase_numbers = [];
         $scope.testcaseEditor = false;
         $scope.testcaseBeingEdited = "None";
+        $scope.btnValueJocket = "Edit";
+        $scope.showModalJ = {visible: false};
 
       function readConfig(){
           getConfigFactory.readconfig()
@@ -55,32 +59,32 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
       readConfig();
 
 
-//To Load the Case File from Suite 
+//To Load the Case File from Suite
 //Works for base Directory as well as Subdirectories
      $scope.loadFile = function(filepath) {
-        var checkFlag = filepath.includes("..");                                         
+        var checkFlag = filepath.includes("..");
         if(checkFlag==true){                                                      //For files inside the Warrior directory
              dirCheck=filepath.split("/").reverse()[1];
              if(dirCheck=="Testcases"){                                           //Fetch Parent directory files
-                splitDir = filepath.split('/Testcases')[1]; 
+                splitDir = filepath.split('/Testcases')[1];
                 finalUrl = "#/testcase"+splitDir+"/none";
                 window.open(finalUrl);
              }
              else if(dirCheck=="testcases"){
-                splitDir = filepath.split('/testcases')[1]; 
+                splitDir = filepath.split('/testcases')[1];
                 finalUrl = "#/testcase"+splitDir+"/none";
                 window.open(finalUrl);
              }
             else{                                                                 //Fetch subdirectory files
-                splitPath = filepath.split("/").pop(-1); 
-                splitter = splitPath+"/"; 
+                splitPath = filepath.split("/").pop(-1);
+                splitter = splitPath+"/";
                 if(filepath.includes("Testcases")==true){
-                var checkDir = filepath.split("Testcases/")[1].split(splitPath)[0]; 
+                var checkDir = filepath.split("Testcases/")[1].split(splitPath)[0];
                 }
-                else{var checkDir = filepath.split("testcases/")[1].split(splitPath)[0];}  
+                else{var checkDir = filepath.split("testcases/")[1].split(splitPath)[0];}
                    checkDir = checkDir.slice(0, -1);
-                   checkDir = checkDir.replace(/\//g,','); 
-                   finalUrlDir = "#/testcase/"+splitter+checkDir; 
+                   checkDir = checkDir.replace(/\//g,',');
+                   finalUrlDir = "#/testcase/"+splitter+checkDir;
                    window.open(finalUrlDir);
             }
         }
@@ -88,18 +92,18 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
             testcaseDir = $scope.cfg.testsuitedir;
             var matchPath = filepath.includes(testcaseDir);
             if(matchPath == true){
-              splitPath = filepath.split(testcaseDir)[1]; 
-              fileName = splitPath.split("/").pop(-1); 
+              splitPath = filepath.split(testcaseDir)[1];
+              fileName = splitPath.split("/").pop(-1);
               splitter = fileName+"/";
-              checkDir = filepath.split(testcaseDir)[1].split(fileName)[0]; 
+              checkDir = filepath.split(testcaseDir)[1].split(fileName)[0];
               checkDir = checkDir.slice(0, -1);
-              checkDir = checkDir.replace(/\//g,','); 
-              finalUrlDir = "#/testcase/"+splitter+checkDir; 
+              checkDir = checkDir.replace(/\//g,',');
+              finalUrlDir = "#/testcase/"+splitter+checkDir;
               window.open(finalUrlDir);
           }
-            else{ 
-            if(filepath != '') 
-                 {                                                                  //Mismatched Config and selected path;   
+            else{
+            if(filepath != '')
+                 {                                                                  //Mismatched Config and selected path;
                 sweetAlert({
                     title: "Config Path mismatch with the selected path !",
                     closeOnConfirm: true,
@@ -109,37 +113,37 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                 });
               }
           }
-        }   
+        }
       };
 
 
-    
-//To Load the InputData File from Suite 
+
+//To Load the InputData File from Suite
 //Works for base Directory as well as Subdirectories
     $scope.loadDataFile = function(filepath) {
-        var checkFlag = filepath.includes("..");                                         
+        var checkFlag = filepath.includes("..");
         if(checkFlag==true){                                                      //For files inside the Warrior directory
              dirCheck=filepath.split("/").reverse()[1];
              if(dirCheck=="Data"){                                           //Fetch Parent directory files
-                splitDir = filepath.split('/Data')[1]; 
+                splitDir = filepath.split('/Data')[1];
                 finalUrl = "#/datafile"+splitDir+"/none";
                 window.open(finalUrl);
              }
              else if(dirCheck=="data"){
-                splitDir = filepath.split('/data')[1]; 
+                splitDir = filepath.split('/data')[1];
                 finalUrl = "#/datafile"+splitDir+"/none";
                 window.open(finalUrl);
              }
             else{                                                                 //Fetch subdirectory files
-                splitPath = filepath.split("/").pop(-1); 
-                splitter = splitPath+"/"; 
+                splitPath = filepath.split("/").pop(-1);
+                splitter = splitPath+"/";
                 if(filepath.includes("Data")==true){
-                var checkDir = filepath.split("Data/")[1].split(splitPath)[0]; 
+                var checkDir = filepath.split("Data/")[1].split(splitPath)[0];
                 }
-                else{var checkDir = filepath.split("data/")[1].split(splitPath)[0];} 
+                else{var checkDir = filepath.split("data/")[1].split(splitPath)[0];}
                       checkDir = checkDir.slice(0, -1);
-                      checkDir = checkDir.replace(/\//g,','); 
-                      finalUrlDir = "#/datafile/"+splitter+checkDir; 
+                      checkDir = checkDir.replace(/\//g,',');
+                      finalUrlDir = "#/datafile/"+splitter+checkDir;
                       window.open(finalUrlDir);
             }
         }
@@ -147,18 +151,18 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
             dataDir = $scope.cfg.idfdir;
             var matchPath = filepath.includes(dataDir);
             if(matchPath == true){
-              splitPath = filepath.split(dataDir)[1]; 
-              fileName = splitPath.split("/").pop(-1); 
+              splitPath = filepath.split(dataDir)[1];
+              fileName = splitPath.split("/").pop(-1);
               splitter = fileName+"/";
-              checkDir = filepath.split(dataDir)[1].split(fileName)[0]; 
+              checkDir = filepath.split(dataDir)[1].split(fileName)[0];
               checkDir = checkDir.slice(0, -1);
-              checkDir = checkDir.replace(/\//g,','); 
-              finalUrlDir = "#/datafile/"+splitter+checkDir; 
+              checkDir = checkDir.replace(/\//g,',');
+              finalUrlDir = "#/datafile/"+splitter+checkDir;
               window.open(finalUrlDir);
           }
-            else{ 
-            if(filepath != '') 
-                 {                                                                  //Mismatched Config and selected path;   
+            else{
+            if(filepath != '')
+                 {                                                                  //Mismatched Config and selected path;
                 sweetAlert({
                     title: "Config Path mismatch with the selected path !",
                     closeOnConfirm: true,
@@ -168,7 +172,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                 });
               }
           }
-        } 
+        }
      };
 
        function get_folders_names(json_dir_data){
@@ -508,6 +512,145 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
             $scope.idf_toggleModal();
         }
 
+
+
+        // For TestWrapper File Functions
+
+         $scope.getPathsJocket = function(e) {
+            $scope.jocket_path_array = [];
+            $scope.jocket_earlier_li.className = "";
+            if(e == undefined){
+                e = window.event;
+            }
+            var li = (e.target ? e.target : e.srcElement);
+            var temp_name = li.innerHTML.split("<");
+            $scope.jocket_path_array.push(temp_name[0]);
+            var li_temp = li;
+            while(li_temp.parentNode.id != "tree_div_j"){
+                if(!li_temp.parentNode.innerHTML.match(/^</)){
+                    var temp_list = li_temp.parentNode.innerHTML.split("<");
+                    $scope.jocket_path_array.push(temp_list[0]);
+                }
+                li_temp = li_temp.parentNode
+            }
+            if (li.className == ""){
+                li.className = "colorChange";
+                $scope.jocket_earlier_li = li;
+            }
+       };
+
+       $scope.storePathsJocket = function() {
+            var data_folder_array = [];
+            var tc_folder_array = [];
+            var folder_index = -1;
+            var final_array = [];
+            $scope.suitemodel.TestSuite.Details.TestWrapperFile = "";
+            if ($scope.cfg.idfdir.indexOf('/') === -1) {
+                data_folder_array = $scope.cfg.idfdir.split("\\");
+            }
+            else {
+                data_folder_array = $scope.cfg.idfdir.split("/");
+            }
+            for (var i = 0; i < data_folder_array.length; i++) {
+                if (data_folder_array[i] === $scope.jocket_path_array[$scope.jocket_path_array.length - 1]) {
+                    data_folder_array.splice(i, (data_folder_array.length - i));
+                    break;
+                }
+            }
+            for (i = $scope.jocket_path_array.length - 1; i >= 0; i--) {
+                data_folder_array.push($scope.jocket_path_array[i])
+            }
+            if ($scope.cfg.xmldir.indexOf('/') === -1) {
+                tc_folder_array = $scope.cfg.xmldir.split("\\");
+            }
+            else {
+                tc_folder_array = $scope.cfg.xmldir.split("/");
+            }
+            if($scope.subdirs != "none"){
+                var subdir_array = $scope.subdirs.split(",");
+                for(i=0; i<subdir_array.length; i++){
+                    tc_folder_array.push(subdir_array[i]);
+                }
+            }
+            for (i = 0; i < tc_folder_array.length; i++) {
+                if (data_folder_array[i] !== tc_folder_array[i]) {
+                    folder_index = i;
+                    break;
+                }
+            }
+            if (folder_index !== -1) {
+                var dots = tc_folder_array.length - folder_index;
+                for (i = 0; i < dots; i++) {
+                    final_array.push("..");
+                }
+            } else {
+                folder_index = tc_folder_array.length;
+            }
+            for (i = folder_index; i < data_folder_array.length; i++) {
+                final_array.push(data_folder_array[i]);
+            }
+            for (i = 0; i < final_array.length; i++) {
+                $scope.suitemodel.TestSuite.Details.TestWrapperFile = $scope.suitemodel.TestSuite.Details.TestWrapperFile + final_array[i] + "/"
+            }
+            if (!$scope.suitemodel.TestSuite.Details.TestWrapperFile.match(/\.\.\/$/)) {
+                $scope.suitemodel.TestSuite.Details.TestWrapperFile = $scope.suitemodel.TestSuite.Details.TestWrapperFile.slice(0, -1);
+            }
+            $scope.btnValueJocket = "Edit";
+            $scope.toggleModalJocket();
+        };
+
+         $scope.toggleModalJocket = function(){
+            document.getElementById("tree_div_j").innerHTML = $scope.table;
+            CollapsibleLists.applyTo(document.getElementById('tree_div_j'));
+            $scope.showModalJ.visible = !$scope.showModalJ.visible;
+        };
+        $scope.monitorPathBtnValueForJocket = function(){
+            if($scope.suitemodel.TestSuite.Details.TestWrapperFile === undefined || $scope.suitemodel.TestSuite.Details.TestWrapperFile === ""){
+                $scope.btnValueJocket = "Path";
+            } else {
+                $scope.btnValueJocket = "Edit";
+            }
+        };
+
+         $scope.noteJocketStatus = function () {
+
+        var jval = '', // 'Jocket File Required'
+            clazz = '';
+        if ($scope.status.nojocketfile == '1') {
+            if($scope.editStepFlag == 1){
+                $scope.noDatacheck();
+            }
+            jval = 'No_Data';
+            clazz = 'disabled';
+
+        }
+        $scope.status.jclass = clazz;
+        $scope.TestWrapper = jval;
+        if($scope.status.nojocketfile != '1') {
+            $scope.changeExistingIterTypes();
+        }
+        $scope.monitorPathBtnValueForJocket();
+
+        };
+
+
+
+
+
+
+
+
+
+        // End of the TestWrapper File Functions
+
+
+
+
+
+
+
+
+
         $scope.getNewStateValue = function(tab){
             if(tab.indexOf('%') !== -1) {
               swal({
@@ -618,6 +761,14 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                         if($scope.suitemodel.TestSuite.Details.hasOwnProperty("IDF")){
                             $scope.suitemodel.TestSuite.Details.InputDataFile = $scope.suitemodel.TestSuite.Details["IDF"];
                             delete $scope.suitemodel.TestSuite.Details["IDF"];
+                        }
+
+                        if(!$scope.suitemodel.TestSuite.Details.hasOwnProperty("TestWrapperFile")){
+                            $scope.suitemodel.TestSuite.Details.TestWrapperFile = "";
+                        }
+                        if($scope.suitemodel.TestSuite.Details.hasOwnProperty("TestWrapper")){
+                            $scope.suitemodel.TestSuite.Details.TestWrapperFile = $scope.suitemodel.TestSuite.Details["TestWrapper"];
+                            delete $scope.suitemodel.TestSuite.Details["TestWrapper"];
                         }
 
 
@@ -1631,7 +1782,8 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                                 "_value": $scope.suiteGotoStep
                             },
                             "Resultsdir": $scope.suitemodel.TestSuite.Details.Resultsdir,
-                            "InputDataFile": $scope.suitemodel.TestSuite.Details.InputDataFile
+                            "InputDataFile": $scope.suitemodel.TestSuite.Details.InputDataFile,
+                            "TestWrapperFile": $scope.suitemodel.TestSuite.Details.TestWrapperFile
                         },
                         "Requirements": {
                             "Requirement": $scope.suitereqs

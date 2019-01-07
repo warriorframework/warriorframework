@@ -4,7 +4,13 @@
     </h4>
 
     <hr/>
-    <div action="" method="post" class="form-horizontal" role="form">
+     <div class="row">
+        <div class="form-group">
+            <label class="col-sm-1 control-label text-uppercase mandatory-field">Details</label>
+        </div>
+    </div>
+
+    <form action="" method="post" class="form-horizontal" role="form">
         <div class="row">
             <div class="form-group">
                 <label for="Name" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Name</label>
@@ -755,7 +761,118 @@
                 </div>
             </div>
         </div>
-        <hr/>
+
+
+          <div class="row">
+            <div class="form-group">
+                <label for="TestWrapper"
+                       class="col-sm-2 control-label ellipsis-the-overflow">TestWrapper File</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="testsuiteTooltip.jocketFile.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{testsuiteTooltip.jocketFile.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="testsuiteTooltip.jocketFile.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{testsuiteTooltip.jocketFile.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="testsuiteTooltip.jocketFile.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.jocketFile.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="testsuiteTooltip.jocketFile.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{testsuiteTooltip.jocketFile.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+
+                <div class="col-sm-5" ng-hide="status.nojocketfile == '1'">
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               required
+                               id="TestWrapper"
+                               ng-change="monitorPathBtnValueForJocket()"
+                               ng-model='suitemodel.TestSuite.Details.TestWrapperFile'
+                               ng-click="loadDataFile(suitemodel.TestSuite.Details.TestWrapperFile)"
+                               ng-disabled="status.nojocketfile == '1'"
+                               placeholder="Location of the TestWrapper file" style="cursor:pointer;">
+                        <span class="input-group-addon" style="background-color: white">
+                            <input id="jCheckbox" type="checkbox"
+                                   ng-model='status.nojocketfile'
+                                   ng-click='noteJocketStatus()'
+                                   ng-true-value="'1'" ng-false-value="'0'">
+                            <label for="jCheckbox">&nbsp;I Don't Want A TestWrapper File.</label>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-1" ng-hide="status.nojocketfile == '1'">
+                    <input type="button"
+                           class="btn btn-default form-control ellipsis-the-overflow"
+                           value="path"
+                           ng-value="btnValueJocket"
+                           ng-click="toggleModalJocket()">
+                </div>
+                <modal title="Select a Jocket File" show-modal="showModalJ">
+                    <div class="form-group" style="padding: 5%">
+                        <div id="tree_div_j" ng-click="getPathsJocket($event)"></div>
+                    </div>
+                    <input type="button"
+                           value="Submit"
+                           class="btn btn-default"
+                           ng-click="storePathsJocket()">
+                </modal>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="testsuiteTooltip.jocketFile.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testsuiteTooltip.jocketFile.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="testsuiteTooltip.jocketFile.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testsuiteTooltip.jocketFile.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="testsuiteTooltip.jocketFile.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testsuiteTooltip.jocketFile.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="testsuiteTooltip.jocketFile.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testsuiteTooltip.jocketFile.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <hr/>
 
         <div class="row" style="padding-left:1em">
             <div class="form-group">
