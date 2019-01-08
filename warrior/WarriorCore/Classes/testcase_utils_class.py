@@ -357,6 +357,7 @@ class TestcaseUtils(object):
         ERROR -> ERROR
         EXCEPTION -> ERROR
         """
+        #added WARN status
         result = {True: 'PASS', False: 'FAIL',
             'ERROR': 'ERROR', 'EXCEPTION': 'ERROR', 'RAN': 'RAN', 'WARN': 'WARN'}.get(text)
         if result is None:

@@ -274,6 +274,7 @@ class ExecFilesClass(object):
                 data_type = 'CUSTOM'
         return data_type
 
+    #def to get runtype of the testcase from xml
     def check_get_runtype(self):
         """Check and get the runtype for testcase
         """

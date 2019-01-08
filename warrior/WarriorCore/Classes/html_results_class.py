@@ -133,6 +133,7 @@ class WarriorHtmlResults:
             self.create_line_result(project_node, "Project")
             for testsuite_node in project_node.findall("testsuite"):
                 self.create_line_result(testsuite_node, "Testsuite")
+                #to add setup result in html file
                 for setup_node in testsuite_node.findall("Setup"):
                     self.create_line_result(setup_node, "Setup")
                     self.steps = 0
@@ -149,6 +150,7 @@ class WarriorHtmlResults:
                             if node.get('type') == 'keyword':
                                 self.steps += 1
                                 self.create_line_result(node, "Keyword")
+                #to add cleanup result in html file
                 for cleanup_node in testsuite_node.findall("Cleanup"):
                     self.create_line_result(cleanup_node, "Cleanup")
                     self.steps = 0

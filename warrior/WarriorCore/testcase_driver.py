@@ -226,7 +226,8 @@ def compute_testcase_status(step_status, tc_status):
     else:
         return tc_status and step_status
 
-
+#added tag argument to append keyword with step type in
+#summary of failed keywords
 def report_testcase_result(tc_status, data_repository, tag="Steps"):
     """Report the testcase result to the result file
 
@@ -332,6 +333,7 @@ def print_testcase_details_to_console(testcase_filepath, data_repository, steps_
     print_info("Logs directory: %s" % data_repository['wt_logsdir'])
     print_info("Defects directory: {0}".format(data_repository["wt_defectsdir"]))
     print_info("Datafile: %s" % data_repository['wt_datafile'])
+    #to print testwrapperfile details to console
     if data_repository['wt_testwrapperfile']:
         print_info("Testwrapperfile: %s" % data_repository['wt_testwrapperfile'])
     print_info("Expected Results: %s" % data_repository['wt_expResults'])
@@ -376,6 +378,7 @@ def check_and_create_defects(tc_status, auto_defects, data_repository, tc_junit_
     elif tc_status == 'EXCEPTION' or tc_status == 'ERROR':
         create_defects(auto_defects, data_repository)
 
+#to execute given steps based on data_type and runtype
 def execute_steps(data_type, runtype, data_repository, step_list, tc_junit_object, iter_ts_sys):
     """executes steps based on given data_type and runtype"""
     tc_status = True
@@ -441,6 +444,7 @@ def execute_steps(data_type, runtype, data_repository, step_list, tc_junit_objec
 
     return tc_status
 
+#get all the details of testwrapperfile like testwrapperfile name, datatype, runtype
 def get_testwrapper_file_details(testcase_filepath, data_repository):
     """retuns testwrapperfile to use if specified, else returns False"""
     if data_repository.has_key('ow_testwrapperfile'):
@@ -484,6 +488,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     print_info("[{0}] Testcase execution starts".format(tc_start_time))
 
     get_testcase_details(testcase_filepath, data_repository, jiraproj)
+    #get testwrapperfile details like testwrapperfile, data_type and runtype
     testwrapperfile, j_data_type, j_runtype = \
         get_testwrapper_file_details(testcase_filepath, data_repository)
     data_repository['wt_testwrapperfile'] = testwrapperfile
@@ -511,6 +516,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     else:
         tag = "testcase" if steps_tag == "Steps" else steps_tag
         tc_junit_object = data_repository['wt_junit_object']
+        #creates testcase based on tag given Setup/Steps/Cleanup
         tc_junit_object.create_testcase(location="from testsuite", timestamp=tc_timestamp,
                                         ts_timestamp=data_repository['wt_ts_timestamp'],
                                         classname=data_repository['wt_suite_name'],
@@ -539,8 +545,11 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         html_filepath = os.path.join(data_repository['wt_resultsdir'],
                                      Utils.file_Utils.getNameOnly(filename)) + '.html'
         print_info("HTML result file: {0}".format(html_filepath))
+    #get the list of steps in the given tag - Setup/Steps/Cleanup
     step_list = common_execution_utils.get_step_list(testcase_filepath,
                                                      steps_tag, "step")
+    if not len(step_list):
+        print_warning("step list is empty in {0} block".format(steps_tag))
     if steps_tag == "Setup":
         #setting onError action to 'abort' for all setup steps
         _ = [step.find("onError").set("action", "abort") for step in step_list]
@@ -560,10 +569,16 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         tc_status = "ERROR"
     else:
         setup_tc_status, cleanup_tc_status = True, True
+        #1.execute setup steps if testwrapperfile is present in testcase
+        #and not from testsuite execution
+        #2.execute setup steps if testwrapperfile is present in testcase
+        #and from testsuite execution and testwrapperfile is not defined in test suite.
         if (testwrapperfile and not from_ts) or (testwrapperfile and \
             from_ts and not data_repository.has_key('suite_testwrapper_file')):
             setup_step_list = common_execution_utils.get_step_list(testwrapperfile,
                                                                    "Setup", "step")
+            if not len(setup_step_list):
+                print_warning("step list is empty in {0} block".format("Setup"))
             #setting onError action to 'abort' for all setup steps
             _ = [step.find("onError").set("action", "abort") for step in setup_step_list]
             print_info("****** SETUP STEPS EXECUTION STARTS *******")
@@ -573,6 +588,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
             data_repository['wt_step_type'] = 'step'
             print_info("setup_tc_status : {0}".format(setup_tc_status))
             print_info("****** SETUP STEPS EXECUTION ENDS *******")
+
         if isinstance(setup_tc_status, bool) and setup_tc_status:
             if steps_tag == "Steps":
                 print_info("****** TEST STEPS EXECUTION STARTS *******")
@@ -587,10 +603,16 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
             print_error("Steps in cleanup will be executed on besteffort")
             tc_status = "ERROR"
 
+        #1.execute cleanup steps if testwrapperfile is present in testcase
+        #and not from testsuite execution
+        #2.execute cleanup steps if testwrapperfile is present in testcase
+        #and from testsuite execution and testwrapperfile is not defined in test suite.
         if (testwrapperfile and not from_ts) or (testwrapperfile and \
             from_ts and not data_repository.has_key('suite_testwrapper_file')):
             cleanup_step_list = common_execution_utils.get_step_list(testwrapperfile,
                                                                      "Cleanup", "step")
+            if not len(cleanup_step_list):
+                print_warning("step list is empty in {0} block".format("Cleanup"))
             print_info("****** CLEANUP STEPS EXECUTION STARTS *******")
             data_repository['wt_step_type'] = 'cleanup'
             cleanup_tc_status = execute_steps(j_data_type, j_runtype, \
@@ -607,6 +629,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     if isinstance(tc_status, bool) and isinstance(cleanup_tc_status, bool) \
         and tc_status and cleanup_tc_status:
         tc_status = True
+    #set tc status to WARN if only cleanup fails
     elif isinstance(tc_status, bool) and tc_status and cleanup_tc_status != True:
         print_warning("setting tc status to WARN as cleanup failed")
         tc_status = "WARN"

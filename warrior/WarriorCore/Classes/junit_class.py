@@ -70,6 +70,7 @@ class Junit(object):
 
         for ts in self.root.findall("testsuite"):
             if ts.get("timestamp") == ts_timestamp:
+                #create an element with name as in tag
                 tc = self.create_element(tag, classname=classname, timestamp=timestamp,
                                          exceptions="0", keywords="0", name=name,
                                          display='True', **self.init_arg(**kwargs))

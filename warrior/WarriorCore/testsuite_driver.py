@@ -172,6 +172,7 @@ def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_r
     report_suite_requirements(suite_repository, testsuite_filepath)
     time.sleep(3)
 
+#get the details of testwrapperfile, data_type, runtype from test suite xml
 def get_testwrapper_file_details(testsuite_filepath, data_repository):
     """retuns testwrapperfile to use if specified, else returns False"""
     if data_repository.has_key('ow_testwrapperfile'):
@@ -186,6 +187,9 @@ def get_testwrapper_file_details(testsuite_filepath, data_repository):
     abs_testwrapperfile = Utils.file_Utils.getAbsPath(testwrapperfile, abs_cur_dir)
     Utils.xml_Utils.getRoot(abs_testwrapperfile)
     jfile_obj = execution_files_class.ExecFilesClass(abs_testwrapperfile, "ts", None, None)
+    if not data_repository.get('suite_data_file', False):
+        print_error("Input data file must be specified in test suite global details section")
+        exit(0)
     j_data_type = jfile_obj.check_get_datatype(data_repository['suite_data_file'])
     j_runtype = jfile_obj.check_get_runtype()
     return [abs_testwrapperfile, j_data_type, j_runtype]
@@ -299,9 +303,11 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     suite_global_xml = root.find('Details')
     runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(suite_global_xml)
 
+    #get testwrapperfile details
     testwrapperfile, j_data_type, j_runtype = \
         get_testwrapper_file_details(testsuite_filepath, data_repository)
     setup_tc_status, cleanup_tc_status = True, True
+    #execute setup steps defined in testwrapper file if testwrapperfile is present
     if testwrapperfile:
         print_info("*****************TESTWRAPPER SETUP EXECUTION START*********************")
         data_repository['suite_testwrapper_file'] = testwrapperfile
@@ -467,6 +473,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                     "setup status : {0}".format(setup_tc_status))
         print_error("Steps in cleanup will be executed on besteffort")
         test_suite_status = "ERROR"
+    #execute cleanup steps defined in testwrapper file if testwrapperfile is present
     if testwrapperfile:
         print_info("*****************TESTWRAPPER CLEANUP EXECUTION START*********************")
         data_repository['wt_data_type'] = j_data_type
@@ -484,6 +491,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     if test_suite_status == True and cleanup_tc_status == True:
         test_suite_status = True
+    #set status to WARN if only cleanup fails
     elif test_suite_status == True and cleanup_tc_status != True:
         print_warning("setting test suite status to WARN as cleanup failed")
         test_suite_status = 'WARN'
