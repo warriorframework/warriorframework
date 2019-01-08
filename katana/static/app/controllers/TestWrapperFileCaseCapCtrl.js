@@ -26,7 +26,7 @@ app.controller('TestWrapperfilecaseCapCtrl', ['$scope','$routeParams','$http', '
         $scope.xml.pycs = {};
         $scope.xml.args = {};
         $scope.original_iter_types = [];
-        $scope.step_onerror = "next";
+        $scope.step_onerror = "abort";
         $scope.step_onerror_value = "";
         $scope.arg_list = [{"_name": "", "_value": ""}];
         $scope.showSetupStepEdit = false;
@@ -384,7 +384,7 @@ $scope.showCleanupRules = function(execType){
             }
             $scope.model.TestWrapper.Details.State = "Draft";
             $scope.status.keyword = "";
-            selectKeyword($scope.status.keyword)
+            selectKeyword($scope.status.keyword);
         };
         $scope.emptyCleanupKWName = function(){
             if(!$scope.cleanupstatus.kwCheckbox){
@@ -919,7 +919,7 @@ $scope.showCleanupRules = function(execType){
 
 
                 var flag = true;
-                for(i=0; i<$scope.status.datatypes.length; i++){
+                for(var i=0; i<$scope.status.datatypes.length; i++){
                     if($scope.model.TestWrapper.Details.Datatype.toLowerCase() == $scope.status.datatypes[i].toLowerCase()){
                         $scope.model.TestWrapper.Details.Datatype = $scope.status.datatypes[i];
                         flag = false;
@@ -933,19 +933,19 @@ $scope.showCleanupRules = function(execType){
                     flag = true;
                 }
 
-                for(i=0; i<$scope.status.caseerrors.length; i++){
-                    if($scope.model.TestWrapper.Details.default_onError._action.toLowerCase() == $scope.status.caseerrors[i].toLowerCase()){
-                        $scope.model.TestWrapper.Details.default_onError._action = $scope.status.caseerrors[i];
-                        flag = false;
-                        break;
-                    }
-                }
-                if(flag){
-                    $scope.model.TestWrapper.Details.default_onError._action = "next"
-                }
-                else{
-                    flag = true;
-                }
+//                for(i=0; i<$scope.status.caseerrors.length; i++){
+//                    if($scope.model.TestWrapper.Details.default_onError._action.toLowerCase() == $scope.status.caseerrors[i].toLowerCase()){
+//                        $scope.model.TestWrapper.Details.default_onError._action = $scope.status.caseerrors[i];
+//                        flag = false;
+//                        break;
+//                    }
+//                }
+//                if(flag){
+//                    $scope.model.TestWrapper.Details.default_onError._action = "next"
+//                }
+//                else{
+//                    flag = true;
+//                }
 
             //Setup Step Function
                 for (i = 0; i < $scope.model.TestWrapper.Setup.step.length; i++) {
@@ -978,7 +978,7 @@ $scope.showCleanupRules = function(execType){
                     }
 
                     if(!$scope.model.TestWrapper.Setup.step[i].hasOwnProperty("onError")){
-                        $scope.model.TestWrapper.Setup.step[i]["onError"] = {"_action": "next", "_value": ""};
+                        $scope.model.TestWrapper.Setup.step[i]["onError"] = {"_action": "abort", "_value": ""};
                     }
 
                     if(!$scope.model.TestWrapper.Setup.step[i].hasOwnProperty("Description")){
@@ -1105,7 +1105,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                     }
 
                     if(!$scope.model.TestWrapper.Cleanup.step[i].hasOwnProperty("onError")){
-                        $scope.model.TestWrapper.Cleanup.step[i]["onError"] = {"_action": "next", "_value": ""};
+                        $scope.model.TestWrapper.Cleanup.step[i]["onError"] = {"_action": "abort", "_value": ""};
                     }
 
                     if(!$scope.model.TestWrapper.Cleanup.step[i].hasOwnProperty("Description")){
@@ -1282,7 +1282,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                 console.log('$scope.model.TestWrapper', JSON.stringify($scope.model.TestWrapper, null, 2));
 
                 // Set up some $scope values that are not directly referring into the test case itself.
-                $scope.status.default_onError = { _action: 'next', _value: '' };
+                $scope.status.default_onError = { _action: 'abort', _value: '' };
                 $scope.status.default_onError._action = $scope.model.TestWrapper.Details.default_onError._action;
                 $scope.status.default_onError._value = $scope.model.TestWrapper.Details.default_onError._value || '';
 
@@ -1293,7 +1293,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
 
 
 
-                      $scope.cleanupstatus.default_onError = { _action: 'next', _value: '' };
+                      $scope.cleanupstatus.default_onError = { _action: 'abort', _value: '' };
                 $scope.cleanupstatus.default_onError._action = $scope.model.TestWrapper.Details.default_onError._action;
                 $scope.cleanupstatus.default_onError._value = $scope.model.TestWrapper.Details.default_onError._value || '';
 
@@ -1337,15 +1337,15 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
         },
 
         default_onError: {          // This is the default_onError as it appears in the Details section.
-            _action: 'next',
+            _action: 'abort',
             _value: ""
         },
 
         stepsimpacts: ['impact', 'noimpact'],
 
-        caseerrors: ['next', 'abort', 'abort_as_error', 'goto'],
+        caseerrors: ['abort', 'next', 'abort_as_error', 'goto'],
 
-        steperrors: ['next', 'abort', 'abort_as_error', 'goto'],
+        steperrors: ['abort', 'next', 'abort_as_error', 'goto'],
 
         iterationtypes: ['Standard', 'once_per_tc', 'end_of_tc'],
 
@@ -1353,7 +1353,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
 
         operator: ['eq', 'ge', 'gt', 'le', 'lt', 'ne' ],
 
-        stepexecuteerrors: ['next', 'abort', 'abort_as_error', 'goto'],
+        stepexecuteerrors: ['abort', 'next', 'abort_as_error', 'goto'],
 
         stepscontexts: ['positive', 'negative'],
 
@@ -1393,7 +1393,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
         },
 
         default_onError: {          // This is the default_onError as it appears in the Details section.
-            _action: 'next',
+            _action: 'abort',
             _value: ""
         },
 
@@ -3199,7 +3199,7 @@ console.log("startSetupStepEdit",edtype);
         }
 
         if ($scope.cleanupstatus.step_edit_mode == 'NewOne') {
-        debugger;
+
             if($scope.cleanupstatus.stepindex==-1){
                 if($scope.model.TestWrapper.Cleanup.step === undefined){
                     $scope.model.TestWrapper.Cleanup.step = [];
