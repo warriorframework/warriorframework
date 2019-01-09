@@ -196,6 +196,8 @@ $scope.showRules = function(execType){
              }
         };
 
+// To select a Test Wrapper File
+
         $scope.getPathsJocket = function(e) {
             $scope.path_array = [];
             $scope.earlier_li.className = "";
@@ -279,6 +281,9 @@ $scope.showRules = function(execType){
             $scope.toggleModal();
         };
 
+
+//Submitting the selected Testwrapper file.
+
         $scope.storePathsJocket = function() {
             var data_folder_array = [];
             var tc_folder_array = [];
@@ -361,6 +366,8 @@ $scope.showRules = function(execType){
             $scope.showModal.visible = !$scope.showModal.visible;
         };
 
+// Toggle button When the file is selected or Not.
+
         $scope.toggleModalJocket = function(){
             document.getElementById("tree_div_j").innerHTML = $scope.table;
             CollapsibleLists.applyTo(document.getElementById('tree_div_j'));
@@ -374,6 +381,9 @@ $scope.showRules = function(execType){
                 $scope.btnValue = "Edit";
             }
         };
+
+        //Toggle the button between Path and Edit.
+
         $scope.monitorPathBtnValueForJocket = function(){
             if($scope.model.Testcase.Details.TestWrapperFile === undefined || $scope.model.Testcase.Details.TestWrapperFile === ""){
                 $scope.btnValueJocket = "Path";
@@ -1110,6 +1120,8 @@ $scope.showRules = function(execType){
         $scope.monitorPathBtnValue();
 
         };
+
+// No data file check box
 
     $scope.noteJocketStatus = function () {
 

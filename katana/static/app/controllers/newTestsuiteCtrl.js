@@ -1418,6 +1418,7 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
 
         }
 
+// To select a Test Wrapper File
 
          $scope.getPathsJocket = function(e) {
             $scope.path_array = [];
@@ -1441,6 +1442,8 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
                 $scope.earlier_li = li;
             }
        };
+
+//Submitting the selected Testwrapper file.
 
        $scope.storePathsJocket = function() {
             var data_folder_array = [];
@@ -1502,11 +1505,14 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
             $scope.toggleModalJocket();
         };
 
+// Toggle button When the file is selected or Not.
+
          $scope.toggleModalJocket = function(){
             document.getElementById("tree_div_j").innerHTML = $scope.table;
             CollapsibleLists.applyTo(document.getElementById('tree_div_j'));
             $scope.showModalJ.visible = !$scope.showModalJ.visible;
         };
+//Toggle the button between Path and Edit.
         $scope.monitorPathBtnValueForJocket = function(){
             if($scope.TestWrapperFile === undefined || $scope.TestWrapperFile === ""){
                 $scope.btnValueJocket = "Path";
@@ -1514,6 +1520,8 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
                 $scope.btnValueJocket = "Edit";
             }
         };
+
+        // No data file check box
          $scope.noteJocketStatus = function () {
 
         var jval = '', // 'Jocket File Required'

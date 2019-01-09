@@ -68,7 +68,7 @@ app.controller('TestWrapperfilecaseCapCtrl', ['$scope','$routeParams','$http', '
         readConfig();
 
 
-//This renders the Rules Fields
+//This renders the Setup Step Rules Fields
 $scope.showRules = function(execType){
     if(execType == 'If' || execType == 'If Not'){
         $scope.rule_list = '';
@@ -93,7 +93,7 @@ $scope.showRules = function(execType){
 
 }
 
-//-----Cleanup Step Function
+//----- This renders the Cleanup Step Function rules Fields
 $scope.showCleanupRules = function(execType){
     if(execType == 'If' || execType == 'If Not'){
         $scope.rule_list = '';
@@ -314,7 +314,7 @@ $scope.showCleanupRules = function(execType){
         $scope.addAnotherRulesToList = function (){
             $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": ""});
         };
-
+//To add Multiple Arguments for the Execute Type
         $scope.deleteArgFromList = function(index){
             if($scope.arg_list.length > 1){
                 $scope.arg_list.splice(index, 1);
@@ -378,6 +378,7 @@ $scope.showCleanupRules = function(execType){
             }
         };
 
+//This function checks for setup step the Keyword checkbox and select the Keyword
         $scope.emptyKWName = function(){
             if(!$scope.status.kwCheckbox){
                 $scope.status.driverCheckbox = false;
@@ -386,6 +387,9 @@ $scope.showCleanupRules = function(execType){
             $scope.status.keyword = "";
             selectKeyword($scope.status.keyword);
         };
+
+        //This function checks for Cleanup step the Keyword checkbox and select the keyword
+
         $scope.emptyCleanupKWName = function(){
             if(!$scope.cleanupstatus.kwCheckbox){
                 $scope.cleanupstatus.driverCheckbox = false;
@@ -867,7 +871,7 @@ $scope.showCleanupRules = function(execType){
 //                    }
 //                }
 
-                //---- Setup normalization.
+                //---- Setup  step normalization.
 
                 if ($scope.model.TestWrapper.Setup === undefined) {
                     $scope.model.TestWrapper.Setup = {};
@@ -892,7 +896,7 @@ $scope.showCleanupRules = function(execType){
                 }
 
 
-                //----Cleanup Normalization
+                //----Cleanup step Normalization
 
 
                  if ($scope.model.TestWrapper.Cleanup === undefined) {
@@ -947,7 +951,7 @@ $scope.showCleanupRules = function(execType){
 //                    flag = true;
 //                }
 
-            //Setup Step Function
+            //Setup Step Driver render details
                 for (i = 0; i < $scope.model.TestWrapper.Setup.step.length; i++) {
                     $scope.editstepcheck = 1;
                     var index = i;
@@ -957,7 +961,7 @@ $scope.showCleanupRules = function(execType){
                     $scope.cancelArguments();
                 }
 
-                //Cleanup  function
+                //Cleanup step Driver render details
                 for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                     $scope.editstepcheck = 1;
                     var index = i;
@@ -967,7 +971,7 @@ $scope.showCleanupRules = function(execType){
                     $scope.cancelCleanupArguments();
                 }
 
-//Setup Function
+                // Setting up the Setup  step Fields
                 for (i = 0; i < $scope.model.TestWrapper.Setup.step.length; i++) {
                     if(!$scope.model.TestWrapper.Setup.step[i].hasOwnProperty("Execute")){
                     $scope.model.TestWrapper.Setup.step[i]["Execute"] = {"_ExecType": "Yes", "_Expression": "", "_Else": "", "_Elsevalue": "", "Rule": {"_Condition": "", "_Operator": "eq", "_Condvalue": ""}}
@@ -1093,7 +1097,7 @@ $scope.showCleanupRules = function(execType){
                     }
                 }
                 }
-//Cleanup Step Function
+//Setting up  the Cleanup Step Fields
 
 for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                     if(!$scope.model.TestWrapper.Cleanup.step[i].hasOwnProperty("Execute")){
@@ -1310,6 +1314,8 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
 
     readTestCaseFile();
 
+
+// Setup  step  Variables Declaration
     $scope.status = {
 
         nodatafile: '0',
@@ -1364,7 +1370,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
         driverCheckbox: false
     };
 
-    //--__Cleanup Steps variables
+    //--__Cleanup Steps variables Declaration
 
     $scope.cleanupstatus = {
 
@@ -1594,7 +1600,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
     //---------------------------------------------------------------
 
 
-// Setup del step function
+// Setup delete step function
     $scope.delStep = function (index) {
 
         sweetAlert({
@@ -1618,7 +1624,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
         });
     };
 
-    //Cleanup del step function
+    //Cleanup delete step function
 
      $scope.delCleanupStep = function (index) {
 
@@ -1645,7 +1651,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
 
 
 
-//Setup Step function
+//Setup Step rendering the Table values
     $scope.hasNoSteps = function () {
         var output = false;
         if($scope.model.TestWrapper.Setup.step.length == 0){
@@ -1659,7 +1665,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
         return output
     };
 
-//Cleanup Step Function
+//Cleanup Step rendering the table values
 
  $scope.hasNoCleanupSteps = function () {
         var output = false;
@@ -1675,7 +1681,7 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
     };
 
 
-// Start Setup Step Edit new Button
+// To create a New Setup Step
     $scope.startSetupStepEdit = function (edtype, val, index) {
 console.log("startSetupStepEdit",edtype);
         var IDFPath = $scope.model.TestWrapper.Details.InputDataFile;
@@ -1710,7 +1716,7 @@ console.log("startSetupStepEdit",edtype);
     };
 
 
-    // Start Cleanup Step Edit New button
+    // To Create a New Cleanup Step
 
      $scope.startCleanupStepEdit = function (edtype, val, index) {
         console.log('StartCleanupEdit',edtype);
@@ -1872,7 +1878,7 @@ console.log("startSetupStepEdit",edtype);
             }
             $scope.pathXml = path.replace(/\>$/, '');
     }
-//Start Setup Step Capture
+// Setup Step Fields Intialization and Declaration and Function call
         function startSetupStepCap(edtype, val, index){
 
             console.log('startSetupStepCap',edtype);
@@ -1901,7 +1907,7 @@ console.log("startSetupStepEdit",edtype);
             }
         }
 
-        // Start Cleanup Step capture
+        //  Cleanup Step Fields Intialization and Declaration and Function call
 
         function startCleanupStepCap(edtype, val, index){
             console.log("startCleanupStepCap",edtype);
@@ -1940,7 +1946,7 @@ console.log("startSetupStepEdit",edtype);
                 return index >= $scope.stepBeingEdited
             }
         };
-//Setup Step Function
+//Adding the new Setup Step
     $scope.addStep = function (index) {
         $scope.hideSubsys = true;
         if($scope.showSetupStepEdit){
@@ -1974,7 +1980,7 @@ console.log("startSetupStepEdit",edtype);
     };
 
 
-    //---------Cleanup Function
+    //Adding the new Cleanup Function
  $scope.addCleanupStep = function (index) {
         $scope.hideSubsys = true;
         if($scope.showCleanupStepEdit){
@@ -2202,7 +2208,7 @@ console.log("startSetupStepEdit",edtype);
         return $scope.cleanupstatus.step_edit_mode != 'None';
     };
 
-    //Cleanup Step Edit Step Function
+    //Allows Edit option  for the user in the  Cleanup  step  with in the Cleanup array.
 
       $scope.editCleanupStep = function (drivername, index) {
         $scope.editArgs = 1;
@@ -2474,7 +2480,7 @@ console.log("startSetupStepEdit",edtype);
             return kwd;
         }
 
-//Setup Step Function
+// Can cancel the arguments That are added into the field in the Setup step
     $scope.cancelArguments = function () {
         $scope.status.step = mkNewStep();
         $scope.showSetupStepEdit = false;
@@ -2486,7 +2492,7 @@ console.log("startSetupStepEdit",edtype);
         return $scope.status.step_edit_mode = 'None';
     };
 
-    //Cleanup Edit Function
+// Can cancel the arguments That are added into the field in the Cleanup Step
 
        $scope.cancelCleanupArguments = function () {
         $scope.cleanupstatus.step = mkNewStep();
@@ -2499,7 +2505,7 @@ console.log("startSetupStepEdit",edtype);
         return $scope.cleanupstatus.step_edit_mode = 'None';
     };
 
-    // On change of the Driver name select control.
+    // On change of the Driver name select control in Setup Step
     // Gather function names for the selected driver.
     $scope.driverSelected = function (drivername) {
         $scope.putReqEditorOutOfSight();
@@ -2520,7 +2526,8 @@ console.log("startSetupStepEdit",edtype);
 
         return kwds;
     };
-//------------Cleanup Driver selected function
+   // On change of the Driver name select control in Cleanup Step
+    // Gather function names for the selected driver.
 
  $scope.cleanupDriverSelected = function (drivername) {
         $scope.putReqEditorOutOfSightCleanup();
@@ -2541,7 +2548,7 @@ console.log("startSetupStepEdit",edtype);
 
         return kwds;
     };
-    // Gather arguments for currently selected keyword/fun.
+    // Gather arguments for currently selected keyword/fun in Setup Step.
     // keyword is the fun name.
     $scope.selectKeyword = function (keyword) {
         $scope.putReqEditorOutOfSight();
@@ -2569,7 +2576,8 @@ console.log("startSetupStepEdit",edtype);
         return $scope.xml.args;
     };
 
-//--------cleanup Select Keyword function
+// Gather arguments for currently selected keyword/fun in Cleanup Step.
+    // keyword is the fun name.
 
  $scope.selectKeywordCleanup = function (keyword) {
         $scope.putReqEditorOutOfSightCleanup();
@@ -2631,6 +2639,7 @@ console.log("startSetupStepEdit",edtype);
         return rec;
     }
 
+ //--------------Setting up  the values  in the Setup Step fields
 
     function populate_step(driver, funname) {
         var rec = {
@@ -2755,7 +2764,7 @@ console.log("startSetupStepEdit",edtype);
     }
 
 
-    //--------------Cleanup Step  populate Step Function
+    //--------------Setting up  the values  in the Cleanup Step fields
 
     function populate_cleanupstep(driver, funname) {
         var rec = {
@@ -2881,7 +2890,7 @@ console.log("startSetupStepEdit",edtype);
 
 
 
-    /* Called when Save Step is clicked. */
+    /* Called when Save Step is clicked in the Setup step  */
     $scope.saveArguments = function () {
 
         var driver = $.trim($scope.status.drivername) || '',
@@ -3051,7 +3060,7 @@ console.log("startSetupStepEdit",edtype);
     };
 
 
-    // ----------- Cleanup Step save Arguments Function
+    /* Called when Save Step is clicked in the Cleanup step  */
 
        $scope.saveCleanupArguments = function () {
 
@@ -3243,6 +3252,7 @@ console.log("startSetupStepEdit",edtype);
         $location.path('/TestWrapperfilecases');
     };
 
+// when save case function is clicked
     $scope.saveTestcaseCap = function () {
 
         if($scope.showSetupStepEdit || $scope.showCleanupStepEdit){

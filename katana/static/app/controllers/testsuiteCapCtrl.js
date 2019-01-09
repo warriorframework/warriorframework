@@ -516,6 +516,9 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
 
         // For TestWrapper File Functions
 
+
+        // To select a Test Wrapper File
+
          $scope.getPathsJocket = function(e) {
             $scope.jocket_path_array = [];
             $scope.jocket_earlier_li.className = "";
@@ -538,6 +541,8 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                 $scope.jocket_earlier_li = li;
             }
        };
+
+//Submitting the selected Testwrapper file.
 
        $scope.storePathsJocket = function() {
             var data_folder_array = [];
@@ -599,11 +604,17 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
             $scope.toggleModalJocket();
         };
 
+// Toggle button When the file is selected or Not.
+
          $scope.toggleModalJocket = function(){
             document.getElementById("tree_div_j").innerHTML = $scope.table;
             CollapsibleLists.applyTo(document.getElementById('tree_div_j'));
             $scope.showModalJ.visible = !$scope.showModalJ.visible;
         };
+
+        //Toggle the button between Path and Edit.
+
+
         $scope.monitorPathBtnValueForJocket = function(){
             if($scope.suitemodel.TestSuite.Details.TestWrapperFile === undefined || $scope.suitemodel.TestSuite.Details.TestWrapperFile === ""){
                 $scope.btnValueJocket = "Path";
@@ -611,6 +622,8 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                 $scope.btnValueJocket = "Edit";
             }
         };
+
+        // No data file check box
 
          $scope.noteJocketStatus = function () {
 
@@ -636,17 +649,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
 
 
 
-
-
-
-
-
         // End of the TestWrapper File Functions
-
-
-
-
-
 
 
 
