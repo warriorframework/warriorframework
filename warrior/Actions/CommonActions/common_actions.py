@@ -118,7 +118,7 @@ class CommonActions(object):
         return status
 
     def store_in_repo(self, datavar=None, datavalue=None, type='str',
-                      filepath=None, jsonkey="repo_variables", slurp=False):
+                      filepath=None, jsonkey="repo_variables", bool_store_all=False):
         """Stores datavalue in datavar of datarepository
         :Argument:
             1. datavar = Key to be used to store datavalue in data_repository,
@@ -131,7 +131,9 @@ class CommonActions(object):
                           It is to store multiple key,value pairs in datarepository.
             5. jsonkey = The key where all the REPO variables & values are
                          defined in the filepath
-            6. slurp = Set to True to store whole json file content to data repository.
+            6. bool_store_all = Set to True to store whole json file content to data repository.
+                       keys from the json file will be used as it is to store in repo if this
+                       value is set to True.
                        default value is set to False.
 
             Sample JSON file:
@@ -200,10 +202,10 @@ class CommonActions(object):
                 filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     json_doc = json.load(json_handle)
-                    #if slurp is set to True, all content of given json file will be
-                    #store in data repository
-                    if slurp:
-                        print_info("slurp mode enabled, all content of given"+ \
+                    #if bool_store_all is set to True, all content of given json file will be
+                    #stored in data repository
+                    if bool_store_all:
+                        print_info("bool_store_all is set to True, all content of given"+ \
                             " json file will be stored in data repository")
                         update_datarepository(json_doc)
                         print_info("{0} dictionary stored in Warrior data_repository".\

@@ -21,7 +21,7 @@
                  <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
                         <Arguments>
                                 <argument name="filepath" value="slurp_content.json"/>
-                                <argument name="slurp" value="True"/>
+                                <argument name="bool_store_all" value="True"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
@@ -59,7 +59,8 @@
                </step>
                 <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
                         <Arguments>
-                                <argument name="filepath" value="test_repo_variables.json"/>
+                          <argument name="filepath" value="test_repo_variables.json"/>
+                          <argument name="bool_store_all" value="False"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
@@ -95,6 +96,18 @@
                         <context>positive</context>
                         <impact>impact</impact>
                 </step>
+                 <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="bool_store_all" value="False"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Negative test without using filepath and bool_store_all set to False</Description>
+                        <iteration_type type="Standard"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                 </step>
                        
         </Steps>
 </Testcase>
