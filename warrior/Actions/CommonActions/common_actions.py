@@ -180,7 +180,7 @@ class CommonActions(object):
                         status = True
                     elif not isinstance(bool_store_all, bool):
                         print_error("invalid value : {0} given for bool_store_all,"
-                            "valid value: boolean True or False".format(bool_store_all))
+                                    "valid value: boolean True or False".format(bool_store_all))
                         status = False
                     elif jsonkey in json_doc:
                         dict_to_update = {}
@@ -415,4 +415,3 @@ class CommonActions(object):
         output_dict = {time_diff: time_delta}
         status = True
         return status, output_dict
-
