@@ -150,39 +150,6 @@ class CommonActions(object):
             All three formats in the above sample block are allowed. If 'type'
             is not provided, value will be converted as string by default.
         """
-        def get_dict_to_update(var, val):
-            """
-            The function creates a dictionary with Variable and value.
-            If Variable has "." separated keys then the value is updated at
-            appropriate level of the nested dictionary.
-            :param var: Dictionary Key or Key separated with "." for nested dict keys.
-            :param val: Value for the Key.
-
-            :return: Dictionary
-            """
-            dic = {}
-            if '.' in var:
-                [key, value] = var.split('.', 1)
-                dic[key] = get_dict_to_update(value, val)
-            else:
-                dic[var] = val
-            return dic
-
-        def verify_key_already_exists_and_update(orig_dict, new_dict):
-            """
-            This function updates new_dict in orig_dict.
-            :param orig_dict: Dictionary to be updated
-            :param new_dict: Dictionary to update
-
-            :return: updated dictionary
-            """
-            for key, value in new_dict.items():
-                if key not in orig_dict:
-                    orig_dict[key] = value
-                else:
-                    verify_key_already_exists_and_update(orig_dict[key], value)
-            return orig_dict
-
         status = False
         pass_msg = "Value: {0} is stored in a Key: {1} of Warrior data_repository"
 
@@ -191,7 +158,7 @@ class CommonActions(object):
                 datavalue = int(datavalue)
             elif type == 'float':
                 datavalue = float(datavalue)
-            dict_to_update = get_dict_to_update(datavar, datavalue)
+            dict_to_update = Utils.dict_Utils.get_dict_to_update(datavar, datavalue)
             update_datarepository(dict_to_update)
             print_info(pass_msg.format(datavalue, datavar))
             status = True
@@ -204,15 +171,18 @@ class CommonActions(object):
                     json_doc = json.load(json_handle)
                     #if bool_store_all is set to True, all content of given json file will be
                     #stored in data repository
-                    if bool_store_all:
-                        print_info("bool_store_all is set to True, all content of given"+ \
-                            " json file will be stored in data repository")
+                    if isinstance(bool_store_all, bool) and bool_store_all is True:
+                        print_info("bool_store_all is set to True, all content of given"
+                                   " json file will be stored in data repository")
                         update_datarepository(json_doc)
-                        print_info("{0} dictionary stored in Warrior data_repository".\
-                            format(json_doc))
+                        print_info("{0} dictionary stored in Warrior data_repository".
+                                   format(json_doc))
                         status = True
-                        return status 
-                    if jsonkey in json_doc:
+                    elif not isinstance(bool_store_all, bool):
+                        print_error("invalid value : {0} given for bool_store_all,"
+                            "valid value: boolean True or False".format(bool_store_all))
+                        status = False
+                    elif jsonkey in json_doc:
                         dict_to_update = {}
                         repo_dict = json_doc[jsonkey]
                         for var_key, var_value in repo_dict.items():
@@ -225,17 +195,18 @@ class CommonActions(object):
                                     value = str(var_value['value'])
                             else:
                                 value = str(var_value)
-                            build_dict = get_dict_to_update(var_key, value)
-                            verify_key_already_exists_and_update\
+                            build_dict = Utils.dict_Utils.get_dict_to_update(var_key, value)
+                            Utils.dict_Utils.verify_key_already_exists_and_update\
                                 (orig_dict=dict_to_update, new_dict=build_dict)
                         update_datarepository(dict_to_update)
                         print_info("{0} dictionary stored in Warrior data_repository".\
                             format(dict_to_update))
+                        status = True
                     else:
                         print_error('The {0} file is missing the key '
                                     '\"repo_variables\", please refer to '
                                     'the Samples in Config_files'.format(filepath))
-                status = True
+                        status = True
             except ValueError:
                 print_error('The file {0} is not a valid json '
                             'file'.format(filepath))

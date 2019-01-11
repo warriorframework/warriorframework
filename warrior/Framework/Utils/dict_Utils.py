@@ -83,3 +83,37 @@ def convert_string_to_dict(element, key_value_pair_sep=";", key_value_sep="="):
         final_dict = None
 
     return final_dict
+
+def get_dict_to_update(var, val):
+    """
+    The function creates a dictionary with Variable and value.
+    If Variable has "." separated keys then the value is updated at
+    appropriate level of the nested dictionary.
+    :param var: Dictionary Key or Key separated with "." for nested dict keys.
+    :param val: Value for the Key.
+
+    :return: Dictionary
+    """
+    dic = {}
+    if '.' in var:
+        [key, value] = var.split('.', 1)
+        dic[key] = get_dict_to_update(value, val)
+    else:
+        dic[var] = val
+    return dic
+
+def verify_key_already_exists_and_update(orig_dict, new_dict):
+    """
+    This function updates new_dict in orig_dict.
+    :param orig_dict: Dictionary to be updated
+    :param new_dict: Dictionary to update
+
+    :return: updated dictionary
+    """
+    for key, value in new_dict.items():
+        if key not in orig_dict:
+            orig_dict[key] = value
+        else:
+            verify_key_already_exists_and_update(orig_dict[key], value)
+    return orig_dict
+
