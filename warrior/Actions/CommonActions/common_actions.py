@@ -169,44 +169,44 @@ class CommonActions(object):
                 filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     json_doc = json.load(json_handle)
-                    #if bool_store_all is set to True, all content of given json file will be
-                    #stored in data repository
-                    if isinstance(bool_store_all, bool) and bool_store_all is True:
-                        print_info("bool_store_all is set to True, all content of given"
-                                   " json file will be stored in data repository")
-                        update_datarepository(json_doc)
-                        print_info("{0} dictionary stored in Warrior data_repository".
-                                   format(json_doc))
-                        status = True
-                    elif not isinstance(bool_store_all, bool):
-                        print_error("invalid value : {0} given for bool_store_all,"
-                                    "valid value: boolean True or False".format(bool_store_all))
-                        status = False
-                    elif jsonkey in json_doc:
-                        dict_to_update = {}
-                        repo_dict = json_doc[jsonkey]
-                        for var_key, var_value in repo_dict.items():
-                            if isinstance(var_value, dict):
-                                if var_value.get('type') == 'int':
-                                    value = int(var_value['value'])
-                                elif var_value.get('type') == 'float':
-                                    value = float(var_value['value'])
-                                else:
-                                    value = str(var_value['value'])
+                #if bool_store_all is set to True, all content of given json file will be
+                #stored in data repository
+                if isinstance(bool_store_all, bool) and bool_store_all is True:
+                    print_info("bool_store_all is set to True, all content of given"
+                               " json file will be stored in data repository")
+                    update_datarepository(json_doc)
+                    print_info("{0} dictionary stored in Warrior data_repository".
+                               format(json_doc))
+                    status = True
+                elif not isinstance(bool_store_all, bool):
+                    print_error("invalid value : {0} given for bool_store_all,"
+                                "valid value: boolean True or False".format(bool_store_all))
+                    status = False
+                elif jsonkey in json_doc:
+                    dict_to_update = {}
+                    repo_dict = json_doc[jsonkey]
+                    for var_key, var_value in repo_dict.items():
+                        if isinstance(var_value, dict):
+                            if var_value.get('type') == 'int':
+                                value = int(var_value['value'])
+                            elif var_value.get('type') == 'float':
+                                value = float(var_value['value'])
                             else:
-                                value = str(var_value)
-                            build_dict = Utils.dict_Utils.get_dict_to_update(var_key, value)
-                            Utils.dict_Utils.verify_key_already_exists_and_update\
-                                (orig_dict=dict_to_update, new_dict=build_dict)
-                        update_datarepository(dict_to_update)
-                        print_info("{0} dictionary stored in Warrior data_repository".\
-                            format(dict_to_update))
-                        status = True
-                    else:
-                        print_error('The {0} file is missing the key '
-                                    '\"repo_variables\", please refer to '
-                                    'the Samples in Config_files'.format(filepath))
-                        status = True
+                                value = str(var_value['value'])
+                        else:
+                            value = str(var_value)
+                        build_dict = Utils.dict_Utils.get_dict_to_update(var_key, value)
+                        Utils.dict_Utils.verify_key_already_exists_and_update\
+                            (orig_dict=dict_to_update, new_dict=build_dict)
+                    update_datarepository(dict_to_update)
+                    print_info("{0} dictionary stored in Warrior data_repository".\
+                        format(dict_to_update))
+                    status = True
+                else:
+                    print_error('The {0} file is missing the key '
+                                '\"repo_variables\", please refer to '
+                                'the Samples in Config_files'.format(filepath))
+                    status = True
             except ValueError:
                 print_error('The file {0} is not a valid json '
                             'file'.format(filepath))
