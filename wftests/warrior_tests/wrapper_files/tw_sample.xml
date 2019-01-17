@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<TestWrapper>
+	<Details>
+		<Name>tw_sample</Name>
+		<Title>connect and disconnect all systems and subsystems in the data file</Title>
+		<Datatype>Custom</Datatype>
+    <Runtype>Sequential_keywords</Runtype>
+    <Date>2016-01-26</Date>
+		<Time>11:20</Time>
+		<Engineer>Sekhar</Engineer>
+	</Details>
+	<Setup>
+		<step Driver="cli_driver" Keyword="connect_all" TS="1">
+			<Arguments>
+
+			</Arguments>
+			<onError action="next"/>
+			<Description>connect</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+    </step>
+  </Setup>
+  <Cleanup>
+  <step Driver="cli_driver" Keyword="disconnect_all" TS="8">
+			<Arguments>
+
+			</Arguments>
+			<onError action="next"/>
+			<Description>connect</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="verify_session_status" TS="9">
+			<Arguments>
+				<argument name="system_name" value="system-1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="verify_session_status" TS="10">
+			<Arguments>
+				<argument name="system_name" value="system-2[sub-1]"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="verify_session_status" TS="11">
+			<Arguments>
+				<argument name="system_name" value="system-2[sub-2]"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+	</Cleanup>
+</TestWrapper>
