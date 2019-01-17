@@ -527,7 +527,7 @@ $scope.showRules = function(execType){
 
                 //console.log($scope.stepToBeCopied);
             }
-              }
+
 
             $scope.hideSubsys = false;
             if($scope.stepToBeCopied == "None"){

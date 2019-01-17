@@ -42,7 +42,7 @@ app.config(function($routeProvider) {
             } */
         })
 
-          .when('/TestWrapperfilecases', {
+          .when('/Wrapper_files', {
             templateUrl: '/assets/app/partials/TestWrapperfilecases.tmpl.html',
             controller: 'TestWrapperfilecaseCtrl' /* ,
             resolve: {
@@ -223,7 +223,7 @@ app.config(function($routeProvider) {
                     return defer.promise;
                 }
             }
-        
+
         })
 
         .when('/testDatafile/:testdatafile/:subdirs', {

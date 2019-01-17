@@ -473,7 +473,7 @@ def populatepaths(data):
         path += os.sep + path_list[i]
     output = {}
     dirs = {"xmldir": "Testcases",
-            "testwrapper": "TestWrapperfilecases",
+            "testwrapper": "Wrapper_files",
             "testsuitedir": "Suites",
             "projdir": "Projects",
             "idfdir": "Data",
