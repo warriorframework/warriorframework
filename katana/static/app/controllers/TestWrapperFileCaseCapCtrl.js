@@ -3249,7 +3249,7 @@ console.log("startSetupStepEdit",edtype);
             });
 
     $scope.cancelTestcaseCap = function() {
-        $location.path('/Wrapper_files');
+        $location.path('/wrapper_files');
     };
 
 // when save case function is clicked
@@ -3598,7 +3598,7 @@ _.each(_.range(1, $scope.model.TestWrapper.Cleanup.step.length+1), function (i) 
             if ($scope.savecreateTestcaseCap) {
 
              }else{
-                     $location.path('/Wrapper_files');
+                     $location.path('/wrapper_files');
                  }
 
 
