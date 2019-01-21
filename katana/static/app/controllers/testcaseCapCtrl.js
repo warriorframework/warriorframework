@@ -1447,7 +1447,7 @@ $scope.showRules = function(execType){
                 else{
                     if($scope.status.nodatafile == '0'){
                     swal({
-                        title: "Kindly provide the correct Relative path for Input data File and Jocket File, if auto-population of system & Subsystem name is needed.",
+                        title: "Kindly provide the correct Relative path for Input data File and Wrapper File, if auto-population of system & Subsystem name is needed.",
                         closeOnConfirm: true,
                         confirmButtonColor: '#3b3131',
                         confirmButtonText: "Ok",
