@@ -320,10 +320,11 @@ class WarriorCliClass(object):
         parser.add_argument('-datafile', action='store', nargs='?',
                             help="overwrite the path of datafile in execution "\
                             "ignore the datafile specified in testcase.xml")
-        #to accept -testwrapperfile as command line argument
-        parser.add_argument('-testwrapperfile', action='store', nargs='?',
-                            help="overwrite the path of testwrapperfile in execution "\
-                            "ignore the testwrapperfile specified in testcase.xml")
+        #to accept -wrapperfile as command line argument
+        parser.add_argument('-wrapperfile', action='store', nargs='?',
+                            help="overwrite the path of wrapperfile in execution "\
+                            "when specified in command line skips the wrapperfile "\
+                            "in testcase.xml and suite.xml")
  
         parser.add_argument('-resultdir', action='store', nargs='?',
                             help="overwrite the path of result directory in execution "\

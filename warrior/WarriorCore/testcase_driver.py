@@ -323,7 +323,7 @@ def get_system_list(datafile, node_req=False, iter_req=False):
         return system_list
 
 
-def print_testcase_details_to_console(testcase_filepath, data_repository, steps_tag):
+def print_testcase_details_to_console(testcase_filepath, data_repository, steps_tag="Steps"):
     """Prints the testcase details to the console """
     framework_detail.warrior_framework_details()
     print_info("\n===============================  TC-DETAILS  ===================================="
