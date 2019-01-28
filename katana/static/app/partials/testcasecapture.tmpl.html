@@ -5,6 +5,8 @@
 
     <hr/>
 
+    <!------------ Start of Details  Fields --------------------------->
+
     <div class="row">
         <div class="form-group">
             <label class="col-sm-1 control-label text-uppercase">Details</label>
@@ -12,6 +14,9 @@
     </div>
 
     <form action="" method="post" class="form-horizontal" role="form">
+
+
+        <!------------Name Field --------------------------->
         <div class="row">
             <div class="form-group">
                 <label for="Name"
@@ -90,6 +95,8 @@
                 </div>
             </div>
         </div>
+
+        <!------------Case Title Field --------------------------->
 
         <div class="row">
             <div class="form-group">
@@ -171,6 +178,9 @@
             </div>
         </div>
 
+        <!-----------------Category Field --------------------------->
+
+
         <div class="row">
             <div class="form-group">
                 <label for="Category"
@@ -249,6 +259,8 @@
                 </div>
             </div>
         </div>
+
+        <!------------Case State Field --------------------------->
 
         <div class="row">
             <div class="form-group">
@@ -343,6 +355,7 @@
                 </div>
             </div>
         </div>
+                 <!------------Engineer Name Field --------------------------->
 
         <div class="row">
             <div class="form-group">
@@ -423,6 +436,8 @@
                 </div>
             </div>
         </div>
+
+        <!------------Last Updated duration  Field --------------------------->
 
         <div class="row">
             <div class="form-group">
@@ -514,6 +529,8 @@
             </div>
         </div>
 
+        <!------------Default onError  Field --------------------------->
+
         <div class="row">
             <div class="form-group">
                 <label for='ondetailerror'
@@ -602,6 +619,9 @@
                 </div>
             </div>
         </div>
+
+        <!------------ Input Data File  Field --------------------------->
+        <!------Selecting  data file from the Specific Folder------------->
 
         <div class="row">
             <div class="form-group">
@@ -729,6 +749,137 @@
             </div>
         </div>
 
+        <!------------Test Wrapper Field --------------------------->
+        <!------Selecting  Testcase file from the Specific Folder------------->
+
+        <div class="row">
+            <div class="form-group">
+                <label for="JocketFile"
+                       class="col-sm-2 control-label ellipsis-the-overflow">TestWrapper File</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="testcaseTooltips.jocketFile.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{testcaseTooltips.jocketFile.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="testcaseTooltips.jocketFile.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{testcaseTooltips.jocketFile.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="testcaseTooltips.jocketFile.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{testcaseTooltips.jocketFile.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="testcaseTooltips.jocketFile.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{testcaseTooltips.jocketFile.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6" ng-show="status.nojocketfile == '1'">
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               required
+                               id="JocketFile2"
+                               ng-change="monitorPathBtnValue()"
+                               ng-model='model.Testcase.Details.TestWrapperFile'
+                               ng-click="loadDataFile(model.Testcase.Details.TestWrapperFile)"
+                               ng-disabled="status.nojocketfile == '1'"
+                               placeholder="Location of the TestWrapper file" style="cursor:pointer;">
+                        <span class="input-group-addon" style="background-color: white">
+                            <input id="jCheckbox2" type="checkbox"
+                                   ng-model='status.nojocketfile'
+                                   ng-click='noteJocketStatus()'
+                                   ng-true-value="'1'" ng-false-value="'0'">
+                            <label for="jCheckbox">&nbsp;I Don't Want A TestWrapper File.</label>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-5" ng-hide="status.nojocketfile == '1'">
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               required
+                               id="JocketFile"
+                               ng-change="monitorPathBtnValueForJocket()"
+                               ng-model='model.Testcase.Details.TestWrapperFile'
+                               ng-click="loadDataFile(model.Testcase.Details.TestWrapperFile)"
+                               ng-disabled="status.nojocketfile == '1'"
+                               placeholder="Location of the TestWrapper file" style="cursor:pointer;">
+                        <span class="input-group-addon" style="background-color: white">
+                            <input id="jCheckbox" type="checkbox"
+                                   ng-model='status.nojocketfile'
+                                   ng-click='noteJocketStatus()'
+                                   ng-true-value="'1'" ng-false-value="'0'">
+                            <label for="jCheckbox">&nbsp;I Don't Want A TestWrapper File.</label>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-1" ng-hide="status.nojocketfile == '1'">
+                    <input type="button"
+                           class="btn btn-default form-control ellipsis-the-overflow"
+                           ng-value="btnValueJocket"
+                           ng-click="toggleModalJocket()">
+                </div>
+                <modal title="Select a TestWrapper File" show-modal="showModalJ">
+                    <div class="form-group" style="padding: 5%">
+                        <div id="tree_div_j" ng-click="getPathsJocket($event)"></div>
+                    </div>
+                    <input type="button"
+                           value="Submit"
+                           class="btn btn-default"
+                           ng-click="storePathsJocket()">
+                </modal>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="testcaseTooltips.jocketFile.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.jocketFile.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.jocketFile.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.jocketFile.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.jocketFile.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.jocketFile.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.jocketFile.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.jocketFile.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!------------Data Type  Field --------------------------->
+
         <div class="row">
             <div class="form-group" ng-show="status.nodatafile == '0'">
                 <label for="Datatype"
@@ -811,6 +962,8 @@
             </div>
         </div>
 
+        <!------------Log Directory  Field --------------------------->
+
         <div class="row">
             <div class="form-group">
                 <label for="Logsdir"
@@ -892,6 +1045,8 @@
             </div>
         </div>
 
+        <!------------Results Directory Field --------------------------->
+
         <div class="row">
             <div class="form-group">
                 <label for="Resultsdir"
@@ -971,6 +1126,8 @@
                 </div>
             </div>
         </div>
+
+        <!------------Expected Results Field --------------------------->
 
         <div class="row">
             <div class="form-group">
@@ -1056,6 +1213,11 @@
 
         <hr/>
 
+
+        <!------------End of Details  Fields --------------------------->
+
+        <!------------Requirements Field --------------------------->
+
         <div class="row" style="padding-left:1em">
             <div class="form-group">
                 <label class="col-sm-1 control-label text-uppercase color-me-red">Requirements</label>
@@ -1114,6 +1276,12 @@
         </div>
 
         <hr/>
+
+        <!------------End of Requirement Field --------------------------->
+
+
+
+        <!------------Start of Step Fields --------------------------->
 
         <div class="row">
             <div class="form-group pull-left" style="padding-left:1em">
@@ -1184,7 +1352,9 @@
                                     </div>
                                 </span>
                             </div>
+                          
                             <!--Displaying the actual step number-->
+                          
                             {{ step._TS }}
                         </td>
 
@@ -3235,7 +3405,9 @@
                                     </div>
                                 </span>
                             </div>
+
                             <!--Displaying the actual step number-->
+
                             {{ step._TS }}
                         </td>
 
@@ -3517,6 +3689,8 @@
         </div>
 
         <hr/>
+
+        <!------------End of Step Fields --------------------------->
 
         <div class="form-group">
             <div class="col-sm-10">

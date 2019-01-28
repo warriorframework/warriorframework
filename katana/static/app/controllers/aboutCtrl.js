@@ -29,6 +29,7 @@ app.controller('aboutCtrl', ['$scope','$routeParams','$http', '$location', 'file
             "testsuitedir": "Suite",
             "projdir": "Project",
             "xmldir": "Case",
+            "testwrapper": "TestWrapper",
             "idfdir": "Input Data File",
             "testdata": "Test Data File"
         };

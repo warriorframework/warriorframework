@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<TestWrapper>
+	<Details>
+		<Name></Name>
+		<Title></Title>
+		<Datatype>Custom</Datatype>
+    	<Runtype>Sequential_keywords</Runtype>
+		<Date></Date>
+		<Time></Time>
+		<Engineer></Engineer>
+	</Details>
+	<Setup>
+        <!--
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	            <argument name='system_name' value="dpoe01"/>
+	        </Arguments>
+	    </step>
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	            <argument name='system_name' value="dpoe03" />
+	        </Arguments>
+	    </step>
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	        	<argument name='system_name' value="schatterlnx02" />
+	        </Arguments>
+	    </step>
+		-->
+  </Setup>
+  <Cleanup>
+      <!--
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	            <argument name='system_name' value="dpoe01"/>
+	        </Arguments>
+	    </step>
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	            <argument name='system_name' value="dpoe03" />
+	        </Arguments>
+	    </step>
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	        	<argument name='system_name' value="schatterlnx02" />
+	        </Arguments>
+	    </step>
+		-->
+
+	</Cleanup>
+</TestWrapper>

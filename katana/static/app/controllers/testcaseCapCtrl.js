@@ -37,7 +37,9 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.temp_path_array = [];
         $scope.earlier_li = [];
         $scope.btnValue = "Path";
+        $scope.btnValueJocket = "Path";
         $scope.showModal = {visible: false};
+        $scope.showModalJ = {visible: false};
         $scope.sysList = [];
         $scope.subSysList = [];
         $scope.hideSubsys = true;
@@ -56,6 +58,8 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.ExecTypeVal = 0;
         $scope.editstepcheck = 0;
         $scope.copyStepCheck = 0;
+        $scope.nextStepIndex = [];
+
         $scope.nextStepIndex = [];
 
       function readConfig(){
@@ -193,6 +197,31 @@ $scope.showRules = function(execType){
              }
         };
 
+// To select a Test Wrapper File
+
+        $scope.getPathsJocket = function(e) {
+            $scope.path_array = [];
+            $scope.earlier_li.className = "";
+            if(e == undefined){
+                e = window.event;
+            }
+            var li = (e.target ? e.target : e.srcElement);
+            var temp_name = li.innerHTML.split("<");
+            $scope.path_array.push(temp_name[0]);
+            var li_temp = li;
+            while(li_temp.parentNode.id != "tree_div_j"){
+                if(!li_temp.parentNode.innerHTML.match(/^</)){
+                    var temp_list = li_temp.parentNode.innerHTML.split("<");
+                    $scope.path_array.push(temp_list[0]);
+                }
+                li_temp = li_temp.parentNode
+            }
+            if (li.className == ""){
+                li.className = "colorChange";
+                $scope.earlier_li = li;
+            }
+       };
+
         $scope.storePaths = function() {
             var data_folder_array = [];
             var tc_folder_array = [];
@@ -253,6 +282,69 @@ $scope.showRules = function(execType){
             $scope.toggleModal();
         };
 
+
+//Submitting the selected Testwrapper file.
+
+        $scope.storePathsJocket = function() {
+            var data_folder_array = [];
+            var tc_folder_array = [];
+            var folder_index = -1;
+            var final_array = [];
+            $scope.model.Testcase.Details.TestWrapperFile = "";
+            if ($scope.cfg.idfdir.indexOf('/') === -1) {
+                data_folder_array = $scope.cfg.idfdir.split("\\");
+            }
+            else {
+                data_folder_array = $scope.cfg.idfdir.split("/");
+            }
+            for (var i = 0; i < data_folder_array.length; i++) {
+                if (data_folder_array[i] === $scope.path_array[$scope.path_array.length - 1]) {
+                    data_folder_array.splice(i, (data_folder_array.length - i));
+                    break;
+                }
+            }
+            for (i = $scope.path_array.length - 1; i >= 0; i--) {
+                data_folder_array.push($scope.path_array[i])
+            }
+            if ($scope.cfg.xmldir.indexOf('/') === -1) {
+                tc_folder_array = $scope.cfg.xmldir.split("\\");
+            }
+            else {
+                tc_folder_array = $scope.cfg.xmldir.split("/");
+            }
+            if($scope.subdirs != "none"){
+                var subdir_array = $scope.subdirs.split(",");
+                for(i=0; i<subdir_array.length; i++){
+                    tc_folder_array.push(subdir_array[i]);
+                }
+            }
+            for (i = 0; i < tc_folder_array.length; i++) {
+                if (data_folder_array[i] !== tc_folder_array[i]) {
+                    folder_index = i;
+                    break;
+                }
+            }
+            if (folder_index !== -1) {
+                var dots = tc_folder_array.length - folder_index;
+                for (i = 0; i < dots; i++) {
+                    final_array.push("..");
+                }
+            } else {
+                folder_index = tc_folder_array.length;
+            }
+            for (i = folder_index; i < data_folder_array.length; i++) {
+                final_array.push(data_folder_array[i]);
+            }
+            for (i = 0; i < final_array.length; i++) {
+                $scope.model.Testcase.Details.TestWrapperFile = $scope.model.Testcase.Details.TestWrapperFile + final_array[i] + "/"
+            }
+            if (!$scope.model.Testcase.Details.TestWrapperFile.match(/\.\.\/$/)) {
+                $scope.model.Testcase.Details.TestWrapperFile = $scope.model.Testcase.Details.TestWrapperFile.slice(0, -1);
+            }
+            $scope.btnValueJocket = "Edit";
+            $scope.toggleModalJocket();
+        };
+
         fileFactory.readdatafile()
             .then(
                 function(data) {
@@ -262,6 +354,8 @@ $scope.showRules = function(execType){
                     $scope.table = $scope.table + "</ul>";
                     document.getElementById("tree_div").innerHTML = $scope.table;
                     CollapsibleLists.applyTo(document.getElementById('tree_div'));
+                    document.getElementById("tree_div_j").innerHTML = $scope.table;
+                    CollapsibleLists.applyTo(document.getElementById('tree_div_j'));
                 },
                 function(data) {
                     alert(data);
@@ -273,11 +367,29 @@ $scope.showRules = function(execType){
             $scope.showModal.visible = !$scope.showModal.visible;
         };
 
+// Toggle button When the file is selected or Not.
+
+        $scope.toggleModalJocket = function(){
+            document.getElementById("tree_div_j").innerHTML = $scope.table;
+            CollapsibleLists.applyTo(document.getElementById('tree_div_j'));
+            $scope.showModalJ.visible = !$scope.showModalJ.visible;
+        };
+
         $scope.monitorPathBtnValue = function(){
             if($scope.model.Testcase.Details.InputDataFile === undefined || $scope.model.Testcase.Details.InputDataFile === ""){
                 $scope.btnValue = "Path";
             } else {
                 $scope.btnValue = "Edit";
+            }
+        };
+
+        //Toggle the button between Path and Edit.
+
+        $scope.monitorPathBtnValueForJocket = function(){
+            if($scope.model.Testcase.Details.TestWrapperFile === undefined || $scope.model.Testcase.Details.TestWrapperFile === ""){
+                $scope.btnValueJocket = "Path";
+            } else {
+                $scope.btnValueJocket = "Edit";
             }
         };
 
@@ -412,7 +524,11 @@ $scope.showRules = function(execType){
                 if(tempInd > -1) {
                     $scope.stepToBeCopied = tempInd + 1;
                 }
-              }
+
+                //console.log($scope.stepToBeCopied);
+            }
+
+
             $scope.hideSubsys = false;
             if($scope.stepToBeCopied == "None"){
                 swal({
@@ -569,7 +685,8 @@ $scope.showRules = function(execType){
               "InputDataFile": "",
               "Datatype": "",
               "Logsdir": "",
-              "Resultsdir": ""
+              "Resultsdir": "",
+              "TestWrapperFile": ""
             },
             "Requirements": {
               "Requirement": []
@@ -718,6 +835,7 @@ $scope.showRules = function(execType){
                     flag = true;
                 }
                 /* Handles the drop down of copy step when we open any existing file */
+
                 $scope.nextStepIndex = [];
                 for (i = 0; i < $scope.model.Testcase.Steps.step.length; i++) {
                     $scope.editstepcheck = 1;
@@ -891,6 +1009,8 @@ $scope.showRules = function(execType){
 
                 $scope.status.nodatafile =
                     ($scope.model.Testcase.Details.InputDataFile == 'No_Data') ? '1' : '0';
+                $scope.status.nojocketfile =
+                    ($scope.model.Testcase.Details.TestWrapperFile == 'No_Data') ? '1' : '0';
                 $scope.status.datatype =
                     ($scope.status.nodatafile == '0') ? '' : $scope.model.Testcase.Details.Datatype;
 
@@ -1004,6 +1124,32 @@ $scope.showRules = function(execType){
             $scope.changeExistingIterTypes();
         }
         $scope.monitorPathBtnValue();
+
+        };
+
+// No data file check box
+
+    $scope.noteJocketStatus = function () {
+
+        var jval = '', // 'Jocket File Required'
+            clazz = '';
+        if ($scope.status.nojocketfile == '1') {
+            if($scope.editStepFlag == 1){
+                $scope.noDatacheck();
+            }
+            jval = 'No_Data';
+            clazz = 'disabled';
+            for(var i=0; i<$scope.model.Testcase.Steps.step.length; i++){
+                $scope.original_iter_types[i] = $scope.model.Testcase.Steps.step[i].iteration_type._type;
+                $scope.model.Testcase.Steps.step[i].iteration_type._type = "";
+            }
+        }
+        $scope.status.jclass = clazz;
+        $scope.model.Testcase.Details.TestWrapperFile = jval;
+        if($scope.status.nojocketfile != '1') {
+            $scope.changeExistingIterTypes();
+        }
+        $scope.monitorPathBtnValueForJocket();
 
         };
 
@@ -1131,6 +1277,7 @@ $scope.showRules = function(execType){
         function(isConfirm){
             if (isConfirm) {
                 $scope.$apply($scope.model.Testcase.Steps.step.splice(index, 1));
+
                 /* handles the population of the step number depending on the RMT/RUF/RUP after delete any step*/
                 $scope.$apply(function() {
                     if($scope.model.Testcase.Steps.step.length > 0) {
@@ -1149,6 +1296,7 @@ $scope.showRules = function(execType){
                     }
                 });
 
+                //console.log($scope.nextStepIndex);
                 swal({
                     title: "Requirement deleted.",
                     timer: 1250,
@@ -1299,7 +1447,7 @@ $scope.showRules = function(execType){
                 else{
                     if($scope.status.nodatafile == '0'){
                     swal({
-                        title: "Kindly provide the correct Relative path for Input data File, if auto-population of system & Subsystem name is needed.",
+                        title: "Kindly provide the correct Relative path for Input data File and Wrapper File, if auto-population of system & Subsystem name is needed.",
                         closeOnConfirm: true,
                         confirmButtonColor: '#3b3131',
                         confirmButtonText: "Ok",
@@ -1391,6 +1539,8 @@ $scope.showRules = function(execType){
             $scope.step_numbers = [];
             $scope.stepToBeCopied = "None";
             for(var i=0; i<$scope.model.Testcase.Steps.step.length; i++){
+
+                //$scope.step_numbers.push(i+1);
                 $scope.step_numbers.push($scope.nextStepIndex[i]);
             }
             $scope.status.step.Execute._ExecType= 'Yes';
@@ -1440,6 +1590,8 @@ $scope.showRules = function(execType){
             $scope.stepToBeCopiedUI = "None";
             for(var i=0; i<$scope.model.Testcase.Steps.step.length; i++){
                 if(i !== index){
+                    //$scope.step_numbers.push(i+1);
+
                     $scope.step_numbers.push($scope.nextStepIndex[i]);
                 }
             }
@@ -1815,6 +1967,7 @@ $scope.showRules = function(execType){
         rec.runmode._value = $scope.status.step.runmode._value;
     }
     /*Populating the step numbers for edit, insert and new step */
+
     if($scope.model.Testcase.Steps.step.length > 0) {
 
         if($scope.editIndex || $scope.editIndex === 0) {
@@ -2034,6 +2187,7 @@ $scope.showRules = function(execType){
         }
 
         if ($scope.status.step_edit_mode == 'New') {
+            //console.log($scope.status.stepindex);
             if($scope.status.stepindex==-1){
                 if($scope.model.Testcase.Steps.step === undefined){
                     $scope.model.Testcase.Steps.step = [];
@@ -2259,6 +2413,8 @@ $scope.showRules = function(execType){
         }
         $scope.model.Testcase.Details.default_onError = def_error_copy;
 
+        console.log($scope.model.Testcase);
+
         console.log("Testcase\n", JSON.stringify(angular.toJson($scope.model.Testcase), null, 2));
 
         if($scope.model.Testcase.Details.State == "Draft"){
@@ -2380,7 +2536,8 @@ $scope.showRules = function(execType){
                               "InputDataFile": "",
                               "Datatype": "",
                               "Logsdir": "",
-                              "Resultsdir": ""
+                              "Resultsdir": "",
+                              "TestWrapperFile": ""
                             },
                             "Requirements": {
                               "Requirement": []
@@ -2415,4 +2572,4 @@ $scope.showRules = function(execType){
     }
     window.S = $scope;
 
-}]);
+``}]);

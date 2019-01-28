@@ -113,6 +113,12 @@
 		"bantip": "No spaces or special characters.",
 		"snowflake": "If the Suite is in the 'New' state, you would be able to create a skeletal Suite i.e. a Suite without a single Case; otherwise, a Suite requires at least one Case."
 	},
+	"jocketFile": {
+        "tooltip": "You can provide a path to the TestWrapper File here.",
+        "protip": "ProTip: A relative path to the TestWrapper file is recommended so that the Case becomes generic.",
+        "bantip": "",
+        "snowflake": ""
+    },
 	"executeType_nonzero":{
 		"tooltip": "Decides if this Case should be executed. Yes and No let you directly state whether you want to execute this Case. If and If Not gives you the capabilities for executing the Case when certain conditions are met.",
 		"protip": "ProTip: If want to execute this Case if an existing condition is met, the choose 'If'. If want to execute this Case if an existing condition is NOT met, the choose 'If Not'.",
