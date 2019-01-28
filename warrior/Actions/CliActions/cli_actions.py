@@ -298,6 +298,7 @@ class CliActions(object):
         system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile,
                                                                                      system_name)
         output_dict = {}
+        credentials_type = {}
         status = True
 
         attempt = 1 if subsystem_list is None else len(subsystem_list)
@@ -312,7 +313,11 @@ class CliActions(object):
                                           [ip_type, 'ssh_port', 'username',
                                            'password', 'prompt', 'timeout',
                                            'conn_options', 'custom_keystroke',
-                                           'escape', 'pty_dimensions'])
+                                           'escape', 'pty_dimensions', "last_successful_username",
+                                           "last_successful_password", "global_username",
+                                           "global_password", "specific_username", "specific_password",
+                                           "type_username", "type_password"])
+
             # parse more things here
             pNote("system={0}, session={1}".format(call_system_name, session_name))
             session_id = get_session_id(call_system_name, session_name)
@@ -329,7 +334,45 @@ class CliActions(object):
                     credentials["timeout"] = int_timeout
                 if not credentials['pty_dimensions']:
                     credentials["pty_dimensions"] = tuple_pty_dimensions
-                credentials["password"] = decrypt(credentials["password"])
+
+                if subsystem_name:
+                    credentials_type.update({system_name + "_"+subsystem_name + "_credentials": ""})
+                else:
+                    credentials_type.update({system_name + "_credentials": {}})
+
+                credential_type = ""
+                if credentials["last_successful_username"]:
+                    credential_type = "last_successful"
+                    credentials["username"] = credentials["last_successful_username"]
+
+                elif credentials["global_username"]:
+                    credential_type = "global"
+                    credentials["username"] = credentials["global_username"]
+
+                elif credentials["specific_username"]:
+                    credential_type = "specific"
+                    credentials["username"] = credentials["specific_username"]
+
+                elif credentials["type_username"]:
+                    credential_type = "type"
+                    credentials["username"] = credentials["type_username"]
+
+                if subsystem_name:
+                    credentials_type[system_name + "_" + subsystem_name + "_credentials"].update({"type": credential_type})
+                else:
+                    credentials_type[system_name + "_credentials"].update({"type": credential_type})
+
+
+                if credentials["last_successful_password"]:
+                    credentials["password"] = decrypt(credentials["last_successful_password"])
+                elif credentials["global_password"]:
+                    credentials["password"] = decrypt(credentials["global_password"])
+                elif credentials["specific_password"]:
+                    credentials["password"] = decrypt(credentials["specific_password"])
+                elif credentials["type_password"]:
+                    credentials["password"] = decrypt(credentials["type_password"])
+                else:
+                    credentials["password"] = decrypt(credentials["password"])
 
                 if ip_type != "ip":
                     credentials['ip'] = credentials[ip_type]
@@ -392,6 +435,17 @@ class CliActions(object):
                               "warning")
             else:
                 result = False
+            if subsystem_name:
+                credentials_type[system_name + "_" + subsystem_name + "_credentials"].update({"username": credentials["username"],
+                                                                             "password": credentials["password"]})
+            else:
+                credentials_type[system_name + "_credentials"].update({"username": credentials["username"],
+                                                      "password": credentials["password"]})
+
+            if credentials["specific_password"] or credentials["last_successful_password"] or \
+                credentials["global_password"] or credentials["type_password"]:
+                Utils.data_Utils.update_datarepository(credentials_type)
+
             Utils.data_Utils.update_datarepository(output_dict)
             Utils.testcase_Utils.report_substep_status(result)
             status = status and result

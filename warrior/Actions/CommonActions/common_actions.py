@@ -431,3 +431,25 @@ class CommonActions(object):
         status = True
         return status, output_dict
 
+    def add_credential_type_to_junit_file(self):
+        """
+        This keyword stored the status of testdata commands in junit file.
+         :Arguments: None
+         :Returns: (boolean)
+
+        """
+        wdesc = "To add credential type to junit file"
+        Utils.testcase_Utils.pNote(wdesc)
+        data_repository = Utils.config_Utils.data_repository
+        junit_file_obj = data_repository['wt_junit_object']
+        root = junit_file_obj.root
+        new_tag = junit_file_obj.create_element("credential_type")
+        for credential_key, credential_value in data_repository.items():
+            if '_credentials' in credential_key:
+                new_tag.append(junit_file_obj.create_element(credential_key, {"type": credential_value["type"],
+                                                                              "username": credential_value["username"],
+                                                                              "password":
+                                                                                  credential_value["password"]}))
+        root.append(new_tag)
+        status = True
+        return status
