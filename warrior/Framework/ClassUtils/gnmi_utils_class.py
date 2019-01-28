@@ -135,7 +135,8 @@ class gnmi(object):
                                   and "stream" not in cmd_string.lower():
                 j_index = child.expect([prompt, pexpect.EOF, pexpect.TIMEOUT], timeout=50)
                 if j_index == 1 or j_index == 0:
-                    if "client had error while displaying results" not in child.before:
+                    if "client had error while displaying results" not in child.before and \
+                            "could not create a gNMI client" not in child.before:
                         if j_index == 1:
                             sleep(5)
                             result = child.before
