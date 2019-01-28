@@ -195,7 +195,7 @@ class WarriorCliClass(object):
         """add rules about how to parse the inpurt args"""
         parser = argparse.ArgumentParser()
 
-        # Display version and framework details 
+        # Display version and framework details
         parser.add_argument('--version', action='store_true', default=False,
                             help=':version: Help the user with Current Warrior version and other Warrior package details ')
 
@@ -320,7 +320,12 @@ class WarriorCliClass(object):
         parser.add_argument('-datafile', action='store', nargs='?',
                             help="overwrite the path of datafile in execution "\
                             "ignore the datafile specified in testcase.xml")
-
+        #to accept -wrapperfile as command line argument
+        parser.add_argument('-wrapperfile', action='store', nargs='?',
+                            help="overwrite the path of wrapperfile in execution "\
+                            "when specified in command line skips the wrapperfile "\
+                            "in testcase.xml and suite.xml")
+ 
         parser.add_argument('-resultdir', action='store', nargs='?',
                             help="overwrite the path of result directory in execution "\
                             "ignore the result directory specified in testcase.xml")
@@ -355,7 +360,7 @@ class WarriorCliClass(object):
                             "Format: ./Warrior -ws sample_suite.xml."\
                             " Multiple file names can be provided "\
                             "(separated by a space)")
-                            
+
         parser.add_argument('-wp', action='store', nargs='*', dest="proj_name",
                             help="Runs project available in default path, "\
                             "Warrior/Warriorspace/Projects/. User need not give entire path. "\

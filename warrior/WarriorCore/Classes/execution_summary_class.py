@@ -54,6 +54,18 @@ class ExecutionSummary():
             suite_result_dir = suite_detail.get('resultsdir')
             if suite_location is not None:
                 suite_tc_list.append(["Suites", suite_name, suite_status, suite_location])
+            #to add Setup results in suite summary
+            for value in tree.iter('Setup'):
+                setup_details = value.attrib
+                setup_status = setup_details.get('status')
+                setup_name = setup_details.get('name')+".xml"
+                setup_location = setup_details.get('testcasefile_path')
+                case_result_dir_with_tc_name = setup_details.get('resultsdir')
+                if case_result_dir_with_tc_name is not None:
+                    case_result_dir = os.path.dirname(case_result_dir_with_tc_name)
+                    # suite junit element will not have resultsdir attrib for case execution
+                    if suite_result_dir is None or suite_result_dir == case_result_dir:
+                        suite_tc_list.append(["Setup", setup_name, setup_status, setup_location])
             for value in tree.iter('testcase'):
                 testcase_details = value.attrib
                 testcase_status = testcase_details.get('status')
@@ -66,6 +78,18 @@ class ExecutionSummary():
                     if suite_result_dir is None or suite_result_dir == case_result_dir:
                         suite_tc_list.append(["Testcase", testcase_name, testcase_status,
                                               testcase_location])
+            #to add Cleanup results in suite summary
+            for value in tree.iter('Cleanup'):
+                cleanup_details = value.attrib
+                cleanup_status = cleanup_details.get('status')
+                cleanup_name = cleanup_details.get('name')+".xml"
+                cleanup_location = cleanup_details.get('testcasefile_path')
+                case_result_dir_with_tc_name = cleanup_details.get('resultsdir')
+                if case_result_dir_with_tc_name is not None:
+                    case_result_dir = os.path.dirname(case_result_dir_with_tc_name)
+                    # suite junit element will not have resultsdir attrib for case execution
+                    if suite_result_dir is None or suite_result_dir == case_result_dir:
+                        suite_tc_list.append(["Cleanup", cleanup_name, cleanup_status, cleanup_location])
         # suite_tc_list appends suites and test cases as per execution order
         return suite_tc_list
 
