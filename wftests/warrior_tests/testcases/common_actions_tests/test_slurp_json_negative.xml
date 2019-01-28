@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>test_slurp_json.xml</Name>
+                <Title>test_slurp_json</Title>
+                <Engineer>Sekhar</Engineer>
+                <Date>2018-11-30</Date>
+                <Time>12:08</Time>
+                <State/>
+                <InputDataFile>No_Data</InputDataFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                 <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
+                        <Arguments>
+                          <argument name="filepath" value="../../config_files/common_action_tests/not_present_slurp_content.json"/>
+                                <argument name="bool_store_all" value="True"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Negative test using invalid filepath(json file)</Description>
+                        <iteration_type type="Standard"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                 </step>
+                 
+                 <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
+                        <Arguments>
+                          <argument name="filepath" value="../../config_files/common_action_tests/invalid_slurp_content.json"/>
+                                <argument name="bool_store_all" value="True"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Negative test using invalid json file</Description>
+                        <iteration_type type="Standard"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                  </step>
+
+                 <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
+                        <Arguments>
+                          <argument name="filepath" value="../../config_files/common_action_tests/slurp_content.json"/>
+                                <argument name="bool_store_all" value="Invalid"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Negative test using invalid json file</Description>
+                        <iteration_type type="Standard"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                 </step>
+                 
+                 <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="bool_store_all" value="False"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Negative test without using filepath and bool_store_all set to False</Description>
+                        <iteration_type type="Standard"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                 </step>
+                       
+        </Steps>
+</Testcase>

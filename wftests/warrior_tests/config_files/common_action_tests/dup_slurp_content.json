@@ -1,0 +1,16 @@
+{
+  "data_set1":
+  { 
+    "var_str": "30",
+    "var_int": 10,
+    "var_list": [20, 20.23],
+    "var_list_complex" : [[1, 2, 3], {"dict1": {"a": 10, "b": 20}}],
+    "var_dict": {"val1": "999", "val2": "9999"},
+    "var_dict_complex": {"a": 400, "b": [{"var1": 1000, "var2": 1001}], "c": {"test1": 200, "test2" : 100}}
+  },
+  "data_set2":
+  {
+    "id1": "1504",
+    "id2": "1502"
+  }
+}
