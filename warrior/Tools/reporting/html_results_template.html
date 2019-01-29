@@ -12,7 +12,7 @@
 </script>
 <script type="application/javascript">
 
-        
+
 var printFormater = {
   table: '',
   bar: '',
@@ -164,7 +164,7 @@ var printFormater = {
 	    background-color: black;
 	    color: white;
 	}
-	
+
 	td#summary {
 		padding:0 15px;
 		border: 100px;
@@ -263,8 +263,9 @@ td[rowspan] {
 
 td {
     display: none;
-    height: auto;
-    line-height: 25px;
+    height: 40px;
+    line-height: 40px;
+    white-space: nowrap;
     text-overflow: ellipsis;
     padding: 0 0px;
     overflow: hidden;
@@ -300,8 +301,7 @@ td > div {
     overflow: hidden;
     position: relative;
     text-overflow: ellipsis;
-    padding: 0 2px;
-    word-break:break-all;
+    padding: 0 10px;
 }
 
 table#t1 {
@@ -482,7 +482,7 @@ tr[name="TestcaseRecord"] {
     top: 40px;
     position: absolute;
     left: 0;
-} 
+}
 .filterBar input {
     height: 40px;
     /* width: 100%; */
@@ -662,7 +662,7 @@ td[rowspan]:nth-child(11){
 <body>
 
 
-	<h2>Results Summary</h2>	
+	<h2>Results Summary</h2>
 	<table id="t1" name="ResultsSummaryTable">
 		<tr id="tr1" name="HeadingRow">
 			<th>Type</th>
@@ -684,7 +684,7 @@ td[rowspan]:nth-child(11){
 	</table>
 
 <script>
-	
+
 	printFormater.init();
 
 </script>
