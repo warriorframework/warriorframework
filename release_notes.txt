@@ -99,5 +99,4 @@ Procedure to get a specific version is available in section-3 of this document.
     Previous HEAD position was ba0fdc8... Update version.txt 
     Switched to branch 'master'  
    $ git branch
-       * master   
-
+       * master
