@@ -118,7 +118,7 @@ class CommonActions(object):
         return status
 
     def store_in_repo(self, datavar=None, datavalue=None, type='str',
-                      filepath=None, jsonkey="repo_variables"):
+                      filepath=None, jsonkey="repo_variables", bool_store_all=False):
         """Stores datavalue in datavar of datarepository
         :Argument:
             1. datavar = Key to be used to store datavalue in data_repository,
@@ -131,6 +131,10 @@ class CommonActions(object):
                           It is to store multiple key,value pairs in datarepository.
             5. jsonkey = The key where all the REPO variables & values are
                          defined in the filepath
+            6. bool_store_all = Set to True to store whole json file content to data repository.
+                       keys from the json file will be used as it is to store in repo if this
+                       value is set to True.
+                       default value is set to False.
 
             Sample JSON file:
                  {
@@ -146,24 +150,6 @@ class CommonActions(object):
             All three formats in the above sample block are allowed. If 'type'
             is not provided, value will be converted as string by default.
         """
-        def get_dict_to_update(var, val):
-            """
-            The function creates a dictionary with Variable and value.
-            If Variable has "." separated keys then the value is updated at
-            appropriate level of the nested dictionary.
-            :param var: Dictionary Key or Key separated with "." for nested dict keys.
-            :param val: Value for the Key.
-
-            :return: Dictionary
-            """
-            dic = {}
-            if '.' in var:
-                [key, value] = var.split('.', 1)
-                dic[key] = get_dict_to_update(value, val)
-            else:
-                dic[var] = val
-            return dic
-
         status = False
         pass_msg = "Value: {0} is stored in a Key: {1} of Warrior data_repository"
 
@@ -172,7 +158,7 @@ class CommonActions(object):
                 datavalue = int(datavalue)
             elif type == 'float':
                 datavalue = float(datavalue)
-            dict_to_update = get_dict_to_update(datavar, datavalue)
+            dict_to_update = Utils.dict_Utils.get_dict_to_update(datavar, datavalue)
             update_datarepository(dict_to_update)
             print_info(pass_msg.format(datavalue, datavar))
             status = True
@@ -183,26 +169,44 @@ class CommonActions(object):
                 filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     json_doc = json.load(json_handle)
-                    if jsonkey in json_doc:
-                        repo_dict = json_doc[jsonkey]
-                        for var_key, var_value in repo_dict.items():
-                            if isinstance(var_value, dict):
-                                if var_value.get('type') == 'int':
-                                    value = int(var_value['value'])
-                                elif var_value.get('type') == 'float':
-                                    value = float(var_value['value'])
-                                else:
-                                    value = str(var_value['value'])
+                #if bool_store_all is set to True, all content of given json file will be
+                #stored in data repository
+                if isinstance(bool_store_all, bool) and bool_store_all is True:
+                    print_info("bool_store_all is set to True, all content of given"
+                               " json file will be stored in data repository")
+                    update_datarepository(json_doc)
+                    print_info("{0} dictionary stored in Warrior data_repository".
+                               format(json_doc))
+                    status = True
+                elif not isinstance(bool_store_all, bool):
+                    print_error("invalid value : {0} given for bool_store_all,"
+                                "valid value: boolean True or False".format(bool_store_all))
+                    status = False
+                elif jsonkey in json_doc:
+                    dict_to_update = {}
+                    repo_dict = json_doc[jsonkey]
+                    for var_key, var_value in repo_dict.items():
+                        if isinstance(var_value, dict):
+                            if var_value.get('type') == 'int':
+                                value = int(var_value['value'])
+                            elif var_value.get('type') == 'float':
+                                value = float(var_value['value'])
                             else:
-                                value = str(var_value)
-                            dict_to_update = get_dict_to_update(var_key, value)
-                            update_datarepository(dict_to_update)
-                            print_info(pass_msg.format(value, var_key))
-                    else:
-                        print_error('The {0} file is missing the key '
-                                    '\"repo_variables\", please refer to '
-                                    'the Samples in Config_files'.format(filepath))
-                status = True
+                                value = str(var_value['value'])
+                        else:
+                            value = str(var_value)
+                        build_dict = Utils.dict_Utils.get_dict_to_update(var_key, value)
+                        Utils.dict_Utils.verify_key_already_exists_and_update\
+                            (orig_dict=dict_to_update, new_dict=build_dict)
+                    update_datarepository(dict_to_update)
+                    print_info("{0} dictionary stored in Warrior data_repository".\
+                        format(dict_to_update))
+                    status = True
+                else:
+                    print_error('The {0} file is missing the key '
+                                '\"repo_variables\", please refer to '
+                                'the Samples in Config_files'.format(filepath))
+                    status = True
             except ValueError:
                 print_error('The file {0} is not a valid json '
                             'file'.format(filepath))
@@ -360,3 +364,54 @@ class CommonActions(object):
         status = Utils.data_Utils.verify_arith_exp(expression, expected,
                                                    comparison, repo_key)
         return status
+
+    def get_current_timestamp(self, current_time="current_time"):
+        """Returns system current timestamp.
+           :Arguments:
+                  1. current_time (string) : name of the key to store in data repository
+
+           :Returns:
+                1. status(boolean)
+                2. current_time (dict element) : name = current_time given in the argument,
+                    value = Current System Time in the  object format of Year, Month, Date,
+                    Time(without microseconds)
+                     Ex :datetime.datetime(2018, 10, 22, 5, 51, 21)
+
+        """
+        wdesc = "To get the current timestamp in the format of yyyy-mm-dd hh:mm:ss"
+        Utils.testcase_Utils.pNote(wdesc)
+        currentdate = datetime_utils.get_current_timestamp()
+        print_info("current timestamp : {0}".format(currentdate))
+        output_dict = {current_time: currentdate}
+        status = True
+        return status, output_dict
+
+    def get_time_delta(self, start_time, end_time=None, time_diff="time_diff"):
+        """Returns time difference between two timestamps in seconds.
+           :Arguments:
+                1. start_time = start time key in the data repository,
+                                  value should be datetime object in data repo.
+                                  Ex: 'timestamp1'
+
+                2. end_time(optional) = end time key in the data repository,
+                                          value should be datetime object in data repo.
+                                          Ex: 'timestamp2'
+
+                  3. time_diff(optional) = time diff key in the data repository
+
+           :Returns:
+                  1. status(boolean)
+                  2. time_diff (dict element) : name = time_diff, value = difference between the
+                     given start time and end time in seconds (ex: 212342.0)
+
+        """
+        wdesc = "To get time difference between two timestamps"
+        Utils.testcase_Utils.pNote(wdesc)
+        start_time = Utils.data_Utils.get_object_from_datarepository(start_time)
+        if end_time:
+            end_time = Utils.data_Utils.get_object_from_datarepository(end_time)
+        time_delta = datetime_utils.get_time_delta(start_time=start_time, end_time=end_time)
+        print_info("delta between given timestamps : {0} seconds".format(time_delta))
+        output_dict = {time_diff: time_delta}
+        status = True
+        return status, output_dict

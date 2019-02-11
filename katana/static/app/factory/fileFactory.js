@@ -99,6 +99,7 @@ app.factory('fileFactory', ['$http', '$routeParams', '$q', function($http, $rout
         },
 
         get_files_and_folders: function(path) {
+
             var deferred = $q.defer();
             $http.get('/get_paths/' + path)
                 .success(function(data, status, headers, config) {

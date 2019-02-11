@@ -7,11 +7,13 @@
 		<Time></Time>
 		<State></State>
 		<InputDataFile></InputDataFile>
+
 		<Datatype></Datatype>
 		<default_onError action="next"/>
 		<Logsdir></Logsdir>
         <Resultsdir></Resultsdir>
         <ExpectedResults></ExpectedResults>
+		<TestWrapperFile></TestWrapperFile>
 	</Details>
 	<Requirements>
 	</Requirements>

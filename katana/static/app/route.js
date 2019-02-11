@@ -42,6 +42,18 @@ app.config(function($routeProvider) {
             } */
         })
 
+          .when('/wrapper_files', {
+            templateUrl: '/assets/app/partials/TestWrapperfilecases.tmpl.html',
+            controller: 'TestWrapperfilecaseCtrl' /* ,
+            resolve: {
+                app: function ($q) {
+                    var defer = $q.defer();
+                    defer.resolve();
+                    return defer.promise;
+                }
+            } */
+        })
+
         .when('/testsuites', {
             templateUrl: '/assets/app/partials/testsuite.tmpl.html',
             controller: 'testsuiteCtrl',
@@ -211,7 +223,7 @@ app.config(function($routeProvider) {
                     return defer.promise;
                 }
             }
-        
+
         })
 
         .when('/testDatafile/:testdatafile/:subdirs', {
@@ -246,6 +258,21 @@ app.config(function($routeProvider) {
             }
         })
 
+
+        .when('/TestWrapperfilecase/:TestWrapperfilecase/:subdirs', {
+            templateUrl: '/assets/app/partials/TestWrapperfilecasecapture.tmpl.html',
+            controller: 'TestWrapperfilecaseCapCtrl',
+            resolve: {
+                subdirs: function ($route) {
+                    return $route.current.params.subdirs;
+                },
+                app: function ($q) {
+                    var defer = $q.defer();
+                    defer.resolve();
+                    return defer.promise;
+                }
+            }
+        })
         .when('/warhornconfigfiles', {
             templateUrl: '/assets/app/partials/warhornconfigfiles.tmpl.html',
             controller: 'warhornconfigfileCtrl',

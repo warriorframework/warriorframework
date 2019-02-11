@@ -119,7 +119,6 @@ class ExecFilesClass(object):
             logs_location = xml_Utils.getChildTextbyParentTag(self.filepath, 'Details', 'Logsdir')
             results_location = xml_Utils.getChildTextbyParentTag(self.filepath,
                                                                  'Details', 'Resultsdir')
-            
             #get default logs and results directory
             default_xml = Tools.__path__[0] + os.sep + 'w_settings.xml'        
             default_logsdir = get_credentials(default_xml, 'def_dir',['Logsdir'], 'Setting')
@@ -216,24 +215,21 @@ class ExecFilesClass(object):
 
         datafile = xml_Utils.getChildTextbyParentTag(self.filepath,
                                                      'Details', 'InputDataFile')
-        
-        
         if datafile is None or datafile is False or \
         str(datafile).strip() == "":
             if self.filetype == "tc":
                 #print "get default datatype for testcase"
                 datafile = get_default_xml_datafile(self.filepath)
-            
             if self.filetype == "ts":
                 # Check if test suite datatype starts with iterative.
                 # If yes then get default datafile else set it as false
-                # this is because at testsuite level input datafile is 
+                # this is because at testsuite level input datafile is
                 # supported only if the suite datatype is iterative seq/parallel
                 datatype = self.check_get_datatype(False)
                 if str(datatype).lower().startswith("iterative"):
                     datafile = get_default_xml_datafile(self.filepath)
                 else:
-                    datafile = False            
+                    datafile = False
             elif self.filetype == "proj":
                 datafile = False
         elif str(datafile).strip().upper() == "DEFAULT":
@@ -277,6 +273,25 @@ class ExecFilesClass(object):
                 print_info("Hence using default value for data_type which is 'custom'")
                 data_type = 'CUSTOM'
         return data_type
+
+    #def to get runtype of the testcase from xml
+    def check_get_runtype(self):
+        """Check and get the runtype for testcase
+        """
+        if xml_Utils.nodeExists(self.filepath, 'Runtype'):
+            run_type = xml_Utils.getChildTextbyParentTag(self.filepath, 'Details', 'Runtype')
+            if run_type is not None and run_type is not False:
+               run_type = str(run_type).strip()
+               supported_values = ['sequential_keywords', 'parallel_keywords']
+               if run_type.lower() not in supported_values:
+                   print_warning("unsupported value '{0}' provided for run_type,"
+                                 "supported values are "\
+                                "'{1}' and case-insensitive".format(run_type, supported_values))
+                   print_info("Hence using default value for run_type which is 'sequential_keywords'")
+                   run_type = 'SEQUENTIAL_KEYWORDS'
+        else:
+            run_type = "SEQUENTIAL_KEYWORDS"
+        return run_type
 
 def get_execution_files(filepath, execution_dir, extn):
     """Get the execution files like resultfile, logfile etc"""

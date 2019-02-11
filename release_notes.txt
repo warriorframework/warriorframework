@@ -1,124 +1,102 @@
-Release: Ninja 
-Version: warrior-3.10.0
+Release: Ninja
+Version: warrior-3.11.0
 
-=================== 
-1: Release details 
-=================== 
-
+===================
+ 1: Release details
+===================  
 This is release Ninja of Warrior Test Automation Framework
 
--------------------------------
- 1.1: List of available releases
--------------------------------
-1. Ninja = warrior-3.1.0 to 3.10.0
 
-================== 
-2. Version Details
-================== 
-You are on Release Ninja, Version warrior-3.10.0 of Warrior Framework.
+-------------------------------
+  1.1: List of available releases
+-------------------------------
+
+  1. Ninja = warrior-3.1.0 to 3.11.0
+
+=====================
+  2. Version Details
+=====================
+
+You are on Release Ninja, Version warrior-3.11.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
 
-+++++++++++++++++++++++++++++++++
- 2.1. Change log for this release
++++++++++++++++++++++++++++++++++  
+  2.1. Change log for this release
 +++++++++++++++++++++++++++++++++
 
 -------------------- New Features: --------------------
-[WAR-1759] - gNMI interface support from warrior required
-[WAR-542] - As a user, I want to know if a step/testcase passed all attempts when that it was set to RUF & RUP
-[WAR-599] - As a user, I need a way to state the final step status when running a step with RUP
-[WAR-1348] - Modularise Runmode across Warrior. As a user, I want same tags for Runmode whereever i use Runmode functions such as RMT, RUP & RUF
-[WAR-1993] - Warhorn: Py2: Paramiko needs to be updated due to security vulnerabilities
-[WAR-1994] - Katana: Need to update the paramiko version in katana
+[WAR-2041] - Warrior Core: Support for common setup and cleanup in Warrior Framework
+[WAR-2066] - Katana: Changes in Katana UI for setup and cleanup support.
+[WAR-2051] - store_in_repo keyword enhanced additional argument bool_store_all . When enabled all content of given json will be stored in data repository.
+[WAR-2029] - log_message  new keyword to users to log custom messages in the test case.
+[WAR-2018] - New keywords get_current_timestamp and get_time_delta  in common driver provide to user to support time calculation.
 
+------------ Bugfixes: ------------ 
+[WAR-2084] - gnmi keywords passes even when the command given fails
+[WAR-2053] - The data stored in test data response is getting deleted when we are calling the connect keyword.
+[WAR-2039] - Nested Dict is not handled in store_in_repo function.
+[WAR-2032] - Warrior-Reports: Column names are not visible completely in html reports generated after test cases run
+[WAR-2004] - Add tests for runmode 'status' attribute support in Suite Details section
+[WAR-1978] - The onError_action does not work when implemented in Test Suite
+[WAR-1773] - Goto does not calculate step numbers correctly when runmode and/or retry is included in steps
+[WAR-1341] - RUP retry counted as different step
 
------------- Bugfixes: ------------
-[WAR-1116] - Remove 'cse script execution' option from warriorframework repo
-[WAR-1806] - A case/suite with invalid filepath makes the suite/project('s) end result status as ERROR even if the case/suite exec_type is 'No'
-[WAR-1828] - Testsuite end result printed as PASS eventhough the testcase in that suite is not in provided path
-[WAR-1830] - Success/Failure of multiple projects execution in command line is only based on the status of the last project
-[WAR-1858] - Suite status with runmode in suite global level, reflects the status of the last attempted case
-[WAR-1910] - Selenium: Regression: Correct data in failing selenium regression tests.
-[WAR-1650] - Need to change the way warhorn clones repositories in order to support cloning private repositories
-[WAR-1840] - Handle session timeout changes in pexpect 4.x for connect/send keywords
-
-
-
-
-
-================================================= 
-3. Procedure to get a specific version of Warrior
-=================================================
+===================================================
+  3. Procedure to get a specific version of Warrior
+=================================================== 
 
 1. Clone warriorframework
-
      $ git clone https://github.com/warriorframework/warriorframework.git
-
 2. Go to warriorframework directory
-
      $cd warriorframework
-
 3. To check the list of versions available, execute "git tag --list" command
-
-     $ git tag --list 
-	 warrior-3.1.0
-	 warrior-3.1.1
-	 warrior-3.2.0
-	 warrior-3.3.0
-	 warrior-3.3.1
-	 warrior-3.4.0
-	 warrior-3.5.0
-	 warrior-3.6.0
-	 warrior-3.7.0
-	 warrior-3.8.0
-	 warrior-3.9.0
-	 warrior-3.9.1
-	 warrior-3.10.0
-
+     $ git tag --list
+       warrior-3.1.0
+       warrior-3.1.1
+       warrior-3.2.0 
+       warrior-3.3.0 
+       warrior-3.3.1
+       warrior-3.4.0
+       warrior-3.5.0
+       warrior-3.6.0
+       warrior-3.7.0 
+       warrior-3.8.0 
+       warrior-3.9.0 
+       warrior-3.9.1 
+       warrior-3.10.0
+       warrior-3.11.0 
 4. To Check the current version you are at, execute "git branch" command
-     $ git branch 
-	 * master 
-     - * indicates the active version.
-	 - In the above example master is the active version.
-	 - If the active version is master it means you are not using a standard release version of warrior framework
-	 and hence it may not be a stable tested version.
+      $ git branch 
+        * master  - * indicates the active version. 
+        - In the above example master is the active version.
+        - If the active version is master it means you are not using a standard release version of warrior framework 
+           and hence it may not be a stable tested version.
 
+ 
 5. To switch to a specific version from master, execute 'git checkout <version_name>' command.
-
-    $ git checkout warrior-3.10.0
-	 Note: checking out 'warrior-3.10.0'.
-
-	You are in 'detached HEAD' state. You can look around, make experimental
-	changes and commit them, and you can discard any commits you make in this
-	state without impacting any branches by performing another checkout.
-
-	If you want to create a new branch to retain commits you create, you may
-	do so (now or later) by using -b with the checkout command again.
-	Example:
-
-	git checkout -b new_branch_name
-
-	HEAD is now at abcba40... update version and release_notes for hotfix-3.10.0
-	
-	
-
-6. Execute git branch command to verify the active version.
-	$ git branch 
-	* (detached from warrior-3.10.0) master	
-	- * indicates the active version.
-
-7. Switch from one version to another (current=warrior-3.10.0, switch to warrior-3.9.0)
-    $git checkout warrior-3.9.0
-	Previous HEAD position was 6cea565... Update version.txt
-    HEAD is now at ba0fdc8... Update version.txt
-	$git branch
-    * (detached from warrior-3.10.0)
-	master	
-
-8. Switch to master branch again.
-
-   $ git checkout master 
-    Previous HEAD position was ba0fdc8... Update version.txt
-    Switched to branch 'master'
-     
+    $ git checkout warrior-3.11.0
+     Note: checking out 'warrior-3.11.0'.
+     You are in 'detached HEAD' state. You can look around, make experimental
+     changes and commit them, and you can discard any commits you make in this
+     state without impacting any branches by performing another checkout.
+     If you want to create a new branch to retain commits you create, you may
+     do so (now or later) by using -b with the checkout command again.
+     Example:
+     	git checkout -b new_branch_name
+     	HEAD is now at abcba40... update version and release notes for 3.11.0 
+6. Execute git branch command to verify the active version. 
    $ git branch
-   * master 
+    * (detached from warrior-3.10.0) master 
+    - * indicates the active version.
+7. Switch from one version to another (current=warrior-3.11.0, switch to warrior-3.10.0)
+    $git checkout warrior-3.10.0
+    Previous HEAD position was 6cea565... Update version.txt
+    HEAD is now at ba0fdc8... Update version.txt
+    $git branch
+    * (detached from warrior-3.11.0)     master 
+8. Switch to master branch again.
+   $ git checkout master
+    Previous HEAD position was ba0fdc8... Update version.txt 
+    Switched to branch 'master'  
+   $ git branch
+       * master

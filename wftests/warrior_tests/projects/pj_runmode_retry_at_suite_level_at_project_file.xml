@@ -100,6 +100,50 @@
             <onError action="next" value=""/>
             <impact>impact</impact>
         </Testsuite>
+
+        <!-- RUP with status as expected support at suite level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_ts_global_level_with_status_expected.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!--&lt;!&ndash; RUP with status as last instance support at suite level &ndash;&gt;-->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_ts_global_level_with_status_last_instance.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- RUP verification with status attribute support at suite level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_verify_at_ts_global_level_with_status_expected.xml/</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+
+        <!--RUF with status as expected support at suite level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_ts_global_level_with_status_expected.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!--RUF with status as last_instance support at suite level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_ts_global_level_with_status_last_instance.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- RUF verification with status attribute support at suite level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_verify_at_ts_global_level_with_status_expected.xml/</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
 	</Testsuites>
 </Project>
 
