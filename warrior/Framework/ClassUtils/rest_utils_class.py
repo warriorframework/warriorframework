@@ -22,6 +22,7 @@ import json as JSON
 import Framework.Utils as Utils
 from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.Utils.print_Utils import print_exception, print_info, print_error
+from Framework.Utils import xml_Utils, string_Utils, testcase_Utils, config_Utils
 from xml.dom.minidom import parseString
 
 
@@ -225,6 +226,19 @@ class WRest(object):
                     try:
                         expected_api_response = JSON.load(open(
                                             expected_api_response, 'r'))
+                        for key, value in expected_api_response.items():
+                            if "${" in value:
+                                data_file_path = Utils.data_Utils.get_object_from_datarepository("wt_datafile")
+                                fd = open(data_file_path)
+                                file_out = fd.read()
+                                pattern = r'<variable_config>(.*)</variable_config>'
+                                m = re.search(pattern, file_out, re.I | re.M)
+                                if m:
+                                    print(m.group(1))
+                                    vc_path= m.group(1)
+
+                                    out = string_Utils.sub_from_varconfigfile(value,vc_path)
+                                    expected_api_response[key] = out
                     except IOError as exception:
                         if ".json" == extension:
                             pNote("File does not exist in the"
