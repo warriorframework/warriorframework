@@ -35,12 +35,12 @@ class CommonSnmpActions(object):
     """
     Class for standard SNMP protocol commands
 
-    Arguments:
-        None
-
     """
 
     def __init__(self):
+        """
+        This is intialization
+        """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir

@@ -43,6 +43,12 @@ def threadsafe_function(fn):
     lock = threading.Lock()
 
     def new(*args, **kwargs):
+        """
+        This is new
+        :param args:
+        :param kwargs:
+        :return:
+        """
         lock.acquire()
         try:
             r = fn(*args, **kwargs)
@@ -72,6 +78,19 @@ class WSnmp(object):
     def __init__(self, communityname, mpModel, ipaddr, port='161',
                  snmp_timeout=60, userName=None, authKey=None, privKey=None,
                  authProtocol=None, privProtocol=None):
+        """
+        This is intialization part
+        :param communityname:
+        :param mpModel:
+        :param ipaddr:
+        :param port:
+        :param snmp_timeout:
+        :param userName:
+        :param authKey:
+        :param privKey:
+        :param authProtocol:
+        :param privProtocol:
+        """
 
         self.communityname = communityname
         self.mpModel = int(mpModel)  ## Accepts only Int type value
@@ -189,6 +208,11 @@ class WSnmp(object):
 
     @classmethod
     def get_asyncoredispatcher(cls, port):
+        """
+        This is
+        :param port:
+        :return:
+        """
         eng = "snmpEngine{}".format(port)
         if cls.snmpEngine.get(eng) == None:
             cls.snmpEngine.update({eng: engine.SnmpEngine()})
@@ -196,10 +220,18 @@ class WSnmp(object):
 
     @staticmethod
     def get_proto_api():
+        """
+        This is
+        :return:
+        """
         return api()
 
     @staticmethod
     def get_asn_decoder():
+        """
+        This is
+        :return:
+        """
         return decoder()
 
     @classmethod
