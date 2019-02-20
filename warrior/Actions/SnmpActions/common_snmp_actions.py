@@ -31,11 +31,13 @@ except ImportError:
     testcase_Utils.pNote("Please Install PYSNMP 4.3.8 or Above", "error")
 
 
-
-
 class CommonSnmpActions(object):
     """
     Class for standard SNMP protocol commands
+
+    Arguments:
+        None
+
     """
 
     def __init__(self):
@@ -46,12 +48,11 @@ class CommonSnmpActions(object):
         self.logfile = Utils.config_Utils.logfile
         self.snmpver = {'1':'0', '2':'1', '2c':'1', '3':'2'}
 
-
     def snmp_get(self, snmp_ver, system_name, mib_name=None,
                  mib_index=None, mib_value=None,
                  oid_string=None, communityname=None,
                  snmp_timeout=60,
-                 userName=None, authKey=None, privKey=None,authProtocol=None,
+                 userName=None, authKey=None, privKey=None, authProtocol=None,
                  privProtocol=None,
                  custom_mib_paths=None,
                  load_mib_modules=None):
@@ -85,8 +86,8 @@ class CommonSnmpActions(object):
                                  e.g. 'authkey1'
             11.privKey(string) = Initial value of the secret encryption key.
                                  e.g. 'privkey1'
-            12.authProtocol(string) = An indication of whether messages sent on behalf of this USM user
-                              can be authenticated, and if so, the type of
+            12.authProtocol(string) = An indication of whether messages sent on behalf of
+                              this USM user can be authenticated, and if so, the type of
                               authentication protocol which is used.
                               supported protocols: usmNoAuthProtocol,
                               usmHMACMD5AuthProtocol, usmHMACSHAAuthProtocol
@@ -102,7 +103,8 @@ class CommonSnmpActions(object):
                       e.g. 'http://<URL>/@mib@, /data/users/MIBS/'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
-            15.load_mib_modules: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
+            15.load_mib_modules: User can provide the MIBS(name) need to be loaded
+                      from the path "custom_mib_path".
                       It is a string of MIB names separated by comma(',')
         :Return:
             status(bool)= True / False.
@@ -135,7 +137,7 @@ class CommonSnmpActions(object):
         temp_custom_mib_paths = None
 
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
-                   userName, authKey, privKey,authProtocol,
+                   userName, authKey, privKey, authProtocol,
                    privProtocol)
         cmdgen = wsnmp.commandgenerator()
         if self.snmpver.get(snmp_ver) is '2':# for ssnmp v3
@@ -155,25 +157,28 @@ class CommonSnmpActions(object):
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*temp_custom_mib_paths)
+                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).\
+                    addAsn1MibSource(*temp_custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
         try:
             errindication, errstatus,\
             errindex, result = cmdgen.getCmd(auth_data, transport, oid)
             output_dict = {
-                           '{0}_errindication'.format(system_name):errindication,
-                           '{0}_errstatus'.format(system_name):errstatus,
-                           '{0}_errindex'.format(system_name):errindex,
-                           '{0}_result'.format(system_name):result,
-                           '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
-                           '{0}_load_mib_modules'.format(system_name):load_mib_modules
-                           }
+                '{0}_errindication'.format(system_name):errindication,
+                '{0}_errstatus'.format(system_name):errstatus,
+                '{0}_errindex'.format(system_name):errindex,
+                '{0}_result'.format(system_name):result,
+                '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
+                '{0}_load_mib_modules'.format(system_name):load_mib_modules
+            }
             if result != []:
                 status = True
-                testcase_Utils.pNote("Successfully executed SNMP GET command {}".format(result), "info")
+                testcase_Utils.pNote("Successfully executed SNMP GET command {}"
+                                     .format(result), "info")
             else:
-                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {}".format(result), "error")
+                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {}"
+                                     .format(result), "error")
 
         except wsnmp.exception as excep:
             status = False
@@ -183,14 +188,11 @@ class CommonSnmpActions(object):
         return status, output_dict
 
     def snmp_getnext(self, snmp_ver, system_name, mib_name=None,
-                 mib_index=None, mib_value=None,
-                 oid_string=None, communityname=None,
-                 snmp_timeout=60,
-                 max_rows=1,
-                 userName=None, authKey=None, privKey=None,authProtocol=None,
-                 privProtocol=None,
-                 custom_mib_paths=None,
-                 load_mib_modules=None):
+                     mib_index=None, mib_value=None,
+                     oid_string=None, communityname=None,
+                     snmp_timeout=60, max_rows=1,
+                     userName=None, authKey=None, privKey=None, authProtocol=None,
+                     privProtocol=None, custom_mib_paths=None, load_mib_modules=None):
         """
         snmp_get_next uses the SNMP GETNEXT request to query for information
         on a network entity
@@ -224,8 +226,8 @@ class CommonSnmpActions(object):
                                  e.g. 'authkey1'
             12.privKey(string) = Initial value of the secret encryption key.
                                  e.g. 'privkey1'
-            13.authProtocol(string) = An indication of whether messages sent on behalf of this USM user
-                              can be authenticated, and if so, the type of
+            13.authProtocol(string) = An indication of whether messages sent on behalf of this
+                              USM user can be authenticated, and if so, the type of
                               authentication protocol which is used.
                               supported protocols: usmNoAuthProtocol,
                               usmHMACMD5AuthProtocol, usmHMACSHAAuthProtocol
@@ -241,8 +243,8 @@ class CommonSnmpActions(object):
                       e.g. 'http://<URL>/@mib@, /data/users/MIBS/'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
-            16.load_mib_module: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
-                      It is a string of MIB names separated by comma(',')
+            16.load_mib_module: User can provide the MIBS(name) need to be loaded from the path
+                 "custom_mib_path".It is a string of MIB names separated by comma(',')
         :Return:
             status(bool)= True / False.
             output_dict = consists of following key value:
@@ -273,7 +275,7 @@ class CommonSnmpActions(object):
         output_dict = {}
         temp_custom_mib_paths = None
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
-                   userName, authKey, privKey,authProtocol,
+                   userName, authKey, privKey, authProtocol,
                    privProtocol)
         cmdgen = wsnmp.commandgenerator()
         if self.snmpver.get(snmp_ver) is '2':# for ssnmp v3
@@ -294,7 +296,8 @@ class CommonSnmpActions(object):
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*temp_custom_mib_paths)
+                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).\
+                    addAsn1MibSource(*temp_custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
         try:
@@ -305,18 +308,19 @@ class CommonSnmpActions(object):
                                     lookupNames=True, lookupValues=True, lexicographicMode=True)
             #  maxRows=1 will control the mib walk
             output_dict = {
-                           '{0}_errindication'.format(system_name):errindication,
-                           '{0}_errstatus'.format(system_name):errstatus,
-                           '{0}_errindex'.format(system_name):errindex,
-                           '{0}_result'.format(system_name):result,
-                           '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
-                           '{0}_load_mib_modules'.format(system_name):load_mib_modules}
+                '{0}_errindication'.format(system_name):errindication,
+                '{0}_errstatus'.format(system_name):errstatus,
+                '{0}_errindex'.format(system_name):errindex,
+                '{0}_result'.format(system_name):result,
+                '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
+                '{0}_load_mib_modules'.format(system_name):load_mib_modules}
             if result != []:
                 status = True
                 testcase_Utils.pNote("Successfully executed SNMP GET-NEXT "
-                                 "command {}".format(result), "info")
+                                     "command {}".format(result), "info")
             else:
-                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {} {} {} {} xyz".format(result, errindication, errstatus, errindex), "error")
+                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {} {} {} {} xyz".
+                                     format(result, errindication, errstatus, errindex), "error")
         except wsnmp.exception as excep:
             status = False
             testcase_Utils.pNote("SNMP GET-Next command Failed! \n{}".format(excep), "error")
@@ -325,15 +329,11 @@ class CommonSnmpActions(object):
 
         return status, output_dict
 
-    def snmp_walk(self, snmp_ver, system_name, mib_name=None,
-                 mib_index=None, mib_value=None,
-                 oid_string=None, communityname=None,
-                 snmp_timeout=60,
-                 userName=None, authKey=None, privKey=None,authProtocol=None,
-                 privProtocol=None,
-                 custom_mib_paths=None,
-                 load_mib_modules=None,
-                 lexicographicMode="False"):
+    def snmp_walk(self, snmp_ver, system_name, mib_name=None, mib_index=None,
+                  mib_value=None, oid_string=None, communityname=None,
+                  snmp_timeout=60, userName=None, authKey=None, privKey=None,
+                  authProtocol=None, privProtocol=None, custom_mib_paths=None,
+                  load_mib_modules=None, lexicographicMode="False"):
         """
         snmp_walk uses the SNMP WALK request to query for information on
         a network entity
@@ -364,8 +364,8 @@ class CommonSnmpActions(object):
                                  e.g. 'authkey1'
             11.privKey(string) = Initial value of the secret encryption key.
                                  e.g. 'privkey1'
-            12.authProtocol(string) = An indication of whether messages sent on behalf of this USM user
-                              can be authenticated, and if so, the type of
+            12.authProtocol(string) = An indication of whether messages sent on behalf of this
+                              USM user can be authenticated, and if so, the type of
                               authentication protocol which is used.
                               supported protocols: usmNoAuthProtocol,
                               usmHMACMD5AuthProtocol, usmHMACSHAAuthProtocol
@@ -381,8 +381,8 @@ class CommonSnmpActions(object):
                       e.g. 'http://<URL>/@mib@, /data/users/MIBS/'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
-            15.load_mib_modules: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
-                      It is a string of MIB names separated by comma(',')
+            15.load_mib_modules: User can provide the MIBS(name) need to be loaded from the path
+            "custom_mib_path". It is a string of MIB names separated by comma(',')
             16.lexicographicMode : "True" will return everything under given prefix plus the next table also e.g. if request 1.3.6.1 will also provide 1.3.6.2$
                                    "False" will return only under given prefix. Default its False.
         :Return:
@@ -415,7 +415,7 @@ class CommonSnmpActions(object):
         output_dict = {}
         temp_custom_mib_paths = None
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
-                   userName, authKey, privKey,authProtocol,
+                   userName, authKey, privKey, authProtocol,
                    privProtocol)
         cmdgen = wsnmp.commandgenerator()
         if self.snmpver.get(snmp_ver) is '2':# for snmp v3
@@ -436,30 +436,35 @@ class CommonSnmpActions(object):
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                oid = wsnmp.mibvariable(mib_name, mib_index).addAsn1MibSource(*temp_custom_mib_paths)
+                oid = wsnmp.mibvariable(mib_name, mib_index).\
+                    addAsn1MibSource(*temp_custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index)
         try:
             errindication, errstatus, errindex,\
             result = cmdgen.nextCmd(auth_data,
                                     transport,
-                                    oid, lexicographicMode=ast.literal_eval(lexicographicMode.capitalize()),
+                                    oid, lexicographicMode=ast.literal_eval(lexicographicMode.
+                                                                            capitalize()),
                                     ignoreNonIncreasingOid=True, maxRows=50000,
                                     lookupNames=True, lookupValues=True)
             output_dict = {
-                           '{0}_errindication'.format(system_name):errindication,
-                           '{0}_errstatus'.format(system_name):errstatus,
-                           '{0}_errindex'.format(system_name):errindex,
-                           '{0}_result'.format(system_name):result,
-                           '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
-                           '{0}_load_mib_modules'.format(system_name):load_mib_modules
-                           }
+                '{0}_errindication'.format(system_name):errindication,
+                '{0}_errstatus'.format(system_name):errstatus,
+                '{0}_errindex'.format(system_name):errindex,
+                '{0}_result'.format(system_name):result,
+                '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
+                '{0}_load_mib_modules'.format(system_name):load_mib_modules
+            }
 
             if result != []:
                 status = True
-                testcase_Utils.pNote("Successfully executed SNMP WALK command {}".format(result), "info")
+                testcase_Utils.pNote("Successfully executed SNMP WALK command {}".
+                                     format(result), "info")
             else:
-                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {} {} {}".format(result, errindication.prettyPrint(), errstatus.prettyPrint()), "error")
+                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {} {} {}".
+                                     format(result, errindication.prettyPrint(),
+                                            errstatus.prettyPrint()), "error")
         except wsnmp.exception as excep:
             status = False
             testcase_Utils.pNote("SNMP Walk command Failed!\n{}".format(excep), "error")
@@ -467,16 +472,12 @@ class CommonSnmpActions(object):
         return status, output_dict
 
     def snmp_bulkget(self, snmp_ver, system_name, mib_name=None,
-                 mib_index=None, mib_value=None,
-                 oid_string=None, communityname=None,
-                 snmp_timeout=60,
-                 nonrepeaters='0',
-                 maxrepetitions='10',
-                 userName=None, authKey=None, privKey=None,authProtocol=None,
-                 privProtocol=None,
-                 custom_mib_paths=None,
-                 load_mib_modules=None,
-                 lexicographicMode="False"):
+                     mib_index=None, mib_value=None,
+                     oid_string=None, communityname=None,
+                     snmp_timeout=60, nonrepeaters='0', maxrepetitions='10',
+                     userName=None, authKey=None, privKey=None, authProtocol=None,
+                     privProtocol=None, custom_mib_paths=None, load_mib_modules=None,
+                     lexicographicMode="False"):
         """
         snmp_bulkget uses the SNMP BULKGET request to query for information on
         a network entity
@@ -507,8 +508,8 @@ class CommonSnmpActions(object):
                                  e.g. 'authkey1'
             12.privKey(string) = Initial value of the secret encryption key.
                                  e.g. 'privkey1'
-            13.authProtocol(string) = An indication of whether messages sent on behalf of this USM user
-                              can be authenticated, and if so, the type of
+            13.authProtocol(string) = An indication of whether messages sent on behalf of this
+                              USM user can be authenticated, and if so, the type of
                               authentication protocol which is used.
                               supported protocols: usmNoAuthProtocol,
                               usmHMACMD5AuthProtocol, usmHMACSHAAuthProtocol
