@@ -103,7 +103,7 @@ class CommonSnmpActions(object):
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
             15.load_mib_modules: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
-                      It is a string of MIB names separated by comma(',')                              
+                      It is a string of MIB names separated by comma(',')
         :Return:
             status(bool)= True / False.
             output_dict = consists of following key value:
@@ -316,7 +316,7 @@ class CommonSnmpActions(object):
                 testcase_Utils.pNote("Successfully executed SNMP GET-NEXT "
                                  "command {}".format(result), "info")
             else:
-                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {}".format(result), "error")
+                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {} {} {} {} xyz".format(result, errindication, errstatus, errindex), "error")
         except wsnmp.exception as excep:
             status = False
             testcase_Utils.pNote("SNMP GET-Next command Failed! \n{}".format(excep), "error")
@@ -459,7 +459,7 @@ class CommonSnmpActions(object):
                 status = True
                 testcase_Utils.pNote("Successfully executed SNMP WALK command {}".format(result), "info")
             else:
-                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {}".format(result), "error")
+                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {} {} {}".format(result, errindication.prettyPrint(), errstatus.prettyPrint()), "error")
         except wsnmp.exception as excep:
             status = False
             testcase_Utils.pNote("SNMP Walk command Failed!\n{}".format(excep), "error")
@@ -623,20 +623,17 @@ class CommonSnmpActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status, output_dict
 
-
     def verify_snmp_action(self, system_name, snmp_result, mib_string=None
                            ):
         """
         Will Verify SNMP get/getnext/walk/getbulk actions.
         :Datafile usage:
-            NA        
+            NA
         :Arguments:
             1. system_name(string) = Name of the system from the input datafile
-            2. mib_string(string) = MIB string, in regex format
-            e.g. if searching for 'SNMPv2-SMI::enterprises.3861.3.2.100.1.2.0' ('' not included)
-            the mib_string can be SNMPv2-SMI::enterprises\.3861\.3\.2\.100\.1\.2\.0
-            or if the number will be different, the mib_string can be SNMPv2-SMI::enterprises[\.\d+]+
-            3. result(string) = SNMP Output string, in regex format
+            2. mib_string(string) = MIB string
+            e.g.'SNMPv2-SMI::enterprises.3861.3.2.100.1.2.0'
+            3. result(string) = SNMP Output string
             e.g. '1Finity-T100'
         :Returns:
             1. status(bool)
@@ -662,7 +659,7 @@ class CommonSnmpActions(object):
         status = False
 
         if errindication:
-            testcase_Utils.pNote("%s" % errindication)
+            testcase_Utils.pNote("%s" % errindication.prettyPrint())
         else:
             if errorstatus:
                 testcase_Utils.pNote('%s at %s' % (errorstatus.prettyPrint(),
@@ -683,13 +680,13 @@ class CommonSnmpActions(object):
                     testcase_Utils.pNote("No SNMP Result Present!", 'error')
         for element in result_list:
             if mib_string:
-                if re.search(mib_string, element[0]) and re.search(snmp_result, element[-1]):
+                if mib_string in element[0] and snmp_result in element[-1]:
                     status = True
                     testcase_Utils.pNote('%s and %s found in SNMP Output' %(
                         mib_string, snmp_result))
                     break
             else:
-                if re.search(snmp_result, element[-1]):
+                if snmp_result in element[-1]:
                     status = True
                     testcase_Utils.pNote('%s Found! in SNMP Output' %(
                         snmp_result))
@@ -753,8 +750,7 @@ class CommonSnmpActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
-
-    def start_trap_listener(self, system_name, 
+    def start_trap_listener(self, system_name,
                            custom_mib_path=None,
                            load_mib_module='SNMPv2-MIB,SNMP-COMMUNITY-MIB'
                            ):
@@ -974,7 +970,7 @@ class CommonSnmpActions(object):
                 modName, nodeDesc, suffix = mibView.getNodeLocation(oid)
                 mibNode, = mibBuilder.importSymbols(modName, nodeDesc)
                 nodetype = re.search(r"([\w]+)\(", str(mibNode)).group(1)
-                if browse.lower() == 'yes': 
+                if browse.lower() == 'yes':
                     if modName in mib_filename:
                         if nodetype == 'MibScalar':
                              testcase_Utils.pNote('%s     %s -> %s == %s' % ('$$', nodetype, modName+'::'+nodeDesc+'.0', '.'.join(map(str,(oid)))+'.0'))
@@ -990,4 +986,3 @@ class CommonSnmpActions(object):
                 break
         Utils.testcase_Utils.report_substep_status(status)
         return status
-

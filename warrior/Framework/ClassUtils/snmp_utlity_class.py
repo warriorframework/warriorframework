@@ -30,9 +30,9 @@ try:
     from pysnmp.smi import builder, view, compiler, rfc1902, error
     from pysnmp import debug
     from pysnmp.proto.rfc1902 import OctetString
+    from pysnmp.carrier.base import AbstractTransportDispatcher
 except ImportError:
     testcase_Utils.pNote("Please Install PYSNMP 4.3.8 or Above", "error")
-
 
 
 def threadsafe_function(fn):
@@ -41,6 +41,7 @@ def threadsafe_function(fn):
     Puts a lock before the function uses any resuorces which are not exclusive for a single thread.
     """
     lock = threading.Lock()
+
     def new(*args, **kwargs):
         lock.acquire()
         try:
@@ -50,34 +51,36 @@ def threadsafe_function(fn):
         finally:
             lock.release()
         return r
+
     return new
 
 
 class WSnmp(object):
     """SNMP Util class using PYSNMP"""
-    data_repo={}
+    data_repo = {}
     snmpEngine = {}
     mibViewController = None
-    authProtocol = {'usmHMACMD5AuthProtocol':config.usmHMACMD5AuthProtocol, 
-                        'usmHMACSHAAuthProtocol':config.usmHMACSHAAuthProtocol,
-                        'usmAesCfb128Protocol':config.usmAesCfb128Protocol,
-                        'usmAesCfb256Protocol':config.usmAesCfb256Protocol,
-                        'usmAesCfb192Protocol':config.usmAesCfb192Protocol,
-                        'usmDESPrivProtocol':config.usmDESPrivProtocol,
-    }
-    
-    def __init__(self,communityname, mpModel, ipaddr, port='161',
+    udptransport = {}
+    authProtocol = {'usmHMACMD5AuthProtocol': config.usmHMACMD5AuthProtocol,
+                    'usmHMACSHAAuthProtocol': config.usmHMACSHAAuthProtocol,
+                    'usmAesCfb128Protocol': config.usmAesCfb128Protocol,
+                    'usmAesCfb256Protocol': config.usmAesCfb256Protocol,
+                    'usmAesCfb192Protocol': config.usmAesCfb192Protocol,
+                    'usmDESPrivProtocol': config.usmDESPrivProtocol,
+                    }
+
+    def __init__(self, communityname, mpModel, ipaddr, port='161',
                  snmp_timeout=60, userName=None, authKey=None, privKey=None,
-                 authProtocol=None, privProtocol=None ):
+                 authProtocol=None, privProtocol=None):
 
         self.communityname = communityname
-        self.mpModel = int(mpModel) ## Accepts only Int type value
+        self.mpModel = int(mpModel)  ## Accepts only Int type value
         self.ipaddr = ipaddr
         self.port = port
         self.exception = snmp_exception.PySnmpError
-        self.timeout = int(snmp_timeout)## Accepts only Int type value
+        self.timeout = int(snmp_timeout)  ## Accepts only Int type value
 
-        #bellow arguments are only for SNMPv3 or mpModel = 2 and in that
+        # bellow arguments are only for SNMPv3 or mpModel = 2 and in that
         # case communityname will be None
         self.userName = userName
         self.authKey = authKey
@@ -98,9 +101,9 @@ class WSnmp(object):
         for SNMP v1 and V2c
         :Return: Community data object
         """
-        comdata = cmdgen.CommunityData(communityIndex = self.communityname,
-                                       communityName = self.communityname,
-                                       mpModel=self.mpModel )
+        comdata = cmdgen.CommunityData(communityIndex=self.communityname,
+                                       communityName=self.communityname,
+                                       mpModel=self.mpModel)
         return comdata
 
     def usmuserdata(self):
@@ -110,10 +113,10 @@ class WSnmp(object):
         """
         if self.authProtocol and ',' in self.authProtocol:
             self.authProtocol = tuple([int(e) if e.isdigit() else e for e in
-                                   self.authProtocol.split(',')])
+                                       self.authProtocol.split(',')])
         if self.privProtocol and ',' in self.privProtocol:
             self.privProtocol = tuple([int(e) if e.isdigit() else e for e in
-                                   self.privProtocol.split(',')])
+                                       self.privProtocol.split(',')])
         if self.authProtocol == "usmHMACMD5AuthProtocol":
             self.authProtocol = cmdgen.usmHMACMD5AuthProtocol
         if self.authProtocol == "usmHMACSHAAuthProtocol":
@@ -152,7 +155,7 @@ class WSnmp(object):
         Returns: IPv6 UDPTransport object
         """
         return cmdgen.Udp6TransportTarget((self.ipaddr, self.port),
-                                         timeout=self.timeout, retries=3)
+                                          timeout=self.timeout, retries=3)
 
     def mibvariable(self, mib_name, mib_index, mib_value=''):
         """
@@ -180,14 +183,15 @@ class WSnmp(object):
             return True
         else:
             return False
-##TRAP Listner related method
-## This will support SNMP v1 v2 V3 Trap and Inform as well
-        
+
+    ##TRAP Listner related method
+    ## This will support SNMP v1 v2 V3 Trap and Inform as well
+
     @classmethod
     def get_asyncoredispatcher(cls, port):
         eng = "snmpEngine{}".format(port)
         if cls.snmpEngine.get(eng) == None:
-            cls.snmpEngine.update({eng:engine.SnmpEngine()})
+            cls.snmpEngine.update({eng: engine.SnmpEngine()})
         return cls.snmpEngine.get(eng)
 
     @staticmethod
@@ -215,8 +219,8 @@ class WSnmp(object):
 
     @classmethod
     def create_trap_listner_job(cls,
-              port="162"
-              ):
+                                port="162"
+                                ):
         """
         Create Trap listner job
         :param port:
@@ -245,16 +249,17 @@ class WSnmp(object):
             try:
                 compiler.addMibCompiler(mibBuilder, sources=temp_custom_mib_paths)
                 cls.mibViewController = view.MibViewController(mibBuilder)
-                mibs=load_mib_module.split(",")
+                mibs = load_mib_module.split(",")
                 mibBuilder.loadModules(*mibs)
             except error.MibNotFoundError as excep:
                 testcase_Utils.pNote("{} Mib Not Found!".format(excep), "Error")
         snmpEngine = cls.get_asyncoredispatcher(port)
-        config.addTransport(snmpEngine, udp.domainName,
-                            udp.UdpTransport().openServerMode(('0.0.0.0', int(port))))
-        snmpEngine.transportDispatcher.jobStarted(1) 
+        udptransport = udp.UdpTransport()
+        cls.udptransport.update({"udptransport{}".format(port): udptransport})
+        config.addTransport(snmpEngine, udp.domainName, udptransport.openServerMode(('0.0.0.0', int(port))))
+        snmpEngine.transportDispatcher.jobStarted(1)
 
-    @classmethod 
+    @classmethod
     def close_trap_listner_job(cls, port):
         """
         Close the trap listner job
@@ -263,8 +268,16 @@ class WSnmp(object):
         """
         snmpEngine = cls.get_asyncoredispatcher(port)
         snmpEngine.transportDispatcher.jobFinished(1)
-        try :
+        # t = AbstractTransportDispatcher.getTransport(udp.domainName)
+        try:
             snmpEngine.transportDispatcher.unregisterTransport(udp.domainName)
+            udptransport = cls.udptransport.get("udptransport{}".format(port))
+            udptransport.closeTransport()
+            del cls.snmpEngine["snmpEngine{}".format(port)]
+            del cls.udptransport["udptransport{}".format(port)]
+            # snmpEngine.transportDispatcher.jobFinished(1)
+        #   AbstractTransportDispatcher.unregisterTransport(udp.domainName)
+        #  t.closeTransport()
         except:
             testcase_Utils.pNote("Can not unregister udp Transport domain",
                                  'warning')
@@ -272,7 +285,7 @@ class WSnmp(object):
     @classmethod
     @threadsafe_function
     def trap_decoder(cls, snmpEngine, stateReference, contextEngineId, contextName,
-                    varBinds, cbCtx):
+                     varBinds, cbCtx):
         """
         Decode the trap messages and saves it in to data repository
         This is call back method which will be coalled internaly for each trap message
@@ -285,19 +298,19 @@ class WSnmp(object):
         ticks = time.ctime()
         transportAddress = snmpEngine.msgAndPduDsp.getTransportInfo(stateReference)[-1][0]
         if not cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress)):
-            cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress):[]})
+            cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress): []})
         execContext = snmpEngine.observer.getExecutionContext(
-                            'rfc3412.receiveMessage:request'
-                            )
+            'rfc3412.receiveMessage:request'
+        )
         decoded_msg = []
-        decoded_msg.append({"time_stamp":ticks})
-        decoded_msg.append({"contextEngineId":contextEngineId.prettyPrint()})
-        decoded_msg.append({"SNMPVER":execContext["securityModel"]})
-        decoded_msg.append({"securityName":execContext['securityName']})
+        decoded_msg.append({"time_stamp": ticks})
+        decoded_msg.append({"contextEngineId": contextEngineId.prettyPrint()})
+        decoded_msg.append({"SNMPVER": execContext["securityModel"]})
+        decoded_msg.append({"securityName": execContext['securityName']})
         for oid, val in varBinds:
             try:
                 output = rfc1902.ObjectType(rfc1902.ObjectIdentity(oid),
-                             val).resolveWithMib(cls.mibViewController).prettyPrint()
+                                            val).resolveWithMib(cls.mibViewController).prettyPrint()
             except error.SmiError as excep:
                 testcase_Utils.pNote("{} Decode Error!".format(excep), "Error")
             op_list = output.split(" = ")
@@ -306,7 +319,7 @@ class WSnmp(object):
             decoded_msg.append((oid, value))
         temp_decoded_msg = cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress))
         temp_decoded_msg.append(decoded_msg)
-        cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress):temp_decoded_msg})
+        cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress): temp_decoded_msg})
 
     @staticmethod
     def get_first_node_name(mib_filepath, mib_filename):
@@ -341,15 +354,15 @@ class WSnmp(object):
         """
         result = True
         snmpEngine = cls.get_asyncoredispatcher(port)
-        #debug.setLogger(debug.Debug('all'))
+        # debug.setLogger(debug.Debug('all'))
         try:
             authprotocol = cls.authProtocol.get(authProtocol, None)
-            privprotocol =  cls.authProtocol.get(privProtocol, None)
+            privprotocol = cls.authProtocol.get(privProtocol, None)
             config.addV3User(
                 snmpEngine=snmpEngine, userName=username,
-                authProtocol = authprotocol, authKey=authkey,
-                privProtocol = privprotocol, privKey=privkey,
-                securityEngineId = v2c.OctetString(hexValue=securityengineid)
+                authProtocol=authprotocol, authKey=authkey,
+                privProtocol=privprotocol, privKey=privkey,
+                securityEngineId=v2c.OctetString(hexValue=securityengineid)
             )
         except:
             testcase_Utils.pNote("ADD SNMPv3 User Failed", "error")
@@ -374,4 +387,3 @@ class WSnmp(object):
             testcase_Utils.pNote("ADD SNMP Community Failed", "error")
             result = False
         return result
-
