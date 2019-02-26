@@ -182,7 +182,7 @@ def get_testwrapper_file_details(testsuite_filepath, data_repository):
             testwrapperfile = Utils.xml_Utils.getChildTextbyParentTag\
                 (testsuite_filepath, 'Details', 'TestWrapperFile')
         else:
-            return [False, False, False]
+            return [False, False, False, False]
     abs_cur_dir = os.path.dirname(testsuite_filepath)
     abs_testwrapperfile = Utils.file_Utils.getAbsPath(testwrapperfile, abs_cur_dir)
     Utils.xml_Utils.getRoot(abs_testwrapperfile)
