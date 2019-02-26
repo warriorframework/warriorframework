@@ -3190,12 +3190,12 @@ class RestActions(object):
                                                    credentials['generate_output_diff_file'])
         return status
 
-    def verify_response_in_console_log(self, expected_event_content=None,
+    def verify_response_in_console_log(self, dict_expected_event_content=None,
                                        expected_event_content_filepath=None):
         """
             This method is used to verify the api response or event output in the console log
             Arguments:
-                expected_event_content (optional) : api response or event output in the format
+                dict_expected_event_content (optional) : api response or event output in the format
                                                    of json/dictionary.
                 expected_event_content_filepath (optional) : path of the json file which contains
                  the api response or event output in the format of json
@@ -3240,9 +3240,9 @@ class RestActions(object):
                         return False
             return True
 
-        if expected_event_content:
+        if dict_expected_event_content:
 
-            status = verify_in_the_console_logs(expected_event_content)
+            status = verify_in_the_console_logs(dict_expected_event_content)
             if status:
                 print_Utils.print_info("The expected json event is found in the console log")
                 return True
