@@ -192,7 +192,8 @@ def get_testwrapper_file_details(testsuite_filepath, data_repository):
         exit(0)
     j_data_type = jfile_obj.check_get_datatype(data_repository['suite_data_file'])
     j_runtype = jfile_obj.check_get_runtype()
-    return [abs_testwrapperfile, j_data_type, j_runtype]
+    setup_on_error_action = Utils.testcase_Utils.get_setup_on_error(abs_testwrapperfile)
+    return [abs_testwrapperfile, j_data_type, j_runtype, setup_on_error_action]
 
 def execute_testsuite(testsuite_filepath, data_repository, from_project,
                       auto_defects, jiraproj, res_startdir, logs_startdir,
@@ -304,7 +305,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(suite_global_xml)
 
     #get testwrapperfile details
-    testwrapperfile, j_data_type, j_runtype = \
+    testwrapperfile, j_data_type, j_runtype, setup_on_error_action = \
         get_testwrapper_file_details(testsuite_filepath, data_repository)
     setup_tc_status, cleanup_tc_status = True, True
     #execute setup steps defined in testwrapper file if testwrapperfile is present
@@ -320,7 +321,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                             jiraproj=None, tc_onError_action='ABORT_AS_ERROR',\
                                             iter_ts_sys=None, steps_tag='Setup')
         print_info("*****************TESTWRAPPER SETUP EXECUTION END**********************")
-    if setup_tc_status == True:
+    if setup_on_error_action == 'next' or \
+        (setup_on_error_action == 'abort' and setup_tc_status == True):
         if execution_type.upper() == 'PARALLEL_TESTCASES':
             ts_junit_object.remove_html_obj()
             data_repository["war_parallel"] = True
