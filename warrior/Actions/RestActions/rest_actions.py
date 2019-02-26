@@ -21,6 +21,7 @@ from Framework.Utils.data_Utils import get_object_from_datarepository
 from Framework.ClassUtils.rest_utils_class import WRest
 from Framework.Utils.testcase_Utils import pNote, pSubStep, \
     report_substep_status
+# pylint: disable-msg=too-many-arguments
 
 """This is the actions file, keywords are programmed here
 """
