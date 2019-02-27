@@ -238,7 +238,8 @@ class WarriorCli(object):
                     resp_session_id = session_id + "_td_response"
 
                     td_resp_dict = self.update_resp_ref_to_repo(details_dict, resp_key_list, i,
-                                                                key, td_resp_dict, resp_session_id)
+                                                                key, td_resp_dict, resp_session_id,
+                                                                result)
 
                     result = (result and rspRes) if "ERROR" not in (result, rspRes) else "ERROR"
                     print_debug("<<<")
@@ -252,11 +253,15 @@ class WarriorCli(object):
                     result = "ERROR"
                     finalresult = "ERROR"
                 finalresult = finalresult and result
+                if details_dict["return_on_fail_list"][i] and (result == "ERROR" or result is False):
+                    if details_dict["return_on_fail_list"][i].lower() == "yes":
+                        pNote("skipping remaining commands, if exists")
+                        break;
             responses_dict[key] = {k: v for d in resp_key_list for k, v in d.iteritems()}
         return finalresult, td_resp_dict
 
     def update_resp_ref_to_repo(self, details_dict, resp_key_list, i,
-                                title_row, td_resp_dict, session_id):
+                                title_row, td_resp_dict, session_id, status=True):
         """
         Updates the response reference in appropriate session_id.
         There are two cases:
@@ -275,7 +280,9 @@ class WarriorCli(object):
                     # title_row value to td_resp_dict
                     td_resp_dict[title_row] = {}
                 # updates td_resp_dict with the key and value
-                temp_resp = {resp: resp_key_list[i][resp]}
+                status = {True: "PASS", False: "FAIL", "ERROR": "ERROR"}.get(status)
+                temp_resp = {resp: resp_key_list[i][resp], resp+"_status": status,
+                             resp+"_command": details_dict["command_list"][i]}
                 td_resp_dict[title_row].update(temp_resp)
                 pNote("Portion of response saved to the data "
                       "repository with key: '{0}.{1}.{2}' and value: '{3}'"
@@ -297,9 +304,11 @@ class WarriorCli(object):
             startprompt = kwargs.get('startprompt', ".*")
             endprompt = kwargs.get('endprompt', None)
             cmd_timeout = kwargs.get('cmd_timeout', None)
+            sleep_before = kwargs.get('sleep_before', None)
             result, response = self.conn_obj.send_command(command, startprompt,
                                                           endprompt,
-                                                          cmd_timeout)
+                                                          cmd_timeout,
+                                                          sleep_before=sleep_before)
         return result, response
 
     @staticmethod
@@ -591,6 +600,7 @@ class WarriorCli(object):
         operator = details_dict["operator_list"][index]
         cond_value = details_dict["cond_value_list"][index]
         cond_type = details_dict["cond_type_list"][index]
+        sleeptime_before_match = details_dict["sleeptime_before_match_list"][index]
         unique_log_verify_list = self.get_unique_log_and_verify_list(
             log_list, verify_on_list, system_name)
 
@@ -634,6 +644,7 @@ class WarriorCli(object):
             result, response = self._send_cmd(startprompt=startprompt,
                                               endprompt=endprompt,
                                               command=command,
+                                              sleep_before=sleeptime_before_match,
                                               cmd_timeout=cmd_timeout)
 
         if sleeptime > 0:
@@ -1574,6 +1585,10 @@ class PexpectConnect(object):
             WarriorCli._send_cmd_by_type(self.target_host, command)
             try:
                 while True:
+                    if kwargs["sleep_before"]:
+                        pNote("Sleeping for {0} seconds before match" \
+                            .format(kwargs["sleep_before"]))
+                        time.sleep(int(kwargs["sleep_before"]))
                     result = self.target_host.expect([end_prompt,
                                                       self.pexpect.EOF,
                                                       self.pexpect.TIMEOUT]) \
