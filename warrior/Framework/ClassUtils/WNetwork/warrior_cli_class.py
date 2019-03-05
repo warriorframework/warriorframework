@@ -205,6 +205,8 @@ class WarriorCli(object):
         testdata_dict = Utils.data_Utils.get_command_details_from_testdata(
             testdatafile, varconfigfile, var_sub=var_sub, title=title, row=row,
             system_name=system_name, datafile=datafile)
+        pNote("##$$$$$$$$$$$$$$$$$$$$$$$$$$ data is #############################################")
+        pNote(testdata_dict)
         finalresult = True if len(testdata_dict) > 0 else False
         for key, details_dict in testdata_dict.iteritems():
             responses_dict[key] = ""
@@ -1585,7 +1587,7 @@ class PexpectConnect(object):
             WarriorCli._send_cmd_by_type(self.target_host, command)
             try:
                 while True:
-                    if kwargs["sleep_before"]:
+                    if kwargs.get("sleep_before", None):
                         pNote("Sleeping for {0} seconds before match" \
                             .format(kwargs["sleep_before"]))
                         time.sleep(int(kwargs["sleep_before"]))
