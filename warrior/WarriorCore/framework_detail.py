@@ -60,10 +60,10 @@ def warrior_framework_details():
                 version = match.group(2)
     user = getpass.getuser()
     proc1 = subprocess.Popen(['git', 'branch'], stdout=subprocess.PIPE)
-    proc2 = subprocess.Popen(['grep', '\*'], stdin=proc1.stdout,
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc2 = subprocess.Popen(['grep', '*'], stdin=proc1.stdout,
+                             stdout=subprocess.PIPE, stderr=None)
     proc1.stdout.close() # Allow proc1 to receive a SIGPIPE if proc2 exits.
-    branch, err = proc2.communicate()
+    branch = proc2.communicate()[0]
 
     if release and version and version_file_path:
         pNote("========================== WARRIOR FRAMEWORK DETAILS ==========================",
