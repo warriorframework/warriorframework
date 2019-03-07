@@ -31,6 +31,26 @@
                         <runmode type="Standard" value=""/>
                  </step>
                  
+                <step Driver="common_driver" Keyword="fetch_in_repo" TS="1">
+                        <Arguments>
+                                <argument name="datavar" value="var2.var3.a"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="common_driver" Keyword="fetch_in_repo" TS="1">
+                        <Arguments>
+                                <argument name="datavar" value="invalid.var3.a"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="1">
                         <Arguments>
                                 <argument name="expected" value="10"/>
