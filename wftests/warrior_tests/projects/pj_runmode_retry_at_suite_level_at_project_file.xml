@@ -144,6 +144,12 @@
             <onError action="next" value=""/>
             <impact>impact</impact>
         </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_with_status_expected_with_on_error.xml/</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
 	</Testsuites>
 </Project>
 

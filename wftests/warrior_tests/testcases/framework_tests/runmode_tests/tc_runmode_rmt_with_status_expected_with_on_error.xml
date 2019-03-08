@@ -1,0 +1,92 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_runmode_rmt_with_status_expected_with_on_error</Name>
+                <Title>Test the onerror functionality with RMT as runmode</Title>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir>../../../Execution</Logsdir>
+                <Resultsdir>../../../Execution</Resultsdir>
+                <Date>2019-2-22</Date>
+                <InputDataFile>No_Data</InputDataFile>
+                <Time>11:34</Time>
+                <Engineer>Warrior</Engineer>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+
+            <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+                        <Arguments>
+                                <argument name="key" value="tc_rup"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="5"/>
+                                <argument name="max_status" value="pass"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                         <runmode type="RMT" value="5" status="expected"/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+            <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
+                        <Arguments>
+                                <argument name="key" value="tc_rupq"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="3"/>
+                                <argument name="max_status" value="fail"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description></Description>
+                         <runmode type="RMT" value="5" status="expected"/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>noimpact</impact>
+                </step>
+            <step Driver="ci_regression_driver" Keyword="increase_value" TS="3">
+                        <Arguments>
+                                <argument name="key" value="tc_rupqa"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="5"/>
+                                <argument name="max_status" value="fail"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                         <runmode type="RMT" value="5" status="expected"/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+            <step Driver="ci_regression_driver" Keyword="increase_value" TS="4">
+                        <Arguments>
+                                <argument name="key" value="tc_rupqb"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="5"/>
+                                <argument name="max_status" value="fail"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description></Description>
+                         <runmode type="RMT" value="5" status="expected"/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+            <step Driver="ci_regression_driver" Keyword="increase_value" TS="5">
+                        <Arguments>
+                                <argument name="key" value="tc_rmtu"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="5"/>
+                                <argument name="max_status" value="pass"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description></Description>
+                         <runmode type="RMT" value="5" status="expected"/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+
+        </Steps>
+</Testcase>
