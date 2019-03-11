@@ -15,7 +15,6 @@ limitations under the License.
 """The test case driver is the driver responsible for execution of a testcase
 It in turn calls the custom_sequential/custom_parallel/iterative_sequential/
 iterative_parallel drivers according to the  data_type and run_type of the testcase"""
-
 import sys
 import os
 import time
@@ -583,8 +582,13 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
             _ = [step.find("onError").set("action", "abort") for step in setup_step_list]
             print_info("****** SETUP STEPS EXECUTION STARTS *******")
             data_repository['wt_step_type'] = 'setup'
+            #to consider relative paths provided from wrapperfile instead of testcase file
+            original_tc_filepath = data_repository['wt_testcase_filepath']
+            data_repository['wt_testcase_filepath'] = testwrapperfile
             setup_tc_status = execute_steps(j_data_type, j_runtype, \
                 data_repository, setup_step_list, tc_junit_object, iter_ts_sys)
+            #reset to original testcase filepath
+            data_repository['wt_testcase_filepath'] = original_tc_filepath
             data_repository['wt_step_type'] = 'step'
             print_info("setup_tc_status : {0}".format(setup_tc_status))
             print_info("****** SETUP STEPS EXECUTION ENDS *******")
@@ -615,8 +619,13 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 print_warning("step list is empty in {0} block".format("Cleanup"))
             print_info("****** CLEANUP STEPS EXECUTION STARTS *******")
             data_repository['wt_step_type'] = 'cleanup'
+            original_tc_filepath = data_repository['wt_testcase_filepath']
+            #to consider relative paths provided from wrapperfile instead of testcase file
+            data_repository['wt_testcase_filepath'] = testwrapperfile
             cleanup_tc_status = execute_steps(j_data_type, j_runtype, \
                 data_repository, cleanup_step_list, tc_junit_object, iter_ts_sys)
+            #reset to original testcase filepath
+            data_repository['wt_testcase_filepath'] = original_tc_filepath
             data_repository['wt_step_type'] = 'step'
             print_info("cleanup_tc_status : {0}".format(cleanup_tc_status))
             print_info("****** CLEANUP STEPS EXECUTION ENDS *******")

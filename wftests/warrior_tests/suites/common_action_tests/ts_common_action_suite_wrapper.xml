@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_common_action_suite_wrapper</Name>
+                <Title>ts_common_action_suite_wrapper</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>11/17/2017</Date>
+                <Time>16:37:44</Time>
+                <type Max_Attempts="" Number_Attempts="2" exectype="Run_Multiple"/>
+                <State/>
+                <default_onError action="next" value=""/>
+                <Resultsdir/>
+                <InputDataFile>No_Data</InputDataFile>
+                <TestWrapperFile>../../wrapper_files/common_actions_tests/tw_store_in_repo.xml</TestWrapperFile>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../testcases/common_actions_tests/tc_store_in_repo_wrapper.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>
