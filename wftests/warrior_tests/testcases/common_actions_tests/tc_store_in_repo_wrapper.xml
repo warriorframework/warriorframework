@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_store_in_repo_wrapper.xml</Name>
+                <Title>tc_store_in_repo_wrapper.xml</Title>
+                <Engineer>Sekhar</Engineer>
+                <Date>2018-11-13</Date>
+                <Time>12:08</Time>
+                <State/>
+                <InputDataFile>No_Data</InputDataFile>
+                <TestWrapperFile>../../wrapper_files/common_actions_tests/tw_store_in_repo.xml</TestWrapperFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="10"/>
+                                <argument name="object_key" value="var2.var3.a"/>
+                                <argument name="type" value="str"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+            
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="100"/>
+                                <argument name="object_key" value="var2.var3.b"/>
+                                <argument name="type" value="str"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="40"/>
+                                <argument name="object_key" value="var6.a"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                       
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="50"/>
+                                <argument name="object_key" value="var6.b"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+               </step>
+        </Steps>
+</Testcase>
