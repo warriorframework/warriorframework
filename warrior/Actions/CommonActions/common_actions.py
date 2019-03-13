@@ -232,6 +232,8 @@ class CommonActions(object):
             status (boolean True)
 
         """
+        wDesc = "Print the  value of given key in data_repository "
+        Utils.testcase_Utils.pNote(wDesc)
         status = True
         pass_msg = "Value: {0} is stored in a Key: {1} of Warrior data_repository"
         value = get_object_from_datarepository(datavar)
