@@ -34,10 +34,11 @@ def get_system_console_log(filename, logsdir, console_name):
     return console_logfile
 
 
-class TestCaseStepsExecutionClass(object):
+class TestCaseStepsExecutionClass:
     """ Step Execution Class """
 
-    def __init__(self, step_list, data_repository, go_to_step_number, system_name, parallel, queue, skip_invoked=True):
+    def __init__(self, step_list, data_repository, go_to_step_number, system_name, parallel,
+                 queue, skip_invoked=True):
         """
         Constructor for testcase_steps_execution_class.
 
@@ -117,10 +118,10 @@ class TestCaseStepsExecutionClass(object):
         Utils.testcase_Utils.pKeyword(keyword, self.current_step.get('Driver'))
         Utils.testcase_Utils.reportStatus('Skip')
         self.kw_resultfile_list.append(kw_resultfile)
-        self.data_repository['wt_junit_object'].update_count("skipped", "1", "tc",
-                                                             self.data_repository['wt_tc_timestamp'])
-        self.data_repository['wt_junit_object'].update_count("keywords", "1", "tc",
-                                                             self.data_repository['wt_tc_timestamp'])
+        self.data_repository['wt_junit_object'].update_count(
+            "skipped", "1", "tc", self.data_repository['wt_tc_timestamp'])
+        self.data_repository['wt_junit_object'].update_count(
+            "keywords", "1", "tc", self.data_repository['wt_tc_timestamp'])
         kw_start_time = Utils.datetime_utils.get_current_timestamp()
         step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(self.current_step)
         impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
@@ -140,7 +141,8 @@ class TestCaseStepsExecutionClass(object):
                 return self.current_step_number, self.go_to_step_number, "continue"
         # when 'onError:goto' value is less than the current step num,
         # change the next iteration point to goto value
-        elif self.current_triggered_action and int(self.current_triggered_action) < self.current_step_number:
+        elif self.current_triggered_action and int(self.current_triggered_action) < \
+                self.current_step_number:
             self.current_step_number = int(self.current_triggered_action) - 1
         return self.current_step_number, self.go_to_step_number, "continue"
 
@@ -183,10 +185,10 @@ class TestCaseStepsExecutionClass(object):
 
         step_description = Utils.testcase_Utils.get_description_from_xmlfile(self.current_step)
         self.kw_resultfile_list.append(kw_resultfile)
-        self.data_repository['wt_junit_object'].update_count("skipped", "1", "tc",
-                                                        self.data_repository['wt_tc_timestamp'])
-        self.data_repository['wt_junit_object'].update_count("keywords", "1", "tc",
-                                                        self.data_repository['wt_tc_timestamp'])
+        self.data_repository['wt_junit_object'].update_count(
+            "skipped", "1", "tc", self.data_repository['wt_tc_timestamp'])
+        self.data_repository['wt_junit_object'].update_count(
+            "keywords", "1", "tc", self.data_repository['wt_tc_timestamp'])
         kw_start_time = Utils.datetime_utils.get_current_timestamp()
         step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(self.current_step)
 
@@ -220,10 +222,10 @@ class TestCaseStepsExecutionClass(object):
         # execution of same TC step and move to next actual step
         elif runmode.upper() == "RUF" and step_status is False:
             self.go_to_step_number = str(value)
-            if self.current_step.find("onError").get("action")=="abort":
-                self.go_to_step_number = onerror_driver.main(self.current_step, self.default_error_action,
-                                                         self.default_error_value, skip_invoked=self.skip_invoked,
-                                                         current_step_number=self.current_step_number)
+            if self.current_step.find("onError").get("action") == "abort":
+                self.go_to_step_number = onerror_driver.main(
+                    self.current_step, self.default_error_action, self.default_error_value,
+                    skip_invoked=self.skip_invoked, current_step_number=self.current_step_number)
                 return self.current_step_number, self.go_to_step_number, "break"
         # if runmode is 'rup' & step_status is True, skip the repeated
         # execution of same TC step and move to next actual step
@@ -231,16 +233,17 @@ class TestCaseStepsExecutionClass(object):
             self.go_to_step_number = str(value)
         else:
             if step_status is False or str(step_status).upper() in ["ERROR", "EXCEPTION"]:
-                self.go_to_step_number = onerror_driver.main(self.current_step, self.default_error_action,
-                                                   self.default_error_value, skip_invoked=self.skip_invoked,
-                                                             current_step_number = self.current_step_number)
+                self.go_to_step_number = onerror_driver.main(
+                    self.current_step, self.default_error_action, self.default_error_value,
+                    skip_invoked=self.skip_invoked, current_step_number=self.current_step_number)
                 if self.go_to_step_number in ['ABORT', 'ABORT_AS_ERROR']:
                     return self.current_step_number, self.go_to_step_number, "break"
                 elif type(self.go_to_step_number) is list:
                     self.__run_execute_and_resume_mode()
         return self.current_step_number, self.go_to_step_number, "continue"
 
-    def _execute_retry_type_step(self, retry_type, retry_cond, retry_cond_value, retry_interval, retry_value):
+    def _execute_retry_type_step(self, retry_type, retry_cond, retry_cond_value, retry_interval,
+                                 retry_value):
         """
         This function will execute a retry step
 
@@ -329,7 +332,8 @@ class TestCaseStepsExecutionClass(object):
         print_normal("\n----------------- Invoked Steps Execution Finished -----------------\n")
 
 
-def execute_steps(step_list, data_repository, system_name, parallel, queue, skip_invoked=True, step_num=None):
+def execute_steps(step_list, data_repository, system_name, parallel, queue, skip_invoked=True,
+                  step_num=None):
     """
         Take in a list of steps
         iterate through each of them and decide if each should run (pre-run check)

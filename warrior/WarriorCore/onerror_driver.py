@@ -13,7 +13,7 @@ limitations under the License.
 """
 
 import Framework.Utils as Utils
-from Framework.Utils.print_Utils import print_info, print_warning, print_debug
+from Framework.Utils.print_Utils import print_info, print_warning
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 
 """
@@ -23,7 +23,8 @@ Returns the actions that should e taken corresponding to the failure
 """
 
 
-def main(node, def_on_error_action, def_on_error_value, exec_type=False, skip_invoked=True, current_step_number=None):
+def main(node, def_on_error_action, def_on_error_value, exec_type=False, skip_invoked=True,
+         current_step_number=None):
     """Takes a xml element (steps/step codntion / testcase/ tesuite)
     as input and return the action to be performed for failure
     conditions """
@@ -67,7 +68,8 @@ def get_failure_results(error_repository):
     return False
 
 
-def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, exec_type, current_step_number=None):
+def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, exec_type,
+                               current_step_number=None):
     """Takes a xml element at input and returns the values for on_error action , value
     If no value is available in the node then returns the default values """
 
@@ -86,8 +88,12 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
         action = Utils.xml_Utils.get_attributevalue_from_directchildnode(node, 'onError', 'action')
         value = Utils.xml_Utils.get_attributevalue_from_directchildnode(node, 'onError', 'value')
     runmode = Utils.xml_Utils.get_attributevalue_from_directchildnode(node, 'runmode', 'type')
-    runmode_value = Utils.xml_Utils.get_attributevalue_from_directchildnode(node, 'runmode', 'value')
-    if (runmode == "RUP" or runmode == "RMT") and (current_step_number == runmode_value-1) or runmode == "RUF":
+    runmode_value = Utils.xml_Utils.get_attributevalue_from_directchildnode(node,
+                                                                            'runmode', 'value')
+    if (runmode == "RUP" or runmode == "RMT") and (current_step_number == runmode_value-1) \
+            or runmode == "RUF":
+        action = action
+    elif action:
         action = action
     else:
         action = "next"
