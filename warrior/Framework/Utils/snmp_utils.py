@@ -55,8 +55,8 @@ def translate_mib(custom_mib_paths, load_mib_modules, name, val):
             mibBuilder.loadModules(*temp_load_mib_modules)
         except error.MibNotFoundError as excep:
             testcase_Utils.pNote(" {} Mib Not Found!".format(excep), "Error")
-    temp_type = val.__class__.__name__
     if custom_mib_paths and load_mib_modules:
+        temp_type = val.__class__.__name__
         output = rfc1902.ObjectType(rfc1902.ObjectIdentity(name), val).resolveWithMib(mibViewController).prettyPrint()
         op_list = output.split(" = ")
         name = op_list[0].strip()
@@ -78,4 +78,3 @@ def translate_mib(custom_mib_paths, load_mib_modules, name, val):
                          (name.prettyPrint(), temp_type,
                           val.prettyPrint()))
         return name.prettyPrint(), val.prettyPrint()
-
