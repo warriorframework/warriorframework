@@ -224,17 +224,14 @@ class WRest(object):
                     try:
                         expected_api_response = JSON.load(open(expected_api_response, 'r'))
                         for key, value in expected_api_response.items():
+                            # repalcing the environment variable with value in the verify json
                             if "${" in value:
-                                data_file_path = Utils.data_Utils.\
-                                    get_object_from_datarepository("wt_datafile")
-                                fd = open(data_file_path)
-                                file_out = fd.read()
-                                pattern = r'<variable_config>(.*)</variable_config>'
-                                m = re.search(pattern, file_out, re.I | re.M)
-                                if m:
-                                    vc_path = m.group(1)
-                                    out = string_Utils.sub_from_varconfigfile(value, vc_path)
-                                    expected_api_response[key] = out
+                                s_out = value.split("}")[0]
+                                env_var = s_out.split(".")[-1]
+                                env_value = os.getenv(env_var)
+                                pattern = r'(\$\{.*\})'
+                                line = re.sub(pattern, env_value, value)
+                                expected_api_response[key] = line
                     except IOError as exception:
                         if ".json" == extension:
                             pNote("File does not exist in the"
