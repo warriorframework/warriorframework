@@ -3222,21 +3222,33 @@ class RestActions(object):
             Return :
                 Boolean value : True/False
             """
+            wdesc = "Verify the json content in the console log"
+            pNote(wdesc)
             for key, value in data.items():
                 if isinstance(value, dict):
                     if re.search(key, lines):
-                        verify_in_the_console_logs(value)
+                        ret_value = verify_in_the_console_logs(value)
+                        if not ret_value:
+                            return ret_value
+
                     else:
                         return False
                 else:
-                    value = ''.join(e if e.isalnum() or e.isspace() else r"\{}".format(e)
+                    value = ''.join(e if e.isalnum() or e.isspace() else r"{}".format(e)
                                     for e in str(value))
-                    if re.search(key, lines) and re.search(r'{}'.format(str(value)), lines,
-                                                           re.I | re.M):
+                    if "${" in value:
+                        s_out = value.split("}")[0]
+                        env_var = s_out.split(".")[-1]
+                        env_value = os.getenv(env_var)
+                        pat = r'(\$\{.*\})'
+                        value = re.sub(pat, env_value, value)
+                    line = r"{}(\"|\')\s*\:\s*(\"|\'){}".format(key, str(value))
+                    if re.search(line, lines):
                         pass
                     else:
                         print_Utils.print_warning("The {}/{} are not presented in the console log"
                                                   .format(key, value))
+
                         return False
             return True
 
