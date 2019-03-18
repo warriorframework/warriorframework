@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_setup_onerror_in_wrapper.xml</Name>
+                <Title>tc_setup_onerror_in_wrapper.xml</Title>
+                <Engineer>Sekhar</Engineer>
+                <Date>2018-11-13</Date>
+                <Time>12:08</Time>
+                <State/>
+                <InputDataFile>No_Data</InputDataFile>
+                <TestWrapperFile>../../wrapper_files/framework_tests/tw_default_setup_onerror.xml</TestWrapperFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                  <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+                      <Arguments>
+                        <argument name="desired_status" value="pass"/>
+                      </Arguments>
+                      <onError action="next"/>
+                      <Description>local_data_test</Description>
+                      <iteration_type type=""/>
+                      <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+                    <rmt/>
+                  </step>
+                  <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+                      <Arguments>
+                        <argument name="desired_status" value="pass"/>
+                      </Arguments>
+                      <onError action="next"/>
+                      <Description>local_data_test</Description>
+                      <iteration_type type=""/>
+                      <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+                    <rmt/>
+                  </step>
+        </Steps>
+</Testcase>
