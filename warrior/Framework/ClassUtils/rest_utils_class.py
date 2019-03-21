@@ -224,11 +224,15 @@ class WRest(object):
                     try:
                         expected_api_response = JSON.load(open(expected_api_response, 'r'))
                         for key, value in expected_api_response.items():
-                            # repalcing the environment variable with value in the verify json
+                            # replacing the environment variable with value in the verify json
                             if "${" in value:
                                 s_out = value.split("}")[0]
                                 env_var = s_out.split(".")[-1]
                                 env_value = os.getenv(env_var)
+                                if env_value is None:
+                                    print_error("The env var {} is not presented in environment variables so unable to "
+                                                "fetch the value ".format(env_var))
+                                    return False
                                 pattern = r'(\$\{.*\})'
                                 line = re.sub(pattern, env_value, value)
                                 expected_api_response[key] = line
