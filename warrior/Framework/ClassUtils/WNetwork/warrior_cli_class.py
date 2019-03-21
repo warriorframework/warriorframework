@@ -669,7 +669,7 @@ class WarriorCli(object):
                     result = Utils.data_Utils.verify_resp_across_sys(
                         verify_text_list, verify_context_list, command,
                         response, varconfigfile, verify_on_list_as_list,
-                        verify_list, remote_resp_dict, endprompt, verify_group)
+                        verify_list, remote_resp_dict, endprompt, verify_group, log)
         command_status = {True: "PASS", False: "FAIL", "ERROR": "ERROR"}.get(
             result)
         pNote("COMMAND STATUS:{0}".format(command_status))
