@@ -40,5 +40,19 @@
 			<onError action="next"/>
 			<impact>impact</impact>
 		</Testcase>
+		<Testcase>
+			<path>../../testcases/rest_functional_tests/tc_verfiy_response_in_console_log.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/rest_functional_tests/tc_verify_response_in_console_log_not_presented.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>noimpact</impact>
+		</Testcase>
 	</Testcases>
 </TestSuite>
