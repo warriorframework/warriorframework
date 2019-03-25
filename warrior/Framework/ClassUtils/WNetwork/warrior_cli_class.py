@@ -1642,7 +1642,7 @@ class PexpectConnect(object):
                 if self.target_host.after == self.pexpect.TIMEOUT:
                     pNote("EXCEPTION !! Command Timed Out", 'error')
                 else:
-                    response = response + self.target_host.after.decode('utf-8')
+                    response = response + str(self.target_host.after)
                 if kwargs["log"] != "false":
                     pNote("Response:\n{0}\n".format(response))
                 pNote(msg, "debug")
