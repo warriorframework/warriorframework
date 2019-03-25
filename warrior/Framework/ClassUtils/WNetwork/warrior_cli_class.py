@@ -1577,7 +1577,7 @@ class PexpectConnect(object):
             boolprompt = -1
         if boolprompt == 0:
             start_time = Utils.datetime_utils.get_current_timestamp()
-            if kwargs["log"] != "false":
+            if kwargs.get("log", "true") != "false":
                 pNote("[{0}] Sending Command: {1}".format(start_time, command))
             WarriorCli._send_cmd_by_type(self.target_host, command)
             try:
@@ -1643,7 +1643,7 @@ class PexpectConnect(object):
                     pNote("EXCEPTION !! Command Timed Out", 'error')
                 else:
                     response = response + str(self.target_host.after)
-                if kwargs["log"] != "false":
+                if kwargs.get("log", "true") != "false":
                     pNote("Response:\n{0}\n".format(response))
                 pNote(msg, "debug")
                 if status is True:
