@@ -12,6 +12,7 @@ limitations under the License.
 '''
 
 from WarriorCore.Classes import war_print_class
+from Framework.Utils.print_Utils import print_info
 # pylint: disable=invalid-name
 
 console_logfile = None
@@ -38,7 +39,7 @@ def debug_file(console_filepath):
         console_logfile = open(console_filepath, 'a')
         redirect_print.get_file(console_logfile)
     except Exception, e:
-        print "unexpected error %s" % str(e)
+        print_info("unexpected error %s" % str(e))
         console_logfile = None
 
 def junit_file(junit_filepath):
@@ -114,7 +115,7 @@ def set_data_repository_for_parallel(repository):
     """
     global par_data_repository
     par_data_repository.update(repository)
-    print par_data_repository
+    print_info(par_data_repository)
 
 def set_testcase_path(testcase_file_path):
     """
