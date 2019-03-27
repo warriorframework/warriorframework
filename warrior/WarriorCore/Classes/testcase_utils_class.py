@@ -50,6 +50,7 @@ class TestcaseUtils(object):
         self.grequirementloop = 0
         self.gsubkey = {}
         self.gsubkeyloop = 0
+        self.pnote = False
 
     def file_utils(self):
         """
@@ -244,6 +245,7 @@ class TestcaseUtils(object):
         :Returns:
             None
         """
+        self.pnote = True 
         self.p_note_level(txt, print_type)
 
     def p_custom_tag(self, name, txt):
