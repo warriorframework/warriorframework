@@ -355,18 +355,15 @@ class client(Thread):
                     for notification in self.__notification_list:
                         pNote("Checking notification: "
                               "##{}##".format(notification))
-                        match = False
                         xml = etree.fromstring(notification)
-                        #Contains list of xpath
-                        xpath_list = waitstr[0].split(",")
+                        # Contains list of xpath
+                        match, xpath_list = True, waitstr[0].split(",")
                         for xpath in xpath_list:
-                            #Validation for the xpath given
-                            status = xml.xpath(xpath, namespaces=waitstr[1])
-                            if status:
-                              match = True
-                            else:
-                              match = False
-                              break
+                            # Validation for the xpath given
+                            if not xml.xpath(xpath, namespaces=waitstr[1]):
+                                match = False
+                                break
+
                         if match:
                             self.__wait_rept.set()
                             self.__notification_list.remove(notification)
