@@ -247,6 +247,7 @@ class TestcaseUtils(object):
         """
         self.pnote = True 
         self.p_note_level(txt, print_type)
+        self.pnote = False
 
     def p_custom_tag(self, name, txt):
         """Adds a note to the testcase xml result file under the current tag
