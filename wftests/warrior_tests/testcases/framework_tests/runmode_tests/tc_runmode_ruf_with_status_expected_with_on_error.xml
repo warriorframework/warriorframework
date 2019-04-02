@@ -49,7 +49,7 @@
                                 <argument name="key" value="tc_rufa"/>
                                 <argument name="status" value="pass"/>
                                 <argument name="max_value" value="5"/>
-                                <argument name="max_status" value="fail"/>
+                                <argument name="max_status" value="pass"/>
                         </Arguments>
                         <onError action="abort"/>
                         <Description></Description>

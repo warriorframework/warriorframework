@@ -15,27 +15,19 @@
                 <Requirement>Requirement-002</Requirement>
         </Requirements>
         <Testcases>
-
-                <Testcase>
-                        <path>../../../testcases/framework_tests/runmode_tests/tc_runmode_rmt_with_status_expected_with_on_error.xml</path>
-                        <context>positive</context>
-                        <runtype>sequential_keywords</runtype>
-                        <onError action="next"/>
-                        <impact>noimpact</impact>
-                </Testcase>
                 <Testcase>
                         <path>../../../testcases/framework_tests/runmode_tests/tc_runmode_rup_with_status_expected_with_on_error.xml</path>
-                        <context>positive</context>
+                        <context>negative</context>
                         <runtype>sequential_keywords</runtype>
                         <onError action="next"/>
-                        <impact>noimpact</impact>
+                        <impact>impact</impact>
                 </Testcase>
                 <Testcase>
                         <path>../../../testcases/framework_tests/runmode_tests/tc_runmode_ruf_with_status_expected_with_on_error.xml</path>
-                        <context>positive</context>
+                        <context>negative</context>
                         <runtype>sequential_keywords</runtype>
                         <onError action="next"/>
-                        <impact>noimpact</impact>
+                        <impact>impact</impact>
                 </Testcase>
         </Testcases>
 </TestSuite>

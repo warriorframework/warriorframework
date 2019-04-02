@@ -220,9 +220,12 @@ class TestCaseStepsExecutionClass:
             wait_for_timeout(runmode_timer)
         # if runmode is 'ruf' & step_status is False, skip the repeated
         # execution of same TC step and move to next actual step
-        elif runmode.upper() == "RUF" and step_status is False:
-            self.go_to_step_number = str(value)
-            if self.current_step.find("onError").get("action") == "abort":
+        elif runmode.upper() == "RUF" and step_status is True or step_status is False:
+            runmode_value = self.current_step.find("runmode").get("value")
+            if not step_status:
+                self.go_to_step_number = str(value)
+                return self.current_step_number, self.go_to_step_number, "continue"
+            if step_status and self.current_step_number == runmode_value-1:
                 self.go_to_step_number = onerror_driver.main(
                     self.current_step, self.default_error_action, self.default_error_value,
                     skip_invoked=self.skip_invoked, current_step_number=self.current_step_number)
