@@ -4,6 +4,7 @@
 		<url>http://httpbin.org</url>
 		<cookies>cookie</cookies>
 		<response_1>../../config_files/rest_functional_tests/verify_api_response.json</response_1>
+		<response_2>../../config_files/rest_functional_tests/verify_api_response_with_env_variable.json</response_2>
 		<cookiejar>dict</cookiejar>
 		<variable_config></variable_config>
 		<comparison_mode>

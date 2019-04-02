@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_env_variable_substitution_in_verify_response</Name>
+                <Title>This tc is used to verify the response with env variable</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-07-27</Date>
+                <Time>17:06</Time>
+                <InputDataFile>../../data/rest_functional_tests/rest_verify_response_data.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults>PASS</ExpectedResults>
+                <Category>Feature</Category>
+                <State>Released</State>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="common_driver" Keyword="set_env_var" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="var_value" value="val"/>
+                                <argument name="var_key" value="val"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Using ENV variable which can be used in Testcase args and in Data file</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="rest_driver" Keyword="perform_http_get" TS="2">
+                    <Arguments>
+                        <argument name="system_name" value="http_bin_1"/>
+                        <argument name="url" value="http://httpbin.org/response-headers?key=val"/>
+                    </Arguments>
+                    <onError action="next"/>
+                    <Description>This step tests the GET capability of REST</Description>
+                    <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+                </step>
+                <step Driver="rest_driver" Keyword="verify_response" TS="3">
+                    <Arguments>
+                        <argument name="system_name" value="http_bin_1"/>
+                        <argument name="expected_api_response" value="tag=response_2"/>
+                        <argument name="expected_response_type" value="json"/>
+                        <argument name="comparison_mode" value="file" />
+                    </Arguments>
+                    <onError action="next"/>
+                    <Description>This step verifies the API response with the expected API response</Description>
+                    <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+                </step>
+
+        </Steps>
+</Testcase>

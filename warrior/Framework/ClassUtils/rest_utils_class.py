@@ -17,12 +17,13 @@ import re
 import time
 import os
 import os.path
-from Framework.Utils.testcase_Utils import pNote
 import json as JSON
+from xml.dom.minidom import parseString
+from Framework.Utils.testcase_Utils import pNote
 import Framework.Utils as Utils
 from Framework.ClassUtils.json_utils_class import JsonUtils
-from Framework.Utils.print_Utils import print_exception, print_info, print_error
-from xml.dom.minidom import parseString
+from Framework.Utils.print_Utils import print_error
+from Framework.Utils import string_Utils
 
 
 class WRest(object):
@@ -78,7 +79,7 @@ class WRest(object):
         """
         pNote("Perform a http get", "info")
         try:
-            response = self.req.get(url, params=params, auth=auth,  **kwargs)
+            response = self.req.get(url, params=params, auth=auth, **kwargs)
         except Exception as e:
             status, response = self.catch_expection_return_error(e, url)
         else:
@@ -206,8 +207,7 @@ class WRest(object):
         if response is not None and expected_api_response is not None:
             if expected_response_type in response.headers['Content-Type']:
                 extracted_response = response.content
-                extension = Utils.rest_Utils.get_extension_from_path(
-                                        expected_api_response)
+                extension = Utils.rest_Utils.get_extension_from_path(expected_api_response)
                 if 'xml' in response.headers['Content-Type']:
                     try:
                         f = open(expected_api_response, 'r')
@@ -217,21 +217,31 @@ class WRest(object):
                                   " provided file path", "error")
                             return False
                     status, sorted_file1, sorted_file2, output_file = \
-                    Utils.xml_Utils.compare_xml(extracted_response,
-                     expected_api_response,
-                                output_file, sorted_json=False)
+                    Utils.xml_Utils.compare_xml(extracted_response, expected_api_response,
+                                                output_file, sorted_json=False)
 
                 elif 'json' in response.headers['Content-Type']:
                     try:
-                        expected_api_response = JSON.load(open(
-                                            expected_api_response, 'r'))
+                        expected_api_response = JSON.load(open(expected_api_response, 'r'))
+                        for key, value in expected_api_response.items():
+                            # replacing the environment variable with value in the verify json
+                            if "${" in value:
+                                s_out = value.split("}")[0]
+                                env_var = s_out.split(".")[-1]
+                                env_value = os.getenv(env_var)
+                                if env_value is None:
+                                    print_error("The env var {} is not presented in environment variables so unable to "
+                                                "fetch the value ".format(env_var))
+                                    return False
+                                pattern = r'(\$\{.*\})'
+                                line = re.sub(pattern, env_value, value)
+                                expected_api_response[key] = line
                     except IOError as exception:
                         if ".json" == extension:
                             pNote("File does not exist in the"
                                   " provided file path", "error")
                             return False
-                        expected_api_response = JSON.loads(
-                                                expected_api_response)
+                        expected_api_response = JSON.loads(expected_api_response)
                     extracted_response = JSON.loads(extracted_response)
                     status = self.json_utils.write_json_diff_to_file(
                         extracted_response, expected_api_response, output_file)
@@ -252,10 +262,8 @@ class WRest(object):
                     if not generate_output_diff_file:
                         os.remove(output_file)
                     else:
-                        pNote("api_response and expected_api_response"
-                        " do not match", "error")
-                        pNote("The difference between the responses is"
-                        " saved here:{0}".format(output_file), "info")
+                        pNote("api_response and expected_api_response do not match", "error")
+                        pNote("The difference between the responses is saved here:{0}".format(output_file), "info")
                 return status
             else:
                 type_of_response = Utils.rest_Utils.\
@@ -331,13 +339,17 @@ class WRest(object):
                    list_path_responses_datafile(datafile, system_name)
             if path_list:
                 if "xml" in response.headers['Content-Type']:
-                    status = Utils.xml_Utils.compare_xml_using_xpath(extracted_response, path_list, responses_list)
+                    status = Utils.xml_Utils.compare_xml_using_xpath(extracted_response,
+                                                                     path_list, responses_list)
                 elif "json" in response.headers['Content-Type']:
-                    status = self.json_utils.compare_json_using_jsonpath(extracted_response, path_list, responses_list)
+                    status = self.json_utils.compare_json_using_jsonpath(extracted_response,
+                                                                         path_list, responses_list)
                 else:
-                    status = Utils.string_Utils.compare_string_using_regex(extracted_response, path_list)
+                    status = Utils.string_Utils.compare_string_using_regex(extracted_response,
+                                                                           path_list)
             else:
-                print_error("Please provide the values for comparison_mode and expected_api_response")
+                print_error("Please provide the values for comparison_mode and "
+                            "expected_api_response")
                 status = False
         else:
             type_of_response = Utils.rest_Utils.\
@@ -357,7 +369,8 @@ class WRest(object):
         """Reports the response status of http
         actions with a print message to the user"""
         result = False
-        if expected_response is None or expected_response is False or expected_response == [] or expected_response == "":
+        if expected_response is None or expected_response is False or \
+                expected_response == [] or expected_response == "":
             pattern = re.compile('^2[0-9][0-9]$')
             if pattern.match(str(status)) is not None:
                 pNote("http {0} successful".format(action), "info")
@@ -378,7 +391,8 @@ class WRest(object):
         """ Function for catching expections thrown by REST operations
         """
         if exception_name.__class__.__name__ == self.req.exceptions.ConnectionError.__name__:
-            pNote("Max retries exceeded with URL {0}. Failed to establish a new connection.".format(url), "error")
+            pNote("Max retries exceeded with URL {0}. Failed to establish a new connection.".
+                  format(url), "error")
             status = False
             response = None
         elif exception_name.__class__.__name__ == self.req.exceptions.InvalidURL.__name__:
@@ -386,15 +400,18 @@ class WRest(object):
             status = "ERROR"
             response = None
         elif exception_name.__class__.__name__ == self.req.exceptions.URLRequired.__name__:
-            pNote("Could not process the request. A valid URL is required to make a request.".format(url), "error")
+            pNote("Could not process the request. A valid URL is required to make a request.".
+                  format(url), "error")
             status = "ERROR"
             response = None
         elif exception_name.__class__.__name__ == self.req.exceptions.MissingSchema.__name__:
-            pNote("Could not process the request. The URL schema (e.g. http or https) is missing.".format(url), "error")
+            pNote("Could not process the request. The URL schema (e.g. http or https) is missing.".
+                  format(url), "error")
             status = "ERROR"
             response = None
         elif exception_name.__class__.__name__ == ValueError.__name__:
-            pNote("Could not process the request. May be the value provided for timeout is invalid or the schema is invalid.", "error")
+            pNote("Could not process the request. May be the value provided for timeout is "
+                  "invalid or the schema is invalid.", "error")
             status = "ERROR"
             response = None
         elif exception_name.__class__.__name__ == self.req.exceptions.ConnectTimeout.__name__:
@@ -423,7 +440,7 @@ class WRest(object):
             if not str(api_response).startswith('2') or \
             str(api_response).startswith('1'):
                 pNote("Connection was successful, but there was"\
-                           "problem accessing the resource: {0}".format(url), "info")
+                      "problem accessing the resource: {0}".format(url), "info")
                 status = False
         except self.req.ConnectionError:
             pNote("Connection to url is down: {0}".format(url), "debug")
@@ -495,6 +512,13 @@ class WRest(object):
 
     @staticmethod
     def get_output_response(api_response):
+        """
+        This method is used to convert the given api_response in the form of text / xml / json
+        Params:
+            api_response : api_response
+        Returns:
+            ouptut_response in the form of text/xml/json
+        """
         if api_response is not None:
             try:
                 output_response = parseString("".join(api_response.text))
