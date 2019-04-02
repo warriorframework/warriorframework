@@ -13,7 +13,6 @@ limitations under the License.
 
 import sys
 import re
-
 """
 This class will trap stdout and redirects the message to logfile and stdout
 It takes console_logfile and write_to_stdout ( boolean flag) as arguments.
@@ -43,7 +42,8 @@ def print_main(message, print_type, color_message=None, *args, **kwargs):
         sys.stdout.write(print_string + '\n')
     sys.stdout.flush()
     from Framework.Utils.testcase_Utils import TCOBJ
-    TCOBJ.p_note_level(message, print_type)
+    if TCOBJ.pnote is False:
+        TCOBJ.p_note_level(message, print_type)
     return print_string
 
 
