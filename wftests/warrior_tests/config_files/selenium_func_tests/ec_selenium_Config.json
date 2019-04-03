@@ -4,7 +4,7 @@
   "trial_tag": [{"xsize": 200}, {"ysize": 500}, {"xpos": 100}, {"ypos": 600}, {"url": "https://www.yahoo.com"}],
   "next_tag": [{"url": "https://www.google.com"}],
   "tag_for_tc2": [{"xsize": 400}, {"ysize": 200}, {"xpos": 300}, {"ypos": 300}, {"url": "https://www.google.com"},
-    {"xpath": ".//*[@id='gbw']/div/div/div[1]/div[2]/a"}, {"id": "gbw"}, {"link": "Images"}, {"tag": "span"}, {"class": "gb_P"}, {"name": "btnI"}],
+    {"xpath": ".//*[@id='gbw']/div/div/div[1]/div[2]/a"}, {"id": "gbw"}, {"link": "Images"}, {"tag": "span"}, {"class": "a4bIc"}, {"name": "btnI"}],
   "tag3": [{"text": "python"}, {"name": "q"}, {"id": "nav-tags"}],
   "tag5": [{"name": "q", "default": "yes"}, {"id": "nav-tags"}, {"text": "javascript"}],
   "tag4": [{"name": "q", "default": "yes"}, {"id": "gb_70"}, {"text": "return"}]

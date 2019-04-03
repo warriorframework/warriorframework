@@ -29,15 +29,15 @@
 				<argument name="system_name" value="search_element"/>
 			</Arguments>
 		</step>
-		<step TS= '3' Driver='selenium_driver' Keyword='verify_text' >
-			<Arguments>
-				<argument name="system_name" value="search_element"/>
-                <argument name="locator" value="id-search-field"/>
-				<argument name="locator_type" value="id"/>
-				<argument name="var" value="searchtext"/>
-				<argument name="expected" value="Search"/>
-			</Arguments>
-		</step>
+		<!--<step TS= '3' Driver='selenium_driver' Keyword='verify_text' >-->
+			<!--<Arguments>-->
+				<!--<argument name="system_name" value="search_element"/>-->
+                <!--<argument name="locator" value=".//*[@id='id-search-field']"/>-->
+				<!--<argument name="locator_type" value="xpath"/>-->
+				<!--<argument name="var" value="searchtext"/>-->
+				<!--<argument name="expected" value="Search"/>-->
+			<!--</Arguments>-->
+		<!--</step>-->
 		<step TS= '4' Driver='selenium_driver' Keyword='verify_text' >
 			<Arguments>
 				<argument name="system_name" value="search_element"/>

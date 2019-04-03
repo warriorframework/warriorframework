@@ -13,6 +13,7 @@ limitations under the License.
 """
 
 import Framework.Utils as Utils
+from Framework.Utils import  config_Utils
 from Framework.Utils.print_Utils import print_info, print_warning, print_debug
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 
@@ -35,6 +36,10 @@ def main(node, def_on_error_action, def_on_error_value, exec_type=False, skip_in
     error_handle = {}
     action, value = getErrorHandlingParameters(node, def_on_error_action,
                                                def_on_error_value, exec_type)
+    if action == "execute_and_resume":
+        data_repository = config_Utils.data_repository
+        data_repository.update({"invoked_step_number": data_repository["step_num"]})
+        print_info("invoked step number :{}".format(data_repository["invoked_step_number"]))
 
     call_function = {'NEXT': next, 'GOTO': goto, 'ABORT': abort, 'ABORT_AS_ERROR': abortAsError,
                      'EXECUTE_AND_RESUME': execute_and_resume}.get(action.upper())
