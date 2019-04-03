@@ -15,7 +15,7 @@ limitations under the License.
 """The test case driver is the driver responsible for execution of a testcase
 It in turn calls the custom_sequential/custom_parallel/iterative_sequential/
 iterative_parallel drivers according to the  data_type and run_type of the testcase"""
-
+#pylint: disable=wrong-import-position
 import sys
 import os
 import time
@@ -456,14 +456,15 @@ def get_testwrapper_file_details(testcase_filepath, data_repository):
             testwrapperfile = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, \
                 'Details', 'TestWrapperFile')
         else:
-            return [False, False, False]
+            return [False, False, False, 'abort']
     abs_cur_dir = os.path.dirname(testcase_filepath)
     abs_testwrapperfile = Utils.file_Utils.getAbsPath(testwrapperfile, abs_cur_dir)
     Utils.xml_Utils.getRoot(abs_testwrapperfile)
     jfile_obj = execution_files_class.ExecFilesClass(abs_testwrapperfile, "tc", None, None)
     j_data_type = jfile_obj.check_get_datatype(data_repository['wt_datafile'])
     j_runtype = jfile_obj.check_get_runtype()
-    return [abs_testwrapperfile, j_data_type, j_runtype]
+    setup_on_error_action = Utils.testcase_Utils.get_setup_on_error(abs_testwrapperfile)
+    return [abs_testwrapperfile, j_data_type, j_runtype, setup_on_error_action]
 
 def execute_testcase(testcase_filepath, data_repository, tc_context,
                      runtype, tc_parallel, queue, auto_defects, suite, jiraproj,
@@ -489,7 +490,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     get_testcase_details(testcase_filepath, data_repository, jiraproj)
     #get testwrapperfile details like testwrapperfile, data_type and runtype
-    testwrapperfile, j_data_type, j_runtype = \
+    testwrapperfile, j_data_type, j_runtype, setup_on_error_action = \
         get_testwrapper_file_details(testcase_filepath, data_repository)
     data_repository['wt_testwrapperfile'] = testwrapperfile
     isRobotWrapperCase = check_robot_wrapper_case(testcase_filepath)
@@ -550,9 +551,6 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                                      steps_tag, "step")
     if not len(step_list):
         print_warning("step list is empty in {0} block".format(steps_tag))
-    if steps_tag == "Setup":
-        #setting onError action to 'abort' for all setup steps
-        _ = [step.find("onError").set("action", "abort") for step in step_list]
 
     tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,
                                                        'Details', 'State')
@@ -579,17 +577,23 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                                                    "Setup", "step")
             if not len(setup_step_list):
                 print_warning("step list is empty in {0} block".format("Setup"))
-            #setting onError action to 'abort' for all setup steps
-            _ = [step.find("onError").set("action", "abort") for step in setup_step_list]
+
             print_info("****** SETUP STEPS EXECUTION STARTS *******")
             data_repository['wt_step_type'] = 'setup'
+            #to consider relative paths provided from wrapperfile instead of testcase file
+            original_tc_filepath = data_repository['wt_testcase_filepath']
+            data_repository['wt_testcase_filepath'] = testwrapperfile
             setup_tc_status = execute_steps(j_data_type, j_runtype, \
                 data_repository, setup_step_list, tc_junit_object, iter_ts_sys)
+            #reset to original testcase filepath
+            data_repository['wt_testcase_filepath'] = original_tc_filepath
             data_repository['wt_step_type'] = 'step'
             print_info("setup_tc_status : {0}".format(setup_tc_status))
             print_info("****** SETUP STEPS EXECUTION ENDS *******")
 
-        if isinstance(setup_tc_status, bool) and setup_tc_status:
+        if setup_on_error_action == 'next' or \
+            (setup_on_error_action == 'abort' \
+            and isinstance(setup_tc_status, bool) and setup_tc_status):
             if steps_tag == "Steps":
                 print_info("****** TEST STEPS EXECUTION STARTS *******")
             data_repository['wt_step_type'] = 'step'
@@ -615,8 +619,13 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 print_warning("step list is empty in {0} block".format("Cleanup"))
             print_info("****** CLEANUP STEPS EXECUTION STARTS *******")
             data_repository['wt_step_type'] = 'cleanup'
+            original_tc_filepath = data_repository['wt_testcase_filepath']
+            #to consider relative paths provided from wrapperfile instead of testcase file
+            data_repository['wt_testcase_filepath'] = testwrapperfile
             cleanup_tc_status = execute_steps(j_data_type, j_runtype, \
                 data_repository, cleanup_step_list, tc_junit_object, iter_ts_sys)
+            #reset to original testcase filepath
+            data_repository['wt_testcase_filepath'] = original_tc_filepath
             data_repository['wt_step_type'] = 'step'
             print_info("cleanup_tc_status : {0}".format(cleanup_tc_status))
             print_info("****** CLEANUP STEPS EXECUTION ENDS *******")

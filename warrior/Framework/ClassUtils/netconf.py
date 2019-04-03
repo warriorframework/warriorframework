@@ -349,18 +349,21 @@ class client(Thread):
                         self.__wait_resp.set()
                         self.close()
                         return False
+
                 if len(self.__wait_string) != 0 and self.__wait_string[0]:
                     waitstr = self.__wait_string
                     for notification in self.__notification_list:
                         pNote("Checking notification: "
                               "##{}##".format(notification))
-                        match = False
                         xml = etree.fromstring(notification)
-                        temp = xml.xpath(waitstr[0], namespaces=waitstr[1])
-                        if isinstance(temp, bool) and temp:
-                            match = True
-                        elif isinstance(temp, list) and len(temp) > 0:
-                            match = True
+                        # Contains list of xpath
+                        match, xpath_list = True, waitstr[0].split(",")
+                        for xpath in xpath_list:
+                            # Validation for the xpath given
+                            if not xml.xpath(xpath, namespaces=waitstr[1]):
+                                match = False
+                                break
+
                         if match:
                             self.__wait_rept.set()
                             self.__notification_list.remove(notification)

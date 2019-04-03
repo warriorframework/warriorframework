@@ -50,20 +50,18 @@ class TestcaseUtils(object):
         self.grequirementloop = 0
         self.gsubkey = {}
         self.gsubkeyloop = 0
+        self.pnote = False
 
     def file_utils(self):
         """
         """
         import Framework.Utils.file_Utils as file_utils
         return file_utils
-        
     def xml_utils(self):
         """
         """
         import Framework.Utils.xml_Utils as xml_utils
         return xml_utils
-           
-
 
     def print_output(self):
         """ Prints the dump of the xml object to the file specified.
@@ -78,7 +76,7 @@ class TestcaseUtils(object):
         """
 
         try:
-            import Framework.Utils.config_Utils as config_Utils 
+            import Framework.Utils.config_Utils as config_Utils
             resultfile = config_Utils.resultfile
             tree = ET.ElementTree(self.root)
             tree.write(resultfile)
@@ -210,7 +208,7 @@ class TestcaseUtils(object):
         if write_locn is None:
             write_locn = self.current_pointer
         if ptc and print_type not in print_util_types:
-                p_type(txt)
+            p_type(txt)
         # self.current_pointer may be None,which is not a intended behavior
         # If print_type is nolog or -N-,the message will be logged in terminal
         # but not in result file
@@ -247,7 +245,9 @@ class TestcaseUtils(object):
         :Returns:
             None
         """
+        self.pnote = True 
         self.p_note_level(txt, print_type)
+        self.pnote = False
 
     def p_custom_tag(self, name, txt):
         """Adds a note to the testcase xml result file under the current tag
@@ -627,7 +627,7 @@ class TestcaseUtils(object):
         """Gets the default on error value of a step/testcase/suite
         from the testcase.xml/testsuite.xml/project.xml file """
 
-        def_on_error_action = self.xml_utils().getChildAttributebyParentTag(filepath, 'Details',
+        def_on_error_action = self.xml_utils().getChildAttributebyParentTag(filepath, 'Details',\
                                                                      'default_onError', 'action')
 
         if def_on_error_action is None or def_on_error_action is False:
@@ -642,6 +642,26 @@ class TestcaseUtils(object):
                 print_info("Hence using default value for default_onError action which is 'next'")
                 def_on_error_action = 'NEXT'
         return def_on_error_action
+
+    def get_setup_on_error(self, filepath):
+        """Gets the setup on error value
+        from the wrapperfile.xml file """
+
+        setup_on_error_action = self.xml_utils().getChildAttributebyParentTag(filepath, 'Details',\
+                                                                     'setup_onError', 'action')
+
+        if setup_on_error_action is None or setup_on_error_action is False:
+            setup_on_error_action = 'abort'
+
+        elif setup_on_error_action is not None and setup_on_error_action is not False:
+            supported_values = ['next', 'abort']
+            if not str(setup_on_error_action).lower() in supported_values:
+                print_warning("unsupported option '{0}' provided for setup_onError"\
+                              "action, supported values are {1}".format(setup_on_error_action,
+                                                                        supported_values))
+                print_info("Hence using default value for setup_onError action which is 'abort'")
+                setup_on_error_action = 'abort'
+        return setup_on_error_action
 
     def get_requirement_id_list(self, testcase_filepath):
         """gets the list of requirements for the testcase """
