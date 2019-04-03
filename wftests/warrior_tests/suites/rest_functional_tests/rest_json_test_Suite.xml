@@ -64,10 +64,10 @@
 		</Testcase>
 		<Testcase>
 			<path>../../testcases/rest_functional_tests/tc_verify_response_in_console_log_not_presented.xml</path>
-			<context>positive</context>
+			<context>negative</context>
 			<runtype>sequential_keywords</runtype>
 			<onError action="next"/>
-			<impact>noimpact</impact>
+			<impact>impact</impact>
 		</Testcase>
 	</Testcases>
 </TestSuite>
