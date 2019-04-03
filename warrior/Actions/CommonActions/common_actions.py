@@ -221,6 +221,26 @@ class CommonActions(object):
 
         return status
 
+    def fetch_in_repo(self, datavar):
+        """Prints value of datavar in datarepository
+        :Argument:
+            1. datavar = Key to fetch value in data_repository,
+                         this could be dot separated to fetch in nested fashion
+                            i.e., if var is k1.k2.k3 then the value would be
+                            fetched as a value in datarepository[k1][k2][k3]
+        :Returns:
+            status (boolean True)
+
+        """
+        wDesc = "Print the  value of given key in data_repository "
+        Utils.testcase_Utils.pNote(wDesc)
+        status = True
+        pass_msg = "Value: {0} is stored in a Key: {1} of Warrior data_repository"
+        value = get_object_from_datarepository(datavar)
+        if value:
+            print_info(pass_msg.format(value, datavar))
+        return status #always returns True, just prints warning if key is not present.
+
     def verify_data(self, expected, object_key, type='str', comparison='eq'):
         """Verify value in 'object_key' in the data repository matches
         with expected

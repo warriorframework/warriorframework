@@ -1,13 +1,14 @@
 <?xml version="1.0" ?>
 <Testcase>
         <Details>
-                <Name>tc_store_in_repo.xml</Name>
-                <Title>tc_store_in_repo.xml</Title>
+                <Name>tc_store_in_repo_wrapper.xml</Name>
+                <Title>tc_store_in_repo_wrapper.xml</Title>
                 <Engineer>Sekhar</Engineer>
                 <Date>2018-11-13</Date>
                 <Time>12:08</Time>
                 <State/>
                 <InputDataFile>No_Data</InputDataFile>
+                <TestWrapperFile>../../wrapper_files/common_actions_tests/tw_store_in_repo.xml</TestWrapperFile>
                 <Datatype/>
                 <default_onError action="next"/>
                 <Logsdir/>
@@ -18,39 +19,6 @@
                 <Requirement/>
         </Requirements>
         <Steps>
-                <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
-                        <Arguments>
-                                <argument name="filepath" value="repo_variables.json"/>
-                        </Arguments>
-                        <Execute ExecType="Yes"/>
-                        <onError action="next"/>
-                        <Description>Using filepath(json file) option to store multiple REPO values(default json tag)</Description>
-                        <iteration_type type="Standard"/>
-                        <context>positive</context>
-                        <impact>impact</impact>
-                        <runmode type="Standard" value=""/>
-                 </step>
-                 
-                <step Driver="common_driver" Keyword="fetch_in_repo" TS="1">
-                        <Arguments>
-                                <argument name="datavar" value="var2.var3.a"/>
-                        </Arguments>
-                        <onError action="next"/>
-                        <Description></Description>
-                        <Execute ExecType="Yes"/>
-                        <context>positive</context>
-                        <impact>impact</impact>
-                </step>
-                <step Driver="common_driver" Keyword="fetch_in_repo" TS="1">
-                        <Arguments>
-                                <argument name="datavar" value="invalid.var3.a"/>
-                        </Arguments>
-                        <onError action="next"/>
-                        <Description></Description>
-                        <Execute ExecType="Yes"/>
-                        <context>positive</context>
-                        <impact>impact</impact>
-                </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="1">
                         <Arguments>
                                 <argument name="expected" value="10"/>

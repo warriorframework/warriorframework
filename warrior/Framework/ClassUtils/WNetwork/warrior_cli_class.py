@@ -213,6 +213,8 @@ class WarriorCli(object):
             pNote(stepdesc)
             n = 0
             for commands in command_list:
+                if details_dict["logmsg_list"][n] and details_dict["logmsg_list"][n].lower() == "false":
+                    commands = "**************"
                 pNote("Command #{0}\t: {1}".format((n+1), commands))
                 n = n + 1
             intsize = len(command_list)
@@ -224,7 +226,8 @@ class WarriorCli(object):
                 print_info("")
                 print_debug(">>>")
                 command = details_dict["command_list"][i]
-                pNote("Command #{0}\t: {1}".format(str(i+1), command))
+                if not details_dict["logmsg_list"][i] or details_dict["logmsg_list"][i].lower() != "false":
+                    pNote("Command #{0}\t: {1}".format(str(i+1), command))
                 new_obj_session, td_sys, details_dict, session_id = \
                     self._get_obj_session(details_dict, system_name, index=i, sess_id=True)
                 if new_obj_session:
@@ -284,9 +287,10 @@ class WarriorCli(object):
                 temp_resp = {resp: resp_key_list[i][resp], resp+"_status": status,
                              resp+"_command": details_dict["command_list"][i]}
                 td_resp_dict[title_row].update(temp_resp)
-                pNote("Portion of response saved to the data "
-                      "repository with key: '{0}.{1}.{2}' and value: '{3}'"
-                      .format(session_id, title_row, resp, temp_resp[resp]))
+                if not details_dict["logmsg_list"][i] or details_dict["logmsg_list"][i].lower() != "false":
+                    pNote("Portion of response saved to the data "
+                          "repository with key: '{0}.{1}.{2}' and value: '{3}'"
+                          .format(session_id, title_row, resp, temp_resp[resp]))
         except Exception as e:
             print_error("Found exception: {}".format(e))
             print_error("Check if the key list below is not empty and the keys are proper")
@@ -304,11 +308,13 @@ class WarriorCli(object):
             startprompt = kwargs.get('startprompt', ".*")
             endprompt = kwargs.get('endprompt', None)
             cmd_timeout = kwargs.get('cmd_timeout', None)
+            log = kwargs.get('log', "true")
             sleep_before = kwargs.get('sleep_before', None)
             result, response = self.conn_obj.send_command(command, startprompt,
                                                           endprompt,
                                                           cmd_timeout,
-                                                          sleep_before=sleep_before)
+                                                          sleep_before=sleep_before,
+                                                          log=log)
         return result, response
 
     @staticmethod
@@ -603,6 +609,7 @@ class WarriorCli(object):
         sleeptime_before_match = details_dict["sleeptime_before_match_list"][index]
         unique_log_verify_list = self.get_unique_log_and_verify_list(
             log_list, verify_on_list, system_name)
+        log = details_dict["logmsg_list"][index] or "true"
 
         startprompt = {None: ".*", "": ".*"}.get(startprompt, str(startprompt))
         resp_req = {None: 'y', '': 'y',
@@ -619,15 +626,14 @@ class WarriorCli(object):
             inorder_search = True
         else:
             inorder_search = False
-
-        pNote("Startprompt\t: {0}".format(startprompt))
-        pNote("Endprompt\t: {0}".format(endprompt))
-        pNote("Sleeptime\t: {0}".format(sleeptime))
-        pNote("Response required: {0}".format(resp_req))
-        pNote("Response reference: {0}".format(resp_ref))
-        pNote("Response pattern required: {0}".format(resp_pat_req))
-        pNote("Response pattern key: {0}".format(resp_pat_key))
-
+        if log is None or log.lower() != "false":
+            pNote("Startprompt\t: {0}".format(startprompt))
+            pNote("Endprompt\t: {0}".format(endprompt))
+            pNote("Sleeptime\t: {0}".format(sleeptime))
+            pNote("Response required: {0}".format(resp_req))
+            pNote("Response reference: {0}".format(resp_ref))
+            pNote("Response pattern required: {0}".format(resp_pat_req))
+            pNote("Response pattern key: {0}".format(resp_pat_key))
         if not command:
             pNote("Received a boolean False or None type instead of a string "
                   "command, Command not provided or Variable substitution for "
@@ -644,8 +650,9 @@ class WarriorCli(object):
             result, response = self._send_cmd(startprompt=startprompt,
                                               endprompt=endprompt,
                                               command=command,
+                                              cmd_timeout=cmd_timeout,
                                               sleep_before=sleeptime_before_match,
-                                              cmd_timeout=cmd_timeout)
+                                              log=log)
 
         if sleeptime > 0:
             pNote("Sleep time of '{0} seconds' requested post command "
@@ -673,7 +680,7 @@ class WarriorCli(object):
                     result = Utils.data_Utils.verify_resp_across_sys(
                         verify_text_list, verify_context_list, command,
                         response, varconfigfile, verify_on_list_as_list,
-                        verify_list, remote_resp_dict, endprompt, verify_group)
+                        verify_list, remote_resp_dict, endprompt, verify_group, log)
         command_status = {True: "PASS", False: "FAIL", "ERROR": "ERROR"}.get(
             result)
         pNote("COMMAND STATUS:{0}".format(command_status))
@@ -1581,7 +1588,8 @@ class PexpectConnect(object):
             boolprompt = -1
         if boolprompt == 0:
             start_time = Utils.datetime_utils.get_current_timestamp()
-            pNote("[{0}] Sending Command: {1}".format(start_time, command))
+            if kwargs.get("log", "true") != "false":
+                pNote("[{0}] Sending Command: {1}".format(start_time, command))
             WarriorCli._send_cmd_by_type(self.target_host, command)
             try:
                 while True:
@@ -1650,7 +1658,8 @@ class PexpectConnect(object):
                     pNote("EXCEPTION !! Command Timed Out", 'error')
                 else:
                     response = response + str(self.target_host.after)
-                pNote("Response:\n{0}\n".format(response))
+                if kwargs.get("log", "true") != "false":
+                    pNote("Response:\n{0}\n".format(response))
                 pNote(msg, "debug")
                 if status is True:
                     duration = Utils.datetime_utils.get_time_delta(start_time,

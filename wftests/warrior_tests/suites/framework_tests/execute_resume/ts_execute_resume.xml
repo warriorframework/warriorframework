@@ -184,5 +184,17 @@
             </Execute>
             <impact>impact</impact>
         </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/execute_resume/tc_execute_and_resume_to_get_invoked_step_number.xml</path>
+            <context>positive</context>
+            <InputDataFile/>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next" value=""/>
+            <runmode type="Standard" value=""/>
+            <Execute ExecType="Yes">
+                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+            </Execute>
+            <impact>noimpact</impact>
+        </Testcase>
     </Testcases>
 </TestSuite>
