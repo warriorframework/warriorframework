@@ -59,6 +59,8 @@ cmd_params = OrderedDict([("command_list", "send"),
                           ("cond_value_list", "cond_value"),
                           ("cond_type_list", "cond_type"),
                           ("repeat_list", "repeat"),
+                          ("sleeptime_before_match_list", "sleep_before_match"),
+                          ("return_on_fail_list", "return_on_fail"),
                           ("logmsg_list", "log")])
 
 def get_nc_request_rpc_string(config_datafile, xmlns, request_type, xmlns_tag):

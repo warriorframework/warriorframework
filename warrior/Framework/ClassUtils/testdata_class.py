@@ -53,6 +53,8 @@ CMD_PARAMS = OrderedDict([("command_list", "send"),
                           ("operator_list", "operator"),
                           ("cond_value_list", "cond_value"),
                           ("cond_type_list", "cond_type"),
+                          ("sleeptime_before_match_list", "sleep_before_match"),
+                          ("return_on_fail_list", "return_on_fail"),
                           ("logmsg_list", "log"),
                           ("repeat_list", "repeat")])  # keep this in the last
 

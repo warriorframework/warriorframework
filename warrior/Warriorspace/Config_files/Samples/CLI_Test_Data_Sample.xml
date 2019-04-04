@@ -267,6 +267,17 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 							will be executed in each iteration. This feature is always disabled, user can turn it on by providing "y" and this
 							tag is applicable only for the testdata commands without any iteration pattern in it.
 
+                15.     :log:                   (supported value = "false"), log="false" skips printing command and command output information in console logs, useful for
+                                                        sensitive commands. by default, commands and output will be shown in console logs if 'log' is not present 
+                                                        in command or log is not "false"
+
+		16.     :return_on_fail:        (supported value = "yes"),  return_on_fail="yes" skips executing subsequent commands present in testdata block if this command FAILS.
+                                                        by default, this behaviour is disabled, all commands in testdata block will be executed irrespective of their status.
+
+                17.     :sleep_before_match:    (no. of seconds) no. of seconds to wait before matching end prompt given in the command. by default, response to any command will be the output
+                                                 until it finds the end prompt, in some scenarios like mediation port where end prompt is not defined properly, this option gives a provision 
+                                                 to get output for specified time and then match given generic end prompt.
+
 		=============================================================
 		II.b How are responses saved to framework's data repository:
 		=============================================================
