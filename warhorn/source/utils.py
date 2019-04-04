@@ -572,8 +572,11 @@ def install_depen(dependency, dependency_name, logfile, print_log_name,
         print_info("installing "+dependency, logfile, print_log_name)
         sp_output = subprocess.Popen(pip_cmds, stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-        output = sp_output.stdout.read()
-        print_info(output, logfile, print_log_name)
+
+        output, error = sp_output.communicate()
+        return_code = sp_output.returncode
+        if return_code > 0:
+            print_info(output, logfile, print_log_name, error)
     except IOError:
         counter = 1
         print_error("Warhorn was unable to install " + dependency_name + " because Warhorn "
