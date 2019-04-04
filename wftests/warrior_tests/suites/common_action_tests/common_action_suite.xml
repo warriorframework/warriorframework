@@ -112,5 +112,17 @@
                         </Execute>
                         <impact>impact</impact>
                 </Testcase>
+                <Testcase>
+                        <path>../../testcases/common_actions_tests/tc_verify_data_regex.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
         </Testcases>
 </TestSuite>

@@ -1,0 +1,109 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_verify_data_regex.xml</Name>
+                <Title>tc_verify_data_regex</Title>
+                <Engineer>Sekhar</Engineer>
+                <Date>2018-11-30</Date>
+                <Time>12:08</Time>
+                <State/>
+                <InputDataFile>No_Data</InputDataFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                 <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
+                        <Arguments>
+                          <argument name="datavar" value="framework"/>
+                            <argument name="datavalue" value="warriorframeworkninja"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>store in repo</Description>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                 </step>
+                 
+               <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="ninja"/>
+                                <argument name="object_key" value="framework"/>
+                                <argument name="comparison" value="re.search"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+               </step>
+               
+               <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="ninja"/>
+                                <argument name="object_key" value="framework"/>
+                                <argument name="comparison" value="re.match"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+               </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="warrior"/>
+                                <argument name="object_key" value="framework"/>
+                                <argument name="comparison" value="re.match"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+               </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value=".*ninja"/>
+                                <argument name="object_key" value="framework"/>
+                                <argument name="comparison" value="re.match"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+               </step>
+               <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="warrior.*ninja"/>
+                                <argument name="object_key" value="framework"/>
+                                <argument name="comparison" value="re.match"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+               </step>
+               <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="warrior.*nija"/>
+                                <argument name="object_key" value="framework"/>
+                                <argument name="comparison" value="re.match"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+               </step>
+        </Steps>
+</Testcase>

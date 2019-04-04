@@ -1030,8 +1030,12 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         'gt': lambda x, y: x > y,
         'ge': lambda x, y: x >= y,
         'lt': lambda x, y: x < y,
-        'le': lambda x, y: x <= y
+        'le': lambda x, y: x <= y,
+        're.match': lambda x, y: re.match(y, x),
+        're.search': lambda x, y: re.search(y, x)
     }
+    if comparison == 're.match' or comparison == 're.search':
+        data_type = 'str'
     result, err_msg, exp = validate()
     value = get_object_from_datarepository(key)
     key_err_msg = "In the given key '{0}', '{1}' is not present in data repository"
