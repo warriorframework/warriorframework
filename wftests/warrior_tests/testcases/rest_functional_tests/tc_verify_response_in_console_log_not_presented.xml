@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_verify_response_in_console_log_not_presented</Name>
+                <Title>This tc is used to verify the response in the console but event is not found</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-07-27</Date>
+                <Time>17:06</Time>
+                <InputDataFile>../../data/rest_functional_tests/rest_verify_response_data.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults>PASS</ExpectedResults>
+                <Category>Feature</Category>
+                <State>Released</State>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+
+                <step Driver="rest_driver" Keyword="perform_http_get" TS="1">
+                    <Arguments>
+                        <argument name="system_name" value="http_bin_1"/>
+                        <argument name="url" value="http://httpbin.org/response-headers?key=val"/>
+                    </Arguments>
+                    <onError action="next"/>
+                    <Description>This step tests the GET capability of REST</Description>
+                    <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+                </step>
+               <step Driver="rest_driver" Keyword="verify_response_in_console_log" TS="2">
+                    <Arguments>
+                        <argument name="expected_event_content_filepath" value="../../config_files/rest_functional_tests/verify_api_response_in_the_console_log_not_presented.json"/>
+                    </Arguments>
+                    <onError action="next"/>
+                    <Description>This step verifies the events in the console logs</Description>
+                    <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+               </step>
+
+        </Steps>
+</Testcase>
