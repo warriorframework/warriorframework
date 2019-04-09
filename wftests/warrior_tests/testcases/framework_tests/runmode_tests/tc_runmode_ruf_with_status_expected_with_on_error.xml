@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_runmode_ruf_with_status_expected_with_on_error</Name>
+                <Title>Test the onerror functionality with runmode as RUF</Title>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir>../../../Execution</Logsdir>
+                <Resultsdir>../../../Execution</Resultsdir>
+                <Date>2019-2-22</Date>
+                <InputDataFile>No_Data</InputDataFile>
+                <Time>11:34</Time>
+                <Engineer>Warrior</Engineer>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+            <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+                        <Arguments>
+                                <argument name="key" value="tc_ruf"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="3"/>
+                                <argument name="max_status" value="fail"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                         <runmode type="RUF" value="5" status="expected"/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+             <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
+                        <Arguments>
+                                <argument name="key" value="tc_rupq"/>
+                                <argument name="status" value="fail"/>
+                                <argument name="max_value" value="5"/>
+                                <argument name="max_status" value="fail"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                         <runmode type="RUF" value="5" status="expected"/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+            <step Driver="ci_regression_driver" Keyword="increase_value" TS="3">
+                        <Arguments>
+                                <argument name="key" value="tc_rufa"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="5"/>
+                                <argument name="max_status" value="pass"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description></Description>
+                         <runmode type="RUF" value="5" status="expected"/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+             <step Driver="ci_regression_driver" Keyword="increase_value" TS="4">
+                        <Arguments>
+                                <argument name="key" value="tc_rufva"/>
+                                <argument name="status" value="fail"/>
+                                <argument name="max_value" value="5"/>
+                                <argument name="max_status" value="fail"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description></Description>
+                         <runmode type="RUF" value="5" status="expected"/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+        </Steps>
+</Testcase>
