@@ -342,7 +342,7 @@ class MockUtils(object):
 
         @staticmethod
         def verify_cmd_response(match_list, context_list, command, response, verify_on_system,
-                                varconfigfile=None, endprompt="", verify_group=None):
+                                varconfigfile=None, endprompt="", verify_group=None, log="true"):
             """
                 Trialmode only: it prints the verify text instead of doing actual verification
             """
