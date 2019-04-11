@@ -12,10 +12,16 @@ limitations under the License.
 '''
 
 import os
+import re
+import json
 import Framework.Utils as Utils
+from Framework.Utils.file_Utils import getAbsPath
+from Framework.Utils import config_Utils, file_Utils, print_Utils
+from Framework.Utils.data_Utils import get_object_from_datarepository
 from Framework.ClassUtils.rest_utils_class import WRest
 from Framework.Utils.testcase_Utils import pNote, pSubStep, \
     report_substep_status
+# pylint: disable-msg=too-many-arguments
 
 """This is the actions file, keywords are programmed here
 """
@@ -3183,3 +3189,93 @@ class RestActions(object):
                                                    output_file,
                                                    credentials['generate_output_diff_file'])
         return status
+
+    def verify_response_in_console_log(self, dict_expected_event_content=None,
+                                       expected_event_content_filepath=None):
+        """
+            This method is used to verify the api response or event output in the console log
+            Arguments:
+                dict_expected_event_content (optional) : api response or event output in the format
+                                                   of json/dictionary.
+                expected_event_content_filepath (optional) : path of the json file which contains
+                 the api response or event output in the format of json
+            Returns:
+                    If api response or event output found in the console log turns True else False.
+
+        """
+        wdesc = "Verify the given API response in the console log"
+        pNote(wdesc)
+        data_repository = config_Utils.data_repository
+        tc_name = os.path.splitext(data_repository["wt_filename"])[0]
+        log_file_name = "{}_consoleLogs.log".format(tc_name)
+        log_file_path = os.path.join(self.logsdir, log_file_name)
+        file_desc = file_Utils.open_file(log_file_path, "r")
+        lines = file_desc.read()
+
+        def verify_in_the_console_logs(data):
+            """
+            This method is used to verify the given dictionary is available in the console log or
+            not.If all the keys and values are presented in the console log it will return True,
+            if any one of the key or value is not presented in the console log it will return False
+            Params:
+                data : the data to verify in the console log it must be dictionary
+            Return :
+                Boolean value : True/False
+            """
+            wdesc = "Verify the json content in the console log"
+            pNote(wdesc)
+            for key, value in data.items():
+                if isinstance(value, dict):
+                    if re.search(key, lines):
+                        ret_value = verify_in_the_console_logs(value)
+                        if not ret_value:
+                            return ret_value
+                    else:
+                        print_Utils.print_warning("The key {} is not presented".format(key))
+                        return False
+                else:
+                    value = ''.join(e if e.isalnum() or e.isspace() else r"{}".format(e)
+                                    for e in str(value))
+                    if "${" in value:
+                        s_out = value.split("}")[0]
+                        env_var = s_out.split(".")[-1]
+                        env_value = os.getenv(env_var)
+                        if env_value is None:
+                            print_Utils.print_warning("The env variable {} is not presented .so unable to "
+                                                      "fetch the value ".format(env_var))
+                            return False
+                        pat = r'(\$\{.*\})'
+                        value = re.sub(pat, env_value, value)
+                    if re.search(key, lines) and re.search(value, lines):
+                        pass
+                    else:
+                        print_Utils.print_warning("The {}/{} are not presented in the console log"
+                                                  .format(key, value))
+
+                        return False
+            return True
+
+        if dict_expected_event_content:
+
+            status = verify_in_the_console_logs(dict_expected_event_content)
+            if status:
+                print_Utils.print_info("The expected json event is found in the console log")
+                return True
+            print_Utils.print_warning("The expected json event is not found in the console log")
+            return False
+
+        if expected_event_content_filepath:
+
+            testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
+            filepath = getAbsPath(expected_event_content_filepath,
+                                  os.path.dirname(testcasefile_path))
+
+            with open(filepath) as file_obg:
+                data = json.load(file_obg)
+                status = verify_in_the_console_logs(data)
+                if status:
+                    print_Utils.print_info("The expected json(file content) event is found in the console log")
+                    return True
+                print_Utils.print_warning("The expected json (file content) event is not found "
+                                          "in the console log")
+                return False

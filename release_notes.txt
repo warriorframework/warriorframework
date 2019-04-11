@@ -1,23 +1,24 @@
 Release: Ninja
-Version: warrior-3.11.0
+
+Version: warrior-3.12.0
 
 ===================
  1: Release details
 ===================  
-This is release Ninja of Warrior Test Automation Framework
 
+    This is release Ninja of Warrior Test Automation Framework
 
--------------------------------
-  1.1: List of available releases
--------------------------------
+--------------------------------------
+      1.1: List of available releases
+-------------------------------------
 
-  1. Ninja = warrior-3.1.0 to 3.11.0
+      1. Ninja = warrior-3.1.0 to 3.12.0
 
 =====================
   2. Version Details
-=====================
+====================
 
-You are on Release Ninja, Version warrior-3.11.0 of Warrior Framework.
+You are on Release Ninja, Version warrior-3.12.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
 
 +++++++++++++++++++++++++++++++++  
@@ -25,26 +26,35 @@ Procedure to get a specific version is available in section-3 of this document.
 +++++++++++++++++++++++++++++++++
 
 -------------------- New Features: --------------------
-[WAR-2041] - Warrior Core: Support for common setup and cleanup in Warrior Framework
-[WAR-2066] - Katana: Changes in Katana UI for setup and cleanup support.
-[WAR-2051] - store_in_repo keyword enhanced additional argument bool_store_all . When enabled all content of given json will be stored in data repository.
-[WAR-2029] - log_message  new keyword to users to log custom messages in the test case.
-[WAR-2018] - New keywords get_current_timestamp and get_time_delta  in common driver provide to user to support time calculation.
 
------------- Bugfixes: ------------ 
-[WAR-2084] - gnmi keywords passes even when the command given fails
-[WAR-2053] - The data stored in test data response is getting deleted when we are calling the connect keyword.
-[WAR-2039] - Nested Dict is not handled in store_in_repo function.
-[WAR-2032] - Warrior-Reports: Column names are not visible completely in html reports generated after test cases run
-[WAR-2004] - Add tests for runmode 'status' attribute support in Suite Details section
-[WAR-1978] - The onError_action does not work when implemented in Test Suite
-[WAR-1773] - Goto does not calculate step numbers correctly when runmode and/or retry is included in steps
-[WAR-1341] - RUP retry counted as different step
+[WAR-2002] – Support for new core keyword verify_response_in_console_log  in REST Actions. The  keyword can used validate Asynchronous events in Warrior Console logs.
+[WAR-2103] – Testdata Block Enhancement’s.
+               To skip subsequent command execution in testdata block if one of the command fails in testdata block. Option added return_on_fail
+               Provision to give sleep before end prompt match to collect full response from command output. Option added sleep_before_match
+               To store command status and command in data repository
+[WAR-2122] –  Option to disable sensitive data logging. Option added log in testdata block.
+[WAR-1825] -  Support regex in verify_data keyword to verify large responses.
+[WAR-1668] –  New keyword fetch_in_repo in common driver which prints required data repository value
+[WAR-2099] -  Support to take in multiple xpath for validation in netconf.
+[WAR-1437] –  To display git  branch information in the Warrior Console logs. 
 
-===================================================
+------------ Bugfixes: --------------------------------- 
+
+[WAR-1722] - Warhorn isn't checking pip install status correctly and ignore stderr output.
+[WAR-1771] - On Error should be ignored until the last substep when a step is in runmode.
+[WAR-1878] - pNote prints gets logged twice in result files.
+[WAR-2001] - The restAPI keyword "Verify Response" should support environment support in json file which is provided as input argumentt in verification json file in verify_response
+[WAR-2095] - Warrior wrapper doesn't allow to create setup/teardown steps without onError
+[WAR-2097] - SNMP: start trap listener key word is not working properly when running the Suite file
+[WAR-2098] - Fix relative filepath from wrapper file.
+[WAR-2104] - selenium test cases are failing in travis
+[WAR-2118] -  'Test step number' of failed test step which invokes another test step by using 'execute_and_resume.
+[WAR-2140] - mock fix for verify_cmd_response
+
+
+=================================================
   3. Procedure to get a specific version of Warrior
-=================================================== 
-
+================================================= 
 1. Clone warriorframework
      $ git clone https://github.com/warriorframework/warriorframework.git
 2. Go to warriorframework directory
@@ -64,18 +74,19 @@ Procedure to get a specific version is available in section-3 of this document.
        warrior-3.9.0 
        warrior-3.9.1 
        warrior-3.10.0
-       warrior-3.11.0 
+       warrior-3.11.0               
+       warrior-3.12.0               
 4. To Check the current version you are at, execute "git branch" command
       $ git branch 
         * master  - * indicates the active version. 
         - In the above example master is the active version.
         - If the active version is master it means you are not using a standard release version of warrior framework 
            and hence it may not be a stable tested version.
-
  
+
 5. To switch to a specific version from master, execute 'git checkout <version_name>' command.
-    $ git checkout warrior-3.11.0
-     Note: checking out 'warrior-3.11.0'.
+    $ git checkout warrior-3.12.0
+     Note: checking out 'warrior-3.12.0'.
      You are in 'detached HEAD' state. You can look around, make experimental
      changes and commit them, and you can discard any commits you make in this
      state without impacting any branches by performing another checkout.
@@ -83,20 +94,20 @@ Procedure to get a specific version is available in section-3 of this document.
      do so (now or later) by using -b with the checkout command again.
      Example:
      	git checkout -b new_branch_name
-     	HEAD is now at abcba40... update version and release notes for 3.11.0 
+     	HEAD is now at abcba40... update version and release notes for 3.12.0 
 6. Execute git branch command to verify the active version. 
    $ git branch
-    * (detached from warrior-3.10.0) master 
+    * (detached from warrior-3.12.0) master 
     - * indicates the active version.
-7. Switch from one version to another (current=warrior-3.11.0, switch to warrior-3.10.0)
-    $git checkout warrior-3.10.0
+7. Switch from one version to another (current=warrior-3.12.0, switch to warrior-3.11.0)
+    $git checkout warrior-3.11.0
     Previous HEAD position was 6cea565... Update version.txt
     HEAD is now at ba0fdc8... Update version.txt
     $git branch
-    * (detached from warrior-3.11.0)     master 
+    * (detached from warrior-3.12.0)     master 
 8. Switch to master branch again.
    $ git checkout master
     Previous HEAD position was ba0fdc8... Update version.txt 
     Switched to branch 'master'  
-   $ git branch
-       * master
+   $ git branch    * master   
+

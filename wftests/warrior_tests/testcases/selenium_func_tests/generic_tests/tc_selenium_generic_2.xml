@@ -51,7 +51,7 @@
 		<step TS= '6' Driver='selenium_driver' Keyword='get_element_by_classname' > <!-- Will launch or open a new browser in window -->
 			<Arguments>
 				<argument name="system_name" value="search_element"/>
-				<argument name="class_name" value="gb_P"/>
+				<argument name="class_name" value="a4bIc"/>
 			</Arguments>
 		</step>
 		<step TS= '7' Driver='selenium_driver' Keyword='get_element_by_name' > <!-- Will launch or open a new browser in window -->

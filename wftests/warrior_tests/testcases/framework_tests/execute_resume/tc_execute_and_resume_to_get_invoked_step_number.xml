@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_execute_and_resume_to_get_invoked_step_number</Name>
+		<Title>to get the invoked step number when onerror action is execute_and_resume</Title>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir>Execution</Logsdir>
+                <InputDataFile>No_Data</InputDataFile>
+		<Resultsdir>Execution</Resultsdir>
+		<Date>2018-12-7</Date>
+		<Time>16:20</Time>
+		<Engineer>Arvind Kumar</Engineer>
+	</Details>
+	<Steps>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="1">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="demovalue"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="2">
+			<Arguments>
+				<argument name="object_key" value="demovar1"/>
+				<argument name="expected" value="demovalue1"/>
+				<argument name="comparison" value="eq"/>
+			</Arguments>
+             <onError action="execute_and_resume" value="4"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="3">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="demovalue"/>
+				<argument name="comparison" value="eq"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+        <step Driver="common_driver" Keyword="verify_data" TS="4">
+			<Arguments>
+				<argument name="object_key" value="invoked_step_number"/>
+				<argument name="expected" value="2"/>
+				<argument name="type" value="int"/>
+				<argument name="comparison" value="eq"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+            <Execute ExecType="Invoked">
+        <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+            </Execute>
+
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+
+	</Steps>
+</Testcase>
