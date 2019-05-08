@@ -987,3 +987,25 @@ class CommonSnmpActions(object):
                 break
         Utils.testcase_Utils.report_substep_status(status)
         return status
+  
+    def clear_received_traps(self, system_name):
+        """
+        Clear the captured SNMP Trap messages stored in the repository.
+        Argument:
+            system_name: Agent system name from data file.
+        Return: Binary- True or False
+        """
+        status = True
+        wdesc = "Clear trap messages from {}".format(system_name)
+        Utils.testcase_Utils.pSubStep(wdesc)
+        snmp_parameters = ['ip', 'snmp_trap_port']
+        snmp_param_dic = Utils.data_Utils.get_credentials(self.datafile,
+                                                          system_name,
+                                                          snmp_parameters)
+        agent_ip = snmp_param_dic.get('ip')
+        agent_ip = socket.gethostbyname(agent_ip)
+        clear_val= []
+        ws.data_repo.update({"snmp_trap_messages_{}".format(agent_ip):clear_val})
+        Utils.testcase_Utils.report_substep_status(status)
+        return status
+
