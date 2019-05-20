@@ -18,6 +18,7 @@ SNMP v3 Trap and Inform support added.
 """
 import os, re, ast
 import Framework.Utils as Utils
+import socket
 from Framework.Utils.print_Utils import print_exception
 from Framework.ClassUtils.snmp_utlity_class import WSnmp as ws
 from Framework.Utils import testcase_Utils, config_Utils, data_Utils, snmp_utils
