@@ -20,6 +20,8 @@ import sys
 import os
 import time
 import shutil
+import ast
+import xml.etree.ElementTree as et
 from WarriorCore.defects_driver import DefectsDriver
 from WarriorCore import custom_sequential_kw_driver, custom_parallel_kw_driver
 from WarriorCore import iterative_sequential_kw_driver, iterative_parallel_kw_driver,\
@@ -29,6 +31,9 @@ import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import convertLogic
 from Framework.Utils.print_Utils import print_info, print_warning, print_error,\
     print_debug, print_exception
+from Framework.ClassUtils.kafka_utils_class import WarriorKafkaProducer
+from json import loads, dumps
+from Framework.Utils.data_Utils import getSystemData, _get_system_or_subsystem
 import Framework.Utils.email_utils as email
 
 
@@ -672,7 +677,52 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                 "tc", tc_timestamp)
     tc_junit_object.update_attr("logsdir", os.path.dirname(data_repository['wt_logsdir']),
                                 "tc", tc_timestamp)
+    data_file = data_repository["wt_datafile"]
+    system_name = ""
+    try:
+        tree = et.parse(data_file)
+        for elem in tree.iter():
+            if elem.tag == "system":
+                for key, value in elem.items():
+                    if value == "kafka_producer":
+                        system_name = elem.get("name")
+                        break
+    except:
+        pass
+    if system_name:
+        junit_file_obj = data_repository['wt_junit_object']
+        root = junit_file_obj.root
+        suite_details = root.findall("testsuite")[0]
+        test_case_details = suite_details.findall("testcase")[0]
+        print_info("kafka server is presented in Inputdata file..")
+        system_details = _get_system_or_subsystem(data_file, system_name)
+        data = {}
+        for item in system_details.getchildren():
+            if item.tag == "kafka_port":
+                ssh_port = item.text
+                continue
+            if item.tag == "ip":
+                ip_address = item.text
+                continue
+            try:
+                value = ast.literal_eval(item.text)
+            except ValueError:
+                value = item.text
+            data.update({item.tag: value})
 
+        ip_port = ["{}:{}".format(ip_address, ssh_port)]
+        data.update({"bootstrap_servers": ip_port})
+        data.update({"value_serializer": lambda x: dumps(x).encode('utf-8')})
+        try:
+            producer = WarriorKafkaProducer(**data)
+            producer.send_messages('warrior_results', suite_details.items())
+            producer.send_messages('warrior_results', test_case_details.items())
+            print_info("message published to topic: warrior_results {}".format(
+                suite_details.items()))
+            print_info("message published to topic: warrior_results {}".format(
+                test_case_details.items()))
+        except:
+            print_warning("Unable to connect kafka server !!")
     report_testcase_result(tc_status, data_repository, tag=steps_tag)
     if not from_ts:
         tc_junit_object.update_count(tc_status, "1", "pj", "not appicable")
