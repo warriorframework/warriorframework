@@ -709,7 +709,6 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
             except ValueError:
                 value = item.text
             data.update({item.tag: value})
-
         ip_port = ["{}:{}".format(ip_address, ssh_port)]
         data.update({"bootstrap_servers": ip_port})
         data.update({"value_serializer": lambda x: dumps(x).encode('utf-8')})
