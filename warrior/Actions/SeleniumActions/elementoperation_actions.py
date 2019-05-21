@@ -2049,11 +2049,11 @@ class elementoperation_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                html = browser.find_element_by_xpath(".//*[@id='draggable")
-                html.send_keys(Keys.DOWN)
                 source_comp_locator = browser_details["source_locator_type"] + "=" + browser_details["source_locator"]
                 br_name = system_name + "_" + browser_details["browser_name"]
                 current_browser = Utils.data_Utils.get_object_from_datarepository(br_name)
+                html = current_browser.find_element_by_tag_name("html")
+                html.send_keys(Keys.DOWN)
                 if not current_browser:
                         pNote("No browser instance {0} found in the data "
                               "repository!".format(br_name), "error")
