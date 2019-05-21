@@ -12,6 +12,7 @@ limitations under the License.
 '''
 
 """ Selenium keywords for Element Operation Actions """
+import time
 from Framework.ClassUtils.WSelenium.element_operations import ElementOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.Utils.list_Utils import get_list_comma_sep_string
@@ -2052,8 +2053,11 @@ class elementoperation_actions(object):
                 source_comp_locator = browser_details["source_locator_type"] + "=" + browser_details["source_locator"]
                 br_name = system_name + "_" + browser_details["browser_name"]
                 current_browser = Utils.data_Utils.get_object_from_datarepository(br_name)
-                html = current_browser.find_element_by_tag_name("html")
-                html.send_keys(Keys.DOWN)
+                current_browser.set_window_size("1024", "768")
+                # html = current_browser.find_element_by_tag_name("html")
+                # time.sleep(2)
+                # pNote(html)
+                # html.send_keys(Keys.DOWN)
                 if not current_browser:
                         pNote("No browser instance {0} found in the data "
                               "repository!".format(br_name), "error")
