@@ -15,6 +15,7 @@ limitations under the License.
 from Framework.ClassUtils.WSelenium.element_operations import ElementOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.Utils.list_Utils import get_list_comma_sep_string
+from selenium.webdriver.common.keys import Keys
 
 try:
     import Framework.Utils as Utils
@@ -2048,6 +2049,8 @@ class elementoperation_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
+                html = browser.find_element_by_xpath(".//*[@id='draggable")
+                html.send_keys(Keys.DOWN)
                 source_comp_locator = browser_details["source_locator_type"] + "=" + browser_details["source_locator"]
                 br_name = system_name + "_" + browser_details["browser_name"]
                 current_browser = Utils.data_Utils.get_object_from_datarepository(br_name)
