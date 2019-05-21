@@ -40,13 +40,13 @@
 			<onError action="next"/>
 			<impact>impact</impact>
 		</Testcase>
-		<Testcase>
-			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_5.xml</path>
-			<context>positive</context>
-			<runtype>sequential_keywords</runtype>
-			<onError action="next"/>
-			<impact>impact</impact>
-		</Testcase>
+		<!--<Testcase>-->
+			<!--<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_5.xml</path>-->
+			<!--<context>positive</context>-->
+			<!--<runtype>sequential_keywords</runtype>-->
+			<!--<onError action="next"/>-->
+			<!--<impact>impact</impact>-->
+		<!--</Testcase>-->
 		<Testcase>
 			<path>../../testcases/selenium_func_tests/generic_tests/tc_selenium_generic_6.xml</path>
 			<context>positive</context>
@@ -117,13 +117,13 @@
 			<onError action="next"/>
 			<impact>impact</impact>
 		</Testcase>
-		<Testcase>
-			<path>../../testcases/selenium_func_tests/generic_tests/tc_drag_and_drop_by_offset.xml</path>
-			<context>positive</context>
-			<runtype>sequential_keywords</runtype>
-			<onError action="next"/>
-			<impact>impact</impact>
-		</Testcase>
+		<!--<Testcase>-->
+			<!--<path>../../testcases/selenium_func_tests/generic_tests/tc_drag_and_drop_by_offset.xml</path>-->
+			<!--<context>positive</context>-->
+			<!--<runtype>sequential_keywords</runtype>-->
+			<!--<onError action="next"/>-->
+			<!--<impact>impact</impact>-->
+		<!--</Testcase>-->
 		<Testcase>
 			<path>../../testcases/selenium_func_tests/generic_tests/tc_execute_script.xml</path>
 			<context>positive</context>
