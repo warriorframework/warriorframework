@@ -182,8 +182,19 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     print_info("")
     print_info("*** Keyword status ***")
     step_goto_value = False
+    # getting the values of onerror and onexception
     step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
         step, 'onError', 'action')
+    step_onexception_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
+        step, 'onException', 'action')
+
+    if step_onexception_action == "abort" and not step_onError_action:
+        step_onError_action = step_onexception_action
+    elif step_onexception_action == "abort" and step_onError_action and keyword_status == "EXCEPTION":
+        step_onError_action = step_onexception_action
+    elif step_onexception_action == "next" and step_onError_action and keyword_status == "EXCEPTION":
+        step_onError_action = step_onexception_action
+
     if step_onError_action is not False:
         if step_onError_action.upper() == 'GOTO':
             step_goto_value = Utils.xml_Utils.get_attributevalue_from_directchildnode(
