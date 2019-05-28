@@ -15,6 +15,7 @@ limitations under the License.
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_warning
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
+# pylint: disable=unused-argument
 
 """
 onerror driver handles all the failures in Warrior framework
@@ -92,8 +93,10 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
     runmode_value = Utils.xml_Utils.get_attributevalue_from_directchildnode(node,
                                                                             'runmode', 'value')
 
-    on_execption_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(node, 'onException', 'action')
-    on_error_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(node, 'onError', 'action')
+    on_execption_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(node,
+                                                                                  'onException', 'action')
+    on_error_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(node,
+                                                                              'onError', 'action')
     if on_execption_action == "abort" and not on_error_action:
         action = on_execption_action
     elif on_execption_action == "abort" and on_error_action and current_step_status == "EXCEPTION":
