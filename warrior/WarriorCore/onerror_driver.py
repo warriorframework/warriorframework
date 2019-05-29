@@ -93,8 +93,8 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
     runmode_value = Utils.xml_Utils.get_attributevalue_from_directchildnode(node,
                                                                             'runmode', 'value')
 
-    on_execption_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(node,
-                                                                                  'onException', 'action')
+    on_execption_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
+        node, 'onException', 'action')
     on_error_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(node,
                                                                               'onError', 'action')
     if on_execption_action == "abort" and not on_error_action:
