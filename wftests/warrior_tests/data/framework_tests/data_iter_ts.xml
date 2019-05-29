@@ -11,8 +11,8 @@
         <filename>3.txt</filename>
     </system>
     <system name="ConfD">
-        <ip>${ENV.HOSTNAME}</ip>
-        <nc_port>${ENV.NE1.MAIN.NETCONF_PORT}</nc_port>
+        <ip>9.9.9.9</ip>
+        <nc_port>22</nc_port>
         <username>warrior</username>
         <password>warrior</password>
         <timeout>30</timeout>

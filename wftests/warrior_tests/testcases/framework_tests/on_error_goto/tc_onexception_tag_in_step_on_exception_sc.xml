@@ -14,12 +14,12 @@
 		<ExpectedResults/>
 	</Details>
 	<Requirements>
-		<Requirement/>
 	</Requirements>
 	<Steps>
         <step Driver="netconf_driver" Keyword="connect_netconf" TS="1">
 			<Arguments>
 				<argument name="system_name" value="ConfD"/>
+				<argument name="session_name" value="session1"/>
 			</Arguments>
             <onException action="next"/>
 			<Description>connect_netconf</Description>
@@ -27,17 +27,29 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
-        <step Driver="netconf_driver" Keyword="connect_netconf" TS="2">
-			<Arguments>
-				<argument name="system_name" value="ConfD"/>
-			</Arguments>
+        <step Driver="netconf_driver" Keyword="create_subscription" TS="2">
+            <Arguments>
+                <argument name="system_name" value="ConfD"/>
+                <argument name="session_name" value="session1"/>
+            </Arguments>
+            <onException action="next"/>
+            <Description>creating subscription</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="netconf_driver" Keyword="create_subscription" TS="3">
+            <Arguments>
+                <argument name="system_name" value="ConfD"/>
+                <argument name="session_name" value="session1"/>
+            </Arguments>
             <onException action="abort"/>
-			<Description>connect_netconf</Description>
-			<Execute ExecType="Yes"/>
-			<context>positive</context>
-			<impact>impact</impact>
-		</step>
-        <step Driver="common_driver" Keyword="store_in_repo" TS="3">
+            <Description>creating subscription</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="common_driver" Keyword="store_in_repo" TS="4">
 			<Arguments>
 				<argument name="datavar" value="demovar"/>
 				<argument name="datavalue" value="demovalue"/>
