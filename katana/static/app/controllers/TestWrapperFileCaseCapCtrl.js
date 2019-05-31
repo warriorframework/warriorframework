@@ -28,6 +28,8 @@ app.controller('TestWrapperfilecaseCapCtrl', ['$scope','$routeParams','$http', '
         $scope.original_iter_types = [];
         $scope.step_onerror = "abort";
         $scope.step_onerror_value = "";
+        $scope.step_onexception = "next";
+        $scope.step_onexception_value = "";
         $scope.arg_list = [{"_name": "", "_value": ""}];
         $scope.showSetupStepEdit = false;
         $scope.showCleanupStepEdit=false;
@@ -557,6 +559,8 @@ $scope.showCleanupRules = function(execType){
                 $scope.status.step.context = $scope.model.TestWrapper.Setup.step[$scope.stepToBeCopied - 1].context;
                 $scope.status.step.onError._action = $scope.model.TestWrapper.Setup.step[$scope.stepToBeCopied - 1].onError._action;
                 $scope.status.step.onError._value = $scope.model.TestWrapper.Setup.step[$scope.stepToBeCopied - 1].onError._value;
+                $scope.status.step.onException._action = $scope.model.TestWrapper.Setup.step[$scope.stepToBeCopied - 1].onException._action;
+                $scope.status.step.onException._value = $scope.model.TestWrapper.Setup.step[$scope.stepToBeCopied - 1].onException._value;
             }
 
             $scope.status.step.Execute._ExecType = $scope.model.TestWrapper.Setup.step[$scope.stepToBeCopied - 1].Execute._ExecType;
@@ -689,6 +693,8 @@ $scope.showCleanupRules = function(execType){
                 $scope.cleanupstatus.step.context = $scope.model.TestWrapper.Cleanup.step[$scope.stepToBeCopied - 1].context;
                 $scope.cleanupstatus.step.onError._action = $scope.model.TestWrapper.Cleanup.step[$scope.stepToBeCopied - 1].onError._action;
                 $scope.cleanupstatus.step.onError._value = $scope.model.TestWrapper.Cleanup.step[$scope.stepToBeCopied - 1].onError._value;
+                $scope.cleanupstatus.step.onException._action = $scope.model.TestWrapper.Cleanup.step[$scope.stepToBeCopied - 1].onException._action;
+                $scope.cleanupstatus.step.onException._value = $scope.model.TestWrapper.Cleanup.step[$scope.stepToBeCopied - 1].onException._value;
             }
 
             $scope.cleanupstatus.step.Execute._ExecType = $scope.model.TestWrapper.Cleanup.step[$scope.stepToBeCopied - 1].Execute._ExecType;
@@ -985,6 +991,10 @@ $scope.showCleanupRules = function(execType){
                         $scope.model.TestWrapper.Setup.step[i]["onError"] = {"_action": "abort", "_value": ""};
                     }
 
+                    if(!$scope.model.TestWrapper.Setup.step[i].hasOwnProperty("onException")){
+                        $scope.model.TestWrapper.Setup.step[i]["onException"] = {"_action": "next", "_value": ""};
+                    }
+
                     if(!$scope.model.TestWrapper.Setup.step[i].hasOwnProperty("Description")){
                         $scope.model.TestWrapper.Setup.step[i]["Description"] = "";
                     }
@@ -1088,6 +1098,13 @@ $scope.showCleanupRules = function(execType){
                         }
                     }
 
+                      for(j=0; j<$scope.status.steperrors.length; j++){
+                        if($scope.model.TestWrapper.Setup.step[i].onException._action.toLowerCase() == $scope.status.stepexceptions[j].toLowerCase()){
+                            $scope.model.TestWrapper.Setup.step[i].onException._action = $scope.status.stepexceptions[j];
+                            break;
+                        }
+                    }
+
                 if($scope.model.TestWrapper.Setup.step[i].hasOwnProperty("_draft")){
                     if($scope.model.TestWrapper.Setup.step[i]["_draft"].toLowerCase() == "yes"){
                         $scope.model.TestWrapper.Setup.step[i]["_draft"] = "yes";
@@ -1110,6 +1127,10 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
 
                     if(!$scope.model.TestWrapper.Cleanup.step[i].hasOwnProperty("onError")){
                         $scope.model.TestWrapper.Cleanup.step[i]["onError"] = {"_action": "abort", "_value": ""};
+                    }
+
+                    if(!$scope.model.TestWrapper.Cleanup.step[i].hasOwnProperty("onException")){
+                        $scope.model.TestWrapper.Cleanup.step[i]["onException"] = {"_action": "next", "_value": ""};
                     }
 
                     if(!$scope.model.TestWrapper.Cleanup.step[i].hasOwnProperty("Description")){
@@ -1211,6 +1232,14 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                     for(j=0; j<$scope.cleanupstatus.steperrors.length; j++){
                         if($scope.model.TestWrapper.Cleanup.step[i].onError._action.toLowerCase() == $scope.cleanupstatus.steperrors[j].toLowerCase()){
                             $scope.model.TestWrapper.Cleanup.step[i].onError._action = $scope.cleanupstatus.steperrors[j];
+                            break;
+                        }
+                    }
+
+
+                    for(j=0; j<$scope.cleanupstatus.steperrors.length; j++){
+                        if($scope.model.TestWrapper.Cleanup.step[i].onException._action.toLowerCase() == $scope.cleanupstatus.stepexceptions[j].toLowerCase()){
+                            $scope.model.TestWrapper.Cleanup.step[i].onException._action = $scope.cleanupstatus.stepexceptions[j];
                             break;
                         }
                     }
@@ -1346,12 +1375,19 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
             _action: 'abort',
             _value: ""
         },
-
+default_onException: {          // This is the default_onException as it appears in the Details section.
+            _action: 'next',
+            _value: ""
+        },
         stepsimpacts: ['impact', 'noimpact'],
 
         caseerrors: ['abort', 'next', 'abort_as_error', 'goto'],
 
         steperrors: ['abort', 'next', 'abort_as_error', 'goto'],
+
+        caseexceptions: ['abort', 'next'],
+
+        stepexceptions: ['abort', 'next'],
 
         iterationtypes: ['Standard', 'once_per_tc', 'end_of_tc'],
 
@@ -1360,6 +1396,8 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
         operator: ['eq', 'ge', 'gt', 'le', 'lt', 'ne' ],
 
         stepexecuteerrors: ['abort', 'next', 'abort_as_error', 'goto'],
+
+         stepexecuteexceptions: ['abort', 'next'],
 
         stepscontexts: ['positive', 'negative'],
 
@@ -1403,11 +1441,21 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
             _value: ""
         },
 
+        default_onExceptions: {          // This is the default_onError as it appears in the Details section.
+            _action: 'next',
+            _value: ""
+        },
+
         stepsimpacts: ['impact', 'noimpact'],
 
         caseerrors: ['next', 'abort', 'abort_as_error', 'goto'],
 
         steperrors: ['next', 'abort', 'abort_as_error', 'goto'],
+
+        caseexceptions: ['next', 'abort'],
+
+        stepexceptions: ['next', 'abort'],
+
 
         iterationtypes: ['Standard', 'once_per_tc', 'end_of_tc'],
 
@@ -1416,6 +1464,8 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
         operator: ['eq', 'ge', 'gt', 'le', 'lt', 'ne' ],
 
         stepexecuteerrors: ['next', 'abort', 'abort_as_error', 'goto'],
+
+         stepexecuteexceptions: ['next', 'abort'],
 
         stepscontexts: ['positive', 'negative'],
 
@@ -2621,6 +2671,10 @@ console.log("startSetupStepEdit",edtype);
             "_action": $scope.step_onerror, // Inherits from default_onError value in the TC
             "_value": $scope.step_onerror_value
           },
+          "onException": {
+            "_action": $scope.step_onexception, // Inherits from default_onException value in the TC
+            "_value": $scope.step_onexception_value
+          },
           "Description": "",
             "iteration_type": {
                 "_type":"Standard"
@@ -2654,6 +2708,10 @@ console.log("startSetupStepEdit",edtype);
           },
           "onError": {
             "_action": "", // next, abort, goto
+            "_value": ""
+          },
+           "onException": {
+            "_action": "", // next, abort
             "_value": ""
           },
           "Description": "",
@@ -2713,6 +2771,36 @@ console.log("startSetupStepEdit",edtype);
         } else {
             delete rec.onError['_value'];
         }
+
+       // On Exception
+
+        if($scope.status.step.onException == undefined){
+            $scope.status.step.onException = {};
+            $scope.status.step.onException['_action'] = $scope.status.default_onException['_action'];
+        }
+        if($scope.status.step.onException['_action'] == undefined || $scope.status.step.onException['_action'] == "" || $scope.status.step.onException['_action'] == {}){
+            $scope.status.step.onException['_action'] = $scope.status.default_onException['_action'];
+        }
+        rec.onException['_action'] = $scope.status.step.onException['_action'];
+        if (rec.onException['_action'] == 'goto') {
+            if ($.trim($scope.status.step.onException._value) == '') {
+                sweetAlert({
+                    title: "A Step # is required when 'On Error' is goto.",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return null;
+            } else {
+                rec.onException['_value'] = $scope.status.step.onException['_value'];
+            }
+        } else {
+            delete rec.onException['_value'];
+        }
+
+
+
        if($scope.status.step.context == undefined){
            $scope.status.step.context = "positive"
        }
@@ -2781,6 +2869,10 @@ console.log("startSetupStepEdit",edtype);
             "_action": "", // next, abort, goto
             "_value": ""
           },
+          "onException": {
+            "_action": "", // next, abort, goto
+            "_value": ""
+          },
           "Description": "",
             "iteration_type": {
                 "_type":"Standard"
@@ -2838,6 +2930,35 @@ console.log("startSetupStepEdit",edtype);
         } else {
             delete rec.onError['_value'];
         }
+
+
+        if($scope.cleanupstatus.step.onException == undefined){
+            $scope.cleanupstatus.step.onException = {};
+            $scope.cleanupstatus.step.onException['_action'] = $scope.cleanupstatus.default_onException['_action'];
+        }
+        if($scope.cleanupstatus.step.onException['_action'] == undefined || $scope.cleanupstatus.step.onException['_action'] == "" || $scope.cleanupstatus.step.onException['_action'] == {}){
+            $scope.cleanupstatus.step.onException['_action'] = $scope.cleanupstatus.default_onException['_action'];
+        }
+        rec.onException['_action'] = $scope.cleanupstatus.step.onException['_action'];
+        if (rec.onException['_action'] == 'goto') {
+            if ($.trim($scope.cleanupstatus.step.onException._value) == '') {
+                sweetAlert({
+                    title: "A Step # is required when 'On Error' is goto.",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return null;
+            } else {
+                rec.onException['_value'] = $scope.cleanupstatus.step.onException['_value'];
+            }
+        } else {
+            delete rec.onException['_value'];
+        }
+
+
+
        if($scope.cleanupstatus.step.context == undefined){
            $scope.cleanupstatus.step.context = "positive"
        }
@@ -3399,6 +3520,25 @@ console.log("startSetupStepEdit",edtype);
             }
         }
 
+
+var isDetailDefException = $scope.status.default_onException._action == 'goto',
+            isBlank = $.trim($scope.status.default_onException._value) == '',
+            isNumeric = _.isNumber( + $scope.status.default_onException._value);
+
+        if (isDetailDefException) {
+            if ( isBlank || ( ! isNumeric )) {
+                sweetAlert({
+                    title: "Please specify the Target Step.",
+                    text: "This is needed as the default action on error is to go to an error step",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return;
+            }
+        }
+
         /*
         //---- The engineer need not define any requirement entries.
         if ($scope.model.TestWrapper.Requirements.Requirement.length == 0) {
@@ -3459,6 +3599,15 @@ _.each(_.range(1, $scope.model.TestWrapper.Cleanup.step.length+1), function (i) 
             delete def_error_copy['_value'];
         }
         $scope.model.TestWrapper.Details.default_onError = def_error_copy;
+
+ //- Assign the default Exception action in the details section.
+        var def_exception_copy = _.clone($scope.status.default_onException);
+        console.log('def_error_copy: ', JSON.stringify($scope.status.default_onError));
+        if ($scope.status.default_onException._action != 'goto') {
+            delete def_exception_copy['_value'];
+        }
+        $scope.model.TestWrapper.Details.default_onException = def_exception_copy;
+
 
         console.log("TestWrapper\n", JSON.stringify(angular.toJson($scope.model.TestWrapper), null, 2));
 

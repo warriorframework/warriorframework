@@ -569,6 +569,7 @@
                         <th class='text-muted'>Impact</th>
                         <th class='text-muted'>Context</th>
                         <th class='text-muted'>onError</th>
+                        <th class='text-muted'>onException</th>
                         <th class='text-muted'>Insert</th>
                         <th class='text-muted'>Edit</th>
                         <th class='text-muted'>Delete</th>
@@ -766,6 +767,10 @@
 
                         <td>
                             {{ step.onError._action }} {{ step.onError._value }}
+                        </td>
+
+                        <td>
+                            {{ step.onException._action }} {{ step.onException._value }}
                         </td>
 
                         <td ng-click='addStep($index)' class='text-center' style='vertical-align:middle'>
@@ -2567,6 +2572,167 @@
                     </div>
                 </div>
 
+
+                <!-- SetupStep  On Exception type  -->
+
+                 <div class="form-group">
+                    <label for='onstepexception'
+                           class="col-sm-3 control-label ellipsis-the-overflow">On
+                        Exception</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="testcaseTooltips.stepDefaultError.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepDefaultError.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepDefaultError.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepDefaultError.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepDefaultError.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepDefaultError.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepDefaultError.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepDefaultError.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-8">
+                        <select class='form-control'
+                                id='onstepexception'
+                                ng-model="status.step.onException._action"
+                                ng-change='grabStepNum()'
+                                ng-options="o as o for o in status.stepexceptions"}}></select>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                 <div ng-if="testcaseTooltips.stepDefaultError.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepDefaultError.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepDefaultError.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepDefaultError.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepDefaultError.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepDefaultError.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepDefaultError.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepDefaultError.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                     ng-if="status.step.onException._action == 'goto'">
+                    <label for='capstepexception'
+                           class="col-sm-3 control-label ellipsis-the-overflow mandatory-field">Goto Step #</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="testcaseTooltips.stepgoto.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepgoto.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepgoto.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepgoto.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepgoto.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepgoto.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepgoto.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepgoto.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control"
+                               id="capstepexception"
+                               ng-model='status.step.onException._value'
+                               placeholder="">
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                 <div ng-if="testcaseTooltips.stepgoto.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepgoto.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepgoto.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepgoto.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepgoto.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepgoto.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepgoto.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepgoto.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- End of SetupStep On Execution type -->
                 <div class="form-group">
                     <div style="color:rgb(214, 48, 48)"
                          class="col-sm-9 col-sm-offset-3">
@@ -2619,6 +2785,7 @@
                         <th class='text-muted'>Impact</th>
                         <th class='text-muted'>Context</th>
                         <th class='text-muted'>onError</th>
+                        <th class='text-muted'>onException</th>
                         <th class='text-muted'>Insert</th>
                         <th class='text-muted'>Edit</th>
                         <th class='text-muted'>Delete</th>
@@ -2816,6 +2983,10 @@
                             {{ step.onError._action }} {{ step.onError._value }}
                         </td>
 
+                         <td>
+                            {{ step.onException._action }} {{ step.onException._value }}
+                        </td>
+
                         <td ng-click='addStep($index)' class='text-center' style='vertical-align:middle'>
                             <div class="tooltip-on-left-dark-big">
                                 <span class="glyphicon glyphicon-import" aria-hidden="true"></span>
@@ -2981,6 +3152,7 @@
                         <th class='text-muted'>Impact</th>
                         <th class='text-muted'>Context</th>
                         <th class='text-muted'>onError</th>
+                        <th class='text-muted'>onException</th>
                         <th class='text-muted'>Insert</th>
                         <th class='text-muted'>Edit</th>
                         <th class='text-muted'>Delete</th>
@@ -3178,6 +3350,10 @@
 
                         <td>
                             {{ step.onError._action }} {{ step.onError._value }}
+                        </td>
+
+                         <td>
+                            {{ step.onException._action }} {{ step.onException._value }}
                         </td>
 
                         <td ng-click='addCleanupStep($index)' class='text-center' style='vertical-align:middle'>
@@ -4979,6 +5155,167 @@
                     </div>
                 </div>
 
+                <!-- CleanupStep of On Exception  -->
+
+                 <div class="form-group">
+                    <label for='onstepexception'
+                           class="col-sm-3 control-label ellipsis-the-overflow">On
+                        Exception</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="testcaseTooltips.stepDefaultError.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepDefaultError.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepDefaultError.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepDefaultError.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepDefaultError.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepDefaultError.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepDefaultError.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepDefaultError.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-8">
+                        <select class='form-control'
+                                id='onstepexception'
+                                ng-model="cleanupstatus.step.onException._action"
+                                ng-change='grabStepNum()'
+                                ng-options="o as o for o in cleanupstatus.stepexceptions"></select>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                 <div ng-if="testcaseTooltips.stepDefaultError.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepDefaultError.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepDefaultError.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepDefaultError.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepDefaultError.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepDefaultError.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepDefaultError.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepDefaultError.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                     ng-if="cleanupstatus.step.onException._action == 'goto'">
+                    <label for='capstepexception'
+                           class="col-sm-3 control-label ellipsis-the-overflow mandatory-field">Goto Step #</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="testcaseTooltips.stepgoto.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepgoto.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepgoto.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepgoto.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepgoto.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepgoto.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.stepgoto.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.stepgoto.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control"
+                               id="capstepexception"
+                               ng-model='cleanupstatus.step.onException._value'
+                               placeholder="">
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                 <div ng-if="testcaseTooltips.stepgoto.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepgoto.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepgoto.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepgoto.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepgoto.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepgoto.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.stepgoto.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.stepgoto.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- End of Cleanupstep of On Exception-->
+
                 <div class="form-group">
                     <div style="color:rgb(214, 48, 48)"
                          class="col-sm-9 col-sm-offset-3">
@@ -5031,6 +5368,7 @@
                         <th class='text-muted'>Impact</th>
                         <th class='text-muted'>Context</th>
                         <th class='text-muted'>onError</th>
+                        <th class='text-muted'>onException</th>
                         <th class='text-muted'>Insert</th>
                         <th class='text-muted'>Edit</th>
                         <th class='text-muted'>Delete</th>
@@ -5226,6 +5564,10 @@
 
                         <td>
                             {{ step.onError._action }} {{ step.onError._value }}
+                        </td>
+
+                        <td>
+                            {{ step.onException._action }} {{ step.onException._value }}
                         </td>
 
                         <td ng-click='addCleanupStep($index)' class='text-center' style='vertical-align:middle'>

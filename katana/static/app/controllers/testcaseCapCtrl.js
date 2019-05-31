@@ -27,7 +27,9 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.xml.args = {};
         $scope.original_iter_types = [];
         $scope.step_onerror = "next";
+        $scope.step_onexception = "next";
         $scope.step_onerror_value = "";
+        $scope.step_onexception_value = "";
         $scope.arg_list = [{"_name": "", "_value": ""}];
         $scope.showStepEdit = false;
         $scope.insertStep = false;
@@ -442,6 +444,9 @@ $scope.showRules = function(execType){
             }
         };
 
+
+
+
         $scope.xml.mapargs = {};
         $scope.xml.arglist = [];
         $scope.changedIndex = -1;
@@ -634,6 +639,8 @@ $scope.showRules = function(execType){
                 $scope.status.step.context = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].context;
                 $scope.status.step.onError._action = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._action;
                 $scope.status.step.onError._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._value;
+                $scope.status.step.onException._action = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onException._action;
+                $scope.status.step.onException._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onException._value;
             }
 
             $scope.status.step.Execute._ExecType = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._ExecType;
@@ -834,6 +841,11 @@ $scope.showRules = function(execType){
                 else{
                     flag = true;
                 }
+
+
+
+
+
                 /* Handles the drop down of copy step when we open any existing file */
 
                 $scope.nextStepIndex = [];
@@ -858,6 +870,10 @@ $scope.showRules = function(execType){
 
                     if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("onError")){
                         $scope.model.Testcase.Steps.step[i]["onError"] = {"_action": "next", "_value": ""};
+                    }
+
+                    if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("onException")){
+                        $scope.model.Testcase.Steps.step[i]["onException"] = {"_action": "next", "_value": ""};
                     }
 
                     if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("Description")){
@@ -926,6 +942,16 @@ $scope.showRules = function(execType){
                         }
                      }
 
+
+                     for(j=0; j<$scope.status.stepexceptions.length; j++){
+                        if($scope.model.Testcase.Steps.step[i].Execute._Else) {
+                            if($scope.model.Testcase.Steps.step[i].Execute._Else.toLowerCase() == $scope.status.stepexceptions[j].toLowerCase()){
+                                $scope.model.Testcase.Steps.step[i].Execute._Else = $scope.status.stepexceptions[j];
+                                break;
+                            }
+                        }
+                     }
+
                      for(j=0; j<$scope.status.operator.length; j++){
                         if($scope.model.Testcase.Steps.step[i].Execute.Rule._Operator.toLowerCase() == $scope.status.operator[j].toLowerCase()){
                             $scope.model.Testcase.Steps.step[i].Execute.Rule._Operator = $scope.status.operator[j];
@@ -964,6 +990,15 @@ $scope.showRules = function(execType){
                             break;
                         }
                     }
+
+                    for(j=0; j<$scope.status.stepexceptions.length; j++){
+                        if($scope.model.Testcase.Steps.step[i].onException._action.toLowerCase() == $scope.status.stepexceptions[j].toLowerCase()){
+                            $scope.model.Testcase.Steps.step[i].onException._action = $scope.status.stepexceptions[j];
+                            break;
+                        }
+                    }
+
+
 
                 if($scope.model.Testcase.Steps.step[i].hasOwnProperty("_draft")){
                     if($scope.model.Testcase.Steps.step[i]["_draft"].toLowerCase() == "yes"){
@@ -1006,6 +1041,7 @@ $scope.showRules = function(execType){
                 $scope.status.default_onError = { _action: 'next', _value: '' };
                 $scope.status.default_onError._action = $scope.model.Testcase.Details.default_onError._action;
                 $scope.status.default_onError._value = $scope.model.Testcase.Details.default_onError._value || '';
+
 
                 $scope.status.nodatafile =
                     ($scope.model.Testcase.Details.InputDataFile == 'No_Data') ? '1' : '0';
@@ -1053,11 +1089,15 @@ $scope.showRules = function(execType){
             _value: ""
         },
 
+
         stepsimpacts: ['impact', 'noimpact'],
 
         caseerrors: ['next', 'abort', 'abort_as_error', 'goto'],
 
+
         steperrors: ['next', 'abort', 'abort_as_error', 'goto'],
+
+        stepexceptions: ['next', 'abort'],
 
         iterationtypes: ['Standard', 'once_per_tc', 'end_of_tc'],
 
@@ -1066,6 +1106,8 @@ $scope.showRules = function(execType){
         operator: ['eq', 'ge', 'gt', 'le', 'lt', 'ne' ],
 
         stepexecuteerrors: ['next', 'abort', 'abort_as_error', 'goto'],
+
+        stepexecuteexceptions: ['next', 'abort'],
 
         stepscontexts: ['positive', 'negative'],
 
@@ -1860,6 +1902,10 @@ $scope.showRules = function(execType){
             "_action": $scope.step_onerror, // Inherits from default_onError value in the TC
             "_value": $scope.step_onerror_value
           },
+           "onException": {
+            "_action": $scope.step_onexception, // Inherits from default_onError value in the TC
+            "_value": $scope.step_onexception_value
+          },
           "Description": "",
             "iteration_type": {
                 "_type":"Standard"
@@ -1892,6 +1938,10 @@ $scope.showRules = function(execType){
           },
           "onError": {
             "_action": "", // next, abort, goto
+            "_value": ""
+          },
+           "onException": {
+            "_action": "", // next, abort
             "_value": ""
           },
           "Description": "",
@@ -1927,6 +1977,7 @@ $scope.showRules = function(execType){
         $scope.xml.arglist.push("subsystem_name");
 
         rec.Description = $scope.status.step.Description;
+
         if($scope.status.step.onError == undefined){
             $scope.status.step.onError = {};
             $scope.status.step.onError['_action'] = $scope.status.default_onError['_action'];
@@ -1951,6 +2002,37 @@ $scope.showRules = function(execType){
         } else {
             delete rec.onError['_value'];
         }
+
+
+         if($scope.status.step.onException == undefined){
+            $scope.status.step.onException = {};
+            $scope.status.step.onException['_action'] = $scope.status.default_onException['_action'];
+        }
+        if($scope.status.step.onException['_action'] == undefined || $scope.status.step.onException['_action'] == "" || $scope.status.step.onException['_action'] == {}){
+            $scope.status.step.onException['_action'] = $scope.status.default_onException['_action'];
+        }
+        rec.onException['_action'] = $scope.status.step.onException['_action'];
+        if (rec.onException['_action'] == 'goto') {
+            if ($.trim($scope.status.step.onException._value) == '') {
+                sweetAlert({
+                    title: "A Step # is required when 'On Exception' is goto.",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return null;
+            } else {
+                rec.onException['_value'] = $scope.status.step.onException['_value'];
+            }
+        } else {
+            delete rec.onException['_value'];
+        }
+
+
+
+
+
        if($scope.status.step.context == undefined){
            $scope.status.step.context = "positive"
        }
@@ -2368,6 +2450,9 @@ $scope.showRules = function(execType){
             }
         }
 
+
+
+
         /*
         //---- The engineer need not define any requirement entries.
         if ($scope.model.Testcase.Requirements.Requirement.length == 0) {
@@ -2412,6 +2497,10 @@ $scope.showRules = function(execType){
             delete def_error_copy['_value'];
         }
         $scope.model.Testcase.Details.default_onError = def_error_copy;
+
+
+
+
 
         console.log($scope.model.Testcase);
 
