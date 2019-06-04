@@ -24,7 +24,7 @@
 			<impact>impact</impact>
 		</step>
 
-		<step Driver="common_driver" Keyword="get_time_delta" TS="1">
+		<step Driver="common_driver" Keyword="get_time_delta" TS="2">
 			<Arguments>
         <argument name="start_time" value="timestamp1"/>
         <argument name="time_diff" value="time_diff1"/>
@@ -36,7 +36,7 @@
 			<impact>impact</impact>
     </step>
     
-    <step Driver="common_driver" Keyword="get_current_timestamp" TS="1">
+    <step Driver="common_driver" Keyword="get_current_timestamp" TS="3">
       <Arguments>
             <argument name="current_time" value="timestamp2"/>
 			</Arguments>
@@ -47,7 +47,7 @@
 			<impact>impact</impact>
 		</step>
 
-		<step Driver="common_driver" Keyword="get_time_delta" TS="1">
+		<step Driver="common_driver" Keyword="get_time_delta" TS="4">
 			<Arguments>
         <argument name="start_time" value="timestamp1"/> 
         <argument name="end_time" value="timestamp2"/>
@@ -59,6 +59,55 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
+
+    <step Driver="common_driver" Keyword="get_current_timestamp" TS="5">
+      <Arguments>
+            <argument name="current_time" value="timestamp3"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>To get current timestamp</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+
+        <step Driver="common_driver" Keyword="wait_for_timeout" TS="6">
+      <Arguments>
+            <argument name="timeout" value="11"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>To get current timestamp</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+
+		<step Driver="common_driver" Keyword="get_time_delta" TS="5">
+			<Arguments>
+                <argument name="start_time" value="timestamp3"/>
+                <argument name="time_diff" value="time_diff2"/>
+                <argument name="max_time_diff" value="10"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Returns the time difference between start_time and end_time</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+
+        <step Driver="common_driver" Keyword="get_time_delta" TS="5">
+			<Arguments>
+                <argument name="start_time" value="timestamp3"/>
+                <argument name="time_diff" value="time_diff2"/>
+                <argument name="max_time_diff" value="100"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Returns the time difference between start_time and end_time</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+
     
 	</Steps>
 </Testcase>
