@@ -419,7 +419,7 @@ class CommonActions(object):
 
                 3. time_diff(optional) = time diff key in the data repository
 
-                4. max_time_diff(optional) = maximum cutoff time
+                4. max_time_diff(optional) = maximum cutoff time.
 
            :Returns:
                   1. status(boolean)
