@@ -14,16 +14,15 @@ limitations under the License.
 """
 Implementation of the standard SNMP protocol commands for SNMP v1 and v2c and V3
 and IPv6 support added.
-SNMP v3 Trap and Inform support added. 
+SNMP v3 Trap and Inform support added.
 """
-import os, re, ast
+import re
+import ast
 import Framework.Utils as Utils
-from Framework.Utils.print_Utils import print_exception
 from Framework.ClassUtils.snmp_utlity_class import WSnmp as ws
 from Framework.Utils import testcase_Utils, config_Utils, data_Utils, snmp_utils
 from threading import Thread
 from time import sleep
-import Queue
 try:
     from pysnmp.entity.rfc3413 import ntfrcv
     from pysnmp.smi import builder, view, compiler, rfc1902, error
@@ -383,7 +382,8 @@ class CommonSnmpActions(object):
                       Use @mib@ placeholder token in URL location to refer.
             15.load_mib_modules: User can provide the MIBS(name) need to be loaded from the path
             "custom_mib_path". It is a string of MIB names separated by comma(',')
-            16.lexicographicMode : "True" will return everything under given prefix plus the next table also e.g. if request 1.3.6.1 will also provide 1.3.6.2$
+            16.lexicographicMode : "True" will return everything under given prefix plus the next
+                                    table also e.g. if request 1.3.6.1 will also provide 1.3.6.2$
                                    "False" will return only under given prefix. Default its False.
         :Return:
             status(bool)= True / False.
@@ -525,12 +525,16 @@ class CommonSnmpActions(object):
                       e.g. 'http://<URL>/@mib@, /data/users/MIBS/'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
-            16.load_mib_modules: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
+            16.load_mib_modules: User can provide the MIBS(name) need to be loaded from the
+                      path "custom_mib_path".
                       It is a string of MIB names separated by comma(',')
-            17.lexicographicMode : "True" will return everything under given prefix plus the next table also e.g. if request 1.3.6.1 will also provide 1.3.6.2
+            17.lexicographicMode : "True" will return everything under given prefix plus the next
+                                    table also e.g. if request 1.3.6.1 will also provide 1.3.6.2
                                    "False" will return only under given prefix. Default its False.
-            18. maxrepetitions: This specifies the maximum number of iterations over the repeating variables. The default is 10.
-            19. nonrepeaters : This specifies the number of supplied variables that should not be iterated over. default is 0
+            18. maxrepetitions: This specifies the maximum number of iterations over the
+                                repeating variables. The default is 10.
+            19. nonrepeaters : This specifies the number of supplied variables that should not be
+                               iterated over. default is 0
         :Return:
             status(bool)= True / False.
             output_dict = consists of following key value:
@@ -562,8 +566,7 @@ class CommonSnmpActions(object):
         temp_custom_mib_paths = None
 
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
-                   userName, authKey, privKey,authProtocol,
-                   privProtocol)
+                   userName, authKey, privKey, authProtocol, privProtocol)
         cmdgen = wsnmp.commandgenerator()
         if self.snmpver.get(snmp_ver) is '2':# for ssnmp v3
             auth_data = wsnmp.usmuserdata()
@@ -584,19 +587,18 @@ class CommonSnmpActions(object):
                          else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*temp_custom_mib_paths)
+                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).\
+                    addAsn1MibSource(*temp_custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
         try:
             errindication, errstatus, errindex, \
             result = cmdgen.bulkCmd(auth_data,
-                                    transport,
-                                    int(nonrepeaters), int(maxrepetitions), oid,
-                                    lookupNames=True,
-                                    lookupValues=True,
-                                    lexicographicMode=ast.literal_eval(lexicographicMode.capitalize()),
-                                    maxRows=int(maxrepetitions)
-                                    )
+                                    transport, int(nonrepeaters), int(maxrepetitions), oid,
+                                    lookupNames=True, lookupValues=True,
+                                    lexicographicMode=ast.literal_eval(
+                                        lexicographicMode.capitalize()),
+                                    maxRows=int(maxrepetitions))
             # nonrepeaters(1)(int): One MIB variable is requested in response
             # for the first nonRepeaters MIB variables in request.
             # maxRepetitions(25)(int): maxRepetitions MIB variables are
@@ -604,19 +606,21 @@ class CommonSnmpActions(object):
             # the request (e.g. excluding nonRepeaters). Remote SNMP engine may
             # choose lesser value than requested.
             output_dict = {
-                           '{0}_errindication'.format(system_name):errindication,
-                           '{0}_errstatus'.format(system_name):errstatus,
-                           '{0}_errindex'.format(system_name):errindex,
-                           '{0}_result'.format(system_name):result,
-                           '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
-                           '{0}_load_mib_modules'.format(system_name):load_mib_modules}
+                '{0}_errindication'.format(system_name): errindication,
+                '{0}_errstatus'.format(system_name): errstatus,
+                '{0}_errindex'.format(system_name): errindex,
+                '{0}_result'.format(system_name): result,
+                '{0}_custom_mib_paths'.format(system_name): temp_custom_mib_paths,
+                '{0}_load_mib_modules'.format(system_name): load_mib_modules
+            }
 
             if result != []:
                 status = True
                 testcase_Utils.pNote("Successfully executed SNMP BULK GET "
-                                 "command {}".format(result), "info")
+                                     "command {}".format(result), "info")
             else:
-                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {}".format(result), "error")
+                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {}".
+                                     format(result), "error")
         except wsnmp.exception as excep:
             status = False
             testcase_Utils.pNote("SNMP BULK GET command Failed!\n{}".format(excep), "error")
@@ -624,8 +628,7 @@ class CommonSnmpActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status, output_dict
 
-    def verify_snmp_action(self, system_name, snmp_result, mib_string=None
-                           ):
+    def verify_snmp_action(self, system_name, snmp_result, mib_string=None):
         """
         Will Verify SNMP get/getnext/walk/getbulk actions.
         :Datafile usage:
@@ -642,12 +645,18 @@ class CommonSnmpActions(object):
         wdesc = "Verify the SNMP Action Results"
         Utils.testcase_Utils.pSubStep(wdesc)
 
-        errindication = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_errindication")
-        varBindTable = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_result")
-        errorstatus = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_errstatus")
-        errindex = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_errindex")
-        custom_mib_paths = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_custom_mib_paths")
-        load_mib_modules = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_load_mib_modules")
+        errindication = Utils.data_Utils.get_object_from_datarepository(
+            str(system_name)+"_errindication")
+        varBindTable = Utils.data_Utils.get_object_from_datarepository(
+            str(system_name)+"_result")
+        errorstatus = Utils.data_Utils.get_object_from_datarepository(
+            str(system_name)+"_errstatus")
+        errindex = Utils.data_Utils.get_object_from_datarepository(
+            str(system_name)+"_errindex")
+        custom_mib_paths = Utils.data_Utils.get_object_from_datarepository(
+            str(system_name)+"_custom_mib_paths")
+        load_mib_modules = Utils.data_Utils.get_object_from_datarepository(
+            str(system_name)+"_load_mib_modules")
 
         #Non-empty errorIndication string indicates SNMP engine-level error.
         #The pair of errorStatus and errorIndex variables determines SNMP
@@ -671,12 +680,14 @@ class CommonSnmpActions(object):
                     if type(varBindTable[0]) is not list:
                         # for SNMP Get/Get-Next output only
                         for name, val in varBindTable:
-                            result_list.append(snmp_utils.translate_mib(custom_mib_paths, load_mib_modules, name, val))
+                            result_list.append(snmp_utils.translate_mib(
+                                custom_mib_paths, load_mib_modules, name, val))
                     else:
                         # for SNMP Getbulk/walk output only
                         for varBindTableRow in varBindTable:
                             for name, val in varBindTableRow:
-                                result_list.append(snmp_utils.translate_mib(custom_mib_paths, load_mib_modules, name, val))
+                                result_list.append(snmp_utils.translate_mib(
+                                    custom_mib_paths, load_mib_modules, name, val))
                 else:
                     testcase_Utils.pNote("No SNMP Result Present!", 'error')
         for element in result_list:
@@ -694,7 +705,8 @@ class CommonSnmpActions(object):
                     break
         if status == False:
             if mib_string:
-                testcase_Utils.pNote('{} and {} NOT Found in SNMP Output'.format(mib_string, snmp_result))
+                testcase_Utils.pNote('{} and {} NOT Found in SNMP Output'.format(
+                    mib_string, snmp_result))
             else:
                 testcase_Utils.pNote('{} NOT Found in SNMP Output'.format(snmp_result))
         Utils.testcase_Utils.report_substep_status(status)
@@ -710,14 +722,16 @@ class CommonSnmpActions(object):
                 1. port: SNMP trap or inform port.
                 2. username(string) = snmp v3 username.
                 3. securityEngineId(string) = SNMP v3 secure engine id which is a mandatory
-                                              argument for any V3 user. both sender and reciver should know
-                                              this id. refer: http://www.net-snmp.org/tutorial/tutorial-5/commands/snmptrap-v3.html
+                                              argument for any V3 user. both sender and
+                                              receiver should know this id.
+                                              refer: http://www.net-snmp.org/tutorial/tutorial-5
+                                              /commands/snmptrap-v3.html
                 4.authKey(string) = Initial value of the secret authentication key.
                                      e.g. 'authkey1'
                 5.privKey(string) = Initial value of the secret encryption key.
                                      e.g. 'privkey1'
-                6.authProtocol(string) = An indication of whether messages sent on behalf of this USM user
-                                  can be authenticated, and if so, the type of
+                6.authProtocol(string) = An indication of whether messages sent on behalf of
+                                  this USM user can be authenticated, and if so, the type of
                                   authentication protocol which is used.
                                   supported protocols: usmNoAuthProtocol,
                                   usmHMACMD5AuthProtocol, usmHMACSHAAuthProtocol
@@ -726,7 +740,8 @@ class CommonSnmpActions(object):
                                   of this USM user be encrypted, and if so,
                                   the type of encryption protocol which is used.
                                   supported usmNoPrivProtocol(default),
-                                  usmDESPrivProtocol, usm3DESEDEPrivProtocol, usmAesCfb128Protocol
+                                  usmDESPrivProtocol, usm3DESEDEPrivProtocol,
+                                  usmAesCfb128Protocol
                                   e.g. privProtocol="1,3,6,1,6,3,10,1,2,2"
         Return: True or False
         """
@@ -752,9 +767,8 @@ class CommonSnmpActions(object):
         return status
 
     def start_trap_listener(self, system_name,
-                           custom_mib_path=None,
-                           load_mib_module='SNMPv2-MIB,SNMP-COMMUNITY-MIB'
-                           ):
+                            custom_mib_path=None,
+                            load_mib_module='SNMPv2-MIB,SNMP-COMMUNITY-MIB'):
         """
         Start trap listener on Given port and IP address. It creates a socket
         with given port and ip.The Trap listner is only for SNMP v1 and v2c and v3.
@@ -765,22 +779,28 @@ class CommonSnmpActions(object):
                       e.g. 'http://<URL>/@mib@, /data/users/MIBS/'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
-            load_mib_module: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
+            load_mib_module: User can provide the MIBS(name) need to be loaded from the
+                      path "custom_mib_path".
                       It is a string of MIB names separated by comma(',')
                       e.g. "FSS-COMMON-TC,FSS-COMMON-LOG,FSS-COMMON-SMI"
         Data File Usage:
              <ip> : Ip of the agent. It has to be IP not a hostname.
              <snmp_port>: SNMP Port. UDP port e.g. 161 or 1036.
              <snmp_trap_port> : SNMP trap port. UDP port e.g. 162 or any othe custom port.1036
-                                if NESNMP or any other SNMP protocol is using the 162 port please use any other port other than 162.
+                                if NESNMP or any other SNMP protocol is using the 162 port
+                                please use any other port other than 162.
              <community>: form this release community string is mandatory for v2 and v1 SNMP trap.
-                          you can add multiple community like 'public,testing' or single like 'public'
-             <snmp_username>: For SNMP v3 this and engine id are mandatory argument. e.g. 'user_snmp1234'
-             <securityEngineId>: One mandatory argument for V3 trap and inform.e.g. '80000F150000000000000000'.
+                          you can add multiple community like 'public,testing' or single like
+                          'public'
+             <snmp_username>: For SNMP v3 this and engine id are mandatory argument.
+                            e.g. 'user_snmp1234'
+             <securityEngineId>: One mandatory argument for V3 trap and inform.
+                            e.g. '80000F150000000000000000'.
              For noAuthNoPriv none of the bellow attributes are required.
              <authkey>: Auth password. e.g. 'authkey123'
              <authProtocol>: authProtocol e.g. 'usmHMACMD5AuthProtocol'
-                                  authProtocol(string) = An indication of whether messages sent on behalf of this USM user
+                                  authProtocol(string) = An indication of whether messages
+                                  sent on behalf of this USM user
                                   can be authenticated, and if so, the type of
                                   authentication protocol which is used.
                                   supported protocols: usmNoAuthProtocol,
@@ -798,8 +818,8 @@ class CommonSnmpActions(object):
         wdesc = "Starting Trap listener"
         Utils.testcase_Utils.pSubStep(wdesc)
         snmp_parameters = ['ip', 'snmp_trap_port', 'community', 'snmp_username',
-                            'securityEngineId', 'authkey', 'privkey',
-                            'authProtocol', 'privProtocol']
+                           'securityEngineId', 'authkey', 'privkey',
+                           'authProtocol', 'privProtocol']
         snmp_param_dic = Utils.data_Utils.get_credentials(self.datafile,
                                                           system_name,
                                                           snmp_parameters)
@@ -817,8 +837,8 @@ class CommonSnmpActions(object):
         engine = ws.get_asyncoredispatcher(port)
 
         ntfrcv.NotificationReceiver(engine, ws.trap_decoder)
-        ws.data_repo.update({"custom_mib_path":custom_mib_path,
-                        "load_mib_module":load_mib_module})
+        ws.data_repo.update({"custom_mib_path": custom_mib_path,
+                             "load_mib_module": load_mib_module})
         trap_listner_job = Thread(target=ws.create_trap_listner_job, args=(port, ))
         trap_listner_job_start = Thread(target=ws.start_trap_listner_job, args=(port,))
         trap_listner_job.daemon = True
@@ -828,9 +848,8 @@ class CommonSnmpActions(object):
             stats = ws.add_community(port, community)
             status = status and stats
         if username and securityEngineId:
-            stats = self.add_snmp_v3_user(port, username, securityEngineId,
-                                                authkey, privkey,
-                                                authProtocol, privProtocol)
+            stats = self.add_snmp_v3_user(port, username, securityEngineId, authkey, privkey,
+                                          authProtocol, privProtocol)
             status = status and stats
         sleep(1)
         trap_listner_job_start.start()
@@ -884,17 +903,20 @@ class CommonSnmpActions(object):
         port = snmp_param_dic.get('snmp_trap_port')
         op_trap = ws.data_repo.get("snmp_trap_messages_{}".format(agent_ip))
         if op_trap:
-            testcase_Utils.pNote("Total No# {} of Trap message(s) Received from {}".format(len(op_trap), agent_ip))
+            testcase_Utils.pNote("Total No# {} of Trap message(s) Received from {}"
+                                 .format(len(op_trap), agent_ip))
             for temp_list in op_trap:
                 for items in temp_list[4:]:
                     if match_oid_op_value_pair.lower() == "no":
                         if value and value in items[1]:
-                            testcase_Utils.pNote("Value# {} is present in: \n# {} = {}".format(value, items[0], items[1]))
+                            testcase_Utils.pNote("Value# {} is present in: \n# {} = {}"
+                                                 .format(value, items[0], items[1]))
                             stats.append(True)
                             break
                     elif oid_string and value:
                         if oid_string in items[0] and value in items[1]:
-                            testcase_Utils.pNote("OID #{} and Value #{} is present in: \n# {} = {}".format(oid_string, value, items[0], items[1]))
+                            testcase_Utils.pNote("OID #{} and Value #{} is present in: \n# {} = {}"
+                                                 .format(oid_string, value, items[0], items[1]))
                             stats.append(True)
                             break
                     if True in stats:
@@ -907,12 +929,12 @@ class CommonSnmpActions(object):
             status = True
         else:
             if value and oid_string:
-                testcase_Utils.pNote("OID #{} and Value #{} is NOT Present!".format(oid_string, value), "error")
+                testcase_Utils.pNote("OID #{} and Value #{} is NOT Present!"
+                                     .format(oid_string, value), "error")
             else:
                 testcase_Utils.pNote("Value #{} is NOT present!".format(oid_string, value), "error")
         Utils.testcase_Utils.report_substep_status(status)
         return status
-
 
     def show_received_traps(self, system_name):
         """
@@ -933,15 +955,18 @@ class CommonSnmpActions(object):
         sleep(5)
         op_trap = ws.data_repo.get("snmp_trap_messages_{}".format(agent_ip))
         if op_trap:
-            testcase_Utils.pNote("Total No# {} of Trap message(s) Received from {}".format(len(op_trap), agent_ip))
+            testcase_Utils.pNote("Total No# {} of Trap message(s) Received from {}"
+                                 .format(len(op_trap), agent_ip))
             for temp_list in op_trap:
                 ticks = temp_list[0].get("time_stamp")
                 contextengineid = temp_list[1].get("contextEngineId")
                 snmpver = temp_list[2].get("SNMPVER")
                 securityname = temp_list[3].get("securityName")
-                testcase_Utils.pNote(" --------->>Notification message(Time Stamp:{})<<------- \n From: {}:\n "
+                testcase_Utils.pNote(" --------->>Notification message"
+                                     "(Time Stamp:{})<<------- \n From: {}:\n "
                                      "contextEngineId :{}\n SNMPVER :{}\n securityName: {}"
-                                     .format(ticks, agent_ip, contextengineid, snmpver, securityname))
+                                     .format(ticks, agent_ip, contextengineid,
+                                             snmpver, securityname))
                 testcase_Utils.pNote("--------------")
                 for items in temp_list[4:]:
                     testcase_Utils.pNote("{} = {}".format(items[0], items[1]))
@@ -951,20 +976,20 @@ class CommonSnmpActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
-
     def browse_mib(self, mib_filepath, mib_filename, browse='yes'):
         """
         Browse the MIB File/single or multiple
         :param mib_filepath: Mib file path of the git url or abs file path
         :param mib_filename: MIB file name
-        :param browse: Default value is 'yes' were only browse the mentioned MIBS mib_filename argument,
-        if set 'no' will browse all the Mibs in the given Path
+        :param browse: Default value is 'yes' were only browse the mentioned MIBS
+        mib_filename argument,if set 'no' will browse all the Mibs in the given Path
         :return: True or False
         """
         status = True
         wdesc = "Browse the MIB File"
         Utils.testcase_Utils.pSubStep(wdesc)
-        oid, label, suffix, mibView, mibBuilder = ws.get_first_node_name(mib_filepath, mib_filename)
+        oid, label, suffix, mibView, mibBuilder = ws.get_first_node_name(mib_filepath,
+                                                                         mib_filename)
         temp_modName, nodeDesc, suffix = mibView.getNodeLocation(oid)
         while 1:
             try:
@@ -974,14 +999,20 @@ class CommonSnmpActions(object):
                 if browse.lower() == 'yes':
                     if modName in mib_filename:
                         if nodetype == 'MibScalar':
-                             testcase_Utils.pNote('%s     %s -> %s == %s' % ('$$', nodetype, modName+'::'+nodeDesc+'.0', '.'.join(map(str,(oid)))+'.0'))
+                            testcase_Utils.pNote('%s     %s -> %s == %s' % (
+                                '$$', nodetype, modName+'::'+nodeDesc+'.0',
+                                '.'.join(map(str, oid))+'.0'))
                         else:
-                             testcase_Utils.pNote('** %s -> %s == %s' % (nodetype, modName+'::'+nodeDesc, '.'.join(map(str,(oid)))))
-                elif browse.lower() == 'no' :
+                            testcase_Utils.pNote('** %s -> %s == %s' % (
+                                nodetype, modName+'::'+nodeDesc, '.'.join(map(str, oid))))
+                elif browse.lower() == 'no':
                     if nodetype == 'MibScalar':
-                         testcase_Utils.pNote('%s     %s -> %s == %s' % ('$$', nodetype, modName+'::'+nodeDesc+'.0', '.'.join(map(str,(oid)))+'.0'))
+                        testcase_Utils.pNote('%s     %s -> %s == %s' % (
+                            '$$', nodetype, modName+'::'+nodeDesc+'.0',
+                            '.'.join(map(str, oid))+'.0'))
                     else:
-                         testcase_Utils.pNote('** %s -> %s == %s' % (nodetype, modName+'::'+nodeDesc, '.'.join(map(str,(oid)))))
+                        testcase_Utils.pNote('** %s -> %s == %s' % (
+                            nodetype, modName+'::'+nodeDesc, '.'.join(map(str, oid))))
                 oid, label, suffix = mibView.getNextNodeName(oid)
             except error.SmiError:
                 break

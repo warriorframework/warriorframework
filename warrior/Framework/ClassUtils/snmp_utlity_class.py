@@ -15,10 +15,9 @@ limitations under the License.
 """SNMP utility module using the python PYSNMP module"""
 
 import os
-import re, sys, time
-from time import sleep
-from Framework.Utils import testcase_Utils, data_Utils, config_Utils
 import threading
+import time
+from Framework.Utils import testcase_Utils, data_Utils, config_Utils
 try:
     from pysnmp.entity.rfc3413.oneliner import cmdgen, ntforg
     from pysnmp import error as snmp_exception
@@ -67,13 +66,14 @@ class WSnmp(object):
     snmpEngine = {}
     mibViewController = None
     udptransport = {}
-    authProtocol = {'usmHMACMD5AuthProtocol': config.usmHMACMD5AuthProtocol,
-                    'usmHMACSHAAuthProtocol': config.usmHMACSHAAuthProtocol,
-                    'usmAesCfb128Protocol': config.usmAesCfb128Protocol,
-                    'usmAesCfb256Protocol': config.usmAesCfb256Protocol,
-                    'usmAesCfb192Protocol': config.usmAesCfb192Protocol,
-                    'usmDESPrivProtocol': config.usmDESPrivProtocol,
-                    }
+    authProtocol = {
+        'usmHMACMD5AuthProtocol': config.usmHMACMD5AuthProtocol,
+        'usmHMACSHAAuthProtocol': config.usmHMACSHAAuthProtocol,
+        'usmAesCfb128Protocol': config.usmAesCfb128Protocol,
+        'usmAesCfb256Protocol': config.usmAesCfb256Protocol,
+        'usmAesCfb192Protocol': config.usmAesCfb192Protocol,
+        'usmDESPrivProtocol': config.usmDESPrivProtocol,
+    }
 
     def __init__(self, communityname, mpModel, ipaddr, port='161',
                  snmp_timeout=60, userName=None, authKey=None, privKey=None,
@@ -154,11 +154,12 @@ class WSnmp(object):
             self.privProtocol = cmdgen.usmNoPrivProtocol
         if not self.authProtocol:
             self.authProtocol = cmdgen.usmNoAuthProtocol
-        return cmdgen.UsmUserData(userName=self.userName,
-                                  authKey=self.authKey, privKey=self.privKey,
-                                  authProtocol=self.authProtocol,
-                                  privProtocol=self.privProtocol
-                                  )
+        return cmdgen.UsmUserData(
+            userName=self.userName,
+            authKey=self.authKey, privKey=self.privKey,
+            authProtocol=self.authProtocol,
+            privProtocol=self.privProtocol
+        )
 
     def udptransporttarget(self):
         """
@@ -250,9 +251,7 @@ class WSnmp(object):
             raise
 
     @classmethod
-    def create_trap_listner_job(cls,
-                                port="162"
-                                ):
+    def create_trap_listner_job(cls, port="162"):
         """
         Create Trap listner job
         :param port:
@@ -288,7 +287,8 @@ class WSnmp(object):
         snmpEngine = cls.get_asyncoredispatcher(port)
         udptransport = udp.UdpTransport()
         cls.udptransport.update({"udptransport{}".format(port): udptransport})
-        config.addTransport(snmpEngine, udp.domainName, udptransport.openServerMode(('0.0.0.0', int(port))))
+        config.addTransport(snmpEngine, udp.domainName,
+                            udptransport.openServerMode(('0.0.0.0', int(port))))
         snmpEngine.transportDispatcher.jobStarted(1)
 
     @classmethod
