@@ -554,7 +554,11 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     #get the list of steps in the given tag - Setup/Steps/Cleanup
     step_list = common_execution_utils.get_step_list(testcase_filepath,
                                                      steps_tag, "step")
-    if not len(step_list):
+    if not step_list:
+        print_warning("Warning! cannot get steps for execution")
+        tc_status = "ERROR"
+
+    if step_list and not len(step_list):
         print_warning("step list is empty in {0} block".format(steps_tag))
 
     tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,
@@ -570,7 +574,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                       "as part of a Suite. Skipping the case execution and "
                       "it will be marked as 'ERROR'")
         tc_status = "ERROR"
-    else:
+    elif step_list:
         setup_tc_status, cleanup_tc_status = True, True
         #1.execute setup steps if testwrapperfile is present in testcase
         #and not from testsuite execution
@@ -640,18 +644,20 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
             print_debug("Test case status is: '{0}', flip status as context is "
                         "negative".format(tc_status))
             tc_status = not tc_status
-    if isinstance(tc_status, bool) and isinstance(cleanup_tc_status, bool) \
+    if step_list and isinstance(tc_status, bool) and isinstance(cleanup_tc_status, bool) \
         and tc_status and cleanup_tc_status:
         tc_status = True
     #set tc status to WARN if only cleanup fails
-    elif isinstance(tc_status, bool) and tc_status and cleanup_tc_status != True:
+    elif step_list and isinstance(tc_status, bool) and tc_status and cleanup_tc_status != True:
         print_warning("setting tc status to WARN as cleanup failed")
         tc_status = "WARN"
 
-    if tc_status == False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
+    if step_list and tc_status == False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info("Testcase status will be marked as ERROR as onError "
                    "action is set to 'abort_as_error'")
         tc_status = "ERROR"
+
+
     defectsdir = data_repository['wt_defectsdir']
     check_and_create_defects(tc_status, auto_defects, data_repository, tc_junit_object)
 
