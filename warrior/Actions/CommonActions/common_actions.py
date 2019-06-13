@@ -437,7 +437,8 @@ class CommonActions(object):
         output_dict = {time_diff: time_delta}
         if max_time_diff:
             if time_delta > int(max_time_diff):
-                print_info("The time difference is greater than max time difference so failing the step !")
-                return False
+                print_error("The time difference is greater than max time difference so failing the step !")
+                status = False
+                return status, output_dict
         status = True
         return status, output_dict

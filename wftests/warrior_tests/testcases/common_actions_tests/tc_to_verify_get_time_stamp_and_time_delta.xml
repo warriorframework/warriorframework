@@ -107,7 +107,5 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
-
-    
 	</Steps>
 </Testcase>
