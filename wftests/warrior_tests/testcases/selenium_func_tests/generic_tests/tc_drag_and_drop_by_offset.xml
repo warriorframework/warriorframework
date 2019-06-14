@@ -69,7 +69,7 @@
 			</step>
 			<step TS= '17' Driver='common_driver' Keyword='wait_for_timeout' >
 				<Arguments>
-					<argument name="timeout" value="20"/>
+					<argument name="timeout" value="30"/>
 				</Arguments>
 			</step>
         <step TS= '6' Driver='selenium_driver' Keyword='drag_and_drop_by_offset' >
