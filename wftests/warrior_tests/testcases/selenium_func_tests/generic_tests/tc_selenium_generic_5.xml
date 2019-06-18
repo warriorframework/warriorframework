@@ -134,13 +134,91 @@
 				<Arguments>
 					<argument name="system_name" value="search_element_4"/>
 				</Arguments>
-        <impact>noimpact</impact>
+        		<impact>noimpact</impact>
 			</step>
 			<step TS= '17' Driver='common_driver' Keyword='wait_for_timeout' >
 				<Arguments>
-					<argument name="timeout" value="60"/>
+					<argument name="timeout" value="15"/>
 				</Arguments>
 			</step>
+
+			<step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+            <step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+            <step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '17' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_4"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
 			<step TS= '18' Driver='selenium_driver' Keyword='drag_and_drop_an_element' >
 				<Arguments>
                     <argument name="system_name" value="search_element_4"/>
