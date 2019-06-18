@@ -3,7 +3,7 @@
      check test_loop_iterate.json json file for reference -->
 <Testcase>
         <Details>
-                <Name>test_loop_iterate_runmode</Name>
+                <Name>test_loop_iterate_runmode.xml</Name>
                 <Title>testcase to verify loop and runmode feature</Title>
                 <Engineer>Sekhar</Engineer>
                 <Date>2018-12-04</Date>
