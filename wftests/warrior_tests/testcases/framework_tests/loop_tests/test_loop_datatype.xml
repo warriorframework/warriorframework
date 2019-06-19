@@ -51,9 +51,9 @@
 			<!-- message1 is string in provided json file -->
                 <step Driver="log_driver" Keyword="log_message" TS="1" draft="no">
                         <Arguments>
-                                <argument name="list_message" value="list1"/>
+				<argument name="list_message" value="${LOOP.list1}"/>
                                 <argument name="type" value="INFO"/>
-                                <argument name="message" value="message1"/>
+				<argument name="message" value="${LOOP.message1}"/>
                         </Arguments>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Operator="eq"/>
@@ -69,7 +69,7 @@
 		<step Driver="log_driver" Keyword="log_message" TS="2" draft="no">
 			<!-- dict1 is dict type in provided json file -->
                         <Arguments>
-                                <argument name="dict_message" value="dict1"/>
+				<argument name="dict_message" value="${LOOP.dict1}"/>
                                 <argument name="type" value="INFO"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>

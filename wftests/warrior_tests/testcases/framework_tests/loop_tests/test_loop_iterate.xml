@@ -23,7 +23,7 @@
                 <step Driver="log_driver" Keyword="log_message" TS="1" draft="no">
                         <Arguments>
                                 <argument name="type" value="INFO"/>
-                                <argument name="message" value="This is First Step which is not in loop"/>
+				<argument name="message" value="This is First Step which is not in loop"/>
                         </Arguments>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Operator="eq"/>
@@ -40,13 +40,11 @@
 			<!-- steps in this loop will be iterated 3 times because 3 dicts are given in json file.
 			     for each iteration, one dict from json will be processed in given order -->
                 <step Driver="log_driver" Keyword="log_message" TS="1" draft="no">
-			<!-- value message1 is provided in json file, so this gets substituted 
-			     with value given in json for every iteration -->
-			<!-- INFO is not provided in json file for substitution, 
-			     so it is used as it is without any substitution -->
+			<!-- value is ${LOOP.message1}, message1 gets substituted from loop json file, 
+			     this gets substituted with respective value in json for every iteration -->
                         <Arguments>
                                 <argument name="type" value="INFO"/>
-                                <argument name="message" value="message1"/>
+				<argument name="message" value="This is constant-${LOOP.message1}"/>
                         </Arguments>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Operator="eq"/>
@@ -63,7 +61,7 @@
 			<!-- message2 is string in provided json file -->
                         <Arguments>
                                 <argument name="type" value="INFO"/>
-                                <argument name="message" value="message2"/>
+				<argument name="message" value="${LOOP.message2}"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>
@@ -77,7 +75,7 @@
 			<!-- message3 is string in provided json file -->
                         <Arguments>
                                 <argument name="type" value="INFO"/>
-                                <argument name="message" value="message3"/>
+				<argument name="message" value="This is multiple substitution-${LOOP.message3}-${LOOP.message4}"/>
                         </Arguments>
                         <Execute ExecType="Yes"/>
                         <onError action="next"/>

@@ -19,7 +19,7 @@ import json
 
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_warning, print_info, print_error
-from Framework.Utils.data_Utils import get_object_from_datarepository
+from Framework.Utils.data_Utils import get_object_from_datarepository, update_datarepository
 from Framework.Utils.file_Utils import getAbsPath
 
 """ Module that contains common utilities required for execution """
@@ -85,6 +85,8 @@ def get_step_list(filepath, step_tag, sub_step_tag, loop_tag="Loop"):
                 filepath = getAbsPath(json_file, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     json_doc = json.load(json_handle)
+                    loop_json = {"loop_json" : json_doc}
+                    update_datarepository(loop_json)
                     if not isinstance(json_doc, list):
                         valid_json = False
                         print_error('invalid json format specified,'
@@ -111,8 +113,7 @@ def get_step_list(filepath, step_tag, sub_step_tag, loop_tag="Loop"):
             if not valid_json:
                 return False
 
-            for iter_number, iter_json in enumerate(json_doc):
-                print_info("json doc : {}".format(iter_json))
+            for iter_number, _ in enumerate(json_doc):
                 for step_number, loop_step in enumerate(loop_steps):
                     copy_step = copy.deepcopy(loop_step)
                     copy_step.set("loop_id", "Loop{}-Step{}-Iter{}".\
@@ -121,8 +122,16 @@ def get_step_list(filepath, step_tag, sub_step_tag, loop_tag="Loop"):
                     if arguments is not None and arguments is not False:
                         for argument in arguments.findall('argument'):
                             arg_value = argument.get('value')
-                            if arg_value is not None and iter_json.get(arg_value):
-                                argument.set("value", str(iter_json[arg_value]))
+                            if "${LOOP." in arg_value:
+                                arg_value = Utils.data_Utils.sub_from_loop_json(arg_value,
+                                                                                iter_number)
+                                if arg_value is None:
+                                    print_error("cannot substitute all Loop variables of '{}' "
+                                                "from loop json file, please provide missing "
+                                                "variables in {} file"
+                                                .format(argument.get('value'), filepath))
+                                    return False
+                                argument.set("value", arg_value)
                     step_list.append(copy_step)
 
     if root.tag == 'Project' or root.tag == 'TestSuite':

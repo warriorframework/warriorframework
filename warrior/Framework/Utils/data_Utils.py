@@ -975,7 +975,7 @@ def verify_cmd_response(match_list, context_list, command, response,
             verification_text = "verification "
             verification_text += "success" if result else "failed"
             msg = "Response " if found else "No response "
-            msg += "found from command '{0}' on {2} :[{1}]:".format(
+            msg += "found from command '{0}' on {2} :[{1}]:".format(\
                             command, verification_text, verify_on_system)
             testcase_Utils.pNote(msg)
         else:
@@ -1622,7 +1622,7 @@ def get_filepath_from_system(datafile, system_name, *args):
     return abspath_lst
 
 
-def get_var_by_string_prefix(string):
+def get_var_by_string_prefix(string, iter_number=None):
     """Get value from Environment variable or data repo
     """
     if string.startswith("ENV."):
@@ -1630,10 +1630,15 @@ def get_var_by_string_prefix(string):
     if string.startswith("REPO."):
         keys = string.split('.', 1)
         return get_object_from_datarepository(keys[1])
+    if string.startswith("LOOP."):
+        keys = string.split('.', 1)
+        loop_json = get_object_from_datarepository('loop_json')
+        value = loop_json[iter_number][keys[1]]
+        return str(value)
 
 
 def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
-                                 end_pattern="}", prefix="ENV"):
+                                 end_pattern="}", prefix="ENV", iter_number=None):
     """Takes a key value pair or string (value) as input in raw_value,
         if the value has a pattern matching ${ENV.env_variable_name}.
     Searches for the env_variable_name in the environment and replaces
@@ -1649,7 +1654,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
     source could be environment or datarepository for now.
     """
     error_msg1 = ("Could not find any %s variable {0!r} corresponding to {1!r}"
-                  " provided in input data/testdata file.\nWill default to "
+                  " provided in input data/testdata/loopjson file.\nWill default to "
                   "None") % (prefix)
     error_msg2 = ("Unable to substitute %s variable {0!r} corresponding to "
                   "{1!r} provided in input data/testdata file.\nThe value "
@@ -1700,7 +1705,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                             raw_value[k] = tuc_obj.rem_nonprintable_ctrl_chars(raw_value[k])
                             raw_value[k] = ast.literal_eval(raw_value[k])
                         except Exception as exc:
-                            print_error("Error - " + error_msg2.format(
+                            print_error("Error - " + error_msg2.format(\
                                         string, value, raw_value[k], exc))
     elif isinstance(raw_value, str):
         extracted_var = string_Utils.return_quote(str(raw_value),
@@ -1711,11 +1716,10 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
             for string in extracted_var:
                 try:
                     raw_value = raw_value.replace(start_pattern+string+end_pattern,
-                                                  get_var_by_string_prefix(string))
+                                                  get_var_by_string_prefix(string, iter_number))
                 except KeyError:
                     print_error(error_msg1.format(string, raw_value))
                     raw_value = None
-
     return raw_value
 
 
@@ -1730,6 +1734,10 @@ def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "REPO")
 
+def sub_from_loop_json(raw_value, iter_number, start_pattern="${", end_pattern="}"):
+    """wrapper function for subst_var_patterns_by_prefix"""
+    return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
+                                        prefix="LOOP", iter_number=iter_number)
 
 def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
     """substitute variable inside start and end pattern
@@ -1739,7 +1747,7 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
                 'REPO': ('data repository', get_object_from_datarepository)}
     error_msg = ("Could not find any {0} variable {1!r} corresponding to {2!r}"
                  " provided in input data/testdata file.\nWill default to None"
-                 )
+                )
     if raw_value is None:
         return raw_value
     elif isinstance(raw_value, str):
@@ -1768,7 +1776,7 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
     else:
         print_error("Unsupported format - raw_value should either be a string,"
                     " list or dictionary")
-        print_error("raw_value: #{}# and its type is {}".format(
+        print_error("raw_value: #{}# and its type is {}".format(\
                                     raw_value, type(raw_value)))
     return raw_value
 
@@ -1888,14 +1896,14 @@ def get_nc_config_string(config_datafile, config_name, var_configfile=None):
                 for filepath in filepath_list:
                     if filepath:
                         rel_path = filepath.firstChild.data
-                        abs_filepath = file_Utils.getAbsPath(
+                        abs_filepath = file_Utils.getAbsPath(\
                                         rel_path, os.path.dirname(config_datafile))
                         root = xml_Utils.get_document_root(abs_filepath)
                         config_node = xml_Utils.get_child_with_matching_tag(root, "config")
                         if config_node:
                             configuration = xml_Utils.convert_dom_to_string(config_node)
                             if var_configfile:
-                                configuration = sub_from_varconfigfile(
+                                configuration = sub_from_varconfigfile(\
                                                     configuration, var_configfile)
                             configuration_list.append(configuration)
                         else:
@@ -1904,7 +1912,7 @@ def get_nc_config_string(config_datafile, config_name, var_configfile=None):
 
                 if not filepath_list:
                     testcase_Utils.pNote("neither <config> nor a file containing <config> provided"
-                                         " for the config_data = {0} in config file = {1}".format(
+                                         " for the config_data = {0} in config file = {1}".format(\
                                                             config_name, config_datafile), "error")
                     status = "error"
         else:
