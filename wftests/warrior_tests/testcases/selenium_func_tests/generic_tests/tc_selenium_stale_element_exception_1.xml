@@ -34,7 +34,7 @@
                 <step TS= '3' Driver='selenium_driver' Keyword='get_element_by_link_text' >
                     <Arguments>
                         <argument name="system_name" value="search_element"/>
-                        <argument name="link_text" value="Log in"/>
+                        <argument name="link_text" value="Log In"/>
                     </Arguments>
                 </step> 
                 <step TS= '4' Driver='selenium_driver' Keyword='get_element_by_name' >
@@ -62,7 +62,7 @@
                 <step TS= '7' Driver='selenium_driver' Keyword='click_an_element' >
                     <Arguments>
                         <argument name="system_name" value="search_element"/>
-                        <argument name="locator" value="Log in"/>
+                        <argument name="locator" value="Log In"/>
                         <argument name="locator_type" value="link"/>
                     </Arguments>
                 </step>
