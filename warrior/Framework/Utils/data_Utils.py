@@ -331,7 +331,6 @@ def update_datarepository(input_dict):
     data_repository = config_Utils.data_repository
     data_repository.update(input_dict)
 
-
 def get_object_from_datarepository(object_key, verbose=True):
     """ Gets the value for the object with the provided name from data repository.
     object_key contains .(dot) will be treated as nested key """
@@ -409,6 +408,9 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             start_pat = _get_pattern_list(testdata, global_obj)
             end_pat = _get_pattern_list(testdata, global_obj, pattern="end")
             details_dict = sub_from_env_var(details_dict, start_pat, end_pat)
+            iter_number = get_object_from_datarepository("loop_iter_number")
+            if iter_number is not None:
+                details_dict = sub_from_loop_json(details_dict, iter_number, start_pat, end_pat)
 
             print_info("var_sub:{0}".format(var_sub))
             td_obj = TestData()
@@ -419,6 +421,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
                                                     kw_system_name=system_name)
             details_dict = sub_from_env_var(details_dict)
             details_dict = sub_from_data_repo(details_dict)
+            details_dict = sub_from_loop_json(details_dict, iter_number)
 
             td_iter_obj = TestDataIterations()
             details_dict, cmd_loc_list = td_iter_obj.resolve_iteration_patterns(details_dict)
@@ -1674,10 +1677,11 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                         if isinstance(raw_value[k], (str, unicode)):
                             raw_value[k] = raw_value[k].replace(
                                 start_pattern+string+end_pattern,
-                                get_var_by_string_prefix(string))
+                                get_var_by_string_prefix(string, iter_number))
                         elif isinstance(raw_value[k], (list, dict)):
                             raw_value[k] = str(raw_value[k]).replace(
-                                start_pattern+string+end_pattern, get_var_by_string_prefix(string))
+                                start_pattern+string+end_pattern,\
+                                get_var_by_string_prefix(string, iter_number))
                             raw_value[k] = ast.literal_eval(raw_value[k])
                         else:
                             print_error("Unsupported format - " +

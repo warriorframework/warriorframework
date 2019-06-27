@@ -75,8 +75,7 @@ def get_step_list(filepath, step_tag, sub_step_tag, loop_tag="Loop"):
         elif child_node.tag == loop_tag:
             loop_count += 1
             json_file = child_node.get("file").strip()
-            if "${ENV." in json_file:
-                json_file = Utils.data_Utils.sub_from_env_var(json_file)
+            json_file = Utils.data_Utils.sub_from_env_var(json_file)
             print_info("file is {}".format(json_file))
             loop_steps = child_node.findall(sub_step_tag)
             testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
@@ -118,20 +117,20 @@ def get_step_list(filepath, step_tag, sub_step_tag, loop_tag="Loop"):
                     copy_step = copy.deepcopy(loop_step)
                     copy_step.set("loop_id", "Loop{}-Step{}-Iter{}".\
                             format(loop_count, step_number+1, iter_number+1))
+                    copy_step.set("loop_iter_number", iter_number)
                     arguments = copy_step.find('Arguments')
                     if arguments is not None and arguments is not False:
                         for argument in arguments.findall('argument'):
                             arg_value = argument.get('value')
-                            if "${LOOP." in arg_value:
-                                arg_value = Utils.data_Utils.sub_from_loop_json(arg_value,
-                                                                                iter_number)
-                                if arg_value is None:
-                                    print_error("cannot substitute all Loop variables of '{}' "
-                                                "from loop json file, please provide missing "
-                                                "variables in {} file"
-                                                .format(argument.get('value'), filepath))
-                                    return False
-                                argument.set("value", arg_value)
+                            arg_value = Utils.data_Utils.sub_from_loop_json(arg_value,
+                                                                            iter_number)
+                            if arg_value is None:
+                                print_error("cannot substitute all Loop variables of '{}' "
+                                            "from loop json file, please provide missing "
+                                            "variables in {} file"
+                                            .format(argument.get('value'), filepath))
+                                return False
+                            argument.set("value", arg_value)
                     step_list.append(copy_step)
 
     if root.tag == 'Project' or root.tag == 'TestSuite':
