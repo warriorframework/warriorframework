@@ -46,7 +46,7 @@
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-		<Loop file="test_loop_datatype.json">
+                <Loop id="1" file="../../../config_files/loop_tests/lj_loop_datatype.json">
 			<!-- list1 is of list type in provided json file -->
 			<!-- message1 is string in provided json file -->
                 <step Driver="log_driver" Keyword="log_message" TS="1" draft="no">

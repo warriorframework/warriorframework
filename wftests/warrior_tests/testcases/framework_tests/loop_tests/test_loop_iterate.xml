@@ -36,7 +36,7 @@
                         <runmode type="Standard" value=""/>
                         <Iteration_type type="standard"/>
                 </step>
-		<Loop file="test_loop_iterate.json">
+                <Loop id="1" file="../../../config_files/loop_tests/lj_loop_iterate.json">
 			<!-- steps in this loop will be iterated 3 times because 3 dicts are given in json file.
 			     for each iteration, one dict from json will be processed in given order -->
                 <step Driver="log_driver" Keyword="log_message" TS="1" draft="no">
