@@ -1,0 +1,12 @@
+[
+	{
+	"list1" : ["hello1", "hello2"],
+	"message1" : "Hey boy",
+	"dict1" : {"first fruit": "fruit1", "next fruit": "fruit2"}
+	},
+	{
+	"list1" : ["hey1", "hey2"],
+	"message1" : "Hey girl",
+	"dict1" : {"yummy fruit": "fruit1", "king of fruit": "fruit2"}
+	}
+]
