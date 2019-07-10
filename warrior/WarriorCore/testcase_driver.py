@@ -20,6 +20,8 @@ import sys
 import os
 import time
 import shutil
+import ast
+import xml.etree.ElementTree as et
 from WarriorCore.defects_driver import DefectsDriver
 from WarriorCore import custom_sequential_kw_driver, custom_parallel_kw_driver
 from WarriorCore import iterative_sequential_kw_driver, iterative_parallel_kw_driver,\
@@ -29,6 +31,9 @@ import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import convertLogic
 from Framework.Utils.print_Utils import print_info, print_warning, print_error,\
     print_debug, print_exception
+from Framework.ClassUtils.kafka_utils_class import WarriorKafkaProducer
+from json import loads, dumps
+from Framework.Utils.data_Utils import getSystemData, _get_system_or_subsystem
 import Framework.Utils.email_utils as email
 
 
@@ -549,7 +554,11 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     #get the list of steps in the given tag - Setup/Steps/Cleanup
     step_list = common_execution_utils.get_step_list(testcase_filepath,
                                                      steps_tag, "step")
-    if not len(step_list):
+    if not step_list:
+        print_warning("Warning! cannot get steps for execution")
+        tc_status = "ERROR"
+
+    if step_list and not len(step_list):
         print_warning("step list is empty in {0} block".format(steps_tag))
 
     tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,
@@ -565,7 +574,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                       "as part of a Suite. Skipping the case execution and "
                       "it will be marked as 'ERROR'")
         tc_status = "ERROR"
-    else:
+    elif step_list:
         setup_tc_status, cleanup_tc_status = True, True
         #1.execute setup steps if testwrapperfile is present in testcase
         #and not from testsuite execution
@@ -635,18 +644,20 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
             print_debug("Test case status is: '{0}', flip status as context is "
                         "negative".format(tc_status))
             tc_status = not tc_status
-    if isinstance(tc_status, bool) and isinstance(cleanup_tc_status, bool) \
+    if step_list and isinstance(tc_status, bool) and isinstance(cleanup_tc_status, bool) \
         and tc_status and cleanup_tc_status:
         tc_status = True
     #set tc status to WARN if only cleanup fails
-    elif isinstance(tc_status, bool) and tc_status and cleanup_tc_status != True:
+    elif step_list and isinstance(tc_status, bool) and tc_status and cleanup_tc_status != True:
         print_warning("setting tc status to WARN as cleanup failed")
         tc_status = "WARN"
 
-    if tc_status == False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
+    if step_list and tc_status == False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info("Testcase status will be marked as ERROR as onError "
                    "action is set to 'abort_as_error'")
         tc_status = "ERROR"
+
+
     defectsdir = data_repository['wt_defectsdir']
     check_and_create_defects(tc_status, auto_defects, data_repository, tc_junit_object)
 
@@ -672,7 +683,51 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                 "tc", tc_timestamp)
     tc_junit_object.update_attr("logsdir", os.path.dirname(data_repository['wt_logsdir']),
                                 "tc", tc_timestamp)
-
+    data_file = data_repository["wt_datafile"]
+    system_name = ""
+    try:
+        tree = et.parse(data_file)
+        for elem in tree.iter():
+            if elem.tag == "system":
+                for key, value in elem.items():
+                    if value == "kafka_producer":
+                        system_name = elem.get("name")
+                        break
+    except:
+        pass
+    if system_name:
+        junit_file_obj = data_repository['wt_junit_object']
+        root = junit_file_obj.root
+        suite_details = root.findall("testsuite")[0]
+        test_case_details = suite_details.findall("testcase")[0]
+        print_info("kafka server is presented in Inputdata file..")
+        system_details = _get_system_or_subsystem(data_file, system_name)
+        data = {}
+        for item in system_details.getchildren():
+            if item.tag == "kafka_port":
+                ssh_port = item.text
+                continue
+            if item.tag == "ip":
+                ip_address = item.text
+                continue
+            try:
+                value = ast.literal_eval(item.text)
+            except ValueError:
+                value = item.text
+            data.update({item.tag: value})
+        ip_port = ["{}:{}".format(ip_address, ssh_port)]
+        data.update({"bootstrap_servers": ip_port})
+        data.update({"value_serializer": lambda x: dumps(x).encode('utf-8')})
+        try:
+            producer = WarriorKafkaProducer(**data)
+            producer.send_messages('warrior_results', suite_details.items())
+            producer.send_messages('warrior_results', test_case_details.items())
+            print_info("message published to topic: warrior_results {}".format(
+                suite_details.items()))
+            print_info("message published to topic: warrior_results {}".format(
+                test_case_details.items()))
+        except:
+            print_warning("Unable to connect kafka server !!")
     report_testcase_result(tc_status, data_repository, tag=steps_tag)
     if not from_ts:
         tc_junit_object.update_count(tc_status, "1", "pj", "not appicable")

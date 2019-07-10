@@ -24,6 +24,7 @@ import Framework.Utils as Utils
 from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.Utils.print_Utils import print_error
 from Framework.Utils import string_Utils
+from Framework.Utils import data_Utils
 
 
 class WRest(object):
@@ -224,18 +225,12 @@ class WRest(object):
                     try:
                         expected_api_response = JSON.load(open(expected_api_response, 'r'))
                         for key, value in expected_api_response.items():
-                            # replacing the environment variable with value in the verify json
-                            if "${" in value:
-                                s_out = value.split("}")[0]
-                                env_var = s_out.split(".")[-1]
-                                env_value = os.getenv(env_var)
-                                if env_value is None:
-                                    print_error("The env var {} is not presented in environment variables so unable to "
-                                                "fetch the value ".format(env_var))
-                                    return False
-                                pattern = r'(\$\{.*\})'
-                                line = re.sub(pattern, env_value, value)
-                                expected_api_response[key] = line
+                            # replacing the environment/repo variable with value in the verify json
+                            dict_key_value = {key: value}
+                            env_out = data_Utils.sub_from_env_var(dict_key_value)
+                            details_dict = data_Utils.sub_from_data_repo(dict_key_value)
+                            expected_api_response[key] = env_out[key]
+                            expected_api_response[key] = details_dict[key]
                     except IOError as exception:
                         if ".json" == extension:
                             pNote("File does not exist in the"

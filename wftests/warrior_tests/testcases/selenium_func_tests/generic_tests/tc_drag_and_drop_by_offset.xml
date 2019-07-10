@@ -21,7 +21,92 @@
                 <argument name="url" value="http://www.seleniumlearn.com/drag-and-drop-html"/>
             </Arguments>
         </step>
-        <step TS= '2' Driver='selenium_driver' Keyword='drag_and_drop_by_offset' >
+
+        <step TS= '2' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+            <step TS= '3' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '4' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+        <step TS= '5' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+            <step TS= '6' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '7' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+        <step TS= '8' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+            <step TS= '9' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '10' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+         <step TS= '11' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+            <step TS= '12' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '13' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+        <step TS= '14' Driver='selenium_driver' Keyword='drag_and_drop_by_offset' >
              <Arguments>
                  <argument name="system_name" value="search_element"/>
                  <argument name="source_locator_type" value="xpath"/>
@@ -30,27 +115,112 @@
                  <argument name="yoffset" value="100"/>
              </Arguments>
         </step>
-        <step TS= '3' Driver='selenium_driver' Keyword='browser_launch' >
+        <step TS= '15' Driver='selenium_driver' Keyword='browser_launch' >
             <Arguments>
                 <argument name="system_name" value="search_element_1"/>
                 <argument name="url" value="http://www.seleniumlearn.com/drag-and-drop-html"/>
             </Arguments>
         </step>
-        <step TS= '4' Driver='selenium_driver' Keyword='set_window_size' >
+        <step TS= '16' Driver='selenium_driver' Keyword='set_window_size' >
              <Arguments>
                  <argument name="system_name" value="search_element_1"/>
                  <argument name="xsize" value="1900"/>
                  <argument name="ysize" value="1000"/>
              </Arguments>
         </step>
-        <step TS= '5' Driver='selenium_driver' Keyword='set_window_position' >
+        <step TS= '17' Driver='selenium_driver' Keyword='set_window_position' >
              <Arguments>
                  <argument name="system_name" value="search_element_1"/>
                  <argument name="xpos" value="40"/>
                  <argument name="ypos" value="0"/>
              </Arguments>
         </step>
-        <step TS= '6' Driver='selenium_driver' Keyword='drag_and_drop_by_offset' >
+
+        <step TS= '18' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+            <step TS= '19' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '20' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+        <step TS= '21' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+            <step TS= '22' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '23' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+        <step TS= '24' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+            <step TS= '25' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '26' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+         <step TS= '27' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+            <step TS= '28' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+			<step TS= '29' Driver='selenium_driver' Keyword='perform_keypress' >
+				<Arguments>
+					<argument name="system_name" value="search_element_1"/>
+                    <argument name="keys" value="DOWN"/>
+				</Arguments>
+			</step>
+
+        <step TS= '30' Driver='selenium_driver' Keyword='drag_and_drop_by_offset' >
              <Arguments>
                  <argument name="system_name" value="search_element_1"/>
                  <argument name="source_locator_type" value="xpath"/>
@@ -59,12 +229,12 @@
                  <argument name="yoffset" value="100"/>
              </Arguments>
         </step>
-        <step TS= '7' Driver='selenium_driver' Keyword='browser_close' >
+        <step TS= '31' Driver='selenium_driver' Keyword='browser_close' >
             <Arguments>
                 <argument name="system_name" value="search_element"/>
             </Arguments>
         </step>
-        <step TS= '8' Driver='selenium_driver' Keyword='browser_close' >
+        <step TS= '32' Driver='selenium_driver' Keyword='browser_close' >
             <Arguments>
                 <argument name="system_name" value="search_element_1"/>
             </Arguments>

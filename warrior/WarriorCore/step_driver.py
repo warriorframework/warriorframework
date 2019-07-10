@@ -151,6 +151,8 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     # print keyword to result file
     Utils.testcase_Utils.pKeyword(keyword, driver)
     print_info("step number: {0}".format(step_num))
+    if step.get("loop_id"):
+        print_info("loop id: {0}".format(step.get("loop_id")))
     print_info("Teststep Description: {0}".format(step_description))
 
     if step.find("retry") is not None and step.find("retry").get("attempt") is not None:
@@ -250,10 +252,15 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     #to append keyword name with Setup/Cleanup in testcase report
     if data_repository['wt_step_type'] != 'step':
         keyword = data_repository['wt_step_type']+ "--" + keyword
+    if step.get("loop_id"):
+        loop_id = step.get("loop_id") + " | "
+    else:
+        loop_id = ""
+
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
                        kw_resultfile, impact, onerror, step_description,
-                       info=str(args_repository), tc_name=tc_name,
+                       info=str(loop_id) + str(args_repository), tc_name=tc_name,
                        tc_resultsdir=tc_resultsdir)
 
     if parallel is True:

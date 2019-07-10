@@ -406,7 +406,7 @@ class CommonActions(object):
         status = True
         return status, output_dict
 
-    def get_time_delta(self, start_time, end_time=None, time_diff="time_diff"):
+    def get_time_delta(self, start_time, end_time=None, time_diff="time_diff", max_time_diff=None):
         """Returns time difference between two timestamps in seconds.
            :Arguments:
                 1. start_time = start time key in the data repository,
@@ -417,7 +417,9 @@ class CommonActions(object):
                                           value should be datetime object in data repo.
                                           Ex: 'timestamp2'
 
-                  3. time_diff(optional) = time diff key in the data repository
+                3. time_diff(optional) = time diff key in the data repository
+
+                4. max_time_diff(optional) = maximum cutoff time.
 
            :Returns:
                   1. status(boolean)
@@ -433,5 +435,10 @@ class CommonActions(object):
         time_delta = datetime_utils.get_time_delta(start_time=start_time, end_time=end_time)
         print_info("delta between given timestamps : {0} seconds".format(time_delta))
         output_dict = {time_diff: time_delta}
+        if max_time_diff:
+            if time_delta > int(max_time_diff):
+                print_error("The time difference is greater than max time difference so failing the step !")
+                status = False
+                return status, output_dict
         status = True
         return status, output_dict

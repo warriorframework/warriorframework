@@ -32,6 +32,7 @@ from Framework.Utils.data_Utils import get_object_from_datarepository
 from WarriorCore.Classes.warmock_class import mocked
 from timeit import itertools
 from Framework.Utils.config_Utils import data_repository
+from WarriorCore.Classes.war_cli_class import WarriorCliClass
 
 """ Module for performing CLI operations """
 
@@ -655,9 +656,12 @@ class WarriorCli(object):
                                               log=log)
 
         if sleeptime > 0:
-            pNote("Sleep time of '{0} seconds' requested post command "
+            if not WarriorCliClass.mock:
+                pNote("Sleep time of '{0} seconds' requested post command "
                   "execution".format(sleeptime))
-            Utils.datetime_utils.wait_for_timeout(sleeptime)
+                Utils.datetime_utils.wait_for_timeout(sleeptime)
+            else:
+                pNote("Sleep time is skipped because as it is running in mock mode")
 
         try:
             remote_resp_dict = self.get_response_dict(
