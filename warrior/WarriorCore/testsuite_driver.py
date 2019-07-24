@@ -15,6 +15,7 @@ import os
 import time
 import traceback
 import shutil
+import random
 import sequential_testcase_driver
 import parallel_testcase_driver
 import testcase_driver
@@ -65,10 +66,18 @@ def get_suite_details(testsuite_filepath, data_repository, from_project,
     suite_name = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'Name')
     suite_title = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'Title')
     suite_exectype = testsuite_utils.get_exectype_from_xmlfile(testsuite_filepath)
+    suite_random_exec = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'random_tc_Execution')
     def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(testsuite_filepath)
     def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                       'Details',
                                                                       'default_onError', 'value')
+    if suite_random_exec:
+        print("suite_random_exec is {0}".format(suite_random_exec))
+        if suite_random_exec.lower() == "true":
+            suite_random_exec = True
+        else:
+            suite_random_exec = False
+
     filename = os.path.basename(testsuite_filepath)
     nameonly = Utils.file_Utils.getNameOnly(filename)
     operating_system = sys.platform
@@ -126,6 +135,7 @@ def get_suite_details(testsuite_filepath, data_repository, from_project,
     suite_repository['junit_resultfile'] = junit_resultfile
     suite_repository['ws_results_execdir'] = ws_results_execdir
     suite_repository['ws_logs_execdir'] = ws_logs_execdir
+    suite_repository['suite_random_exec'] = suite_random_exec
     if data_file is not False:
         suite_repository['data_file'] = data_file
 
@@ -221,6 +231,10 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                          from_project, res_startdir, logs_startdir)
     testcase_list = common_execution_utils.get_step_list(testsuite_filepath,
                                                          "Testcases", "Testcase")
+    if data_repository.get("random_tc_execution", False) or suite_repository['suite_random_exec']:
+        print_info("Executing test cases in suite in random order")
+        random.shuffle(testcase_list)
+
     execution_type = suite_repository['suite_exectype'].upper()
     no_of_tests = str(len(testcase_list))
 
