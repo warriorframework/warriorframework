@@ -17,9 +17,9 @@ limitations under the License.
 import traceback
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
 import Framework.Utils as Utils
-from Framework.Utils import file_Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_error, print_exception
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
+# pylint: disable=invalid-name,locally-disabled
 
 
 def get_arguments(step):
@@ -184,8 +184,21 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     print_info("")
     print_info("*** Keyword status ***")
     step_goto_value = False
+    # getting the values of onerror and onexception
     step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
         step, 'onError', 'action')
+    step_onexception_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
+        step, 'onException', 'action')
+
+    if step_onexception_action == "abort" and not step_onError_action:
+        step_onError_action = step_onexception_action
+    elif step_onexception_action == "abort" and step_onError_action and \
+            keyword_status == "EXCEPTION":
+        step_onError_action = step_onexception_action
+    elif step_onexception_action == "next" and step_onError_action and \
+            keyword_status == "EXCEPTION":
+        step_onError_action = step_onexception_action
+
     if step_onError_action is not False:
         if step_onError_action.upper() == 'GOTO':
             step_goto_value = Utils.xml_Utils.get_attributevalue_from_directchildnode(

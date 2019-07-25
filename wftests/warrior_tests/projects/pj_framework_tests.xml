@@ -58,5 +58,11 @@
             <onError action="next" value=""/>
             <impact>impact</impact>
         </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/on_error_goto/ts_onerror_onexception_tag_in_step_scs.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
     </Testsuites>
 </Project>

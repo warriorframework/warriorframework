@@ -301,11 +301,23 @@ class TestCaseStepsExecutionClass:
         """
         This function will execute a step's onError functionality
         """
+        step_onexception_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
+            self.current_step, 'onException', 'action')
+        step_onerror_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
+            self.current_step, 'onError', 'action')
+        if step_onexception_action == "abort" and not step_onerror_action:
+            self.default_error_action = step_onexception_action
+        elif step_onexception_action == "abort" and step_onerror_action and step_status == "EXCEPTION":
+            self.default_error_action = step_onexception_action
+        elif step_onexception_action == "next" and step_onerror_action and step_status == "EXCEPTION":
+            self.default_error_action = step_onexception_action
+
         if step_status is False or str(step_status).upper() in ["ERROR", "EXCEPTION"]:
             self.go_to_step_number = onerror_driver.main(self.current_step,
                                                          self.default_error_action,
                                                          self.default_error_value,
-                                                         skip_invoked=self.skip_invoked)
+                                                         skip_invoked=self.skip_invoked,
+                                                         current_step_status=step_status)
             if self.go_to_step_number in ['ABORT', 'ABORT_AS_ERROR']:
                 return self.current_step_number, self.go_to_step_number, "break"
             # when 'onError:goto' value is less than the current step num,

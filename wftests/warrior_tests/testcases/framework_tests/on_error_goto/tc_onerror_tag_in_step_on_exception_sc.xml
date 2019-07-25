@@ -1,0 +1,99 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_onerror_tag_in_step_on_exception_sc</Name>
+		<Title>tc_onerror_tag_in_step_on_exception_sc</Title>
+		<Engineer>Anil Kumar</Engineer>
+		<Date>28-05-2019</Date>
+		<Time>15:04</Time>
+		<InputDataFile>../../../data/framework_tests/data_iter_ts.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+		<step Driver="netconf_driver" Keyword="connect_netconf" TS="1">
+			<Arguments>
+				<argument name="system_name" value="ConfD"/>
+			</Arguments>
+            <onError action="next"/>
+			<Description>connect_netconf</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="netconf_driver" Keyword="create_subscription" TS="3">
+            <Arguments>
+                <argument name="system_name" value="ConfD"/>
+                <argument name="session_name" value="session1"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>creating subscription</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="netconf_driver" Keyword="create_subscription" TS="3">
+            <Arguments>
+                <argument name="system_name" value="ConfD"/>
+                <argument name="session_name" value="session1"/>
+            </Arguments>
+            <onError action="abort"/>
+            <Description>creating subscription</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+        </step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="2">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="demovalue"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="2">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="demovaluee"/>
+				<argument name="comparison" value="eq"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+        <step Driver="common_driver" Keyword="verify_data" TS="3">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="sample"/>
+				<argument name="comparison" value="eq"/>
+			</Arguments>
+			<onError action="abort"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+        <step Driver="common_driver" Keyword="store_in_repo" TS="4">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="demovalue"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+	</Steps>
+</Testcase>

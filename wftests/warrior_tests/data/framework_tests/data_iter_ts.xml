@@ -10,5 +10,18 @@
     <system name="3">
         <filename>3.txt</filename>
     </system>
+    <system name="ConfD">
+        <ip>9.9.9.9</ip>
+        <nc_port>22</nc_port>
+        <username>warrior</username>
+        <password>warrior</password>
+        <timeout>30</timeout>
+        <hostkey_verify>False</hostkey_verify>
+        <allow_agent>False</allow_agent>
+        <look_for_keys>False</look_for_keys>
+        <device_name>default</device_name>
+
+    </system>
+
 </credentials>
 

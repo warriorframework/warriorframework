@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_onerror_onexception_tag_in_step_scs</Name>
+                <Title>test suite with onerror and onexception tags in the step</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>05/28/2019</Date>
+                <Time>16:37:44</Time>
+                <default_onError action="next" value=""/>
+                <Resultsdir/>
+                <InputDataFile/>
+        </Details>
+        <Requirements>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/on_error_goto/tc_onerror_onexception_tag_in_step_on_error_sc.xml</path>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <context>negative</context>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/on_error_goto/tc_onerror_onexception_tag_in_step_on_exception_sc.xml</path>
+                        <runtype>sequential_keywords</runtype>
+                        <impact>noimpact</impact>
+                        <context>postive</context>
+                        <InputDataFile/>
+                        <onError action="next" />
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/on_error_goto/tc_onerror_tag_in_step_on_error_sc.xml</path>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <context>negative</context>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/on_error_goto/tc_onerror_tag_in_step_on_exception_sc.xml</path>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>noimpact</impact>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/on_error_goto/tc_onexception_tag_in_step_on_exception_sc.xml</path>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>noimpact</impact>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                </Testcase>
+        </Testcases>
+</TestSuite>
