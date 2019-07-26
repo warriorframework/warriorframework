@@ -66,13 +66,14 @@ def get_suite_details(testsuite_filepath, data_repository, from_project,
     suite_name = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'Name')
     suite_title = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'Title')
     suite_exectype = testsuite_utils.get_exectype_from_xmlfile(testsuite_filepath)
-    suite_random_exec = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'random_tc_Execution')
+    suite_random_exec = Utils.xml_Utils.getChildTextbyParentTag(
+        testsuite_filepath, 'Details', 'random_tc_Execution')
     def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(testsuite_filepath)
     def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                       'Details',
                                                                       'default_onError', 'value')
     if suite_random_exec:
-        print("suite_random_exec is {0}".format(suite_random_exec))
+        print_info("suite_random_exec is {0}".format(suite_random_exec))
         if suite_random_exec.lower() == "true":
             suite_random_exec = True
         else:
@@ -167,14 +168,16 @@ def report_testsuite_result(suite_repository, suite_status):
                     'ERROR': 'FAIL'}.get(str(suite_status).upper())
     print_info("Testsuite:{0}  STATUS:{1}".format(suite_repository['suite_name'], suite_status))
     testsuite_utils.pSuite_report_suite_result(suite_resultfile)
-    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$"
+               "$$$$$$$$$$$$$$$$$$$$$$$$")
     return suite_status
 
 
 def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile):
     """Prints the testsuite details to console """
 
-    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  "
+               "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
     print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
