@@ -15,7 +15,6 @@ import os
 import time
 import traceback
 import shutil
-import random
 import sequential_testcase_driver
 import parallel_testcase_driver
 import testcase_driver
@@ -73,7 +72,6 @@ def get_suite_details(testsuite_filepath, data_repository, from_project,
                                                                       'Details',
                                                                       'default_onError', 'value')
     if suite_random_exec:
-        print_info("suite_random_exec is {0}".format(suite_random_exec))
         if suite_random_exec.lower() == "true":
             suite_random_exec = True
         else:
@@ -232,12 +230,14 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     initialize_suite_fields(data_repository)
     suite_repository = get_suite_details(testsuite_filepath, data_repository,
                                          from_project, res_startdir, logs_startdir)
-    testcase_list = common_execution_utils.get_step_list(testsuite_filepath,
-                                                         "Testcases", "Testcase")
     if data_repository.get("random_tc_execution", False) or suite_repository['suite_random_exec']:
         print_info("Executing test cases in suite in random order")
-        random.shuffle(testcase_list)
-
+        randomize = True
+    else:
+        randomize = False
+    testcase_list = common_execution_utils.get_step_list(testsuite_filepath,
+                                                         "Testcases", "Testcase",
+                                                         randomize=randomize)
     execution_type = suite_repository['suite_exectype'].upper()
     no_of_tests = str(len(testcase_list))
 
