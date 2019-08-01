@@ -19,17 +19,17 @@
                         <path>../../../testcases/framework_tests/runmode_tests/tc_runmode_rmt_at_ts_local_level.xml</path>
                         <context>positive</context>
                         <runtype>sequential_keywords</runtype>
-			            <runmode type="RMT" value="3"/>
+			            <runmode type="RMT" value="3" status="expected"/>
                         <onError action="next"/>
-                        <impact>impact</impact>
+                        <impact> noimpact</impact>
                 </Testcase>
 		        <Testcase>
                         <path>../../../testcases/framework_tests/runmode_tests/tc_runmode_rmt_at_ts_local_level_with_status.xml</path>
                         <context>positive</context>
                         <runtype>sequential_keywords</runtype>
-			            <runmode type="RMT" value="4" status=""/>
+			            <runmode type="RMT" value="4" status="expected"/>
                         <onError action="next"/>
-                        <impact>impact</impact>
+                        <impact>noimpact</impact>
                 </Testcase>
         </Testcases>
 </TestSuite>
