@@ -50,6 +50,16 @@
                         <runtype>sequential_keywords</runtype>
                         <onError action="next"/>
                         <impact>impact</impact>
+                      </Testcase>
+                <!-- below test will be executed if associated jira id's status is resolved or closed,
+                     otherwise it will be skipped-->
+                <Testcase>
+                        <path>../../testcases/framework_tests/test_log_messages.xml</path>
+                        <context>positive</context>
+                        <jiraid>WAR-1999,WAR-2208</jiraid>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
                 </Testcase>
         </Testcases>
 </TestSuite>

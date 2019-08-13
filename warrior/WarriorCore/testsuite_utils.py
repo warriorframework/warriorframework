@@ -265,7 +265,8 @@ def report_testsuite_result(suite_repository, suite_status):
                     'RAN': 'RAN'}.get(str(suite_status).upper())
     print_info("Testsuite:{0}  STATUS:{1}".format(suite_repository['suite_name'], suite_status))
     # pSuite_report_suite_result(suite_resultfile)
-    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE "
+               "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     return suite_status
 
 
@@ -286,7 +287,8 @@ def get_data_file_at_suite_step(element, suite_repository):
 
     if suite_repository["suite_exectype"].upper() == "ITERATIVE_SEQUENTIAL" \
        or suite_repository["suite_exectype"].upper() == "ITERATIVE_PARALLEL":
-        print_info("Suite exectype=iterative, so all testcases in the suite will use the suite datafile as their input datafile")
+        print_info("Suite exectype=iterative, so all testcases in the suite "
+                   "will use the suite datafile as their input datafile")
         data_file = suite_repository["data_file"]
     else:
         data_file = xml_Utils.get_text_from_direct_child(element, 'InputDataFile')
@@ -307,12 +309,20 @@ def get_runtype_from_xmlfile(element):
         runtype = runtype.strip()
         supported_values = ['sequential_keywords', 'parallel_keywords']
         if runtype.lower() not in supported_values:
-            print_warning("unsupported value '{0}' provided for runtype, supported values are '{1}', case-insensitive"
+            print_warning("unsupported value '{0}' provided for runtype, "
+                          "supported values are '{1}', case-insensitive"
                           .format(runtype, supported_values))
             print_info("Hence using default value for runtype which is 'sequential_keywords'")
             runtype = 'sequential_keywords'
     return runtype
 
+def get_jiraids_from_xmlfile(element):
+    """Gets the jiraid value of a testcase from the testsuite.xml file """
+
+    jiraids = xml_Utils.get_text_from_direct_child(element, 'jiraid')
+    if jiraids is not None and jiraids is not False:
+        jiraids = [jiraid.strip() for jiraid in jiraids.split(",")]
+    return jiraids
 
 def get_exectype_from_xmlfile(filepath):
     """Gets the exectype values for testcases from the testsuite.xml file """
@@ -325,7 +335,9 @@ def get_exectype_from_xmlfile(filepath):
         supported_values = ['sequential_testcases', 'parallel_testcases', 'run_until_fail', 'run_multiple', 'run_until_pass', "iterative_sequential",
                             "iterative_parallel"]
         if exectype.lower() not in supported_values:
-            print_warning("unsupported value '{0}' provided for exectype, supported values are '{1}', case-insensitive".format(exectype, supported_values))
+            print_warning("unsupported value '{0}' provided for exectype, "
+                          "supported values are '{1}', case-insensitive"
+                          .format(exectype, supported_values))
             print_info("Hence using default value for exectype which is 'sequential_testcases'")
             exectype = 'sequential_testcases'
     return exectype

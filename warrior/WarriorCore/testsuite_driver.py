@@ -15,10 +15,12 @@ import os
 import time
 import traceback
 import shutil
+from xml.etree import ElementTree
 import sequential_testcase_driver
 import parallel_testcase_driver
 import testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
+from WarriorCore.Classes.jira_rest_class import Jira
 from WarriorCore.Classes.iterative_testsuite_class import IterativeTestsuite
 from WarriorCore import testsuite_utils, common_execution_utils
 import Framework.Utils as Utils
@@ -238,6 +240,31 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     testcase_list = common_execution_utils.get_step_list(testsuite_filepath,
                                                          "Testcases", "Testcase",
                                                          randomize=randomize)
+    for testcase in testcase_list:
+        jiraids = testsuite_utils.get_jiraids_from_xmlfile(testcase)
+        if not jiraids:
+            continue
+        jira = Jira(jiraproj)
+        skip = False
+        for jiraid in jiraids:
+            status = jira.get_jira_issue_status(jiraid)
+            if status is False:
+                print_warning("Cannot get status of jira issue {},"
+                              " This issue is not considered for testcase"
+                              " skip validation".format(jiraid))
+                continue
+            if (status not in ["Resolved", "Closed"]):
+                skip = True
+                break
+        if skip:
+            tc_path = testsuite_utils.get_path_from_xmlfile(testcase)
+            print_info("Associated jira ids : {} are not Resolved or Closed,"
+                       " Skipping testcase >>>> {}".format(jiraids, tc_path))
+            exec_node = testcase.find("Execute")
+            if not exec_node:
+                exec_node = ElementTree.SubElement(testcase, "Execute")
+            exec_node.set("ExecType", 'no')
+    
     execution_type = suite_repository['suite_exectype'].upper()
     no_of_tests = str(len(testcase_list))
 
