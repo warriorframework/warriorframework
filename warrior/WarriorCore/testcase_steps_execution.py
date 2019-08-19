@@ -75,6 +75,9 @@ class TestCaseStepsExecutionClass:
         execute_steps() or from a for loop (invoked execution)
         """
         self.current_step = self.step_list[current_step_number]
+        #store loop iter number in data repository
+        loop_iter_number = self.current_step.get("loop_iter_number", None)
+        Utils.data_Utils.update_datarepository({"loop_iter_number" : loop_iter_number})
         # Incrementing current_step_number for printing purposes.
         self.current_step_number = current_step_number + 1
 

@@ -23,6 +23,10 @@ from Framework.ClassUtils.snmp_utlity_class import WSnmp as ws
 from Framework.Utils import testcase_Utils, config_Utils, data_Utils, snmp_utils
 from threading import Thread
 from time import sleep
+
+import socket
+import Queue
+
 try:
     from pysnmp.entity.rfc3413 import ntfrcv
     from pysnmp.smi import builder, view, compiler, rfc1902, error
@@ -1016,5 +1020,26 @@ class CommonSnmpActions(object):
                 oid, label, suffix = mibView.getNextNodeName(oid)
             except error.SmiError:
                 break
+        Utils.testcase_Utils.report_substep_status(status)
+        return status
+
+    def clear_received_traps(self, system_name):
+        """
+        Clear the captured SNMP Trap messages stored in the repository.
+        Argument:
+            system_name: Agent system name from data file.
+        Return: Binary- True or False
+        """
+        status = True
+        wdesc = "Clear trap messages from {}".format(system_name)
+        Utils.testcase_Utils.pSubStep(wdesc)
+        snmp_parameters = ['ip', 'snmp_trap_port']
+        snmp_param_dic = Utils.data_Utils.get_credentials(self.datafile,
+                                                          system_name,
+                                                          snmp_parameters)
+        agent_ip = snmp_param_dic.get('ip')
+        agent_ip = socket.gethostbyname(agent_ip)
+        clear_val = []
+        ws.data_repo.update({"snmp_trap_messages_{}".format(agent_ip): clear_val})
         Utils.testcase_Utils.report_substep_status(status)
         return status

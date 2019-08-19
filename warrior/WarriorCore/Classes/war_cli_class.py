@@ -404,6 +404,11 @@ class WarriorCliClass(object):
                             help="If headless mode is enabled, all selenium tests will run in xfvb "\
                             "which will not need a GUI")
 
+        #Running testcases in suite in random order
+        parser.add_argument('-random_tc_execution', action='store_true', default=False,
+                            help=":random_tc_execution mode: In this mode, testcases will be "\
+                            "executed in random order")
+
         namespace = parser.parse_args(arglist)
         #see if the below line is requried
         if namespace.mock:

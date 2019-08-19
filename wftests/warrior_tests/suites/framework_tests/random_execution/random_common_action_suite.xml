@@ -1,0 +1,129 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>common_action_suite</Name>
+                <Title>common_action_suite</Title>
+                <Engineer>Warrior_user</Engineer>
+                <random_tc_Execution>true</random_tc_Execution>
+                <Date>11/17/2017</Date>
+                <Time>16:37:44</Time>
+                <type Max_Attempts="" Number_Attempts="2" exectype="Run_Multiple"/>
+                <State/>
+                <default_onError action="next" value=""/>
+                <Resultsdir/>
+                <InputDataFile/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/common_actions_tests/comparison.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="RMT" value="2"/>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/common_actions_tests/set_env_variable.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="RUP" value="3"/>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/common_actions_tests/verify_data_test.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="Standard" value=""/>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/common_actions_tests/tc_verify_arith_exp.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/common_actions_tests/tc_to_verify_get_time_stamp_and_time_delta.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/common_actions_tests/tc_store_in_repo.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/common_actions_tests/test_slurp_json.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/common_actions_tests/test_slurp_json_negative.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/common_actions_tests/tc_verify_data_regex.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>

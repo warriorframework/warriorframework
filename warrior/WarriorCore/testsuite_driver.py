@@ -65,10 +65,18 @@ def get_suite_details(testsuite_filepath, data_repository, from_project,
     suite_name = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'Name')
     suite_title = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'Title')
     suite_exectype = testsuite_utils.get_exectype_from_xmlfile(testsuite_filepath)
+    suite_random_exec = Utils.xml_Utils.getChildTextbyParentTag(
+        testsuite_filepath, 'Details', 'random_tc_Execution')
     def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(testsuite_filepath)
     def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                       'Details',
                                                                       'default_onError', 'value')
+    if suite_random_exec:
+        if suite_random_exec.lower() == "true":
+            suite_random_exec = True
+        else:
+            suite_random_exec = False
+
     filename = os.path.basename(testsuite_filepath)
     nameonly = Utils.file_Utils.getNameOnly(filename)
     operating_system = sys.platform
@@ -126,6 +134,7 @@ def get_suite_details(testsuite_filepath, data_repository, from_project,
     suite_repository['junit_resultfile'] = junit_resultfile
     suite_repository['ws_results_execdir'] = ws_results_execdir
     suite_repository['ws_logs_execdir'] = ws_logs_execdir
+    suite_repository['suite_random_exec'] = suite_random_exec
     if data_file is not False:
         suite_repository['data_file'] = data_file
 
@@ -157,14 +166,16 @@ def report_testsuite_result(suite_repository, suite_status):
                     'ERROR': 'FAIL'}.get(str(suite_status).upper())
     print_info("Testsuite:{0}  STATUS:{1}".format(suite_repository['suite_name'], suite_status))
     testsuite_utils.pSuite_report_suite_result(suite_resultfile)
-    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$"
+               "$$$$$$$$$$$$$$$$$$$$$$$$")
     return suite_status
 
 
 def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile):
     """Prints the testsuite details to console """
 
-    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  "
+               "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
     print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
@@ -219,8 +230,14 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     initialize_suite_fields(data_repository)
     suite_repository = get_suite_details(testsuite_filepath, data_repository,
                                          from_project, res_startdir, logs_startdir)
+    if data_repository.get("random_tc_execution", False) or suite_repository['suite_random_exec']:
+        print_info("Executing test cases in suite in random order")
+        randomize = True
+    else:
+        randomize = False
     testcase_list = common_execution_utils.get_step_list(testsuite_filepath,
-                                                         "Testcases", "Testcase")
+                                                         "Testcases", "Testcase",
+                                                         randomize=randomize)
     execution_type = suite_repository['suite_exectype'].upper()
     no_of_tests = str(len(testcase_list))
 

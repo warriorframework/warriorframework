@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<!-- this example describes usage of loop to iterate set of steps with different values for keyword arguments,
+     check test_loop_iterate.json json file for reference -->
+<Testcase>
+        <Details>
+                <Name>test_loop_iterate</Name>
+                <Title>testcase to verify loop feature</Title>
+                <Engineer>Sekhar</Engineer>
+                <Date>2018-12-04</Date>
+                <Time>11:27</Time>
+                <State/>
+                <InputDataFile>No_Data</InputDataFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+	<Steps>
+                <step Driver="log_driver" Keyword="log_message" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="type" value="INFO"/>
+				<argument name="message" value="This is First Step which is not in loop"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Operator="eq"/>
+                        </Execute>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="standard"/>
+                </step>
+                <Loop id="1" file="../../../config_files/loop_tests/lj_loop_iterate.json">
+			<!-- steps in this loop will be iterated 3 times because 3 dicts are given in json file.
+			     for each iteration, one dict from json will be processed in given order -->
+                <step Driver="log_driver" Keyword="log_message" TS="1" draft="no">
+			<!-- value is ${LOOP.message1}, message1 gets substituted from loop json file, 
+			     this gets substituted with respective value in json for every iteration -->
+                        <Arguments>
+                                <argument name="type" value="INFO"/>
+				<argument name="message" value="This is constant-${LOOP.message1}"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Operator="eq"/>
+                        </Execute>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="standard"/>
+                </step>
+		<step Driver="log_driver" Keyword="log_message" TS="2" draft="no">
+			<!-- message2 is string in provided json file -->
+                        <Arguments>
+                                <argument name="type" value="INFO"/>
+				<argument name="message" value="${LOOP.message2}"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+		</step>
+		<step Driver="log_driver" Keyword="log_message" TS="3" draft="no">
+			<!-- message3 is string in provided json file -->
+                        <Arguments>
+                                <argument name="type" value="INFO"/>
+				<argument name="message" value="This is multiple substitution-${LOOP.message3}-${LOOP.message4}"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+		</step>
+	</Loop>
+                <step Driver="log_driver" Keyword="log_message" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="type" value="INFO"/>
+                                <argument name="message" value="This is Last Step which is not in loop"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Operator="eq"/>
+                        </Execute>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="standard"/>
+                </step>
+        </Steps>
+</Testcase>
