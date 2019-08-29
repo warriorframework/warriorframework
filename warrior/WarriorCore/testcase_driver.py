@@ -22,6 +22,7 @@ import time
 import shutil
 import ast
 import xml.etree.ElementTree as et
+from json import loads, dumps
 from WarriorCore.defects_driver import DefectsDriver
 from WarriorCore import custom_sequential_kw_driver, custom_parallel_kw_driver
 from WarriorCore import iterative_sequential_kw_driver, iterative_parallel_kw_driver,\
@@ -32,7 +33,6 @@ from Framework.Utils.testcase_Utils import convertLogic
 from Framework.Utils.print_Utils import print_info, print_warning, print_error,\
     print_debug, print_exception
 from Framework.ClassUtils.kafka_utils_class import WarriorKafkaProducer
-from json import loads, dumps
 from Framework.Utils.data_Utils import getSystemData, _get_system_or_subsystem
 import Framework.Utils.email_utils as email
 
@@ -615,6 +615,49 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                         "setup status : {0}".format(setup_tc_status))
             print_error("Steps in cleanup will be executed on besteffort")
             tc_status = "ERROR"
+    
+        if tc_context.upper() == 'NEGATIVE':
+            if all([tc_status != 'EXCEPTION', tc_status != 'ERROR']):
+                print_debug("Test case status is: '{0}', flip status as context is "
+                            "negative".format(tc_status))
+                tc_status = not tc_status
+
+        #Execute Debug section from tw file upon tc failure
+        if not isinstance(tc_status, bool) or (isinstance(tc_status, bool) and tc_status is False):
+            #priority is given to the Debug block in tc wrapper file. if not present, Debug block
+            #in ts wrapper file will be used.
+            tc_testwrapperfile = None
+            if Utils.xml_Utils.nodeExists(testcase_filepath, "TestWrapperFile"):
+                tc_testwrapperfile = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, \
+                    'Details', 'TestWrapperFile')
+                abs_cur_dir = os.path.dirname(testcase_filepath)
+                tc_testwrapperfile = Utils.file_Utils.getAbsPath(tc_testwrapperfile, abs_cur_dir)
+ 
+            ts_testwrapperfile = data_repository.get("wt_testwrapperfile", None)
+ 
+            tc_debug_step_list = None
+            if tc_testwrapperfile and Utils.xml_Utils.nodeExists(tc_testwrapperfile, "Debug"):
+                tc_debug_step_list = common_execution_utils.get_step_list(tc_testwrapperfile,
+                                                                          "Debug", "step")
+            ts_debug_step_list = None
+            if ts_testwrapperfile and Utils.xml_Utils.nodeExists(ts_testwrapperfile, "Debug"):
+                ts_debug_step_list = common_execution_utils.get_step_list(ts_testwrapperfile,
+                                                                          "Debug", "step")
+            debug_step_list = tc_debug_step_list or ts_debug_step_list
+            debug_testwrapperfile = tc_testwrapperfile if tc_debug_step_list else ts_testwrapperfile
+            if debug_step_list:
+                print_info("****** DEBUG STEPS EXECUTION STARTS *******")
+                data_repository['wt_step_type'] = 'debug'
+                original_tc_filepath = data_repository['wt_testcase_filepath']
+                #to consider relative paths provided from wrapperfile instead of testcase file
+                data_repository['wt_testcase_filepath'] = debug_testwrapperfile
+                debug_tc_status = execute_steps(j_data_type, j_runtype, \
+                    data_repository, debug_step_list, tc_junit_object, iter_ts_sys)
+                #reset to original testcase filepath
+                data_repository['wt_testcase_filepath'] = original_tc_filepath
+                data_repository['wt_step_type'] = 'step'
+                print_info("debug_tc_status : {0}".format(debug_tc_status))
+                print_info("****** DEBUG STEPS EXECUTION ENDS *******")
 
         #1.execute cleanup steps if testwrapperfile is present in testcase
         #and not from testsuite execution
@@ -639,11 +682,6 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
             print_info("cleanup_tc_status : {0}".format(cleanup_tc_status))
             print_info("****** CLEANUP STEPS EXECUTION ENDS *******")
 
-    if tc_context.upper() == 'NEGATIVE':
-        if all([tc_status != 'EXCEPTION', tc_status != 'ERROR']):
-            print_debug("Test case status is: '{0}', flip status as context is "
-                        "negative".format(tc_status))
-            tc_status = not tc_status
     if step_list and isinstance(tc_status, bool) and isinstance(cleanup_tc_status, bool) \
         and tc_status and cleanup_tc_status:
         tc_status = True
