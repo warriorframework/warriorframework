@@ -17,13 +17,13 @@ matrix:
       env: INSTALL=yes TESTFILES_2=yes
     - sudo: required
       dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes
+      env: INSTALL=yes
       addons:
         firefox: "46.0"
         chrome: stable
     - sudo: required
       dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes SELENIUM_3=yes GECKODRIVER=yes
+      env: INSTALL=yes
       addons:
         firefox: "60.0"
         chrome: stable
