@@ -26,13 +26,13 @@
 			<onError action="next"/>
 			<impact>impact</impact>
 		</Testcase>
-		<Testcase>
-			<path>../../testcases/selenium_func_tests/json_usage/tc_json_usage_3.xml</path>
-			<context>positive</context>
-			<runtype>sequential_keywords</runtype>
-			<onError action="next"/>
-			<impact>impact</impact>
-		</Testcase>
+		<!--<Testcase>-->
+			<!--<path>../../testcases/selenium_func_tests/json_usage/tc_json_usage_3.xml</path>-->
+			<!--<context>positive</context>-->
+			<!--<runtype>sequential_keywords</runtype>-->
+			<!--<onError action="next"/>-->
+			<!--<impact>impact</impact>-->
+		<!--</Testcase>-->
 		<Testcase>
 			<path>../../testcases/selenium_func_tests/json_usage/tc_multiple_key_press.xml</path>
 			<context>positive</context>
