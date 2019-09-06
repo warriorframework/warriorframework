@@ -78,6 +78,18 @@ class ExecutionSummary():
                     if suite_result_dir is None or suite_result_dir == case_result_dir:
                         suite_tc_list.append(["Testcase", testcase_name, testcase_status,
                                               testcase_location])
+            #to add debug results in suite summary
+            for value in tree.iter('Debug'):
+                debug_details = value.attrib
+                debug_status = debug_details.get('status')
+                debug_name = debug_details.get('name')+".xml"
+                debug_location = debug_details.get('testcasefile_path')
+                case_result_dir_with_tc_name = debug_details.get('resultsdir')
+                if case_result_dir_with_tc_name is not None:
+                    case_result_dir = os.path.dirname(case_result_dir_with_tc_name)
+                    # suite junit element will not have resultsdir attrib for case execution
+                    if suite_result_dir is None or suite_result_dir == case_result_dir:
+                        suite_tc_list.append(["Debug", debug_name, debug_status, debug_location])
             #to add Cleanup results in suite summary
             for value in tree.iter('Cleanup'):
                 cleanup_details = value.attrib

@@ -622,10 +622,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                             "negative".format(tc_status))
                 tc_status = not tc_status
 
-        #Execute Debug section from tw file upon tc failure
+        #Execute Debug section from testcase tw file upon tc failure
         if not isinstance(tc_status, bool) or (isinstance(tc_status, bool) and tc_status is False):
-            #priority is given to the Debug block in tc wrapper file. if not present, Debug block
-            #in ts wrapper file will be used.
             tc_testwrapperfile = None
             if Utils.xml_Utils.nodeExists(testcase_filepath, "TestWrapperFile"):
                 tc_testwrapperfile = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, \
@@ -633,26 +631,18 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 abs_cur_dir = os.path.dirname(testcase_filepath)
                 tc_testwrapperfile = Utils.file_Utils.getAbsPath(tc_testwrapperfile, abs_cur_dir)
  
-            ts_testwrapperfile = data_repository.get("wt_testwrapperfile", None)
- 
             tc_debug_step_list = None
             if tc_testwrapperfile and Utils.xml_Utils.nodeExists(tc_testwrapperfile, "Debug"):
                 tc_debug_step_list = common_execution_utils.get_step_list(tc_testwrapperfile,
                                                                           "Debug", "step")
-            ts_debug_step_list = None
-            if ts_testwrapperfile and Utils.xml_Utils.nodeExists(ts_testwrapperfile, "Debug"):
-                ts_debug_step_list = common_execution_utils.get_step_list(ts_testwrapperfile,
-                                                                          "Debug", "step")
-            debug_step_list = tc_debug_step_list or ts_debug_step_list
-            debug_testwrapperfile = tc_testwrapperfile if tc_debug_step_list else ts_testwrapperfile
-            if debug_step_list:
+            if tc_debug_step_list:
                 print_info("****** DEBUG STEPS EXECUTION STARTS *******")
                 data_repository['wt_step_type'] = 'debug'
                 original_tc_filepath = data_repository['wt_testcase_filepath']
                 #to consider relative paths provided from wrapperfile instead of testcase file
-                data_repository['wt_testcase_filepath'] = debug_testwrapperfile
+                data_repository['wt_testcase_filepath'] = tc_testwrapperfile
                 debug_tc_status = execute_steps(j_data_type, j_runtype, \
-                    data_repository, debug_step_list, tc_junit_object, iter_ts_sys)
+                    data_repository, tc_debug_step_list, tc_junit_object, iter_ts_sys)
                 #reset to original testcase filepath
                 data_repository['wt_testcase_filepath'] = original_tc_filepath
                 data_repository['wt_step_type'] = 'step'

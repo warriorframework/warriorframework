@@ -86,7 +86,7 @@
             <path>../suites/framework_tests/ts_wrapper_with_debug_negative.xml</path>
             <Execute ExecType="Yes"/>
             <onError action="next" value=""/>
-            <impact>impact</impact>
+            <impact>noimpact</impact>
         </Testsuite>
     </Testsuites>
 </Project>

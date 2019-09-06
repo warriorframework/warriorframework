@@ -17,24 +17,22 @@
                 <Requirement>Requirement-002</Requirement>
         </Requirements>
 	<Testcases>
-		<!-- test case wrapper file debug section has higher priority. if this is not present, 
-		     suite wrapper debug section is used -->
 		<Testcase>
 		  <!-- upon test failure debug section in test case wrapper file will be invoked -->
                   <path>../../testcases/framework_tests/tc_wrapper_with_debug_negative.xml</path>
                         <context>positive</context>
                         <runtype>sequential_keywords</runtype>
                         <onError action="next"/>
-                        <impact>noimpact</impact>
+                        <impact>impact</impact>
                 </Testcase>
 		<Testcase>
-		  <!-- upon test failure debug section in suite test wrapper file will be invoked as test case wrapper file doesn't contain
-		       debug section-->
+		  <!-- upon test failure no debug will be invoked as tc wrapper is not present-->
                   <path>../../testcases/framework_tests/tc_nowrapper_with_debug_negative.xml</path>
                         <context>positive</context>
                         <runtype>sequential_keywords</runtype>
                         <onError action="next"/>
-                        <impact>noimpact</impact>
+                        <impact>impact</impact>
                 </Testcase>
-        </Testcases>
+	</Testcases>
+	<!-- at the end here, debug from suite test wrapper will be invoked if suite fails -->
 </TestSuite>

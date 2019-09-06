@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <Testcase>
         <Details>
-                <Name>tc_wrapper_with_debug_positive.xml</Name>
-                <Title>tc_wrapper_with_debug_positive.xml</Title>
+                <Name>tc_nowrapper_with_debug_negative.xml</Name>
+                <Title>tc_nowrapper_with_debug_negative.xml</Title>
                 <Engineer>Sekhar</Engineer>
                 <Date>2018-11-13</Date>
                 <Time>12:08</Time>
