@@ -492,6 +492,24 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                     "setup status : {0}".format(setup_tc_status))
         print_error("Steps in cleanup will be executed on besteffort")
         test_suite_status = "ERROR"
+
+    #Execute Debug section from suite tw file upon test suite failure
+    if not isinstance(test_suite_status, bool) or (isinstance(test_suite_status, bool) \
+                                                          and test_suite_status is False):
+        if testwrapperfile and Utils.xml_Utils.nodeExists(testwrapperfile, "Debug"):
+            print_info("*****************SUITE TESTWRAPPER DEBUG EXECUTION START"
+                       "*********************")
+            data_repository['wt_data_type'] = j_data_type
+            debug_tc_status, data_repository = testcase_driver.execute_testcase(testwrapperfile,\
+                                                         data_repository, tc_context='POSITIVE',\
+                                                         runtype=j_runtype,\
+                                                         tc_parallel=None, queue=None,\
+                                                         auto_defects=auto_defects, suite=None,\
+                                                         jiraproj=None, tc_onError_action=None,\
+                                                         iter_ts_sys=None, steps_tag='Debug')
+            print_info("*****************SUITE TESTWRAPPER DEBUG EXECUTION END"
+                       "*********************")
+
     #execute cleanup steps defined in testwrapper file if testwrapperfile is present
     if testwrapperfile:
         print_info("*****************TESTWRAPPER CLEANUP EXECUTION START*********************")

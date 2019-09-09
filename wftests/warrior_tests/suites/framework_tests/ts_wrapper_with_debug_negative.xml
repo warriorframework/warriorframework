@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_wrapper_with_debug_negative.xml</Name>
+                <Title>ts_wrapper_with_debug_negative.xml</Title>
+                <Engineer>Sekhar</Engineer>
+                <Date>04/21/2017</Date>
+                <Time>12:14:26</Time>
+                <type exectype="sequential_testcases"/>
+                <default_onError action="next"/>
+                <TestWrapperFile>../../wrapper_files/framework_tests/tw_ts_with_debug.xml</TestWrapperFile>
+                <InputDataFile>No_Data</InputDataFile>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>Requirement-001</Requirement>
+                <Requirement>Requirement-002</Requirement>
+        </Requirements>
+	<Testcases>
+		<Testcase>
+		  <!-- upon test failure debug section in test case wrapper file will be invoked -->
+                  <path>../../testcases/framework_tests/tc_wrapper_with_debug_negative.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+		<Testcase>
+		  <!-- upon test failure no debug will be invoked as tc wrapper is not present-->
+                  <path>../../testcases/framework_tests/tc_nowrapper_with_debug_negative.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+	</Testcases>
+	<!-- at the end here, debug from suite test wrapper will be invoked if suite fails -->
+</TestSuite>

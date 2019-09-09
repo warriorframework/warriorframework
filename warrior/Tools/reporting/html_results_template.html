@@ -49,6 +49,9 @@ var printFormater = {
     printFormater.table.find('tr[name="TestcaseRecord"]').on('click', function() {
       printFormater.openAccordian.call($(this));
     });
+    printFormater.table.find('tr[name="DebugRecord"]').on('click', function() {
+      printFormater.openAccordian.call($(this));
+    });
     printFormater.table.find('tr[name="CleanupRecord"]').on('click', function() {
       printFormater.openAccordian.call($(this));
     });
@@ -384,6 +387,10 @@ tr[name="SetupRecord"] {
     /* display: none; */
     cursor: pointer;
 }
+tr[name="DebugRecord"] {
+    /* display: none; */
+    cursor: pointer;
+}
 tr[name="CleanupRecord"] {
     /* display: none; */
     cursor: pointer;
@@ -413,6 +420,16 @@ tr[name="SetupRecord"].active ~ tr[name="KeywordRecord"] {
 }
 tr[name="SetupRecord"].active ~ tr[name="SetupRecord"] ~ tr[name="KeywordRecord"] {display: none;}
 tr[name="SetupRecord"].removeing ~ tr[name="KeywordRecord"] { -webkit-transform: scaleY(0); transform: scaleY(0); transition: .3s ease;}
+tr[name="DebugRecord"] > td:first-child div {padding-left: 6px;}
+tr[name="DebugRecord"] > td:first-child div:before {content: '^';content: "\f107";padding: 0 5px;font: normal normal normal 14px/1 FontAwesome;font-size: inherit;text-rendering: auto;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;}
+
+tr[name="DebugRecord"].active ~ tr[name="KeywordRecord"] {
+    display: flex;
+    background: #2578c1;
+    color: white;
+}
+tr[name="DebugRecord"].active ~ tr[name="DebugRecord"] ~ tr[name="KeywordRecord"] {display: none;}
+tr[name="DebugRecord"].removeing ~ tr[name="KeywordRecord"] { -webkit-transform: scaleY(0); transform: scaleY(0); transition: .3s ease;}
 tr[name="CleanupRecord"] > td:first-child div {padding-left: 6px;}
 
 tr[name="CleanupRecord"] > td:first-child div:before {content: '^';content: "\f107";padding: 0 5px;font: normal normal normal 14px/1 FontAwesome;font-size: inherit;text-rendering: auto;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;}
@@ -454,6 +471,10 @@ tr[name="TestcaseRecord"].active ~ tr[name="TestcaseRecord"] ~ tr td:not([rowspa
     color: inherit;
 }
 tr[name="SetupRecord"].active ~ tr[name="SetupRecord"] ~ tr td:not([rowspan]){
+    z-index: inherit;
+    color: inherit;
+}
+tr[name="DebugRecord"].active ~ tr[name="DebugRecord"] ~ tr td:not([rowspan]){
     z-index: inherit;
     color: inherit;
 }
@@ -524,6 +545,15 @@ tr[name="SetupRecord"] {
     background: white;
 }
 .filtering tr[name="SetupRecord"] > td:first-child div{
+    padding-left: 10px;
+}
+.filtering tr[name="DebugRecord"] > td:first-child div:before{
+    display: none;
+}
+tr[name="DebugRecord"] {
+    background: white;
+}
+.filtering tr[name="DebugRecord"] > td:first-child div{
     padding-left: 10px;
 }
 .filtering tr[name="CleanupRecord"] > td:first-child div:before{
