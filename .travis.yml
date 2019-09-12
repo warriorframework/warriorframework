@@ -11,7 +11,14 @@ matrix:
       env: INSTALL=yes TESTFILE=./wftests/ci/pylint.sh PYLINT=yes
     - sudo: false
       dist: trusty
+      env: INSTALL=yes TESTFILES_1=yes
+    - sudo: false
+      dist: trusty
+      env: INSTALL=yes TESTFILES_2=yes
+    - sudo: false
+      dist: trusty
       env: INSTALL=no TESTFILE=./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml COPILOT=yes
+
 
 install:
   - if [[ ${COPILOT} = "yes" ]]; then
