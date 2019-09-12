@@ -31,6 +31,7 @@ app.controller('TestWrapperfilecaseCapCtrl', ['$scope','$routeParams','$http', '
         $scope.arg_list = [{"_name": "", "_value": ""}];
         $scope.showSetupStepEdit = false;
         $scope.showCleanupStepEdit=false;
+        $scope.showDebugStepEdit=false;
         $scope.insertStep = false;
         $scope.alldirinfo = "";
         $scope.table = "";
@@ -117,6 +118,33 @@ $scope.showCleanupRules = function(execType){
     }
 
 }
+
+
+//----- This renders the Debug Step Function rules Fields
+$scope.showDebugRules = function(execType){
+    if(execType == 'If' || execType == 'If Not'){
+        $scope.rule_list = '';
+        $scope.rule_list = [{}];
+        $scope.debugstatus.step.Execute._Else = 'next';
+        if($scope.ExecTypeVal == 1){
+            $scope.rule_list = '';
+            $scope.rule_list = [{}];
+        }
+    $scope.showRulesBelow = true;
+    $scope.hideExp = false;
+    $scope.hideElse = false;
+    $scope.ExecTypeVal = 1;
+    $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": ""});
+    $scope.rule_list.splice(0,1);
+    }
+    else{
+        $scope.showRulesBelow = false;
+        $scope.hideExp = true;
+        $scope.hideElse = true;
+    }
+
+}
+
 
 //To Load the InputData File from Suite
 //Works for base Directory as well as Subdirectories
@@ -399,6 +427,17 @@ $scope.showCleanupRules = function(execType){
             selectKeywordCleanup($scope.cleanupstatus.keyword)
         };
 
+         //This function checks for Debug step the Keyword checkbox and select the keyword
+
+        $scope.emptyDebugKWName = function(){
+            if(!$scope.debugstatus.kwCheckbox){
+                $scope.debugstatus.driverCheckbox = false;
+            }
+            $scope.model.TestWrapper.Details.State = "Draft";
+            $scope.debugstatus.keyword = "";
+            selectKeywordDebug($scope.debugstatus.keyword)
+        };
+
         $scope.emptyDriverName = function(){
             $scope.model.TestWrapper.Details.State = "Draft";
             $scope.status.kwCheckbox = $scope.status.driverCheckbox;
@@ -410,6 +449,13 @@ $scope.showCleanupRules = function(execType){
             $scope.cleanupstatus.kwCheckbox = $scope.cleanupstatus.driverCheckbox;
             $scope.cleanupstatus.drivername = "";
             $scope.cleanupDriverSelected($scope.cleanupstatus.drivername);
+         };
+
+         $scope.emptyDebugDriverName = function(){
+            $scope.model.TestWrapper.Details.State = "Draft";
+            $scope.debugstatus.kwCheckbox = $scope.debugstatus.driverCheckbox;
+            $scope.debugstatus.drivername = "";
+            $scope.debugDriverSelected($scope.debugstatus.drivername);
          };
 
         $scope.addNewTcstate = function(){
@@ -708,6 +754,145 @@ $scope.showCleanupRules = function(execType){
             }
         };
 
+
+
+ //Debug Step copy Step Function()
+
+        $scope.copyDebugStep = function(){
+            if( $scope.editArgs == 1){
+                $scope.stepToBeCopied = $scope.editIndex+1;
+            }
+            $scope.hideSubsys = false;
+            if($scope.stepToBeCopied == "None"){
+                swal({
+                    title: "Please select a step number from the dropdown.",
+                    type: "error",
+                    showConfirmButton: true,
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok"
+                });
+                return;
+            }
+
+            $scope.debugstatus.driverCheckbox = false;
+            $scope.debugstatus.kwCheckbox = false;
+
+            $scope.debugstatus.drivername = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1]._Driver;
+            $scope.debugstatus.keyword = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1]._Keyword;
+
+
+            var drivers = $scope.xml.pycs[$scope.debugstatus.drivername];
+            if(drivers == undefined){
+                $scope.debugstatus.driverCheckbox = true;
+                $scope.debugstatus.kwCheckbox = true;
+            }
+            else{
+                var ads = [];
+                _.each(drivers, function (driver) {
+                    ads.push(_.filter(driver, function(d) {
+                        return d.type === 'fn' && d.fn !== '__init__';
+                    }));
+                });
+                var kwds = _.flatten(ads);
+                kwds = _.sortBy(kwds, function(r) {return r.fn});
+                if(!kwds.hasOwnProperty(length)){
+                    kwds = [kwds];
+                }
+                var kw_list = [];
+                for(i=0; i<kwds.length; i++){
+                    kw_list.push(kwds[i].fn);
+                }
+                var index_of_kw = kw_list.indexOf($scope.debugstatus.keyword);
+                if(index_of_kw == -1){
+                    $scope.debugstatus.kwCheckbox = true;
+                }
+                else{
+                    $scope.xml.keywords = kwds;
+                    $scope.debugstatus.description = kwds[index_of_kw].wdesc;
+                    $scope.xml.args.def = kwds[index_of_kw].def;
+                    $scope.xml.args.comment = kwds[index_of_kw].comment;
+                }
+            }
+
+            if($scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].hasOwnProperty("_draft")){
+                if($scope.stepBeingEdited < $scope.model.TestWrapper.Debug.step.length){
+                    $scope.model.TestWrapper.Debug.step[$scope.stepBeingEdited]["_draft"] = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1]["_draft"];
+                }
+            }
+            else if($scope.debugstatus.kwCheckbox){
+                if($scope.stepBeingEdited < $scope.model.TestWrapper.Debug.step.length) {
+                    $scope.model.TestWrapper.Debug.step[$scope.stepBeingEdited]["_draft"] = "yes";
+                }
+                $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1]["_draft"] = "yes";
+            }
+            else{
+                if($scope.stepBeingEdited < $scope.model.TestWrapper.Debug.step.length) {
+                    $scope.model.TestWrapper.Debug.step[$scope.stepBeingEdited]["_draft"] = "no";
+                }
+            }
+            $scope.debugstatus.step.Description = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].Description;
+            if(!$scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].Arguments.argument.hasOwnProperty(length)){
+                $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].Arguments.argument = [$scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].Arguments.argument];
+            }
+            if($scope.cleanupstatus.kwCheckbox){
+                $scope.arg_list = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].Arguments.argument;
+            }
+            else{
+                var mapped_arg_obj = {};
+                for(var i=0; i<$scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].Arguments.argument.length; i++){
+                    mapped_arg_obj[$scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].Arguments.argument[i]._name] = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].Arguments.argument[i]._value;
+                }
+                $scope.xml.mapargs = mapped_arg_obj;
+                $scope.xml.args = _.where($scope.xml.keywords, { fn: $scope.debugstatus.keyword })[0];
+                $scope.xml.arglist = _.map($scope.xml.args.args, function (a) {
+                    return a.split('=')[0];
+                });
+
+                $scope.xml.arglist.push("subsystem_name");
+
+               $scope.args = JSON.stringify($scope.xml.mapargs);
+               $scope.args = $scope.args.replace('undefined','subsystem_name');
+               $scope.xml.mapargs = JSON.parse($scope.args);
+               var stepSys = $scope.xml.mapargs['system_name'];
+               var stepSubsys = $scope.xml.mapargs['subsystem_name'];
+               $scope.sysFields();
+               $scope.showSubsys(stepSys);
+            }
+
+            if( $scope.editArgs == 0){
+                $scope.debugstatus.step.iteration_type._type = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].iteration_type._type;
+                $scope.debugstatus.step.runmode._type = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].runmode._type;
+                $scope.debugstatus.step.runmode._value = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].runmode._value;
+                $scope.debugstatus.step.impact = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].impact;
+                $scope.debugstatus.step.context = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].context;
+                $scope.debugstatus.step.onError._action = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].onError._action;
+                $scope.debugstatus.step.onError._value = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].onError._value;
+//                $scope.debugstatus.step.onException._action = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].onException._action;
+//                $scope.debugstatus.step.onException._value = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].onException._value;
+            }
+
+            $scope.debugstatus.step.Execute._ExecType = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].Execute._ExecType;
+            if($scope.debugstatus.step.Execute._ExecType == 'If' || $scope.debugstatus.step.Execute._ExecType == 'If Not'){
+                $scope.showRulesBelow = true;
+            }
+            else{
+                $scope.showRulesBelow = false;
+            }
+            $scope.cleanupstatus.step.Execute._Expression = $scope.model.TestWrapper.Cleanup.step[$scope.stepToBeCopied - 1].Execute._Expression;
+            $scope.cleanupstatus.step.Execute._Else = $scope.model.TestWrapper.Cleanup.step[$scope.stepToBeCopied - 1].Execute._Else;
+            $scope.cleanupstatus.step.Execute._Elsevalue = $scope.model.TestWrapper.Cleanup.step[$scope.stepToBeCopied - 1].Execute._Elsevalue;
+
+            if($scope.copyStepCheck == 0){
+                $scope.copyStepCheck = 1;
+                $scope.copyDebugStepRules();
+            }
+        };
+
+
+
+
+
 /// Setup Step Copy Step Rules
         $scope.copyStepRules = function(){
             $scope.rule_list = $scope.model.TestWrapper.Setup.step[$scope.stepToBeCopied - 1].Execute.Rule;
@@ -743,6 +928,24 @@ $scope.showCleanupRules = function(execType){
         };
 
 
+ // Debug Step Copy Step Rules
+
+
+        $scope.copyDebugStepRules = function(){
+            $scope.rule_list = $scope.model.TestWrapper.Debug.step[$scope.stepToBeCopied - 1].Execute.Rule;
+            if($scope.debugstatus.step.Execute._ExecType == 'If' || $scope.debugstatus.step.Execute._ExecType == 'If Not'){
+                for (var i = 0; i < $scope.rule_list.length; i++) {
+                    if($scope.rule_list[i]._Operator == undefined){
+                        $scope.rule_list[i]._Operator = "eq";
+                    }
+                    else{
+                        $scope.rule_list[i]._Operator = $scope.rule_list[i]._Operator;
+                    }
+                }
+            }
+            $scope.copyStepCheck = 0;
+        };
+
     $scope.model = {
           "TestWrapper": {
             "Details": {
@@ -758,6 +961,9 @@ $scope.showCleanupRules = function(execType){
             },
             "Cleanup": {
                "step": []
+            },
+            "Debug":{
+                "step":[]
             }
           }
         };
@@ -802,7 +1008,26 @@ $scope.showCleanupRules = function(execType){
                     $scope.model.TestWrapper.Cleanup.step[i].iteration_type._type = "";
                 }
             }
-
+ // Debug Step function
+              for (var i = 0; i < $scope.model.TestWrapper.Debug.step.length; i++){
+                if ($scope.model.TestWrapper.Details.Datatype == "Hybrid") {
+                    if ($scope.original_iter_types[i] == undefined) {
+                        $scope.model.TestWrapper.Debug.step[i].iteration_type._type = "Standard";
+                    } else {
+                        if ($scope.original_iter_types[i] == ""){
+                            $scope.model.TestWrapper.Debug.step[i].iteration_type._type = "Standard";
+                        }
+                        else{
+                            $scope.model.TestWrapper.Debug.step[i].iteration_type._type = $scope.original_iter_types[i];
+                        }
+                    }
+                } else {
+                    if ($scope.original_iter_types[i] === undefined || $scope.original_iter_types[i] == ""){
+                        $scope.original_iter_types[i] = $scope.model.TestWrapper.Debug.step[i].iteration_type._type;
+                    }
+                    $scope.model.TestWrapper.Debug.step[i].iteration_type._type = "";
+                }
+            }
 
         };
 
@@ -921,6 +1146,30 @@ $scope.showCleanupRules = function(execType){
                     }
                 }
 
+  //----Debug step Normalization
+
+
+                 if ($scope.model.TestWrapper.Debug === undefined) {
+                    $scope.model.TestWrapper.Debug = {};
+                    $scope.model.TestWrapper.Debug.step = [];
+                }
+                if (_.isEmpty($scope.model.TestWrapper.Debug)) {
+                    var ok = delete $scope.model.TestWrapper.Debug;
+                    $scope.model.TestWrapper.Debug = {};
+                    $scope.model.TestWrapper.Debug.step = [];
+                }
+                if ($scope.model.TestWrapper.Debug == '' || _.size($scope.model.TestWrapper.Debug) == 0) {
+                    $scope.model.TestWrapper.Debug["step"] = [];
+                }
+
+                if(!$scope.model.TestWrapper.Debug.step.hasOwnProperty(length)){
+                    if($scope.model.TestWrapper.Debug.step.length === 0){
+
+                    }
+                    else{
+                        $scope.model.TestWrapper.Debug.step = [$scope.model.TestWrapper.Debug.step];
+                    }
+                }
 
                 var flag = true;
                 for(var i=0; i<$scope.status.datatypes.length; i++){
@@ -969,6 +1218,16 @@ $scope.showCleanupRules = function(execType){
                     $scope.editCleanupStep(driverName,i);
                     $scope.saveCleanupArguments();
                     $scope.cancelCleanupArguments();
+                }
+
+                    //Debug step Driver render details
+                for (i = 0; i < $scope.model.TestWrapper.Debug.step.length; i++) {
+                    $scope.editstepcheck = 1;
+                    var index = i;
+                    var driverName = $scope.model.TestWrapper.Debug.step[i]._Driver;
+                    $scope.editDebugStep(driverName,i);
+                    $scope.saveDebugArguments();
+                    $scope.cancelDebugArguments();
                 }
 
                 // Setting up the Setup  step Fields
@@ -1084,6 +1343,13 @@ $scope.showCleanupRules = function(execType){
                     for(j=0; j<$scope.status.steperrors.length; j++){
                         if($scope.model.TestWrapper.Setup.step[i].onError._action.toLowerCase() == $scope.status.steperrors[j].toLowerCase()){
                             $scope.model.TestWrapper.Setup.step[i].onError._action = $scope.status.steperrors[j];
+                            break;
+                        }
+                    }
+
+                      for(j=0; j<$scope.status.steperrors.length; j++){
+                        if($scope.model.TestWrapper.Setup.step[i].onException._action.toLowerCase() == $scope.status.stepexceptions[j].toLowerCase()){
+                            $scope.model.TestWrapper.Setup.step[i].onException._action = $scope.status.stepexceptions[j];
                             break;
                         }
                     }
@@ -1225,6 +1491,148 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                 }
                 }
 
+
+//Setting up  the Debug Step Fields
+
+for (i = 0; i < $scope.model.TestWrapper.Debug.step.length; i++) {
+                    if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("Execute")){
+                    $scope.model.TestWrapper.Debug.step[i]["Execute"] = {"_ExecType": "Yes", "_Expression": "", "_Else": "", "_Elsevalue": "", "Rule": {"_Condition": "", "_Operator": "eq", "_Condvalue": ""}}
+                     }
+
+                    if(!$scope.model.TestWrapper.Debug.step[i].Execute.hasOwnProperty("Rule")){
+                    $scope.model.TestWrapper.Debug.step[i].Execute["Rule"] = {"_Condition": "", "_Operator": "eq", "_Condvalue": ""}
+                    }
+
+                    if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("onError")){
+                        $scope.model.TestWrapper.Debug.step[i]["onError"] = {"_action": "abort", "_value": ""};
+                    }
+
+//                    if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("onException")){
+//                        $scope.model.TestWrapper.Debug.step[i]["onException"] = {"_action": "next", "_value": ""};
+//                    }
+
+                    if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("Description")){
+                        $scope.model.TestWrapper.Debug.step[i]["Description"] = "";
+                    }
+
+                    if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("Iteration_type")){
+                        $scope.model.TestWrapper.Debug.step[i]["Iteration_type"] = {"_type": "standard"};
+                    }
+
+                    if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("runmode")){
+                        $scope.model.TestWrapper.Debug.step[i]["runmode"] = {"_type": "Standard"};
+                    }
+
+                    if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("context")){
+                        $scope.model.TestWrapper.Debug.step[i]["context"] = "positive";
+                    }
+
+                    if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("impact")){
+                        $scope.model.TestWrapper.Debug.step[i]["impact"] = "impact";
+                    }
+
+                    if($scope.model.TestWrapper.Debug.step[i].hasOwnProperty("rmt")){
+                        if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("runmode")) {
+                            $scope.model.TestWrapper.Debug.step[i].runmode = {
+                                "_type": "Standard",
+                                "_value": ""
+                            }
+                        }
+                        $scope.model.TestWrapper.Debug.step[i].runmode._type = "RMT";
+                        $scope.model.TestWrapper.Debug.step[i].runmode._value = $scope.model.TestWrapper.Debug.step[i].rmt;
+                        delete $scope.model.TestWrapper.Debug.step[i].rmt
+                    }
+
+                    if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("runmode")){
+                        $scope.model.TestWrapper.Debug.step[i].runmode = {
+                                "_type": "Standard",
+                                "_value": ""
+                            }
+                    }
+
+                    if(!$scope.model.TestWrapper.Debug.step[i].hasOwnProperty("Description")){
+                        $scope.model.TestWrapper.Debug.step[i].Description = "";
+                    }
+
+                    for(var j=0; j<$scope.debugstatus.stepsimpacts.length; j++){
+                        if($scope.model.TestWrapper.Debug.step[i].impact.toLowerCase() == $scope.debugstatus.stepsimpacts[j].toLowerCase()){
+                            $scope.model.TestWrapper.Debug.step[i].impact = $scope.debugstatus.stepsimpacts[j];
+                            break;
+                        }
+                    }
+
+                     for(j=0; j<$scope.debugstatus.stepsexecutes.length; j++){
+                         if($scope.model.TestWrapper.Debug.step[i].Execute._ExecType.toLowerCase() == $scope.debugstatus.stepsexecutes[j].toLowerCase()){
+                            $scope.model.TestWrapper.Debug.step[i].Execute._ExecType = $scope.debugstatus.stepsexecutes[j];
+                            break;
+                         }
+                     }
+
+                    for(j=0; j<$scope.debugstatus.steperrors.length; j++){
+                        if($scope.model.TestWrapper.Debug.step[i].Execute._Else.toLowerCase() == $scope.debugstatus.steperrors[j].toLowerCase()){
+                            $scope.model.TestWrapper.Debug.step[i].Execute._Else = $scope.debugstatus.steperrors[j];
+                            break;
+                        }
+                     }
+
+                     for(j=0; j<$scope.debugstatus.operator.length; j++){
+                        if($scope.model.TestWrapper.Debug.step[i].Execute.Rule._Operator.toLowerCase() == $scope.debugstatus.operator[j].toLowerCase()){
+                            $scope.model.TestWrapper.Debug.step[i].Execute.Rule._Operator = $scope.debugstatus.operator[j];
+                            break;
+                         }
+                     }
+
+                    for(j=0; j<$scope.debugstatus.runmodes.length; j++){
+                        if($scope.model.TestWrapper.Debug.step[i].runmode._type == ""){
+                            $scope.model.TestWrapper.Debug.step[i].runmode._type = "Standard";
+                        }
+
+                        if($scope.model.TestWrapper.Debug.step[i].runmode._type.toLowerCase() == $scope.debugstatus.runmodes[j].toLowerCase()){
+                            $scope.model.TestWrapper.Debug.step[i].runmode._type = $scope.debugstatus.runmodes[j];
+                            break;
+                        }
+                    }
+
+                    for(j=0; j<$scope.debugstatus.stepscontexts.length; j++){
+                        if($scope.model.TestWrapper.Debug.step[i].context.toLowerCase() == $scope.debugstatus.stepscontexts[j].toLowerCase()){
+                            $scope.model.TestWrapper.Debug.step[i].context = $scope.debugstatus.stepscontexts[j];
+                            break;
+                        }
+                    }
+
+                    for(j=0; j<$scope.cleanupstatus.iterationtypes.length; j++){
+                        if($scope.model.TestWrapper.Debug.step[i].Iteration_type._type.toLowerCase() == $scope.cleanupstatus.iterationtypes[j].toLowerCase()){
+                            $scope.model.TestWrapper.Debug.step[i].Iteration_type._type = $scope.cleanupstatus.iterationtypes[j];
+                            break;
+                        }
+                    }
+
+                    for(j=0; j<$scope.debugstatus.steperrors.length; j++){
+                        if($scope.model.TestWrapper.Debug.step[i].onError._action.toLowerCase() == $scope.debugstatus.steperrors[j].toLowerCase()){
+                            $scope.model.TestWrapper.Debug.step[i].onError._action = $scope.debugstatus.steperrors[j];
+                            break;
+                        }
+                    }
+
+
+//                    for(j=0; j<$scope.debugstatus.steperrors.length; j++){
+//                        if($scope.model.TestWrapper.Debug.step[i].onException._action.toLowerCase() == $scope.debugstatus.stepexceptions[j].toLowerCase()){
+//                            $scope.model.TestWrapper.Debug.step[i].onException._action = $scope.debugstatus.stepexceptions[j];
+//                            break;
+//                        }
+//                    }
+
+                if($scope.model.TestWrapper.Debug.step[i].hasOwnProperty("_draft")){
+                    if($scope.model.TestWrapper.Debug.step[i]["_draft"].toLowerCase() == "yes"){
+                        $scope.model.TestWrapper.Debug.step[i]["_draft"] = "yes";
+                    }
+                    else{
+                        $scope.model.TestWrapper.Debug.step[i]["_draft"] = "no";
+                    }
+                }
+                }
+
+
 //---------setup step function
                 if($scope.model.TestWrapper.Details.Datatype === "Hybrid"){
                     for (i = 0; i < $scope.model.TestWrapper.Setup.step.length; i++) {
@@ -1256,6 +1664,22 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                     }
                 }
 
+                  //---Debug step function
+
+                  if($scope.model.TestWrapper.Details.Datatype === "Hybrid"){
+                    for (i = 0; i < $scope.model.TestWrapper.Debug.step.length; i++) {
+                        if ($scope.model.TestWrapper.Debug.step[i].iteration_type === undefined) {
+                            $scope.model.TestWrapper.Debug.step[i].iteration_type = {_type: "Standard"}
+                        }
+                        $scope.original_iter_types.push($scope.model.TestWrapper.Debug.step[i].iteration_type._type);
+                    }
+                } else {
+                    for (i = 0; i < $scope.model.TestWrapper.Debug.step.length; i++) {
+                        $scope.model.TestWrapper.Debug.step[i].iteration_type = {_type: ""};
+                        $scope.original_iter_types.push($scope.model.TestWrapper.Debug.step[i].iteration_type._type);
+                    }
+                }
+
 
 
 
@@ -1280,6 +1704,16 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                     $scope.model.TestWrapper.Cleanup['step'] = [xcleanupstep];
                 }
 
+ //-------------Debug Step Function
+                     if (  ! _.isArray($scope.model.TestWrapper.Debug['step'])) {
+                    var xcleanupstep = $scope.model.TestWrapper.Debug['step'];
+                    delete $scope.model.TestWrapper.Debug['step'];
+                    $scope.model.TestWrapper.Debug['step'] = [xdebugstep];
+                }
+                if (_.isString($scope.model.TestWrapper.Debug['step'])) {
+                    var xcleanupstep = $scope.model.TestWrapper.Debug['step'];
+                    $scope.model.TestWrapper.Debug['step'] = [xdebugstep];
+                }
 
 
                 $scope.xml.json = JSON.stringify(jsonObj, null, 2);
@@ -1305,6 +1739,18 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
                     ($scope.model.TestWrapper.Details.InputDataFile == 'No_Data') ? '1' : '0';
                 $scope.cleanupstatus.datatype =
                     ($scope.cleanupstatus.nodatafile == '0') ? '' : $scope.model.TestWrapper.Details.Datatype;
+
+
+                     $scope.debugstatus.default_onError = { _action: 'abort', _value: '' };
+                $scope.debugstatus.default_onError._action = $scope.model.TestWrapper.Details.default_onError._action;
+                $scope.debugstatus.default_onError._value = $scope.model.TestWrapper.Details.default_onError._value || '';
+
+                $scope.debugstatus.nodatafile =
+                    ($scope.model.TestWrapper.Details.InputDataFile == 'No_Data') ? '1' : '0';
+                $scope.debugstatus.datatype =
+                    ($scope.debugstatus.nodatafile == '0') ? '' : $scope.model.TestWrapper.Details.Datatype;
+
+
 
             }, function (msg) {
                 alert(msg);
@@ -1353,6 +1799,10 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
 
         steperrors: ['abort', 'next', 'abort_as_error', 'goto'],
 
+        caseexceptions: ['abort', 'next'],
+
+        stepexceptions: ['abort', 'next'],
+
         iterationtypes: ['Standard', 'once_per_tc', 'end_of_tc'],
 
         stepsexecutes: ['If', 'If Not', 'Yes', 'No'],
@@ -1360,6 +1810,8 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
         operator: ['eq', 'ge', 'gt', 'le', 'lt', 'ne' ],
 
         stepexecuteerrors: ['abort', 'next', 'abort_as_error', 'goto'],
+
+         stepexecuteexceptions: ['abort', 'next'],
 
         stepscontexts: ['positive', 'negative'],
 
@@ -1409,6 +1861,11 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
 
         steperrors: ['next', 'abort', 'abort_as_error', 'goto'],
 
+        caseexceptions: ['next', 'abort'],
+
+        stepexceptions: ['next', 'abort'],
+
+
         iterationtypes: ['Standard', 'once_per_tc', 'end_of_tc'],
 
         stepsexecutes: ['If', 'If Not', 'Yes', 'No'],
@@ -1416,6 +1873,8 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
         operator: ['eq', 'ge', 'gt', 'le', 'lt', 'ne' ],
 
         stepexecuteerrors: ['next', 'abort', 'abort_as_error', 'goto'],
+
+         stepexecuteexceptions: ['next', 'abort'],
 
         stepscontexts: ['positive', 'negative'],
 
@@ -1425,6 +1884,79 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
 
         driverCheckbox: false
     };
+
+
+
+   //--__Debug Steps variables Declaration
+
+    $scope.debugstatus = {
+
+        nodatafile: '0',
+        idfclass: '',               // allows edit when zero length, else is set to 'disabled'.
+
+        datatype: 'Iterative',      // Custom
+        datatypes: ['Iterative', 'Custom', 'Hybrid'],
+
+        reqedtype: 'None',          // Requirement editor type: 'New'/'Edit'/'None'; when None, the form is not showing.
+        requirement: '',            // User makes a new req or edits existing req here.
+
+        index: 0,
+
+        step_edit_mode: 'None',     // Step editor type: 'New'/'Edit'/'None'; when None, the form is not showing.
+
+        stepindex: 0,               // which'th step were we editing.
+        steps: [],
+        step: {},
+
+        drivername: '',             // currently selected driver - in the select control.
+        keyword: '',                // currently selected keyword - in the select box.
+        runmode: {
+            _type: 'Standard',                    // currently entered value.
+            _value: ''
+        },
+
+        default_onError: {          // This is the default_onError as it appears in the Details section.
+            _action: 'abort',
+            _value: ""
+        },
+
+//        default_onExceptions: {          // This is the default_onError as it appears in the Details section.
+//            _action: 'next',
+//            _value: ""
+//        },
+
+        stepsimpacts: ['impact', 'noimpact'],
+
+        caseerrors: ['next', 'abort', 'abort_as_error', 'goto'],
+
+        steperrors: ['next', 'abort', 'abort_as_error', 'goto'],
+
+        caseexceptions: ['next', 'abort'],
+
+        stepexceptions: ['next', 'abort'],
+
+
+        iterationtypes: ['Standard', 'once_per_tc', 'end_of_tc'],
+
+        stepsexecutes: ['If', 'If Not', 'Yes', 'No'],
+
+        operator: ['eq', 'ge', 'gt', 'le', 'lt', 'ne' ],
+
+        stepexecuteerrors: ['next', 'abort', 'abort_as_error', 'goto'],
+
+         stepexecuteexceptions: ['next', 'abort'],
+
+        stepscontexts: ['positive', 'negative'],
+
+        runmodes: ['Standard', 'RMT', 'RUP', 'RUF'],
+
+        kwCheckbox: false,
+
+        driverCheckbox: false
+    };
+
+
+
 
 
 
@@ -1494,6 +2026,11 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
     $scope.putReqEditorOutOfSightCleanup = function () {
         if ($scope.cleanupstatus.reqedtype != 'None') {
             $scope.cleanupstatus.reqedtype = 'None';
+        }
+    };
+    $scope.putReqEditorOutOfSightDebug = function () {
+        if ($scope.debugstatus.reqedtype != 'None') {
+            $scope.debugstatus.reqedtype = 'None';
         }
     };
 
@@ -1650,6 +2187,33 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
     };
 
 
+ //Debug delete step function
+
+     $scope.delDebugStep = function (index) {
+
+        sweetAlert({
+            title: "Are you sure you want to delete Step #" + (index+1) + "?",
+            closeOnConfirm: false,
+            confirmButtonColor: '#3b3131',
+            confirmButtonText: "Ok",
+            showCancelButton: true,
+            cancelButtonText: "Nope. I want to keep this step.",
+            type: "warning"
+        },
+        function(isConfirm){
+            if (isConfirm) {
+                $scope.$apply($scope.model.TestWrapper.Debug.step.splice(index, 1));
+                swal({
+                    title: "Debug Step deleted.",
+                    timer: 1250,
+                    type: "success",
+                    showConfirmButton: false});
+            }
+        });
+    };
+
+
+
 
 //Setup Step rendering the Table values
     $scope.hasNoSteps = function () {
@@ -1674,6 +2238,22 @@ for (i = 0; i < $scope.model.TestWrapper.Cleanup.step.length; i++) {
         }
         else if($scope.model.TestWrapper.Cleanup.step.length == 1){
             if($scope.showCleanupStepEdit && $scope.stepBeingEdited !== "None"){
+                output = true;
+            }
+        }
+        return output
+    };
+
+
+    //Debug Step rendering the table values
+
+ $scope.hasNoDebugSteps = function () {
+        var output = false;
+        if($scope.model.TestWrapper.Debug.step.length == 0){
+            output = true;
+        }
+        else if($scope.model.TestWrapper.Debug.step.length == 1){
+            if($scope.showDebugStepEdit && $scope.stepBeingEdited !== "None"){
                 output = true;
             }
         }
@@ -1750,6 +2330,43 @@ console.log("startSetupStepEdit",edtype);
 
         $scope.sysFields();
     };
+
+
+       // To Create a New Debug Step
+
+     $scope.startDebugStepEdit = function (edtype, val, index) {
+        console.log('StartDebugEdit',edtype);
+        var IDFPath = $scope.model.TestWrapper.Details.InputDataFile;
+        if(IDFPath == ''){
+             sweetAlert({
+                        title: "Input Data File path is not specified, so the System & Subsystem name cannot be fetched.",
+                        text: "Kindly provide the path and then click on 'New step' button if auto-population is needed.",
+                        closeOnConfirm: true,
+                        confirmButtonColor: '#3b3131',
+                        confirmButtonText: "Ok",
+                        type: "info"
+            });
+        }
+
+        $scope.hideSubsys = true;
+
+        if($scope.showDebugStepEdit){
+            swal({
+                title: "You have a Step open in the step editor that should be saved before creating a new Step.",
+                text: "Please save that Step.",
+                type: "warning",
+                confirmButtonText: "Ok",
+                closeOnConfirm: true,
+                confirmButtonColor: '#3b3131'
+            });
+        }
+        else {
+            startDebugStepCap(edtype, val, index);
+        }
+
+        $scope.sysFields();
+    };
+
 
     //To retrieve System Name List from the provided datafile.
     $scope.sysFields = function () {
@@ -1927,7 +2544,7 @@ console.log("startSetupStepEdit",edtype);
             $scope.cleanupstatus.step_edit_mode = edtype;
             $scope.cleanupstatus.stepindex = index;
             $scope.cleanupstatus.step = mkNewStep();
-            if (edtype == 'NewOne') {
+            if (edtype == 'New') {
                 $scope.cleanupDriverSelected('');
             }
             $scope.cleanupstatus.driverCheckbox = false;
@@ -1938,6 +2555,40 @@ console.log("startSetupStepEdit",edtype);
         }
 
 
+         //  Debug Step Fields Intialization and Declaration and Function call
+
+        function startDebugStepCap(edtype, val, index){
+            console.log("startDebugStepCap",edtype);
+            $scope.showRulesBelow = false;
+            $scope.hideElse =  true;
+            $scope.hideExp =  true;
+            $scope.rule_list = '';
+            $scope.rule_list = [{}];
+            $scope.step_numbers = [];
+            $scope.stepToBeCopied = "None";
+            console.log($scope.model.TestWrapper.Debug.step.length);
+            for(var i=0; i<$scope.model.TestWrapper.Debug.step.length; i++){
+                $scope.step_numbers.push(i+1);
+            }
+            $scope.showDebugStepEdit = true;
+            $scope.cancelReq();
+            $scope.debugstatus.step_edit_mode = edtype;
+            $scope.debugstatus.stepindex = index;
+            $scope.debugstatus.step = mkNewStep();
+            if (edtype == 'New') {
+                $scope.debugDriverSelected('');
+            }
+            $scope.debugstatus.driverCheckbox = false;
+            $scope.debugstatus.kwCheckbox = false;
+            if($scope.insertStep){
+                $scope.insertStep = false;
+            }
+        }
+
+
+
+
+
         $scope.showTopTable = function(index){
             if($scope.insertStep){
                 return index > $scope.stepBeingEdited
@@ -1946,6 +2597,9 @@ console.log("startSetupStepEdit",edtype);
                 return index >= $scope.stepBeingEdited
             }
         };
+
+
+
 //Adding the new Setup Step
     $scope.addStep = function (index) {
         $scope.hideSubsys = true;
@@ -2014,6 +2668,40 @@ console.log("startSetupStepEdit",edtype);
     };
 
 
+   //Adding the new Debug Function
+ $scope.addDebugStep = function (index) {
+        $scope.hideSubsys = true;
+        if($scope.showDebugStepEdit){
+            swal({
+                title: "You have a Step open in the step editor that should be saved before editing a new Step.",
+                text: "Please save that Step.",
+                type: "warning",
+                confirmButtonText: "Ok",
+                closeOnConfirm: true,
+                confirmButtonColor: '#3b3131'
+            });
+        }
+        else {
+            $scope.cancelReq();
+            $scope.debugstatus.step_edit_mode = 'New';
+            $scope.debugstatus.stepindex = index;
+            $scope.debugstatus.step = mkNewStep();
+            $scope.debugDriverSelected('');
+            $scope.stepBeingEdited = index;
+            $scope.showDebugStepEdit = true;
+            $scope.step_numbers = [];
+            $scope.stepToBeCopied = "None";
+            for(var i=0; i<$scope.model.TestWrapper.Debug.step.length; i++){
+                $scope.step_numbers.push(i+1);
+            }
+            $scope.debugstatus.step.Execute._ExecType= 'Yes';
+            $scope.showRulesBelow = false;
+            $scope.insertStep = true;
+        }
+         $scope.sysFields();
+    };
+
+
 
 
     $scope.reqStepEdTypeAsString = function () {
@@ -2022,6 +2710,10 @@ console.log("startSetupStepEdit",edtype);
 
      $scope.reqCleanupStepEdTypeAsString = function () {
         return ($scope.cleanupstatus.step_edit_mode == 'Edit') ? 'Edit' : 'New';
+    };
+
+    $scope.reqDebugStepEdTypeAsString = function () {
+        return ($scope.debugstatus.step_edit_mode == 'Edit') ? 'Edit' : 'New';
     };
 
     // Allow Edit op for the Step at the given index within the Setup array.
@@ -2208,6 +2900,10 @@ console.log("startSetupStepEdit",edtype);
         return $scope.cleanupstatus.step_edit_mode != 'None';
     };
 
+     $scope.showDebugStepEditor = function () {
+        return $scope.debugstatus.step_edit_mode != 'None';
+    };
+
     //Allows Edit option  for the user in the  Cleanup  step  with in the Cleanup array.
 
       $scope.editCleanupStep = function (drivername, index) {
@@ -2386,6 +3082,183 @@ console.log("startSetupStepEdit",edtype);
     }
 
 
+//Allows Edit option  for the user in the  Debug  step  with in the Debug array.
+
+      $scope.editDebugStep = function (drivername, index) {
+        $scope.editArgs = 1;
+        $scope.editIndex = index;
+        $scope.editStepFlag = 1;
+        $scope.hideSubsys  = false;
+        if($scope.showDebugStepEdit){
+            swal({
+                title: "You have a Step open in the step editor that should be saved before editing a new Step.",
+                text: "Please save that Step.",
+                type: "warning",
+                confirmButtonText: "Ok",
+                closeOnConfirm: true,
+                confirmButtonColor: '#3b3131'
+            });
+        }
+        else {
+            $scope.copyDebugStep();
+            $scope.hideSubsys  = false;
+            $scope.cancelDebugArguments();
+            openDebugStepCap(drivername, index);
+        }
+        var argsCheck = JSON.stringify($scope.xml.args.args);
+        if(argsCheck == '["self"]'){//To hide subsystem for 'no arguments'.
+            $scope.hideSubsys = true;
+        }
+        $scope.editArgs = 0;
+       };
+
+        function openDebugStepCap(drivername, index){
+            $scope.stepBeingEdited = index;
+            $scope.step_numbers = [];
+            $scope.stepToBeCopied = "None";
+            for(var i=0; i<$scope.model.TestWrapper.Debug.step.length; i++){
+                if(i !== index){
+                    $scope.step_numbers.push(i+1);
+                }
+            }
+            $scope.showDebugStepEdit = true;
+            $scope.debugstatus.driverCheckbox = false;
+            $scope.debugstatus.kwCheckbox = false;
+            $scope.putReqEditorOutOfSightDebug();
+            $scope.debugstatus.stepindex = index;
+            console.log("Editing step: " + drivername + ' @ ' + index);
+            console.log('$scope.model: ' + JSON.stringify($scope.model));
+            $scope.debugstatus.step = $scope.model.TestWrapper.Debug.step[index];
+            console.log('Step to edit: ' + JSON.stringify($scope.debugstatus.step));
+
+            if($scope.model.TestWrapper.Debug.step[index].hasOwnProperty("rmt")){
+                if(!$scope.model.TestWrapper.Debug.step[index].hasOwnProperty("runmode")) {
+                    $scope.model.TestWrapper.Debug.step[index].runmode = {
+                        "_type": "Standard",
+                        "_value": ""
+                    }
+                }
+                $scope.model.TestWrapper.Debug.step[index].runmode._type = "Standard";
+                delete $scope.model.TestWrapper.Debug.step[index].rmt
+            }
+
+         $scope.changedIndex = index;
+            $scope.debugDriverSelected(drivername);
+            var flag_kwd_length = true;
+            if($scope.xml.keywords.length > 0){
+                var kwd = _.find ($scope.xml.keywords, function (kw) {
+                    return kw.fn == $scope.debugstatus.step._Keyword;
+                });
+                if(kwd == undefined){
+                    flag_kwd_length = false;
+                    kwd = get_unavailable_kwd_data_debugstep(index);
+                }
+            }
+            else{
+                flag_kwd_length = false;
+                kwd = get_unavailable_kwd_data_debugstep(index);
+            }
+
+            console.log('kwd: ', JSON.stringify(kwd));
+
+            $scope.debugstatus.keyword = kwd.fn;
+            if(flag_kwd_length){
+                $scope.selectKeywordDebug(kwd.fn);  // Do this before setting the values of args.
+            }
+
+            var args = _.map(kwd.args, function (a) {
+                return $.trim(a.split('=')[0]);
+            });
+
+            //-- mapargs management.
+            if (kwd.args[0] == 'self') {
+                $scope.xml.mapargs['self'] = '';
+            }
+            else{
+                $scope.debugstatus.driverCheckbox = true;
+                $scope.debugstatus.kwCheckbox = true;
+            }
+
+            if(!$scope.debugstatus.step.Arguments.argument.hasOwnProperty(length)){
+                $scope.debugstatus.step.Arguments.argument = [$scope.debugstatus.step.Arguments.argument];
+            }
+
+            if($scope.debugstatus.step.Execute._ExecType == 'If' || $scope.debugstatus.step.Execute._ExecType == 'If Not'){
+                if($scope.showRulesBelow == false){
+                    $scope.showRulesBelow = true;
+                }
+                if($scope.model.TestWrapper.Debug.step[index].Execute.Rule.hasOwnProperty(length)){
+                    $scope.showRulesBelow = true;
+                    $scope.rule_list = $scope.model.TestWrapper.Debug.step[index].Execute.Rule;
+                }
+                else{
+                    $scope.rule_list = [$scope.model.TestWrapper.Debug.step[index].Execute.Rule];
+                }
+            }
+
+            else{
+                $scope.kwCheckbox = false;
+                $scope.driverCheckbox = false;
+                $scope.showRulesBelow = false;
+                if($scope.debugstatus.step.Execute._ExecType == 'Yes'){
+                    $scope.debugstatus.step.Execute._ExecType = 'Yes';
+                }
+                else{
+                    $scope.debugstatus.step.Execute._ExecType = 'No';
+                }
+            }
+
+            if($scope.debugstatus.step.Execute._ExecType == 'If' || $scope.debugstatus.step.Execute._ExecType == 'If Not'){
+                for (i = 0; i < $scope.model.TestWrapper.Debug.step.length; i++) {
+                    if($scope.showRulesBelow == false){
+                        $scope.showRulesBelow = true;
+                    }
+                    if($scope.debugstatus.step.Execute._Else == undefined){
+                        $scope.debugstatus.step.Execute._Else = 'next';
+                    }
+
+                    if($scope.debugstatus.step.Execute._Else !== undefined){
+                        $scope.debugstatus.step.Execute._Else = $scope.debugstatus.step.Execute._Else;
+                    }
+
+                    if($scope.debugstatus.step.Execute._Else == "Abort"){
+                        $scope.debugstatus.step.Execute._Else = "abort";
+                    }
+
+                }
+            }
+            else{
+                $scope.debugstatus.step.Execute._ExecType = $scope.debugstatus.step.Execute._ExecType;
+            }
+
+            var vals = _.pluck($scope.debugstatus.step.Arguments.argument, '_name');
+
+            console.log('vals ', JSON.stringify(vals));
+            console.log('kwd-arg-a ', JSON.stringify(kwd, null, 2));
+
+            // Clear the map, so that if another item is selected in the UI, the args look good.
+
+            $scope.xml.mapargs = {};
+            _.each(kwd.argsmap, function (v, k) {
+                $scope.xml.mapargs[k] = '';
+            });
+
+            _.each($scope.debugstatus.step.Arguments.argument, function (a, i) {
+                $scope.xml.mapargs[a._name] = a._value;
+            });
+
+            if($scope.argsField == 1){
+                $scope.argsMapField();
+            }
+
+            console.log('MAPARGS: ', JSON.stringify($scope.xml.mapargs, null, 2));
+            $scope.debugstatus.step_edit_mode = 'Edit';
+            if($scope.insertStep){
+                $scope.insertStep = false;
+            }
+
+    }
+
     $scope.checkRule = function(index){
        if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
             for (var i = 0; i < $scope.status.step.Execute.Rule.length; i++) {
@@ -2403,6 +3276,22 @@ console.log("startSetupStepEdit",edtype);
     $scope.checkCleanupRule = function(index){
        if($scope.cleanupstatus.step.Execute._ExecType == 'If' || $scope.cleanupstatus.step.Execute._ExecType == 'If Not'){
             for (var i = 0; i < $scope.cleanupstatus.step.Execute.Rule.length; i++) {
+                if($scope.rule_list[i]._Operator == undefined){
+                    $scope.rule_list[i]._Operator = "eq";
+                }
+                else{
+                    $scope.rule_list[i]._Operator = $scope.rule_list[i]._Operator;
+                }
+            }
+        }
+    }
+
+
+     //-----------------debug step Check Rule
+
+    $scope.checkDebugRule = function(index){
+       if($scope.debugstatus.step.Execute._ExecType == 'If' || $scope.debugstatus.step.Execute._ExecType == 'If Not'){
+            for (var i = 0; i < $scope.debugstatus.step.Execute.Rule.length; i++) {
                 if($scope.rule_list[i]._Operator == undefined){
                     $scope.rule_list[i]._Operator = "eq";
                 }
@@ -2480,6 +3369,39 @@ console.log("startSetupStepEdit",edtype);
             return kwd;
         }
 
+         //-------Debug Step Function
+          function get_unavailable_kwd_data_debugStep(index){
+            var kwd = {};
+            kwd["fn"] = $scope.model.TestWrapper.Debug.step[index]._Keyword;
+            kwd["type"] = "fn";
+            kwd["wdesc"] = "No WDescription available as this Keyword has not been defined yet.";
+            kwd["def"] = "A signature for this Keyword has not been defined yet.";
+            var var_argsmap = {};
+            var var_args = [];
+            if($scope.model.TestWrapper.Debug.step[index].Arguments.argument.hasOwnProperty(length)){
+                $scope.arg_list = $scope.model.TestWrapper.Debug.step[index].Arguments.argument;
+                $scope.rule_list = $scope.model.TestWrapper.Debug.step[index].Execute.Rule;
+            }
+            else{
+                $scope.arg_list = [$scope.model.TestWrapper.Debug.step[index].Arguments.argument];
+                $scope.rule_list = [$scope.model.TestWrapper.Debug.step[index].Execute.Rule];
+            }
+            for(var i=0; i<$scope.arg_list.length; i++){
+                var_argsmap[$scope.arg_list[i]._name] = $scope.arg_list[i]._value;
+                if($scope.arg_list[i]._value != ""){
+                    var_args.push($scope.arg_list[i]._name + "=" + $scope.arg_list[i]._value + "");
+                }
+                else{
+                    var_args.push($scope.arg_list[i]._name);
+                }
+            }
+            kwd["argsmap"] = var_argsmap;
+            kwd["line"] = 0;
+            kwd["args"] = var_args;
+            kwd["comment"] = ["No Comments available."];
+            return kwd;
+        }
+
 // Can cancel the arguments That are added into the field in the Setup step
     $scope.cancelArguments = function () {
         $scope.status.step = mkNewStep();
@@ -2503,6 +3425,20 @@ console.log("startSetupStepEdit",edtype);
             $scope.insertStep = false;
         }
         return $scope.cleanupstatus.step_edit_mode = 'None';
+    };
+
+
+// Can cancel the arguments That are added into the field in the Debug Step
+
+       $scope.cancelDebugArguments = function () {
+        $scope.debugstatus.step = mkNewStep();
+        $scope.showDebugStepEdit = false;
+        $scope.stepBeingEdited = "None";
+        $scope.stepToBeCopied = "None";
+        if($scope.insertStep){
+            $scope.insertStep = false;
+        }
+        return $scope.debugstatus.step_edit_mode = 'None';
     };
 
     // On change of the Driver name select control in Setup Step
@@ -2548,6 +3484,31 @@ console.log("startSetupStepEdit",edtype);
 
         return kwds;
     };
+
+
+     // On change of the Driver name select control in Debug Step
+    // Gather function names for the selected driver.
+
+ $scope.debugDriverSelected = function (drivername) {
+        $scope.putReqEditorOutOfSightDebug();
+        $scope.debugstatus.drivername = drivername;
+        $scope.debugstatus.keyword = '';                     // When driver is selected, clear the keyword.
+        $scope.debugstatus.stepdescription = '';            // And, the description field.
+
+        var drivers = $scope.xml.pycs[drivername];
+        var ads = [];
+        _.each(drivers, function (driver) {
+            ads.push(_.filter(driver, function(d) {
+                return d.type === 'fn' && d.fn !== '__init__';
+            }));
+        });
+        var kwds = _.flatten(ads);
+        kwds = _.sortBy(kwds, function(r) {return r.fn});
+        $scope.xml.keywords = kwds;         // Function's details (comments, params, &c) of selected driver.
+
+        return kwds;
+    };
+
     // Gather arguments for currently selected keyword/fun in Setup Step.
     // keyword is the fun name.
     $scope.selectKeyword = function (keyword) {
@@ -2587,6 +3548,36 @@ console.log("startSetupStepEdit",edtype);
             $scope.cleanupstatus.stepdescription = k['wdesc'];
         } else {
             $scope.cleanupstatus.stepdescription = k['fn'];
+        }
+        $scope.xml.args = _.where($scope.xml.keywords, { fn: keyword })[0];
+        $scope.xml.arglist = _.map($scope.xml.args.args, function (a) {
+            return a.split('=')[0];
+        });
+        $scope.xml.arglist.push("subsystem_name");
+        $scope.xml.mapargs = {};
+        _.each($scope.xml.arglist, function (v) {
+            $scope.xml.mapargs[v] = '';
+        });
+        console.log('xml.args', JSON.stringify($scope.xml.args));
+        if( $scope.editArgs == 0){
+            $scope.hideSubsys = true;
+        }
+
+        return $scope.xml.args;
+    };
+
+
+// Gather arguments for currently selected keyword/fun in Debug Step.
+    // keyword is the fun name.
+
+ $scope.selectKeywordDebug = function (keyword) {
+        $scope.putReqEditorOutOfSightDebug();
+        console.log('In selectKeywordDebug(' + keyword + ')');
+        var k = _.findWhere ($scope.xml.keywords, { fn: keyword });
+        if (k['wdesc'] != '') {
+            $scope.debugstatus.stepdescription = k['wdesc'];
+        } else {
+            $scope.debugstatus.stepdescription = k['fn'];
         }
         $scope.xml.args = _.where($scope.xml.keywords, { fn: keyword })[0];
         $scope.xml.arglist = _.map($scope.xml.args.args, function (a) {
@@ -2887,6 +3878,167 @@ console.log("startSetupStepEdit",edtype);
 
         return rec;
     }
+
+
+
+//--------------Setting up  the values  in the Debug Step fields
+
+    function populate_debugstep(driver, funname) {
+        var rec = {
+          "Arguments": {
+            "argument": []
+          },
+          "Execute": {
+            "_ExecType": "Yes",
+             "Rule": {
+                "_Operator" : "eq"
+            }
+          },
+          "onError": {
+            "_action": "", // next, abort, goto
+            "_value": ""
+          },
+//          "onException": {
+//            "_action": "", // next, abort, goto
+//            "_value": ""
+//          },
+          "Description": "",
+            "iteration_type": {
+                "_type":"Standard"
+            },
+            "context": "positive",    // negative, positive
+            "impact": "impact",     // impact, noimpact
+            "runmode": {
+                "_type": "Standard",
+                "_value": ""
+            },
+            "_TS": "1",
+            "_Driver": '',
+            "_Keyword": ''
+        };
+        console.log('mapargs', JSON.stringify($scope.xml.mapargs, null, 2));
+        rec._Driver = driver;
+        rec._Keyword = funname;
+        console.log('$scope.xml.mapargs: ', JSON.stringify($scope.xml.mapargs));
+
+        _.each($scope.xml.mapargs, function (v, k) {
+            if (k != 'self' && $.trim(v) != '') {
+                rec.Arguments.argument.push({'_name': k, '_value': v });
+            }
+        });
+
+         $scope.xml.args = _.where($scope.xml.keywords, { fn: $scope.debugstatus.keyword })[0];
+                $scope.xml.arglist = _.map($scope.xml.args.args, function (a) {
+                    return a.split('=')[0];
+                });
+
+        $scope.xml.arglist.push("subsystem_name");
+
+        rec.Description = $scope.cleanupstatus.step.Description;
+        if($scope.debugstatus.step.onError == undefined){
+            $scope.debugstatus.step.onError = {};
+            $scope.debugstatus.step.onError['_action'] = $scope.debugstatus.default_onError['_action'];
+        }
+        if($scope.debugstatus.step.onError['_action'] == undefined || $scope.debugstatus.step.onError['_action'] == "" || $scope.debugstatus.step.onError['_action'] == {}){
+            $scope.debugstatus.step.onError['_action'] = $scope.debugstatus.default_onError['_action'];
+        }
+        rec.onError['_action'] = $scope.debugstatus.step.onError['_action'];
+        if (rec.onError['_action'] == 'goto') {
+            if ($.trim($scope.debugstatus.step.onError._value) == '') {
+                sweetAlert({
+                    title: "A Step # is required when 'On Error' is goto.",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return null;
+            } else {
+                rec.onError['_value'] = $scope.debugstatus.step.onError['_value'];
+            }
+        } else {
+            delete rec.onError['_value'];
+        }
+
+
+//        if($scope.debugstatus.step.onException == undefined){
+//            $scope.debugstatus.step.onException = {};
+//            $scope.debugstatus.step.onException['_action'] = $scope.debugstatus.default_onException['_action'];
+//        }
+//        if($scope.debugstatus.step.onException['_action'] == undefined || $scope.debugstatus.step.onException['_action'] == "" || $scope.debugstatus.step.onException['_action'] == {}){
+//            $scope.debugstatus.step.onException['_action'] = $scope.debugstatus.default_onException['_action'];
+//        }
+//        rec.onException['_action'] = $scope.debugstatus.step.onException['_action'];
+//        if (rec.onException['_action'] == 'goto') {
+//            if ($.trim($scope.debugstatus.step.onException._value) == '') {
+//                sweetAlert({
+//                    title: "A Step # is required when 'On Error' is goto.",
+//                    closeOnConfirm: true,
+//                    confirmButtonColor: '#3b3131',
+//                    confirmButtonText: "Ok",
+//                    type: "error"
+//                });
+//                return null;
+//            } else {
+//                rec.onException['_value'] = $scope.debugstatus.step.onException['_value'];
+//            }
+//        } else {
+//            delete rec.onException['_value'];
+//        }
+
+
+
+       if($scope.debugstatus.step.context == undefined){
+           $scope.debugstatus.step.context = "positive"
+       }
+        rec.context = $scope.debugstatus.step.context;
+        if($scope.debugstatus.step.impact == undefined){
+           $scope.debugstatus.step.impact = "impact"
+       }
+        rec.impact = $scope.debugstatus.step.impact;
+        if($scope.debugstatus.step.runmode._type !== undefined){
+        rec.runmode._type = $scope.debugstatus.step.runmode._type;
+        rec.runmode._value = $scope.debugstatus.step.runmode._value;
+    }
+
+        if($scope.model.TestWrapper.Details.Datatype === "Hybrid"){
+            if($scope.debugstatus.step.iteration_type['_type'] === ""){
+                $scope.debugstatus.step.iteration_type['_type'] = "Standard";
+            }
+            else{
+                $scope.debugstatus.step.iteration_type['_type'] = $scope.debugstatus.step.iteration_type['_type'];
+            }
+
+            rec.iteration_type['_type'] = $scope.debugstatus.step.iteration_type['_type'];
+        }
+
+        if($scope.debugstatus.step.Execute == undefined){
+            $scope.debugstatus.step.Execute = {};
+        }
+
+        if($scope.debugstatus.step.Execute['_ExecType'] == undefined){
+            $scope.debugstatus.step.Execute['_ExecType'] = "Yes";
+        }
+
+        rec.Execute['_ExecType'] = $scope.debugstatus.step.Execute['_ExecType'];
+        rec.Execute['_Expression'] = $scope.debugstatus.step.Execute['_Expression'];
+        rec.Execute['_Else'] = $scope.debugstatus.step.Execute['_Else'];
+        rec.Execute['_Elsevalue'] = $scope.debugstatus.step.Execute['_Elsevalue'];
+
+        if (rec.Execute['_ExecType'] == 'If' || rec.Execute['_ExecType'] == 'If Not') {
+           // rec.Execute['Rule']['_Condition'] = $scope.cleanupstatus.step.Execute['Rule']['_Condition'];
+           //rec.Execute['Rule']['_Operator'] = $scope.cleanupstatus.step.Execute['Rule']['_Operator'];
+           // rec.Execute['Rule']['_Condvalue'] = $scope.cleanupstatus.step.Execute['Rule']['_Condvalue'];
+        } else {
+            delete rec.Execute['Rule'];
+        }
+
+        console.log('rec', JSON.stringify(rec, null, 2));
+
+        return rec;
+    }
+
+
 
 
 
@@ -3207,7 +4359,7 @@ console.log("startSetupStepEdit",edtype);
         newstep.Execute.Rule = $scope.rule_list;
         }
 
-        if ($scope.cleanupstatus.step_edit_mode == 'NewOne') {
+        if ($scope.cleanupstatus.step_edit_mode == 'New') {
 
             if($scope.cleanupstatus.stepindex==-1){
                 if($scope.model.TestWrapper.Cleanup.step === undefined){
@@ -3235,6 +4387,182 @@ console.log("startSetupStepEdit",edtype);
     };
 
 
+    /* Called when Save Step is clicked in the Debug step  */
+
+       $scope.saveDebugArguments = function () {
+
+        var driver = $.trim($scope.debugstatus.drivername) || '',
+            keyword = $.trim($scope.debugstatus.keyword) || '';
+        if(!$scope.debugstatus.driverCheckbox && !$scope.debugstatus.kwCheckbox){
+            if (driver == '' || keyword == '' ) {
+                sweetAlert({
+                    title: "We need the Driver, Keyword and Description definitions for a Step specification.",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return;
+            }
+        }
+        else{
+            if (keyword == '' ) {
+                sweetAlert({
+                    title: "We need the Keyword definition for a Step specification.",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return;
+            }
+            else {
+                if($scope.arg_list.length > 1){
+                    for(var i=0; i<$scope.arg_list.length; i++){
+                        if($scope.arg_list[i]._name == ""){
+                            sweetAlert({
+                                title: "The Name for Argument " + (i+1) + " has been left empty.",
+                                closeOnConfirm: true,
+                                confirmButtonColor: '#3b3131',
+                                confirmButtonText: "Ok",
+                                type: "error"
+                            });
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        if($scope.editstepcheck == 0){
+            if($scope.debugstatus.step.Execute._ExecType == 'If' || $scope.debugstatus.step.Execute._ExecType == 'If Not'){
+                if(document.getElementById('stepexecelse').value == 3){
+                    if(document.getElementById('stepexecelsev').value == ''){
+                        sweetAlert({
+                            title: "Else Value is required when Execute Type->Else is 'goto'.",
+                            closeOnConfirm: true,
+                            confirmButtonColor: '#3b3131',
+                            confirmButtonText: "Ok",
+                            type: "error"
+                        });
+                        return;
+                    }
+                }
+
+             }
+        }
+
+        if($scope.debugstatus.step.Execute._ExecType == 'If' || $scope.debugstatus.step.Execute._ExecType == 'If Not'){
+
+                    for(var i=0; i<$scope.rule_list.length; i++){
+                        if($scope.rule_list[i]._Condition == ""){
+                            sweetAlert({
+                                title: "Condition field of Rule " + (i+1) + " is required when Execute Type is 'If/If Not'.",
+                                closeOnConfirm: true,
+                                confirmButtonColor: '#3b3131',
+                                confirmButtonText: "Ok",
+                                type: "error"
+                            });
+                            return;
+                        }
+                    }
+
+                    for(var i=0; i<$scope.rule_list.length; i++){
+                        if($scope.rule_list[i]._Condvalue == ""){
+                            sweetAlert({
+                                title: "Condition Value field of Rule " + (i+1) + " is required when Execute Type is 'If/If Not'.",
+                                closeOnConfirm: true,
+                                confirmButtonColor: '#3b3131',
+                                confirmButtonText: "Ok",
+                                type: "error"
+                            });
+                            return;
+                        }
+                    }
+        }
+
+        if($scope.debugstatus.step.runmode._type !== undefined){
+        if($scope.debugstatus.step.runmode._type !== "Standard"){
+            var value = $.trim($scope.debugstatus.step.runmode._value);
+            var re = /^[0-9]*$/;
+            if( !re.test(value) ) {
+                sweetAlert({
+                    title: "Run Mode - Value takes in only numeric values",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return;
+            }
+            if(value == "Standard"){
+                sweetAlert({
+                    title: "Run Mode - Value cannot be empty",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return;
+            }
+        }
+        }
+
+        if($scope.editstepcheck == 0){
+            if($scope.changedIndex !== -1) {
+                $scope.original_iter_types[$scope.changedIndex] = $scope.debugstatus.step.iteration_type._type;
+                $scope.changedIndex = -1;
+            }
+        }
+
+        var newstep = populate_debugstep(driver, keyword);
+
+        if (newstep == null) {
+            return;
+
+        }
+
+        if(!$scope.debugstatus.kwCheckbox){
+            newstep["_draft"] = "no";
+        }
+        else{
+            newstep["_draft"] = "yes";
+            newstep.Arguments.argument = $scope.arg_list;
+        }
+
+        if($scope.showRulesBelow){
+        newstep.Execute.Rule = $scope.rule_list;
+        }
+
+        if ($scope.debugstatus.step_edit_mode == 'New') {
+
+            if($scope.debugstatus.stepindex==-1){
+                if($scope.model.TestWrapper.Debug.step === undefined){
+                    $scope.model.TestWrapper.Debug.step = [];
+                }
+                   console.log("ssssssssssssssssss",newstep);
+                $scope.model.TestWrapper.Debug.step.push(newstep);
+	        }
+            else {
+                $scope.model.TestWrapper.Debug.step.splice($scope.debugstatus.stepindex+1,0,newstep)
+            }
+        }
+        else {
+            $scope.model.TestWrapper.Debug.step[$scope.debugstatus.stepindex] = newstep;
+        }
+        $scope.debugstatus.step_edit_mode = 'None';
+        $scope.kwCheckbox = false;
+        $scope.driverCheckbox = false;
+        $scope.showDebugStepEdit = false;
+        $scope.stepBeingEdited = "None";
+        $scope.stepToBeCopied = "None";
+        if($scope.insertStep){
+            $scope.insertStep = false;
+        }
+    };
+
+
+
     $scope.testcaseTooltips = [];
         $scope.tcstates = [];
 
@@ -3255,7 +4583,7 @@ console.log("startSetupStepEdit",edtype);
 // when save case function is clicked
     $scope.saveTestcaseCap = function () {
 
-        if($scope.showSetupStepEdit || $scope.showCleanupStepEdit){
+        if($scope.showSetupStepEdit || $scope.showCleanupStepEdit || $scope.showDebugStepEdit){
             sweetAlert({
                 title: "There is a step that has not been saved yet.",
                 text: "Either save this step or discard it before saving the Case",
@@ -3362,6 +4690,22 @@ console.log("startSetupStepEdit",edtype);
     }
 
 
+    for (i = 0; i < $scope.model.TestWrapper.Debug.step.length; i++) {
+
+            if($scope.model.TestWrapper.Details.Datatype == "Hybrid"){
+                    if($scope.debugstatus.step.iteration_type._type == ""){
+                        $scope.debugstatus.step.iteration_type._type= "Standard";
+                        $scope.model.TestWrapper.Details.Datatype = "Hybrid";
+                    }
+                    else{
+                        $scope.debugstatus.step.iteration_type._type = $scope.debugstatus.step.iteration_type._type;
+
+                    }
+        $scope.model.TestWrapper.Details.Datatype = "Hybrid";
+            }
+    }
+
+
         if ($scope.model.TestWrapper.Details.InputDataFile == 'No_Data') {
             $scope.model.TestWrapper.Details.Datatype = '';
         } else {
@@ -3413,7 +4757,7 @@ console.log("startSetupStepEdit",edtype);
 //            }
 //        }
 
-        if ($scope.model.TestWrapper.Setup.step.length == 0 && $scope.model.TestWrapper.Cleanup.step.length == 0 ) {
+        if ($scope.model.TestWrapper.Setup.step.length == 0 && $scope.model.TestWrapper.Cleanup.step.length == 0  && $scope.model.TestWrapper.Debug.step.length == 0 ) {
 
 
             sweetAlert({
@@ -3450,6 +4794,16 @@ _.each(_.range(1, $scope.model.TestWrapper.Cleanup.step.length+1), function (i) 
 
         });
 
+//debugStep Function
+_.each(_.range(1, $scope.model.TestWrapper.Debug.step.length+1), function (i) {
+            $scope.model.TestWrapper.Debug.step[i-1]._TS = i;
+            if($scope.model.TestWrapper.Debug.step[i-1].hasOwnProperty("_draft")){
+                if($scope.model.TestWrapper.Debug.step[i-1]._draft == "yes"){
+                    step_draft_count = step_draft_count + 1;
+                }
+            }
+
+        });
 
 
         //- Assign the default error action in the details section.
@@ -3579,6 +4933,10 @@ _.each(_.range(1, $scope.model.TestWrapper.Cleanup.step.length+1), function (i) 
                             },
 
                             "Cleanup": {
+                               "step": []
+                            },
+
+                            "Debug": {
                                "step": []
                             }
                             }
