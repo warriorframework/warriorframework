@@ -31,6 +31,7 @@ install:
       pip install lxml==3.3.3 ;
       pip install paramiko==2.4.1 ;
       pip install pysnmp==4.3.2 ;
+      pip install kafka-python==1.4.6;
     fi
 
 script:
@@ -42,6 +43,8 @@ script:
       python ./warrior/Warrior ./wftests/warrior_tests/projects/pj_framework_tests.xml ./wftests/warrior_tests/projects/pj_glob.xml ./wftests/warrior_tests/projects/pj_rest.xml ./wftests/warrior_tests/projects/pj_retry.xml ./wftests/warrior_tests/projects/pj_runmode_retry_at_suite_level_at_project_file.xml ./wftests/warrior_tests/projects/pj_execute_resume.xml ;
     elif [[ ${TESTFILES_2} = "yes" ]]; then
       python ./warrior/Warrior ./wftests/warrior_tests/projects/pj_cond_var.xml ./wftests/warrior_tests/projects/pj_iterative_execution.xml ./wftests/warrior_tests/projects/pj_parallel_execution.xml ./wftests/warrior_tests/projects/pj_parallel_execution_2.xml ;
+    else
+      python ./warrior/Warrior $TESTFILE ;
     fi
 
 after_success:
