@@ -16,6 +16,7 @@ import copy
 import glob
 import os
 import json
+import random
 
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_warning, print_info, print_error
@@ -49,7 +50,7 @@ def append_step_list(step_list, step, value, go_next, mode, tag):
     return step_list
 
 
-def get_step_list(filepath, step_tag, sub_step_tag, loop_tag="Loop"):
+def get_step_list(filepath, step_tag, sub_step_tag, randomize=False, loop_tag="Loop"):
     """
     Takes the location of Testcase/Suite/Project file as input
     Returns a list of all the step/testcase/testsuite elements
@@ -180,6 +181,8 @@ def get_step_list(filepath, step_tag, sub_step_tag, loop_tag="Loop"):
                                   "Given path will be used for the Warrior "
                                   "execution.".format(orig_step_abspath))
                     step_list.append(orig_step)
+        if randomize:
+            random.shuffle(step_list)
 
     # iterate all steps to get the runmode and retry details
     for _, step in enumerate(step_list):

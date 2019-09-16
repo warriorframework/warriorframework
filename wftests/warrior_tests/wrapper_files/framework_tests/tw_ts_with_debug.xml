@@ -1,0 +1,129 @@
+<?xml version="1.0" ?>
+<TestWrapper>
+  <!-- Details Section : Give all the required parameters like Name, Title, Date, Time, Engineer
+       Datatype - Custom, Iterative, Hybrid are supported. 
+                  Given Input datfile will be considered based on this parameter.
+                  funtionlality is exactly same like Datatype in warriorframework.
+       Runtype - Sequential_keywords to execute all the steps in setup, cleanup sequentially
+                 Parallel_keywords to execute all the steps in setup, cleanup parallel
+  -->
+  <Details>
+		<Name>tw_setup_onerror_next.xml</Name>
+		<Title>onerror check in wrapper</Title>
+		<Datatype>Custom</Datatype>
+    <Runtype>Sequential_keywords</Runtype>
+    <Date>2016-01-26</Date>
+    <Time>11:20</Time>
+    <setup_onError action="next"/>
+    <Engineer>Sekhar</Engineer>
+	</Details>
+  <!-- setup section contains all the setup steps which are common for all the testcases in a testsuite.
+       generally it contains all connection logic and basic verifications before proceeding with actual
+       tests. steps in this setup section will be executed first, before actual testcases/teststeps.
+  -->
+  <Setup>
+                  <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+                      <Arguments>
+                        <argument name="desired_status" value="pass"/>
+                      </Arguments>
+                      <Description>local_data_test</Description>
+                      <iteration_type type=""/>
+                      <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+                    <rmt/>
+                  </step>
+                  <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+                      <Arguments>
+                        <argument name="desired_status" value="pass"/>
+                      </Arguments>
+                      <onError action="next"/>
+                      <Description>local_data_test</Description>
+                      <iteration_type type=""/>
+                      <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+                    <rmt/>
+                  </step>
+                  <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+                      <Arguments>
+                        <argument name="desired_status" value="pass"/>
+                      </Arguments>
+                      <onError action="next"/>
+                      <Description>local_data_test</Description>
+                      <iteration_type type=""/>
+                      <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+                    <rmt/>
+                  </step>
+  </Setup>
+  <!-- cleanup section contains all the cleanup steps which are common for all the testcases in a testsuite.
+       generally it contains all the disconnection logic and basic teardown verifications.
+       steps in this cleanup section will be executed last, after all actual testcases/teststeps.
+  -->
+  <Cleanup>
+                  <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+                      <Arguments>
+                        <argument name="desired_status" value="pass"/>
+                      </Arguments>
+                      <onError action="next"/>
+                      <Description>local_data_test</Description>
+                      <iteration_type type=""/>
+                      <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+                    <rmt/>
+                  </step>
+                  <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+                      <Arguments>
+                        <argument name="desired_status" value="pass"/>
+                      </Arguments>
+                      <onError action="next"/>
+                      <Description>local_data_test</Description>
+                      <iteration_type type=""/>
+                      <Execute ExecType="Yes"/>
+                    <context>positive</context>
+                    <impact>impact</impact>
+                    <rmt/>
+                  </step>
+	  </Cleanup>
+	  <Debug>
+                <step Driver="log_driver" Keyword="log_message" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="message" value="this is step1 in debug section of test suite"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="log_driver" Keyword="log_message" TS="2" draft="no">
+                        <Arguments>
+                                <argument name="message" value="this is step2 in debug section of test suite"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="log_driver" Keyword="log_message" TS="3" draft="no">
+                        <Arguments>
+                                <argument name="message" value="this is step3 in debug section of test suite"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+		</step>
+	</Debug>
+</TestWrapper>

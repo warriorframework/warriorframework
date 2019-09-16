@@ -15,10 +15,12 @@ import os
 import time
 import traceback
 import shutil
+from xml.etree import ElementTree
 import sequential_testcase_driver
 import parallel_testcase_driver
 import testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
+from WarriorCore.Classes.jira_rest_class import Jira
 from WarriorCore.Classes.iterative_testsuite_class import IterativeTestsuite
 from WarriorCore import testsuite_utils, common_execution_utils
 import Framework.Utils as Utils
@@ -65,10 +67,18 @@ def get_suite_details(testsuite_filepath, data_repository, from_project,
     suite_name = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'Name')
     suite_title = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'Title')
     suite_exectype = testsuite_utils.get_exectype_from_xmlfile(testsuite_filepath)
+    suite_random_exec = Utils.xml_Utils.getChildTextbyParentTag(
+        testsuite_filepath, 'Details', 'random_tc_Execution')
     def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(testsuite_filepath)
     def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                       'Details',
                                                                       'default_onError', 'value')
+    if suite_random_exec:
+        if suite_random_exec.lower() == "true":
+            suite_random_exec = True
+        else:
+            suite_random_exec = False
+
     filename = os.path.basename(testsuite_filepath)
     nameonly = Utils.file_Utils.getNameOnly(filename)
     operating_system = sys.platform
@@ -126,6 +136,7 @@ def get_suite_details(testsuite_filepath, data_repository, from_project,
     suite_repository['junit_resultfile'] = junit_resultfile
     suite_repository['ws_results_execdir'] = ws_results_execdir
     suite_repository['ws_logs_execdir'] = ws_logs_execdir
+    suite_repository['suite_random_exec'] = suite_random_exec
     if data_file is not False:
         suite_repository['data_file'] = data_file
 
@@ -157,14 +168,16 @@ def report_testsuite_result(suite_repository, suite_status):
                     'ERROR': 'FAIL'}.get(str(suite_status).upper())
     print_info("Testsuite:{0}  STATUS:{1}".format(suite_repository['suite_name'], suite_status))
     testsuite_utils.pSuite_report_suite_result(suite_resultfile)
-    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$"
+               "$$$$$$$$$$$$$$$$$$$$$$$$")
     return suite_status
 
 
 def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile):
     """Prints the testsuite details to console """
 
-    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  "
+               "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
     print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
@@ -219,8 +232,39 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     initialize_suite_fields(data_repository)
     suite_repository = get_suite_details(testsuite_filepath, data_repository,
                                          from_project, res_startdir, logs_startdir)
+    if data_repository.get("random_tc_execution", False) or suite_repository['suite_random_exec']:
+        print_info("Executing test cases in suite in random order")
+        randomize = True
+    else:
+        randomize = False
     testcase_list = common_execution_utils.get_step_list(testsuite_filepath,
-                                                         "Testcases", "Testcase")
+                                                         "Testcases", "Testcase",
+                                                         randomize=randomize)
+    for testcase in testcase_list:
+        jiraids = testsuite_utils.get_jiraids_from_xmlfile(testcase)
+        if not jiraids:
+            continue
+        jira = Jira(jiraproj)
+        skip = False
+        for jiraid in jiraids:
+            status = jira.get_jira_issue_status(jiraid)
+            if status is False:
+                print_warning("Cannot get status of jira issue {},"
+                              " This issue is not considered for testcase"
+                              " skip validation".format(jiraid))
+                continue
+            if (status not in ["Resolved", "Closed"]):
+                skip = True
+                break
+        if skip:
+            tc_path = testsuite_utils.get_path_from_xmlfile(testcase)
+            print_info("Associated jira ids : {} are not Resolved or Closed,"
+                       " Skipping testcase >>>> {}".format(jiraids, tc_path))
+            exec_node = testcase.find("Execute")
+            if not exec_node:
+                exec_node = ElementTree.SubElement(testcase, "Execute")
+            exec_node.set("ExecType", 'no')
+    
     execution_type = suite_repository['suite_exectype'].upper()
     no_of_tests = str(len(testcase_list))
 
@@ -475,6 +519,24 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                     "setup status : {0}".format(setup_tc_status))
         print_error("Steps in cleanup will be executed on besteffort")
         test_suite_status = "ERROR"
+
+    #Execute Debug section from suite tw file upon test suite failure
+    if not isinstance(test_suite_status, bool) or (isinstance(test_suite_status, bool) \
+                                                          and test_suite_status is False):
+        if testwrapperfile and Utils.xml_Utils.nodeExists(testwrapperfile, "Debug"):
+            print_info("*****************SUITE TESTWRAPPER DEBUG EXECUTION START"
+                       "*********************")
+            data_repository['wt_data_type'] = j_data_type
+            debug_tc_status, data_repository = testcase_driver.execute_testcase(testwrapperfile,\
+                                                         data_repository, tc_context='POSITIVE',\
+                                                         runtype=j_runtype,\
+                                                         tc_parallel=None, queue=None,\
+                                                         auto_defects=auto_defects, suite=None,\
+                                                         jiraproj=None, tc_onError_action=None,\
+                                                         iter_ts_sys=None, steps_tag='Debug')
+            print_info("*****************SUITE TESTWRAPPER DEBUG EXECUTION END"
+                       "*********************")
+
     #execute cleanup steps defined in testwrapper file if testwrapperfile is present
     if testwrapperfile:
         print_info("*****************TESTWRAPPER CLEANUP EXECUTION START*********************")

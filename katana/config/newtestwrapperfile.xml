@@ -48,4 +48,24 @@
 		-->
 
 	</Cleanup>
+<Debug>
+      <!--
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	            <argument name='system_name' value="dpoe01"/>
+	        </Arguments>
+	    </step>
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	            <argument name='system_name' value="dpoe03" />
+	        </Arguments>
+	    </step>
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	        	<argument name='system_name' value="schatterlnx02" />
+	        </Arguments>
+	    </step>
+		-->
+
+	</Debug>
 </TestWrapper>

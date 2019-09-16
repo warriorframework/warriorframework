@@ -15,21 +15,10 @@ matrix:
     - sudo: false
       dist: trusty
       env: INSTALL=yes TESTFILES_2=yes
-    - sudo: required
-      dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes
-      addons:
-        firefox: "46.0"
-        chrome: stable
-    - sudo: required
-      dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes SELENIUM_3=yes GECKODRIVER=yes
-      addons:
-        firefox: "60.0"
-        chrome: stable
     - sudo: false
       dist: trusty
       env: INSTALL=no TESTFILE=./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml COPILOT=yes
+
 
 install:
   - if [[ ${COPILOT} = "yes" ]]; then
@@ -42,22 +31,7 @@ install:
       pip install lxml==3.3.3 ;
       pip install paramiko==2.4.1 ;
       pip install pysnmp==4.3.2 ;
-    fi
-  - if [[ ${SELENIUM} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
-      pip install pyvirtualdisplay==0.2.1 ;
-      wget https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip;
-      unzip chromedriver_linux64.zip;
-      chmod +x chromedriver;
-      mv chromedriver ~/bin/chromedriver;
-    fi
-  - if [[ ${SELENIUM_3} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
-      pip install selenium==3.8 ;
-    fi
-  - if [[ ${GECKODRIVER} = "yes" ]] && [[ ! -z ${TRAVIS_PULL_REQUEST_BRANCH} ]]; then
-      wget https://github.com/mozilla/geckodriver/releases/download/v0.20.0/geckodriver-v0.20.0-linux64.tar.gz;
-      tar -xvzf geckodriver-v0.20.0-linux64.tar.gz;
-      chmod +x geckodriver;
-      mv geckodriver ~/bin/geckodriver;
+      pip install kafka-python==1.4.6;
     fi
 
 script:

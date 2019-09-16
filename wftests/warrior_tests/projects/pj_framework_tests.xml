@@ -58,5 +58,35 @@
             <onError action="next" value=""/>
             <impact>impact</impact>
         </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/random_execution/ts_random_runmode_rmt_at_ts_local_level.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/random_execution/ts_random_runmode_ruf_at_ts_local_level.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/random_execution/ts_random_runmode_rup_at_ts_local_level.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/ts_wrapper_with_debug_positive.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/ts_wrapper_with_debug_negative.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
     </Testsuites>
 </Project>

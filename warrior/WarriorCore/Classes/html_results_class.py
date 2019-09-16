@@ -150,6 +150,15 @@ class WarriorHtmlResults:
                             if node.get('type') == 'keyword':
                                 self.steps += 1
                                 self.create_line_result(node, "Keyword")
+                #to add debug result in html file
+                for debug_node in testsuite_node.findall("Debug"):
+                    self.create_line_result(debug_node, "Debug")
+                    self.steps = 0
+                    for step_node in debug_node.findall("properties"):
+                        for node in step_node.findall("property"):
+                            if node.get('type') == 'keyword':
+                                self.steps += 1
+                                self.create_line_result(node, "Keyword")
                 #to add cleanup result in html file
                 for cleanup_node in testsuite_node.findall("Cleanup"):
                     self.create_line_result(cleanup_node, "Cleanup")
