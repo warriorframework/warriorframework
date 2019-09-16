@@ -1,6 +1,6 @@
 Release: Ninja
 
-Version: warrior-3.13.0
+Version: warrior-3.14.0
 
 ===================
  1: Release details
@@ -12,7 +12,7 @@ Version: warrior-3.13.0
       1.1: List of available releases
 -------------------------------------
 
-      1. Ninja = warrior-3.1.0 to 3.13.0
+      1. Ninja = warrior-3.1.0 to 3.14.0
 
 =====================
   2. Version Details
@@ -26,22 +26,19 @@ Procedure to get a specific version is available in section-3 of this document.
 +++++++++++++++++++++++++++++++++
 
 -------------------- New Features: --------------------
-[WAR-2142] - Warrior Core: Kafka integration into Warrior framework.
-[WAR-1999] - Looping/iteration feature : Support needed for iterating multiple steps with user defined/incremental values in testcase
-[WAR-2163] - Option for time diff keyword to pass or fail based on the value
-[WAR-2179] - clear_received_trap new keyword in common_snmp_actions
-[WAR-2127] - Warrior Core: NETCONF core keywords regression suite.
-[WAR-2134] - Adding support for REPO substitutions as well in verify response json
+[WAR-2207] - Support for running Testcases in Suite in the Random Order.
+[WAR-2208] - Support to associate Jira ID to Testcases. Skip Execution based on the Jira State.
+[WAR-2101] - Debug Profile - Execution of set steps on Testcase or Suite Failure.
+[WAR-2227] - Katana : Testwrapper App enhanced to create debug section profile.
+[WAR-2126] - SNMP Core Keywords Regression Suite
+[WAR-1200] - CloudShell Keywords Regression Suite.
+
 
 ------------ Bugfixes: ---------------------------------
-[WAR-1686] - No need to wait for sleep timer during mockrun
-[WAR-2200] - Selenium test case is failing in travis due to change in login text in anchor tag stack overflow.com
-[WAR-2164] - Travis job are failing due to changes in the web pages(selenium)
-[WAR-1982] - Travis: Jenkins: Fix Rest Testcases
-[WAR-1434] - Iteration with multiple combination
-[WAR-1365] - REST: a REST regression testca is available in wf_tests but has not been added into the suite.
-[WAR-1284] - Warrior receiving unicode strings instead of ascii strings recently
-[WAR-1081] - Need REST keyword to handle async response
+[WAR-1560] - Improve pylint Score on SNMP related files.
+[WAR-2094] - LDAP - Needs a restart on LDAP setting Changes.
+[WAR-2225] - Travis job are failing due to changes in the web pages
+
 
 
 
@@ -64,13 +61,12 @@ Procedure to get a specific version is available in section-3 of this document.
        warrior-3.6.0
        warrior-3.7.0
        warrior-3.8.0
-       warrior-3.9.0
        warrior-3.9.1
        warrior-3.10.0
        warrior-3.11.0
-       warrior-3.12.0
        warrior-3.12.1
        warrior-3.13.0
+       warrior-3.14.0 
 4. To Check the current version you are at, execute "git branch" command
       $ git branch
         * master  - * indicates the active version.
@@ -80,8 +76,8 @@ Procedure to get a specific version is available in section-3 of this document.
 
 
 5. To switch to a specific version from master, execute 'git checkout <version_name>' command.
-    $ git checkout warrior-3.13.0
-     Note: checking out 'warrior-3.13.0.
+    $ git checkout warrior-3.14.0
+     Note: checking out 'warrior-3.14.0.
      You are in 'detached HEAD' state. You can look around, make experimental
      changes and commit them, and you can discard any commits you make in this
      state without impacting any branches by performing another checkout.
@@ -89,17 +85,17 @@ Procedure to get a specific version is available in section-3 of this document.
      do so (now or later) by using -b with the checkout command again.
      Example:
      	git checkout -b new_branch_name
-     	HEAD is now at abcba40... update version and release notes for 3.12.0
+     	HEAD is now at abcba40... update version and release notes for 3.14.0
 6. Execute git branch command to verify the active version.
    $ git branch
-    * (detached from warrior-3.13.0) master
+    * (detached from warrior-3.14.0) master
     - * indicates the active version.
-7. Switch from one version to another (current=warrior-3.13.0 switch to warrior-3.12.0)
-    $git checkout warrior-3.12.0
+7. Switch from one version to another (current=warrior-3.14.0 switch to warrior-3.13.0)
+    $git checkout warrior-3.13.0
     Previous HEAD position was 6cea565... Update version.txt
     HEAD is now at ba0fdc8... Update version.txt
     $git branch
-    * (detached from warrior-3.13.0)     master
+    * (detached from warrior-3.14.0)     master
 8. Switch to master branch again.
    $ git checkout master
     Previous HEAD position was ba0fdc8... Update version.txt
