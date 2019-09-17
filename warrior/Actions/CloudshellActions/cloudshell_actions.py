@@ -131,9 +131,9 @@ class CloudShellActions(object):
             1. system_name(string) = Name of the UAP system from the datafile
             2. reservation_name(string) = Specify the name of the reservation.
             3. duration_in_mins(int) = Specify the length of the reservation.
-            4. notify_on_start(bool) = Indicate whether to notify the
+            4. notify_on_start(string) = true or false, Indicate whether to notify the
                reservation owner when the reservation starts.
-            5. notify_on_end(bool) = Indicate whether to notify the reservation
+            5. notify_on_end(string) = true or false, Indicate whether to notify the reservation
                owner when the reservation ends.
             6. notify_mins_before_end(int) = Notification Minutes Before End -
                Indicate the number of minutes before the end of the reservation
@@ -171,6 +171,8 @@ class CloudShellActions(object):
                   "reservation and add topology to the reservation.")
 
             res_key = "{0}_{1}_cs_rsrv_details".format(system_name, reservation_name)
+            notify_on_start = notify_on_start.lower()
+            notify_on_end = notify_on_end.lower()
             output_dict = {
                            res_key: {"reservation_name": reservation_name,
                                      "username": credentials['username'],
@@ -209,9 +211,9 @@ class CloudShellActions(object):
             1. system_name(string) = Name of the UAP system from the datafile
             2. reservation_name(string) = Specify the name of the reservation.
             3. duration_in_mins(int) = Specify the length of the reservation.
-            4. notify_on_start(bool) = Indicate whether to notify the
+            4. notify_on_start(string) = true or false, Indicate whether to notify the
                reservation owner when the reservation starts.
-            5. notify_on_end(bool) = Indicate whether to notify the reservation
+            5. notify_on_end(string) = true or false, Indicate whether to notify the reservation
                owner when the reservation ends.
             6. notify_mins_before_end(int) = Notification Minutes Before End -
                Indicate the number of minutes before the end of the reservation
@@ -242,6 +244,8 @@ class CloudShellActions(object):
 
         status = False
         output_dict = {}
+        notify_on_start = notify_on_start.lower()
+        notify_on_end = notify_on_end.lower()
         try:
             xml_resp = cloud_shell.CreateImmediateTopologyReservation(reservation_name,
                                                               credentials['username'],
@@ -742,7 +746,7 @@ class CloudShellActions(object):
         :Arguments:
             1. system_name(string) = Name of the UAP system from the datafile
             2. reservation_name(string) = Specify the name of the reservation.
-            3. unmap(bool) = Unmap resources - Specify whether to keep mappings
+            3. unmap(string) = true or false, Unmap resources - Specify whether to keep mappings
                or release mapped resources when deleting the reservation.
         :Returns:
             1. status(bool)= True/False
@@ -759,6 +763,7 @@ class CloudShellActions(object):
         cs_res_id = data_Utils.get_object_from_datarepository\
                    (system_name+"_"+reservation_name+"_reservationId")
         try:
+            unmap = unmap.lower()
             xml_resp = cloud_shell.EndReservation(cs_res_id, unmap)
             if xml_resp is not None:
                 testcase_Utils.pNote("\n\n *** Cloudshell End reservation"
