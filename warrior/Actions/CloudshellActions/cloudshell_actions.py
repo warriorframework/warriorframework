@@ -396,9 +396,23 @@ class CloudShellActions(object):
         #check whether Reservation status is Started. If status is not Started,
         #then wait for time_out seconds before activating.
 
+        # Check for Conflicts
+        reservation_status = cloud_shell.GetReservationDetails(cs_res_id).ReservationDescription
+        if reservation_status.Conflicts:
+            conflicts_suggested_end_times = []
+            for conflicted_resource in reservation_status.Conflicts:
+                planned_end_time = conflicted_resource.ConflictPlannedEndTime
+                if planned_end_time not in conflicts_suggested_end_times:
+                    conflicts_suggested_end_times.append(planned_end_time)
+            # End the Reservation
+            cloud_shell.EndReservation(cs_res_id)
+            raise Exception("Conflicts Found, Planned end time for resources inside is:\n{}".format("\n".join(
+                conflicts_suggested_end_times)))
+
         reservation_status = cloud_shell.GetReservationDetails(cs_res_id).ReservationDescription.Status
         sec = 0
-        while reservation_status != "Started":
+        # Check for In Use Status as well as Started
+        while reservation_status not in ["Started", "In Use"]:
             sec = sec + 1
             reservation_status = cloud_shell.GetReservationDetails(cs_res_id).ReservationDescription.Status
             time.sleep(1)
