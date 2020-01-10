@@ -68,7 +68,7 @@ class LogActions(object):
             for message, value in dict_message.iteritems():
                 value = get_object_from_datarepository(value)
                 if value is not None:
-                    self.map_function[type](message + ": " + value)
+                    self.map_function[type]("{0} : {1}".format(message, value))
                 else:
                     self.map_function[type](message)
         return True
