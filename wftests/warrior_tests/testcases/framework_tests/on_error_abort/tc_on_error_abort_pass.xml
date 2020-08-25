@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_on_error_abort_pass</Name>
+                <Title>tc_on_error_abort_pass</Title>
+                <Engineer>Venkat</Engineer>
+                <Date>2020-08-25</Date>
+                <Time>12:08</Time>
+                <State/>
+                <InputDataFile>No_Data</InputDataFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="filepath" value="../../common_actions_tests/repo_variables.json"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description>Using filepath(json file) option to store multiple REPO values(default json tag)</Description>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                 </step>
+        </Steps>
+</Testcase>
