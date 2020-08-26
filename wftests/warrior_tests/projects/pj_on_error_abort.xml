@@ -17,7 +17,7 @@
 		<Testsuite>
 			<path>../suites/framework_tests/on_error_abort/ts_on_error_abort_fail.xml</path>
 			<onError action="abort" value=""/>
-			<impact>impact</impact>
+			<impact>noimpact</impact>
 		</Testsuite>
 		<Testsuite>
 			<path>../suites/framework_tests/on_error_abort/ts_on_error_abort_pass.xml</path>
