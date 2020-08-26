@@ -25,6 +25,7 @@ from Framework.Utils.print_Utils import print_debug, print_info
 from Framework.Utils import file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.execution_summary_class import ExecutionSummary
+from . import file_Utils
 
 
 def set_params_send_email(addsubject, data_repository, files, mail_on):
@@ -84,6 +85,7 @@ def get_email_params(mail_on='per_execution'):
     sender = ""
     receivers = ""
     subject = ""
+    compress = ""
     warrior_tools_dir = Tools.__path__[0]+os.sep+'w_settings.xml'
     element = ET.parse(warrior_tools_dir)
     setting_elem = element.find("Setting[@name='mail_to']")
@@ -96,7 +98,7 @@ def get_email_params(mail_on='per_execution'):
         if mail_on in ['first_failure', 'every_failure'] or \
            (mail_on == "per_execution" and mail_on_list != []):
             if mail_on not in mail_on_list:
-                return smtp_host, sender, receivers, subject
+                return smtp_host, sender, receivers, subject, compress
         smtp_host_elem = setting_elem.find("smtp_host")
         if smtp_host_elem is not None:
             smtp_host = smtp_host_elem.text
@@ -132,33 +134,37 @@ def construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir):
     """
     junit_result_file = os.path.join(
         results_dir, file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath))) + "_junit.xml"
-    junit_object = ExecutionSummary(junit_result_file)
-    project_sum = junit_object.project_summary(junit_result_file)
-    suite_tc_sum = junit_object.suite_summary(junit_result_file)
     suite_tc, body = "", ""
     body_arg = ('<html><body><p><b>{0}</b>{1}</p>'
                 '<p><b>Logs directory:</b>{2}</p>'
-                '<p><b>Results directory:</b>{3}</p>'
-                '<p><b>Execution Summary:</b></p>'
+                '<p><b>Results directory:</b>{3}</p>').format(exec_type, abs_filepath,\
+                                                    logs_dir, results_dir)
+    body_arg1 = ('<p><b>Execution Summary:</b></p>'
                 '<table cellspacing="10" cellpadding="0"><tr><td><b>Type</b>'
                 '</td><td><b>Name</b></td><td><b>Status</b></td>'
-                '<td><b>Path</b></td></tr>').format(exec_type, abs_filepath,
-                                                    logs_dir, results_dir)
-    # complete html body that will be sent through mail
-    if exec_type == 'Project: ':
-        project = ""
-        for proj in project_sum:
-            project = project + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'
-                                 .format(proj[0], proj[1], proj[2], proj[3]))
-        for value in suite_tc_sum:
-            suite_tc = suite_tc + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'
+                '<td><b>Path</b></td></tr>')
+    if file_Utils.fileExists(junit_result_file):
+        body_arg = body_arg + body_arg1
+        junit_object = ExecutionSummary(junit_result_file)
+        project_sum = junit_object.project_summary(junit_result_file)
+        suite_tc_sum = junit_object.suite_summary(junit_result_file)
+        # complete html body that will be sent through mail
+        if exec_type == 'Project: ':
+            project = ""
+            for proj in project_sum:
+                project = project + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'\
+                                     .format(proj[0], proj[1], proj[2], proj[3]))
+            for value in suite_tc_sum:
+                suite_tc = suite_tc + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'\
                                    .format(value[0], value[1], value[2], value[3]))
-        body = body_arg + project + suite_tc + "</table></body></html>"
-    elif exec_type == 'Test Suite: ' or exec_type == 'Test Case: ':
-        for value in suite_tc_sum:
-            suite_tc = suite_tc + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'
+            body = body_arg + project + suite_tc + "</table></body></html>"
+        elif exec_type == 'Test Suite: ' or exec_type == 'Test Case: ':
+            for value in suite_tc_sum:
+                suite_tc = suite_tc + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'\
                                    .format(value[0], value[1], value[2], value[3]))
-        body = body_arg + suite_tc + "</table></body></html>"
+            body = body_arg + suite_tc + "</table></body></html>"
+    else:
+        body = body_arg + "</table></body></html>"
     return body
 
 
@@ -183,10 +189,14 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
     body = construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir)
     report_attachment = results_dir + os.sep + \
         file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath)) + ".html"
-    if mail_on in ["per_execution", "first_failure", "every_failure"]:
+    log_attachment = logs_dir + os.sep + \
+                     file_Utils.getNameOnly \
+                         (file_Utils.getFileName(abs_filepath)) + "_consoleLogs.log"
+
+    if mail_on in ["per_execution"] and file_Utils.fileExists(report_attachment):
         files = [report_attachment]
-    else:
-        files = []
+    elif mail_on in ["first_failure", "every_failure"] and file_Utils.fileExists(log_attachment):
+        files = [log_attachment]
     set_params_send_email(subject, body, files, mail_on)
 
 
