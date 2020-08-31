@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_with_on_error_abort</Name>
+                <Title>test suite with abort on error scenario</Title>
+                <Engineer>Venkat</Engineer>
+                <Date>2020-08-25</Date>
+                <Time>16:37:44</Time>
+                <default_onError action="next" value=""/>
+                <Resultsdir/>
+                <InputDataFile/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/on_error_abort/tc_on_error_abort_fail.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="abort" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                </Testcase>
+        </Testcases>
+</TestSuite>
